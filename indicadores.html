@@ -33,8 +33,11 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .c-mid{display:flex;align-items:baseline;gap:6px;margin:8px 0 4px;flex-wrap:wrap}
 .c-val{font-size:28px;font-weight:700}
 .c-obj{font-size:11px;color:#94a3b8}
-.spark{display:block;width:100%;height:44px;margin-top:6px}
+.spark{display:block;width:100%;height:44px}
 .spark-ej{display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-top:2px;padding:0 2px}
+.spark-wrap{display:flex;gap:4px;margin-top:6px}
+.spark-axis{display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:44px;line-height:1}
+.spark-body{flex:1;min-width:0}
 .empty{text-align:center;padding:40px;font-size:13px;color:#94a3b8}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
 .ov.open{display:flex}
@@ -118,7 +121,8 @@ function spark(ejSeries, color, w, h) {
   const objLine = lastObj !== undefined ? ('<line x1="' + pad + '" x2="' + (w-pad) + '" y1="' + sy(lastObj).toFixed(1) + '" y2="' + sy(lastObj).toFixed(1) + '" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>') : '';
   const svg = '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' + bars + objLine + '</svg>';
   const ejLabels = '<div class="spark-ej">' + pts.map(p => '<span>' + p[0] + '</span>').join('') + '</div>';
-  return svg + ejLabels;
+  const axis = '<div class="spark-axis"><span>10</span><span>0</span></div>';
+  return '<div class="spark-wrap">' + axis + '<div class="spark-body">' + svg + ejLabels + '</div></div>';
 }
 
 function fmt(v) { return v !== null ? v.toFixed(2).replace('.', ',') : '—'; }
