@@ -33,10 +33,10 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .c-mid{display:flex;align-items:baseline;gap:6px;margin:8px 0 4px;flex-wrap:wrap}
 .c-val{font-size:28px;font-weight:700}
 .c-obj{font-size:11px;color:#94a3b8}
-.spark{display:block;width:100%;height:44px}
+.spark{display:block;width:100%;height:80px}
 .spark-ej{display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-top:2px;padding:0 2px}
 .spark-wrap{display:flex;gap:4px;margin-top:6px}
-.spark-axis{display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:44px;line-height:1}
+.spark-axis{display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:80px;line-height:1}
 .spark-body{flex:1;min-width:0}
 .empty{text-align:center;padding:40px;font-size:13px;color:#94a3b8}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -99,7 +99,7 @@ function setArea(a) {
 }
 
 function spark(ejSeries, color, w, h) {
-  w = w || 120; h = h || 44;
+  w = w || 120; h = h || 80;
   const pts = ejSeries.filter(p => p[1] !== null);
   if (pts.length < 2) return '';
   const pad = 3;
