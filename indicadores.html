@@ -186,7 +186,7 @@ function openModal(i) {
     '<span class="c-obj">' + (obj !== null ? ('Objetivo actual ' + fmt1(obj)) : 'Sin objetivo definido') + ' &middot; &uacute;ltima medici&oacute;n ' + fdateLast(lastDate) + '</span>' +
     '<span class="pill" style="background:' + sBg + ';color:' + sFg + ';margin-left:auto">' + sLbl + '</span></div>' +
     metaHtml +
-    '<div class="legend"><span><span class="sw" style="background:' + GREEN + '"></span>Por encima del objetivo</span><span><span class="sw" style="background:' + RED + '"></span>Por debajo del objetivo</span><span><span class="sw" style="background:#cbd5e1"></span>Objetivo</span></div>' +
+    '<div class="legend"><span><span class="sw" style="background:' + GREEN + '"></span>Cumple objetivo</span><span><span class="sw" style="background:' + RED + '"></span>No cumple</span><span><span class="sw" style="background:#cbd5e1"></span>Objetivo</span><span><span class="sw" style="background:#6366f1"></span>Tendencia</span></div>' +
     '<div class="bigchart"><canvas id="bigcanvas" role="img" aria-label="Evolucion historica de ' + name + '"></canvas></div>' +
     '<div class="hist-wrap"><table class="hist-table"><thead><tr><th>Fecha</th><th>Objetivo</th><th>Puntaje</th><th>Cumple</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   document.getElementById('ov').classList.add('open');
@@ -197,34 +197,23 @@ function openModal(i) {
   const puntajes = pts.map(p => p[1]);
   const objs = pts.map(p => p[2]);
   const pointColors = pts.map(p => (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : GRAY);
+  const trend = trendLine(puntajes);
 
   chartInst = new Chart(ctx, {
-    type: 'line',
     data: {
       labels: labels,
       datasets: [
         {
+          type: 'bar',
           label: 'Puntaje',
           data: puntajes,
-          borderColor: GRAY,
-          backgroundColor: 'transparent',
-          fill: false,
-          spanGaps: true,
-          tension: 0.15,
-          pointRadius: 3,
-          pointBackgroundColor: pointColors,
-          pointBorderColor: pointColors,
-          borderWidth: 1.5,
-          segment: {
-            borderColor: (ctx2) => {
-              const i2 = ctx2.p1DataIndex;
-              const p = puntajes[i2], o = objs[i2];
-              if (p === null || o === null) return GRAY;
-              return p >= o ? GREEN : RED;
-            }
-          }
+          backgroundColor: pointColors,
+          borderRadius: 2,
+          maxBarThickness: 22,
+          order: 2
         },
-        { label: 'Objetivo', data: objs, borderColor: '#cbd5e1', backgroundColor: 'transparent', fill: false, spanGaps: true, borderDash: [5,4], tension: 0, pointRadius: 0, borderWidth: 1.6 }
+        { type: 'line', label: 'Objetivo', data: objs, borderColor: '#cbd5e1', backgroundColor: 'transparent', fill: false, spanGaps: true, borderDash: [5,4], tension: 0, pointRadius: 0, borderWidth: 1.6, order: 0 },
+        { type: 'line', label: 'Tendencia', data: trend, borderColor: '#6366f1', backgroundColor: 'transparent', fill: false, spanGaps: true, tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, borderWidth: 2.5, order: 1 }
       ]
     },
     options: {
@@ -237,6 +226,18 @@ function openModal(i) {
         x: { ticks: { autoSkip: true, maxRotation: 45 }, grid: { display: false } }
       }
     }
+  });
+}
+
+function trendLine(values) {
+  const n = values.length;
+  const window = Math.max(3, Math.round(n / 6));
+  const half = Math.floor(window / 2);
+  return values.map((_, i) => {
+    const lo = Math.max(0, i - half), hi = Math.min(n - 1, i + half);
+    const slice = values.slice(lo, hi + 1).filter(v => v !== null);
+    if (!slice.length) return null;
+    return slice.reduce((s, v) => s + v, 0) / slice.length;
   });
 }
 
