@@ -102,9 +102,7 @@ function spark(ejSeries, color, w, h) {
   const pad = 3;
   const ys = pts.map(p => p[1]);
   const objs = pts.map(p => p[2]);
-  const allVals = ys.concat(objs.filter(v => v !== null));
-  const ymin = Math.max(0, Math.min(...allVals) - 1.2);
-  const ymax = Math.min(10, Math.max(...allVals) + 0.6);
+  const ymin = 0, ymax = 10;
   const n = pts.length;
   const gap = 2;
   const bw = (w - 2*pad) / n - gap;
