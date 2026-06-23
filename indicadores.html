@@ -33,7 +33,8 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .c-mid{display:flex;align-items:baseline;gap:6px;margin:8px 0 4px;flex-wrap:wrap}
 .c-val{font-size:28px;font-weight:700}
 .c-obj{font-size:11px;color:#94a3b8}
-.spark{display:block;width:100%;height:34px;margin-top:6px}
+.spark{display:block;width:100%;height:44px;margin-top:6px}
+.spark-range{display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;margin-top:2px}
 .empty{text-align:center;padding:40px;font-size:13px;color:#94a3b8}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
 .ov.open{display:flex}
@@ -95,22 +96,37 @@ function setArea(a) {
 }
 
 function spark(ejSeries, color, w, h) {
-  w = w || 120; h = h || 34;
+  w = w || 120; h = h || 44;
   const pts = ejSeries.filter(p => p[1] !== null);
   if (pts.length < 2) return '';
-  const pad = 4;
+  const pad = 3;
   const ys = pts.map(p => p[1]);
-  const ymin = Math.min(...ys) - 0.4, ymax = Math.max(...ys) + 0.4;
+  const objs = pts.map(p => p[2]);
+  const allVals = ys.concat(objs.filter(v => v !== null));
+  const ymin = Math.max(0, Math.min(...allVals) - 1.2);
+  const ymax = Math.min(10, Math.max(...allVals) + 0.6);
   const n = pts.length;
-  const sx = i => pad + i/(n-1) * (w - 2*pad);
+  const gap = 2;
+  const bw = (w - 2*pad) / n - gap;
+  const sx = i => pad + i * (w - 2*pad) / n;
   const sy = v => h - pad - (v - ymin)/(ymax - ymin || 1) * (h - 2*pad);
-  const d = pts.map((p,i) => (i===0?'M':'L') + sx(i).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join(' ');
-  return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none"><path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="' + sx(n-1) + '" cy="' + sy(ys[ys.length-1]) + '" r="3" fill="' + color + '"/></svg>';
+  const bars = pts.map((p,i) => {
+    const barColor = (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : color;
+    const y0 = sy(ymin), y1 = sy(p[1]);
+    const x = sx(i);
+    return '<rect x="' + x.toFixed(1) + '" y="' + Math.min(y0,y1).toFixed(1) + '" width="' + Math.max(bw,1).toFixed(1) + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1" fill="' + barColor + '"/>';
+  }).join('');
+  const lastObj = objs.filter(v => v !== null).slice(-1)[0];
+  const objLine = lastObj !== undefined ? ('<line x1="' + pad + '" x2="' + (w-pad) + '" y1="' + sy(lastObj).toFixed(1) + '" y2="' + sy(lastObj).toFixed(1) + '" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>') : '';
+  const svg = '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' + bars + objLine + '</svg>';
+  const rangeTxt = '<div class="spark-range"><span>m&iacute;n ' + fmt1(Math.min(...ys)) + '</span><span>m&aacute;x ' + fmt1(Math.max(...ys)) + '</span></div>';
+  return svg + rangeTxt;
 }
 
 function fmt(v) { return v !== null ? v.toFixed(2).replace('.', ',') : '—'; }
 function fmt1(v) { return v !== null ? v.toFixed(1).replace('.', ',') : '—'; }
 function fdate(iso) { if(!iso) return '—'; const [y,m,d] = iso.split('-'); return d+'/'+m+'/'+y; }
+function fdateLast(s) { return s || '—'; }
 
 function cardHtml(d) {
   const code = d[0], name = d[1], val = d[3], lastDate = d[4], obj = d[5], st = d[6], ejSeries = d[8];
@@ -121,7 +137,7 @@ function cardHtml(d) {
   return '<div class="card" style="border-left-color:' + sLine + '" onclick="openModal(' + i + ')">' +
     '<div class="c-top"><div><div class="c-code">' + code + '</div><div class="c-name">' + name + '</div></div>' +
     '<span class="pill" style="background:' + sBg + ';color:' + sFg + '">' + sLbl + '</span></div>' +
-    '<div class="c-mid"><span class="c-val" style="color:' + (sLine==='#cbd5e1'?'#94a3b8':'#0f172a') + '">' + valTxt + '</span><span class="c-obj">' + objTxt + ' &middot; ' + fdate(lastDate) + '</span></div>' +
+    '<div class="c-mid"><span class="c-val" style="color:' + (sLine==='#cbd5e1'?'#94a3b8':'#0f172a') + '">' + valTxt + '</span><span class="c-obj">' + objTxt + ' &middot; ' + fdateLast(lastDate) + '</span></div>' +
     spark(ejSeries, sLine) + '</div>';
 }
 
@@ -141,7 +157,7 @@ function render() {
 
 function openModal(i) {
   const d = ITEMS[i];
-  const code=d[0], name=d[1], area=d[2], val=d[3], lastDate=d[4], obj=d[5], st=d[6], pts=d[7],
+  const code=d[0], name=d[1], area=d[2], val=d[3], lastDate=d[4], obj=d[5], st=d[6], pts=d[7], ejPts=d[8],
         objDesc=d[9], metodo=d[10], frecuencia=d[11], resp=d[12], acciones=d[13];
   const stArr = ST[st]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
 
@@ -167,48 +183,38 @@ function openModal(i) {
   modal.innerHTML = '<div class="modal-top"><div><div class="mcode">' + code + '</div><h2>' + name + '</h2><div class="marea">' + area + '</div></div>' +
     '<button class="modal-close" onclick="closeModal()" aria-label="Cerrar">&times;</button></div>' +
     '<div class="c-mid" style="margin-top:4px"><span class="c-val" style="font-size:32px">' + fmt(val) + '</span>' +
-    '<span class="c-obj">' + (obj !== null ? ('Objetivo actual ' + fmt1(obj)) : 'Sin objetivo definido') + ' &middot; &uacute;ltima medici&oacute;n ' + fdate(lastDate) + '</span>' +
+    '<span class="c-obj">' + (obj !== null ? ('Objetivo actual ' + fmt1(obj)) : 'Sin objetivo definido') + ' &middot; &uacute;ltima medici&oacute;n ' + fdateLast(lastDate) + '</span>' +
     '<span class="pill" style="background:' + sBg + ';color:' + sFg + ';margin-left:auto">' + sLbl + '</span></div>' +
     metaHtml +
-    '<div class="legend"><span><span class="sw" style="background:' + GREEN + '"></span>Por encima del objetivo</span><span><span class="sw" style="background:' + RED + '"></span>Por debajo del objetivo</span><span><span class="sw" style="background:#cbd5e1"></span>Objetivo</span></div>' +
+    '<div class="legend"><span><span class="sw" style="background:' + GREEN + '"></span>Cumple objetivo</span><span><span class="sw" style="background:' + RED + '"></span>No cumple</span><span><span class="sw" style="background:#cbd5e1"></span>Objetivo</span><span><span class="sw" style="background:#6366f1"></span>Tendencia</span></div>' +
     '<div class="bigchart"><canvas id="bigcanvas" role="img" aria-label="Evolucion historica de ' + name + '"></canvas></div>' +
     '<div class="hist-wrap"><table class="hist-table"><thead><tr><th>Fecha</th><th>Objetivo</th><th>Puntaje</th><th>Cumple</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   document.getElementById('ov').classList.add('open');
 
   if (chartInst) { chartInst.destroy(); chartInst = null; }
   const ctx = document.getElementById('bigcanvas');
-  const labels = pts.map(p => fdate(p[0]));
-  const puntajes = pts.map(p => p[1]);
-  const objs = pts.map(p => p[2]);
-  const pointColors = pts.map(p => (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : GRAY);
+  const labels = ejPts.map(p => 'Ej. ' + p[0]);
+  const puntajes = ejPts.map(p => p[1]);
+  const objs = ejPts.map(p => p[2]);
+  const pointColors = ejPts.map(p => (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : GRAY);
+
+  const trend = trendLine(puntajes);
 
   chartInst = new Chart(ctx, {
-    type: 'line',
     data: {
       labels: labels,
       datasets: [
         {
+          type: 'bar',
           label: 'Puntaje',
           data: puntajes,
-          borderColor: GRAY,
-          backgroundColor: 'transparent',
-          fill: false,
-          spanGaps: true,
-          tension: 0.15,
-          pointRadius: 3,
-          pointBackgroundColor: pointColors,
-          pointBorderColor: pointColors,
-          borderWidth: 1.5,
-          segment: {
-            borderColor: (ctx2) => {
-              const i2 = ctx2.p1DataIndex;
-              const p = puntajes[i2], o = objs[i2];
-              if (p === null || o === null) return GRAY;
-              return p >= o ? GREEN : RED;
-            }
-          }
+          backgroundColor: pointColors,
+          borderRadius: 3,
+          maxBarThickness: 28,
+          order: 2
         },
-        { label: 'Objetivo', data: objs, borderColor: '#cbd5e1', backgroundColor: 'transparent', fill: false, spanGaps: true, borderDash: [5,4], tension: 0, pointRadius: 0, borderWidth: 1.6 }
+        { type: 'line', label: 'Objetivo', data: objs, borderColor: '#cbd5e1', backgroundColor: 'transparent', fill: false, spanGaps: true, borderDash: [5,4], tension: 0, pointRadius: 0, borderWidth: 1.6, order: 0 },
+        { type: 'line', label: 'Tendencia', data: trend, borderColor: '#6366f1', backgroundColor: 'transparent', fill: false, spanGaps: true, tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, borderWidth: 2.5, order: 1 }
       ]
     },
     options: {
@@ -217,10 +223,22 @@ function openModal(i) {
       interaction: { mode: 'index', intersect: false },
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: (item) => item.dataset.label + ': ' + (item.raw !== null ? item.raw.toFixed(2).replace('.',',') : 'sin dato') } } },
       scales: {
-        y: { min: 0, max: 10, ticks: { stepSize: 2 }, grid: { color: '#f1f5f9' } },
+        y: { min: 1, max: 10, ticks: { stepSize: 1 }, grid: { color: '#f1f5f9' } },
         x: { ticks: { autoSkip: true, maxRotation: 45 }, grid: { display: false } }
       }
     }
+  });
+}
+
+function trendLine(values) {
+  const n = values.length;
+  const window = Math.max(3, Math.round(n / 6));
+  const half = Math.floor(window / 2);
+  return values.map((_, i) => {
+    const lo = Math.max(0, i - half), hi = Math.min(n - 1, i + half);
+    const slice = values.slice(lo, hi + 1).filter(v => v !== null);
+    if (!slice.length) return null;
+    return slice.reduce((s, v) => s + v, 0) / slice.length;
   });
 }
 
