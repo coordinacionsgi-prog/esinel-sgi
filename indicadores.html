@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SGI - Indicadores</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px}
+.wrap{max-width:1280px;margin:0 auto;padding:24px}
+h1{font-size:22px;font-weight:700;margin-bottom:2px}
+.sub{color:#64748b;font-size:13px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px}
+.stat-lbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.stat-val{font-size:26px;font-weight:700}
+.areas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+.abtn{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#475569}
+.abtn:hover{border-color:#cbd5e1}
+.abtn.act{border-color:#6366f1;background:#eef2ff;color:#4338ca}
+.section{margin-bottom:28px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.section-hd h2{font-size:15px;font-weight:700;color:#0f172a}
+.section-hd .cnt{font-size:12px;color:#94a3b8;background:#f1f5f9;padding:2px 9px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;border-left:4px solid #cbd5e1;cursor:pointer;transition:box-shadow .15s,transform .1s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);transform:translateY(-1px)}
+.c-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:6px}
+.c-code{font-family:'SF Mono',Consolas,monospace;font-size:11px;font-weight:700;color:#64748b}
+.c-name{font-size:13px;color:#0f172a;margin-top:2px;line-height:1.3;font-weight:500}
+.pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap}
+.c-mid{display:flex;align-items:baseline;gap:6px;margin:8px 0 4px;flex-wrap:wrap}
+.c-val{font-size:28px;font-weight:700}
+.c-obj{font-size:11px;color:#94a3b8}
+.spark{display:block;width:100%;height:34px;margin-top:6px}
+.empty{text-align:center;padding:40px;font-size:13px;color:#94a3b8}
+.ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
+.ov.open{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;padding:24px}
+.modal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.modal-close{cursor:pointer;font-size:20px;color:#94a3b8;border:none;background:none;line-height:1;padding:4px}
+.modal-close:hover{color:#475569}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:2px}
+.modal .mcode{font-family:'SF Mono',Consolas,monospace;font-size:12px;color:#64748b;font-weight:700}
+.modal .marea{font-size:12px;color:#94a3b8;margin-top:6px;margin-bottom:8px}
+.legend{display:flex;gap:16px;font-size:12px;color:#475569;margin:10px 0;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend .sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.bigchart{width:100%;height:260px;position:relative;margin:8px 0 16px}
+.meta-box{background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12.5px}
+.meta-row{display:flex;gap:8px;padding:4px 0}
+.meta-row b{color:#64748b;min-width:120px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+.meta-row span{color:#0f172a;flex:1}
+.hist-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:12px}
+.hist-table th{text-align:left;padding:6px 8px;background:#f8fafc;font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase}
+.hist-table td{padding:6px 8px;border-bottom:1px solid #f1f5f9}
+.hist-table tr:last-child td{border-bottom:none}
+.hist-wrap{max-height:240px;overflow-y:auto;border:1px solid #f1f5f9;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Indicadores del SGI</h1>
+  <div class="sub">Esinel S.R.L. &middot; Promedio por ejercicio (vista general) &middot; hist&oacute;rico completo al detalle</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val">24</div></div>
+    <div class="stat"><div class="stat-lbl">Cumplen</div><div class="stat-val" style="color:#16a34a">20</div></div>
+    <div class="stat"><div class="stat-lbl">No cumplen</div><div class="stat-val" style="color:#dc2626">4</div></div>
+    <div class="stat"><div class="stat-lbl">Sin dato</div><div class="stat-val" style="color:#94a3b8">0</div></div>
+  </div>
+  <div class="areas" id="areas">
+    <button class="abtn act" data-a="" onclick="setArea('')">Todos</button>
+    <button class="abtn" data-a="Comercial" onclick="setArea('Comercial')">Comercial</button><button class="abtn" data-a="Ingeniería" onclick="setArea('Ingeniería')">Ingeniería</button><button class="abtn" data-a="Compras" onclick="setArea('Compras')">Compras</button><button class="abtn" data-a="Producción" onclick="setArea('Producción')">Producción</button><button class="abtn" data-a="Obra" onclick="setArea('Obra')">Obra</button><button class="abtn" data-a="RRHH" onclick="setArea('RRHH')">RRHH</button><button class="abtn" data-a="Medio Ambiente" onclick="setArea('Medio Ambiente')">Medio Ambiente</button><button class="abtn" data-a="Seguridad e Higiene" onclick="setArea('Seguridad e Higiene')">Seguridad e Higiene</button>
+  </div>
+  <div id="sections"></div>
+</div>
+
+<div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const DATA = {"areas":["Comercial","Ingeniería","Compras","Producción","Obra","RRHH","Medio Ambiente","Seguridad e Higiene"],"d":[["COME1","Encuesta anual a clientes","Comercial",8.2,"31/03/2026",7.5,1,[["2018-12-31",8.7,6.0],["2019-12-31",7.9,7.0],["2020-12-31",8.8,7.0],["2021-12-31",8.5,7.0],["2022-03-31",9.1,7.0],["2023-03-31",null,7.0],["2023-06-30",10.0,7.0],["2023-09-30",8.7,7.0],["2023-12-31",null,7.0],["2024-03-31",null,7.0],["2024-06-30",9.2,7.0],["2024-09-30",7.0,7.0],["2024-12-31",8.0,7.0],["2025-03-31",10.0,7.0],["2025-06-30",8.8,7.0],["2025-09-30",8.6,7.0],["2025-12-31",8.4,7.0],["2026-03-31",8.2,7.0],["2026-06-30",null,7.5],["2026-09-30",null,7.5],["2026-12-31",null,7.5],["2027-03-31",null,7.5]],[[27,8.7,6.0],[28,7.9,7.0],[29,8.8,7.0],[30,8.8,7.0],[31,null,7.0],[32,9.35,7.0],[33,8.55,7.0],[34,8.5,7.0],[35,null,7.5]],"Mantener la satisfacción de los Clientes","Encuesta de satisfacción","Trimestral","Comercial - Gerencia General","Mayor contacto con el cliente para ponderar nuestras fortalezas y mejorar nuestras debilidades"],["COME2","Clientes potenciales","Comercial",10.0,"31/03/2026",8.0,1,[["2018-03-18",8.0,6.0],["2018-07-18",10.0,6.0],["2018-11-30",10.0,6.0],["2019-03-31",10.0,6.0],["2019-07-31",8.0,8.0],["2019-11-30",10.0,8.0],["2020-03-31",10.0,8.0],["2020-07-31",10.0,8.0],["2020-11-30",10.0,8.0],["2021-03-31",8.0,8.0],["2021-07-31",9.0,8.0],["2021-11-30",8.0,8.0],["2022-03-31",10.0,8.0],["2022-07-31",10.0,8.0],["2022-11-30",10.0,8.0],["2023-03-31",10.0,8.0],["2023-07-31",10.0,8.0],["2023-11-30",10.0,8.0],["2024-03-31",10.0,8.0],["2024-07-31",10.0,8.0],["2024-11-30",10.0,8.0],["2025-03-31",10.0,8.0],["2025-07-31",10.0,8.0],["2025-11-30",10.0,8.0],["2026-03-31",10.0,8.0],["2026-07-31",null,8.0],["2026-11-30",null,8.0],["2027-03-31",null,8.0],["2027-07-31",null,8.0]],[[26,8.0,6.0],[27,10.0,6.0],[28,9.33,8.0],[29,9.33,8.0],[30,9.0,8.0],[31,10.0,8.0],[32,10.0,8.0],[33,10.0,8.0],[34,10.0,8.0],[35,null,8.0],[36,null,8.0]],"Aumentar cantidad de Clientes Potenciales","Incorporar Datos de nuevos clientes (desde abril 2024 solo nuevos, no repetidos)","Cuatrimestral","Comercial - Gerencia General","Presentación de Empresa y seguimiento a un nuevo cliente por mes"],["COME3","Obras cotizadas vs adjudicadas","Comercial",9.0,"31/05/2026",8.0,1,[["2018-03-31",10.0,8.0],["2018-07-31",8.0,8.0],["2018-11-30",8.0,8.0],["2019-03-31",8.0,8.0],["2019-07-31",8.0,8.0],["2019-11-30",10.0,8.0],["2020-03-31",10.0,8.0],["2020-07-31",9.0,8.0],["2020-11-30",8.0,8.0],["2021-03-31",10.0,8.0],["2021-07-31",5.0,8.0],["2021-11-30",8.0,8.0],["2022-03-31",8.0,8.0],["2022-07-31",8.0,7.5],["2022-11-30",9.0,7.5],["2023-03-31",10.0,7.5],["2023-07-31",10.0,8.0],["2023-11-30",10.0,8.0],["2024-03-31",9.0,8.0],["2024-07-31",8.0,8.0],["2024-11-30",8.0,8.0],["2025-03-31",8.0,8.0],["2025-05-31",9.0,8.0],["2025-07-31",8.0,8.0],["2025-09-30",7.0,8.0],["2025-11-30",9.0,8.0],["2026-01-31",9.0,8.0],["2026-03-31",10.0,8.0],["2026-05-31",9.0,8.0],["2026-07-31",null,8.0],["2026-09-30",null,8.0],["2026-11-30",null,8.0],["2027-01-31",null,8.0],["2027-03-31",null,8.0]],[[26,10.0,8.0],[27,8.0,8.0],[28,9.33,8.0],[29,9.0,8.0],[30,7.0,8.0],[31,9.0,7.5],[32,9.67,8.0],[33,8.0,8.0],[34,8.67,8.0],[35,9.0,8.0]],"Mantener buena relación Obras cotizadas/adjudicadas","Estudio del cliente y posibilidades de  contratación antes de la cotización (desde abril 2024 solo obras o contratos sin adicionales)","Bimestral","Comercial - Gerencia General","estudio de pl de seguim de clientes"],["COME5","Proyectos de impacto positivo","Comercial",5.0,"31/03/2026",6.0,0,[["2024-09-30",5.0,6.0],["2025-03-31",6.0,6.0],["2025-09-30",7.0,6.0],["2026-03-31",5.0,6.0]],[[33,5.5,6.0],[34,6.0,6.0]],"Evaluar la cantidad de obras y proyectos adjudicados con enfoque sostenible","Indicador proyectos sostenibles [%] ≃ obras y proyectos adjudicados con enfoque sostenible / total de obras y proyectos adjudicados * 100","Semestral","Ingeniería","Cantidad de horas insumidas en buscar,presupuestar, analizar este tipo de proyectos (ver de armar un centro de cómputos aparte por obra). Analizar la línea de base del primer ejercicio con este indicador."],["INGE1","Estandarización de presentación","Ingeniería",7.81,"24/03/2026",8.0,0,[["2018-03-18",10.0,6.0],["2018-06-18",10.0,6.0],["2018-09-30",10.0,6.0],["2018-12-18",10.0,6.0],["2019-03-19",9.0,6.0],["2019-06-19",10.0,8.0],["2019-09-30",8.4,8.0],["2019-12-19",10.0,8.0],["2020-03-20",9.0,8.0],["2020-06-20",null,8.0],["2020-09-30",8.0,8.0],["2020-12-20",9.67,8.0],["2021-03-21",8.0,8.0],["2021-06-21",6.65,8.0],["2021-09-30",7.96,8.0],["2021-12-21",7.71,8.0],["2022-03-22",null,8.0],["2022-06-22",8.01,8.0],["2022-09-30",8.8,8.0],["2022-12-22",null,8.0],["2023-03-23",8.6,8.0],["2023-06-23",8.69,8.0],["2023-09-30",8.63,8.0],["2023-12-23",8.54,8.0],["2024-03-24",8.29,8.0],["2024-06-24",null,8.0],["2024-09-30",8.8,8.0],["2024-12-24",8.54,8.0],["2025-03-25",7.6,8.0],["2025-06-24",8.17,8.0],["2025-09-23",8.0,8.0],["2025-12-23",8.0,8.0],["2026-03-24",7.81,8.0]],[[26,10.0,6.0],[27,9.75,6.0],[28,9.35,8.0],[29,8.56,8.0],[30,7.44,8.0],[31,8.47,8.0],[32,8.54,8.0],[33,8.31,8.0],[34,8.0,8.0]],"Mantener estándares de Presentación y procesos/métodos","Por comparación con anterior","Trimestral","Ingeniería","Evaluar competencia, proponer cambios o mejoras. Verificación continua y estandarización de formatos"],["INGE3","Mejora de proyectos","Ingeniería",10.0,"31/03/2026",6.0,1,[["2024-09-30",5.0,6.0],["2025-03-31",10.0,6.0],["2025-09-30",9.0,6.0],["2026-03-31",10.0,6.0]],[[33,7.5,6.0],[34,9.5,6.0]],"Analizar la cantidad de propuestas de mejora con impacto positivo en proyectos de ingeniería/obras convencionales","Cantidad de propuestas de mejoras en proyectos u obras en los que participamos / Cantidad de proyectos u obras no sostenibles en los que participamos * 100","Semestral","Ingeniería","Proponer al cliente mejoras sostenibles. Analizar la línea de base del primer ejercicio con este indicador."],["COMP1","Evaluación de proveedores","Compras",7.33,"31/3/26",7.5,1,[["2018-09-30",7.29,7.0],["2019-03-31",7.12,7.0],["2019-09-30",7.31,7.0],["2020-03-31",7.29,7.0],["2020-09-30",7.49,7.0],["2021-03-31",7.82,7.0],["2021-09-30",7.93,7.0],["2022-03-31",8.01,7.0],["2022-09-30",7.78,7.0],["2023-03-31",7.71,7.0],["2023-09-30",7.7,7.0],["2024-03-31",7.59,7.0],["2024-09-30",7.44,7.0],["2025-03-31",7.55,7.0],["2025-09-30",7.44,7.0],["2026-03-31",7.33,7.0],["2026-09-30",null,7.5]],[[27,7.21,7.0],[28,7.3,7.0],[29,7.66,7.0],[30,7.97,7.0],[31,7.75,7.0],[32,7.64,7.0],[33,7.5,7.0],[34,7.38,7.0],[35,null,7.5]],"Mantener calidad y cantidad de Proveedores","Evaluación del proveedor","Semestral","Compras","Ver estructura - eficiencia - crédito - cumplimento - stock"],["COMP2","Evaluación de materiales de obras","Compras",10.0,"31/3/26",8.0,1,[["2018-03-31",6.89,6.0],["2018-06-30",9.5,6.0],["2018-09-30",10.0,6.0],["2018-12-31",9.25,6.0],["2019-03-31",9.14,6.0],["2019-06-30",10.0,7.0],["2019-09-30",8.0,7.0],["2019-12-31",10.0,7.0],["2020-03-31",6.0,7.0],["2020-06-30",8.0,7.0],["2020-09-30",6.0,7.0],["2020-12-31",8.0,7.0],["2021-03-31",10.0,7.0],["2021-06-30",6.0,6.0],["2021-09-30",6.0,6.0],["2021-12-31",6.0,6.0],["2022-03-31",9.0,6.0],["2022-06-30",6.0,6.0],["2022-09-30",8.0,6.0],["2022-12-31",8.0,6.0],["2023-03-31",8.0,6.0],["2023-06-30",8.0,7.0],["2023-09-30",8.0,7.0],["2023-12-31",8.0,7.0],["2024-03-31",9.0,7.0],["2024-06-30",8.0,8.0],["2024-09-30",10.0,8.0],["2024-12-31",10.0,8.0],["2025-03-31",10.0,8.0],["2025-06-30",8.0,8.0],["2025-09-30",8.0,8.0],["2025-12-31",8.0,8.0],["2026-03-31",10.0,8.0],["2026-06-30",null,8.0],["2026-09-30",null,8.0],["2026-12-31",null,8.0],["2027-03-31",null,8.0]],[[26,6.89,6.0],[27,9.47,6.0],[28,8.5,7.0],[29,8.0,7.0],[30,6.75,6.0],[31,7.5,6.0],[32,8.25,7.0],[33,9.5,8.0],[34,8.5,8.0],[35,null,8.0]],"Mantener capacidad de negociación con Proveedores","Evaluación del costo de elemento representativo entre compra efectiva y precio de cotización","Trimestral","Compras","Mejorar resultados de compras"],["ARMTAB1","SOL armado de tableros","Producción",8.58,"31/03/2026",8.5,1,[["2018-06-30",6.67,6.0],["2018-09-30",7.07,6.0],["2018-12-31",7.24,6.0],["2019-03-31",7.24,6.0],["2019-06-30",7.49,7.0],["2019-09-30",7.62,7.0],["2019-12-31",7.89,7.0],["2020-03-31",7.72,7.0],["2020-06-30",8.0,8.0],["2020-09-30",8.11,8.0],["2020-12-31",7.93,8.0],["2021-03-31",7.79,8.0],["2021-06-30",7.81,8.0],["2021-09-30",7.11,8.0],["2021-12-31",7.93,8.0],["2022-03-31",8.11,8.0],["2022-06-30",8.11,8.0],["2022-09-30",8.24,8.0],["2022-12-31",8.38,8.0],["2023-03-31",8.04,8.0],["2023-06-30",8.31,8.0],["2023-09-30",8.76,8.0],["2023-12-31",9.07,8.0],["2024-03-31",8.44,8.0],["2024-06-30",8.49,8.0],["2024-09-30",9.24,8.0],["2024-12-31",8.27,8.0],["2025-03-31",8.31,8.0],["2025-06-30",8.06,8.0],["2025-09-30",9.42,8.0],["2025-12-31",9.49,8.0],["2026-03-31",8.58,8.0],["2026-06-30",null,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[27,7.05,6.0],[28,7.68,7.0],[29,7.96,8.0],[30,7.74,8.0],[31,8.19,8.0],[32,8.64,8.0],[33,8.58,8.0],[34,8.89,8.0],[35,null,8.5]],"Mejorar el orden y la limpieza de los sectores y gestión de los residuos.","Inspección visual","Trimestral","Producción","Disponer espacios adecuados, clasificando y aseando. Separar residuos adecuadamente, disponerlos correctamente y gestionarlos según normas"],["ARMTAB3","Estandarización armado de tableros","Producción",9.0,"31/03/2026",8.5,1,[["2018-09-30",7.0,5.0],["2019-03-31",8.0,5.0],["2019-09-30",7.6,7.0],["2020-03-31",8.8,7.0],["2020-09-30",10.0,8.0],["2021-03-31",9.0,8.0],["2021-09-30",9.33,8.0],["2022-03-31",10.0,8.0],["2022-06-30",10.0,8.0],["2022-09-30",9.33,8.0],["2022-12-31",9.2,8.0],["2023-03-31",9.0,8.0],["2023-06-30",10.0,8.0],["2023-09-30",9.0,8.0],["2023-12-31",10.0,8.0],["2024-03-31",10.0,8.0],["2024-06-30",10.0,8.0],["2024-09-30",10.0,8.0],["2024-12-31",10.0,8.0],["2025-03-31",10.0,8.0],["2025-06-30",9.0,8.0],["2025-09-30",10.0,8.0],["2025-12-31",10.0,8.0],["2026-03-31",9.0,8.0],["2026-06-30",null,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[27,7.5,5.0],[28,8.2,7.0],[29,9.5,8.0],[30,9.66,8.0],[31,9.38,8.0],[32,9.75,8.0],[33,10.0,8.0],[34,9.5,8.0],[35,null,8.5]],"Mantener la estandarización en la fabricación","Desarrollo de manual","Trimestral","Producción","Instructivos de producción de tableros con formas de hacer las tareas"],["OBRA1","SOL en obra","Obra",8.66,"31/03/2026",8.5,1,[["2018-03-31",5.81,4.0],["2018-06-30",5.84,4.0],["2018-09-30",5.86,4.0],["2018-12-31",6.34,4.0],["2019-03-31",7.71,4.0],["2019-06-30",7.68,6.0],["2019-09-30",7.81,6.0],["2019-12-31",7.8,6.0],["2020-03-31",8.0,6.0],["2020-06-30",8.3,7.0],["2020-09-30",8.37,7.0],["2020-12-31",8.28,7.0],["2021-03-31",8.49,7.0],["2021-06-30",8.52,8.0],["2021-09-30",8.29,8.0],["2021-12-31",8.08,8.0],["2022-03-31",8.19,8.0],["2022-06-30",9.0,8.0],["2022-09-30",8.76,8.0],["2022-12-31",8.43,8.0],["2023-03-31",8.34,8.0],["2023-06-30",8.35,8.0],["2023-09-30",8.1,8.0],["2023-12-31",8.13,8.0],["2024-03-31",8.22,8.0],["2024-06-30",8.77,8.0],["2024-09-30",8.93,8.0],["2024-12-31",8.31,8.0],["2025-03-31",7.96,8.0],["2025-06-30",8.06,8.0],["2025-09-30",8.19,8.0],["2025-12-31",8.67,8.0],["2026-03-31",8.66,8.0],["2026-06-30",null,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[26,5.81,4.0],[27,6.44,4.0],[28,7.82,6.0],[29,8.36,7.0],[30,8.27,8.0],[31,8.63,8.0],[32,8.2,8.0],[33,8.49,8.0],[34,8.39,8.0],[35,null,8.5]],"Mejorar Orden, limpieza y gestión de residuos en obra","Control visual","Trimestral","Obra","disponer de los elementos y capacitar en el uso"],["OBRA3","Estandarización de obras","Obra",8.86,"31/03/2026",8.5,1,[["2018-09-30",6.0,5.0],["2019-03-31",7.5,5.0],["2019-09-30",7.14,6.0],["2020-03-31",7.56,6.0],["2020-09-30",8.67,7.0],["2021-03-31",7.71,7.0],["2021-09-30",8.0,8.0],["2022-03-31",8.0,8.0],["2022-09-30",9.0,8.0],["2023-03-31",8.29,8.0],["2023-06-30",8.8,8.0],["2023-09-30",8.4,8.0],["2023-12-31",7.71,8.0],["2024-03-31",8.0,8.0],["2024-06-30",8.33,8.0],["2024-09-30",8.0,8.0],["2024-12-31",8.5,8.0],["2025-03-31",8.0,8.0],["2025-06-30",8.29,8.0],["2025-09-30",8.5,8.0],["2025-12-31",8.75,8.0],["2026-03-31",8.86,8.0],["2026-06-30",null,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[27,6.75,5.0],[28,7.35,6.0],[29,8.19,7.0],[30,8.0,8.0],[31,8.64,8.0],[32,8.23,8.0],[33,8.21,8.0],[34,8.6,8.0],[35,null,8.5]],"Mejorar la estandarización y calidad en el montaje","Desarrollo de manual","Trimestral","Obra","instructivos de Montaje de obras eléctricas con formas de hacer las tareas"],["OBRA4","Cumplimiento de plazo de obra","Obra",10.0,"31/03/2026",10.0,1,[["2019-09-30",6.0,6.0],["2019-12-31",null,6.0],["2020-03-31",6.0,6.0],["2020-06-30",null,7.0],["2020-09-30",null,7.0],["2020-12-31",8.0,7.0],["2021-03-31",10.0,7.0],["2021-06-30",10.0,6.0],["2021-09-30",10.0,6.0],["2021-12-31",10.0,6.0],["2022-03-31",10.0,6.0],["2022-06-30",10.0,10.0],["2022-09-30",10.0,10.0],["2022-12-31",10.0,10.0],["2023-03-31",10.0,10.0],["2023-06-30",10.0,10.0],["2023-09-30",null,10.0],["2023-12-31",10.0,10.0],["2024-03-31",10.0,10.0],["2024-06-30",10.0,10.0],["2024-09-30",10.0,10.0],["2024-12-31",10.0,10.0],["2025-03-31",10.0,10.0],["2025-06-30",6.0,10.0],["2025-09-30",10.0,10.0],["2025-12-31",10.0,10.0],["2026-03-31",10.0,10.0],["2026-06-30",null,10.0],["2026-09-30",null,10.0],["2026-12-31",null,10.0],["2027-03-31",null,10.0]],[[28,6.0,6.0],[29,9.0,7.0],[30,10.0,6.0],[31,10.0,10.0],[32,10.0,10.0],[33,10.0,10.0],[34,9.0,10.0],[35,null,10.0]],"Control de cumplimiento de Plazos","Control de fechas de entrega","Trimestral","Obra","Seguimiento de cronogras y actualziacion permanente"],["RRHH1","Comunicación y trabajo en equipo","RRHH",8.0,"31/03/2026",8.0,1,[["2018-11-30",5.3,4.0],["2019-07-31",6.0,6.0],["2020-03-31",5.41,6.0],["2020-06-30",5.91,6.0],["2020-09-30",6.02,6.0],["2020-12-31",5.39,6.0],["2021-03-31",6.48,6.0],["2021-06-30",7.15,6.0],["2021-09-30",6.5,6.0],["2021-12-31",7.35,6.0],["2022-03-31",6.28,6.0],["2022-06-30",6.93,7.0],["2022-09-30",6.64,7.0],["2022-12-31",6.75,7.0],["2023-03-31",6.7,7.0],["2023-06-30",7.94,7.0],["2024-06-30",7.02,7.0],["2025-03-31",7.2,8.0],["2026-03-31",8.0,8.0],["2027-03-31",null,8.0]],[[27,5.3,4.0],[28,5.71,6.0],[29,5.95,6.0],[30,6.82,6.0],[31,6.75,7.0],[32,7.94,7.0],[33,7.11,8.0],[34,8.0,8.0],[35,null,8.0]],"Crear y mantener un buen clima laboral","Encuesta","Anual","RRHH","Evaluar los resultados de la encuesta y proponer acciones de mejora en cada área e inter-áreas para favorecer un buen clima laboral en Esinel"],["RRHH2","Ausentismo e impuntualidad","RRHH",8.0,"31/03/2026",8.0,1,[["2018-04-30",8.0,5.0],["2018-05-30",8.0,5.0],["2018-06-30",8.0,5.0],["2018-07-30",4.0,5.0],["2018-08-30",8.0,5.0],["2018-09-30",6.0,5.0],["2018-10-30",8.0,5.0],["2018-11-30",8.0,5.0],["2018-12-30",6.0,5.0],["2019-01-30",8.0,5.0],["2019-02-28",6.0,5.0],["2019-03-30",6.0,5.0],["2019-04-30",6.0,6.0],["2019-05-30",8.0,6.0],["2019-06-30",6.0,6.0],["2019-07-30",6.0,6.0],["2019-08-30",6.0,6.0],["2019-09-30",8.0,6.0],["2019-10-30",6.0,6.0],["2019-11-30",8.0,6.0],["2019-12-30",6.0,6.0],["2020-01-30",6.0,6.0],["2020-02-29",6.0,6.0],["2020-03-30",8.0,6.0],["2020-04-30",null,6.0],["2020-05-30",null,6.0],["2020-06-30",8.0,6.0],["2020-07-30",6.0,6.0],["2020-08-30",6.0,6.0],["2020-09-30",6.0,6.0],["2020-10-30",6.0,6.0],["2020-11-30",6.0,6.0],["2020-12-30",6.0,6.0],["2021-01-30",6.0,6.0],["2021-02-28",8.0,6.0],["2021-03-30",8.0,6.0],["2021-04-30",8.0,6.0],["2021-05-30",6.0,6.0],["2021-06-30",6.0,6.0],["2021-07-30",6.0,6.0],["2021-08-30",8.0,6.0],["2021-09-30",8.0,6.0],["2021-10-30",4.0,6.0],["2021-11-30",6.0,6.0],["2021-12-30",8.0,6.0],["2022-01-30",6.0,6.0],["2022-02-28",8.0,6.0],["2022-03-30",8.0,6.0],["2022-04-30",6.0,8.0],["2022-05-30",8.0,8.0],["2022-06-30",8.0,8.0],["2022-07-30",8.0,8.0],["2022-08-30",8.0,8.0],["2022-09-30",8.0,8.0],["2022-10-30",8.0,8.0],["2022-11-30",8.0,8.0],["2022-12-30",8.0,8.0],["2023-01-30",8.0,8.0],["2023-02-28",6.0,8.0],["2023-03-30",8.0,8.0],["2023-04-30",8.0,8.0],["2023-05-30",8.0,8.0],["2023-06-30",8.0,8.0],["2023-07-30",8.0,8.0],["2023-08-30",6.0,8.0],["2023-09-30",8.0,8.0],["2023-10-30",8.0,8.0],["2023-11-30",8.0,8.0],["2023-12-30",8.0,8.0],["2024-01-30",8.0,8.0],["2024-02-29",8.0,8.0],["2024-03-30",8.0,8.0],["2024-06-30",8.0,8.0],["2024-09-30",8.0,8.0],["2024-12-31",8.0,8.0],["2025-03-31",8.0,8.0],["2025-06-30",8.0,8.0],["2025-09-30",6.0,8.0],["2025-12-31",8.0,8.0],["2026-03-31",8.0,8.0],["2026-06-30",null,8.0],["2026-09-30",null,8.0],["2026-12-31",null,8.0],["2027-03-31",null,8.0]],[[27,7.0,5.0],[28,6.67,6.0],[29,6.6,6.0],[30,6.83,6.0],[31,7.67,8.0],[32,7.83,8.0],[33,8.0,8.0],[34,7.5,8.0],[35,null,8.0]],"Mantener bajas las inasistencias","Control de ausentismo por sistema","Trimestral","RRHH","incentivar con premios o desanimar con castigos. Concientizar al personal que sufrió ausentismos."],["RRHH3","Capacitación","RRHH",6.0,"30/03/2026",8.0,0,[["2018-06-30",2.0,5.0],["2018-09-30",6.0,5.0],["2018-12-30",6.0,5.0],["2019-03-30",2.0,5.0],["2019-06-30",4.0,6.0],["2019-09-30",6.0,6.0],["2019-12-30",6.0,6.0],["2020-03-30",6.0,6.0],["2020-06-30",8.0,6.0],["2020-09-30",6.0,6.0],["2020-12-30",6.0,6.0],["2021-03-30",2.0,6.0],["2021-06-30",6.0,6.0],["2021-09-30",6.0,6.0],["2021-12-30",6.0,6.0],["2022-01-30",2.0,6.0],["2022-02-28",6.0,6.0],["2022-03-30",8.0,6.0],["2022-04-30",8.0,8.0],["2022-05-30",6.0,8.0],["2022-06-30",10.0,8.0],["2022-07-30",10.0,8.0],["2022-08-30",8.0,8.0],["2022-09-30",10.0,8.0],["2022-10-30",6.0,8.0],["2022-11-30",8.0,8.0],["2022-12-30",4.0,8.0],["2023-01-30",8.0,8.0],["2023-02-28",6.0,8.0],["2023-03-30",6.0,8.0],["2023-04-30",8.0,8.0],["2023-05-30",10.0,8.0],["2023-06-30",10.0,8.0],["2023-07-30",8.0,8.0],["2023-08-30",10.0,8.0],["2023-09-30",8.0,8.0],["2023-10-30",8.0,8.0],["2023-11-30",6.0,8.0],["2023-12-30",8.0,8.0],["2024-01-30",8.0,8.0],["2024-02-29",10.0,8.0],["2024-03-30",8.0,8.0],["2024-06-30",8.67,8.0],["2024-09-30",8.0,8.0],["2024-12-30",8.0,8.0],["2025-03-30",8.0,8.0],["2025-06-30",8.0,8.0],["2025-09-30",8.0,8.0],["2025-12-30",6.0,8.0],["2026-03-30",6.0,8.0],["2026-06-30",null,8.0],["2026-09-30",null,8.0],["2026-12-30",null,8.0],["2027-03-30",null,8.0]],[[27,4.0,5.0],[28,5.5,6.0],[29,5.5,6.0],[30,5.67,6.0],[31,7.5,8.0],[32,8.5,8.0],[33,8.17,8.0],[34,7.0,8.0],[35,null,8.0]],"Planificar y dar seguimiento de un plan anual de formación continuo en todo el personal","Planilla de registro de capacitaciones","Trimestral","RRHH","Control y monitoreo de cumplimiento del plan. Seguimiento con el personal de forma individual y con responsables de áreas para su cumplimiento. Propuesta de capacitaciones en temas que sean necesarios."],["RRHH4","Accidentes laborales","RRHH",3.0,"30/03/2026",8.0,0,[["2018-06-30",8.0,5.0],["2018-09-30",6.0,5.0],["2018-12-30",10.0,5.0],["2019-03-30",6.0,5.0],["2019-06-30",6.0,6.0],["2019-09-30",6.0,6.0],["2019-12-30",4.0,6.0],["2020-03-30",6.0,6.0],["2020-06-30",10.0,6.0],["2020-09-30",8.0,6.0],["2020-12-30",8.0,6.0],["2021-03-30",8.0,6.0],["2021-06-30",8.0,6.0],["2021-09-30",8.0,6.0],["2021-12-30",8.0,6.0],["2022-03-30",8.0,6.0],["2022-06-30",8.0,8.0],["2022-09-30",6.0,8.0],["2022-12-30",6.0,8.0],["2023-03-30",8.0,8.0],["2023-06-30",10.0,8.0],["2023-09-30",6.0,8.0],["2023-12-30",6.0,8.0],["2024-03-30",10.0,8.0],["2024-06-30",6.0,8.0],["2024-09-30",8.0,8.0],["2024-12-30",8.0,8.0],["2025-03-30",8.0,8.0],["2025-06-30",8.0,8.0],["2025-09-30",9.0,8.0],["2025-12-30",9.0,8.0],["2026-03-30",3.0,8.0],["2026-06-30",null,8.0],["2026-09-30",null,8.0],["2026-12-30",null,8.0],["2027-03-30",null,8.0]],[[27,7.5,5.0],[28,5.5,6.0],[29,8.5,6.0],[30,8.0,6.0],[31,7.0,8.0],[32,8.0,8.0],[33,7.5,8.0],[34,7.25,8.0],[35,null,8.0]],"Mantener bajo el índice de accidentes laborales","Planilla de registro de accidentes y seguimiento con área de HyS","Trimestral","RRHH / HyS","Mayor frecuencia del instructor en capacitación. Desarrollo de protocolo de chequeo de HyS y su debido cumplimiento OBLIGATORIO en todos los casos. Aumentar la concientización sobre al EPP y cuidados en el ambiente de trabajo de forma preventiva."],["RRHH5","Seguimiento personal juvenil","RRHH",10.0,"30/03/2026",8.0,1,[["2025-03-30",10.0,8.0],["2026-03-30",10.0,8.0],["2027-03-30",null,8.0]],[[33,10.0,8.0],[34,10.0,8.0],[35,null,8.0]],null,null,null,null,null],["RRHH6","Nuevos ingresos efectivos","RRHH",6.0,"30/03/2026",6.0,1,[["2024-09-30",6.5,6.0],["2025-03-30",6.5,6.0],["2025-09-30",8.23,6.0],["2026-03-30",6.0,6.0],["2026-09-30",null,6.0],["2027-03-30",null,6.0]],[[33,6.5,6.0],[34,7.12,6.0],[35,null,6.0]],"Fomentar las alianzas para la empleabilidad (pasantías y prácticas)","Medir el porcentaje de nuevos ingresos efectivos en la empresa a través de estos programas.","Semestral","RRHH","Generación de una base con información institucional y mantenerla actualizada"],["AMB1","Reducción de residuos","Medio Ambiente",9.0,"30/03/2026",7.0,1,[["2018-12-30",8.0,5.0],["2019-03-30",2.0,5.0],["2019-06-30",6.0,6.0],["2019-09-30",6.0,6.0],["2019-12-30",8.0,6.0],["2020-03-30",6.0,6.0],["2020-06-30",8.0,6.0],["2020-09-30",8.0,6.0],["2020-12-30",8.0,6.0],["2021-03-30",6.0,6.0],["2021-06-30",6.0,6.0],["2021-09-30",6.0,6.0],["2021-12-30",6.0,6.0],["2022-03-30",8.0,6.0],["2022-06-30",8.0,6.0],["2022-09-30",6.0,6.0],["2022-12-30",8.0,6.0],["2023-03-30",8.0,6.0],["2023-06-30",8.0,7.0],["2023-09-30",9.0,7.0],["2023-12-30",8.0,7.0],["2024-03-30",8.0,7.0],["2024-06-30",9.0,7.0],["2024-09-30",9.0,7.0],["2024-12-30",9.0,7.0],["2025-03-30",9.0,7.0],["2025-06-30",9.0,7.0],["2025-09-30",9.0,7.0],["2025-12-30",9.0,7.0],["2026-03-30",9.0,7.0],["2026-06-30",null,7.0],["2026-09-30",null,7.0],["2026-12-30",null,7.0],["2027-03-30",null,7.0]],[[27,5.0,5.0],[28,6.5,6.0],[29,7.5,6.0],[30,6.5,6.0],[31,7.5,6.0],[32,8.25,7.0],[33,9.0,7.0],[34,9.0,7.0],[35,null,7.0]],"Mantener baja cantidad de residuos emitidos (basura orgánica, basura reciclable, residuos peligrosos y pilas)","Medición de kg de basura // Relación con porcentaje de horas trabajadas (cuáles son las horas que se toman?)","Trimestral","Producción y HyS","Concientizar al personal y buscar métodos de eficientizar la reducción. Buscar la información clara de dispisición final de reisudos."],["AMB2","Reducción de consumos","Medio Ambiente",8.9,"30/03/2026",8.0,1,[["2018-06-30",6.5,5.0],["2018-09-30",5.4,5.0],["2018-12-30",10.0,5.0],["2019-03-30",10.0,5.0],["2019-06-30",7.8,6.0],["2019-09-30",6.3,6.0],["2019-12-30",10.0,6.0],["2020-03-30",8.9,6.0],["2020-06-30",10.0,6.0],["2020-09-30",10.0,6.0],["2020-12-30",10.0,6.0],["2021-03-30",10.0,6.0],["2021-06-30",10.0,6.0],["2021-09-30",8.9,6.0],["2021-12-30",10.0,6.0],["2022-03-30",9.5,6.0],["2022-06-30",10.0,8.0],["2022-09-30",8.1,8.0],["2022-12-30",8.1,8.0],["2023-03-30",7.4,8.0],["2023-06-30",7.4,8.0],["2023-09-30",7.8,8.0],["2023-12-30",8.9,8.0],["2024-03-30",8.5,8.0],["2024-06-30",7.8,8.0],["2024-09-30",7.8,8.0],["2024-12-30",8.4,8.0],["2025-03-30",8.4,8.0],["2025-06-30",7.95,8.0],["2025-09-30",8.61,8.0],["2025-12-30",8.59,8.0],["2026-03-30",8.9,8.0],["2026-06-30",null,8.0],["2026-09-30",null,8.0],["2026-12-30",null,8.0],["2027-03-30",null,8.0]],[[27,7.97,5.0],[28,8.25,6.0],[29,10.0,6.0],[30,9.6,6.0],[31,8.4,8.0],[32,8.15,8.0],[33,8.1,8.0],[34,8.51,8.0],[35,null,8.0]],"Comparar trimestralmente con el año anterior la baja de consumos (energía eléctrica, papel, gas y agua) para el desarrollo de las actividades de oficina (Remedios - Santo Tomé - Mosconi)","Medición de KWs mensuales en la factura de suministro eléctrico + consumo de papel + medición de mts3 de gas + medición de litros/mts2","Trimestral","Administración","Concientizar al personal y buscar métodos de eficientizar la reducción. Posible instalación de paneles solares en ambas sedes."],["AMB4","Huella de carbono","Medio Ambiente",6.0,"30/03/2026",6.0,1,[["2024-03-30",7.0,6.0],["2025-03-30",2.0,6.0],["2026-03-30",6.0,6.0],["2027-03-30",null,6.0]],[[32,7.0,6.0],[33,2.0,6.0],[34,6.0,6.0],[35,null,6.0]],"Lograr una aproximación hacia la carbono neutralidad de Esinel","Medición de Huella de Carbono + acciones de compensación","Anual (con revisiones internas semestrales)","Administración","Buscar la reducción de consumos en los 3 alcances (generación de CO2 propia, generación CO2 de consumo elétrico, generación de CO2 de actividades terceras) de la Huella de Carbono y buscar métodos adicionales de compensación de emisiones (compra de bonos de carbono)"],["SAL2","Chequeo de variables de salud","Seguridad e Higiene",7.0,"30/03/2026",7.0,1,[["2018-10-30",7.82,5.0],["2019-10-30",8.52,7.0],["2020-03-30",8.59,7.0],["2020-09-30",8.24,7.0],["2021-03-30",8.28,7.0],["2021-09-30",8.27,7.0],["2022-03-30",8.27,7.0],["2022-09-30",8.25,8.0],["2023-03-30",8.4,8.0],["2023-09-30",8.48,7.0],["2024-03-30",7.0,7.0],["2025-03-30",6.0,7.0],["2026-03-30",7.0,7.0],["2027-03-30",null,7.0]],[[27,7.82,5.0],[28,8.55,7.0],[29,8.26,7.0],[30,8.27,7.0],[31,8.32,8.0],[32,7.74,7.0],[33,6.0,7.0],[34,7.0,7.0],[35,null,7.0]],"Monitoreo y control del estado de salud general de todo el personal","Encuesta","Anual","RRHH","Revisión y análisis de la encuesta y derivar en sus respectivas acciones de mejora en cada una de las áreas que están siendo evaluadas (Alimentación, Actividad física, Enfermedades y controles médicos, Salud mental)"],["SAL3","Inasistencias por enfermedad","Seguridad e Higiene",8.0,"30/03/2026",8.0,1,[["2021-04-30",2.0,6.0],["2021-05-30",2.0,6.0],["2021-06-30",2.0,6.0],["2021-07-30",2.0,6.0],["2021-08-30",8.0,6.0],["2021-09-30",6.0,6.0],["2021-10-30",4.0,6.0],["2021-11-30",2.0,6.0],["2021-12-30",2.0,6.0],["2022-01-30",2.0,6.0],["2022-02-28",2.0,6.0],["2022-03-30",2.0,6.0],["2022-04-30",10.0,6.0],["2022-05-30",10.0,6.0],["2022-06-30",8.0,6.0],["2022-07-30",6.0,6.0],["2022-08-30",8.0,6.0],["2022-09-30",6.0,6.0],["2022-10-30",8.0,6.0],["2022-11-30",10.0,6.0],["2022-12-30",10.0,6.0],["2023-01-30",10.0,6.0],["2023-02-28",10.0,6.0],["2023-03-30",10.0,6.0],["2023-04-30",10.0,8.0],["2023-05-30",8.0,8.0],["2023-06-30",4.0,8.0],["2023-07-30",10.0,8.0],["2023-08-30",6.0,8.0],["2023-09-30",4.0,8.0],["2023-10-30",4.0,8.0],["2023-11-30",10.0,8.0],["2023-12-30",8.0,8.0],["2024-01-30",8.0,8.0],["2024-02-29",6.0,8.0],["2024-03-30",8.0,8.0],["2024-06-30",6.0,8.0],["2024-09-30",8.0,8.0],["2024-12-30",10.0,8.0],["2025-03-30",10.0,8.0],["2025-06-30",10.0,8.0],["2025-09-30",8.0,8.0],["2025-12-30",10.0,8.0],["2026-03-30",8.0,8.0],["2026-06-30",null,8.0],["2026-09-30",null,8.0],["2026-12-30",null,8.0],["2027-03-30",null,8.0]],[[30,3.0,6.0],[31,8.83,6.0],[32,7.17,8.0],[33,8.5,8.0],[34,9.0,8.0],[35,null,8.0]],"Reducción de la cantidad de horas perdidas por enfermedades inculpables (enfermedades preventivas)","Registro de enfermedades inculpables","Trimestral\n(seguimiento estacional)","RRHH","Campañas de prevención de enfermedades"]]};
+const ITEMS = DATA.d;
+const ST = {1:["Cumple","#166534","#dcfce7","#16a34a"],0:["No cumple","#991b1b","#fee2e2","#dc2626"],"-1":["Sin dato","#475569","#f1f5f9","#cbd5e1"]};
+const GREEN = '#16a34a', RED = '#dc2626', GRAY = '#94a3b8';
+let activeArea = '';
+let chartInst = null;
+
+function setArea(a) {
+  activeArea = a;
+  document.querySelectorAll('.abtn').forEach(b => b.classList.toggle('act', b.dataset.a === a));
+  render();
+}
+
+function spark(ejSeries, color, w, h) {
+  w = w || 120; h = h || 34;
+  const pts = ejSeries.filter(p => p[1] !== null);
+  if (pts.length < 2) return '';
+  const pad = 4;
+  const ys = pts.map(p => p[1]);
+  const ymin = Math.min(...ys) - 0.4, ymax = Math.max(...ys) + 0.4;
+  const n = pts.length;
+  const sx = i => pad + i/(n-1) * (w - 2*pad);
+  const sy = v => h - pad - (v - ymin)/(ymax - ymin || 1) * (h - 2*pad);
+  const d = pts.map((p,i) => (i===0?'M':'L') + sx(i).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join(' ');
+  return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none"><path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="' + sx(n-1) + '" cy="' + sy(ys[ys.length-1]) + '" r="3" fill="' + color + '"/></svg>';
+}
+
+function fmt(v) { return v !== null ? v.toFixed(2).replace('.', ',') : '—'; }
+function fmt1(v) { return v !== null ? v.toFixed(1).replace('.', ',') : '—'; }
+function fdate(iso) { if(!iso) return '—'; const [y,m,d] = iso.split('-'); return d+'/'+m+'/'+y; }
+
+function cardHtml(d) {
+  const code = d[0], name = d[1], val = d[3], lastDate = d[4], obj = d[5], st = d[6], ejSeries = d[8];
+  const stArr = ST[st]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
+  const valTxt = fmt(val);
+  const objTxt = obj !== null ? ('Obj ' + fmt1(obj)) : 'Sin objetivo';
+  const i = ITEMS.indexOf(d);
+  return '<div class="card" style="border-left-color:' + sLine + '" onclick="openModal(' + i + ')">' +
+    '<div class="c-top"><div><div class="c-code">' + code + '</div><div class="c-name">' + name + '</div></div>' +
+    '<span class="pill" style="background:' + sBg + ';color:' + sFg + '">' + sLbl + '</span></div>' +
+    '<div class="c-mid"><span class="c-val" style="color:' + (sLine==='#cbd5e1'?'#94a3b8':'#0f172a') + '">' + valTxt + '</span><span class="c-obj">' + objTxt + ' &middot; ' + fdate(lastDate) + '</span></div>' +
+    spark(ejSeries, sLine) + '</div>';
+}
+
+function render() {
+  const wrap = document.getElementById('sections');
+  const list = ITEMS.filter(d => !activeArea || d[2] === activeArea);
+  if (!list.length) { wrap.innerHTML = '<div class="empty">Sin resultados</div>'; return; }
+  const byArea = {};
+  list.forEach(d => { (byArea[d[2]] = byArea[d[2]] || []).push(d); });
+  const areaOrder = DATA.areas.filter(a => byArea[a]);
+  wrap.innerHTML = areaOrder.map(a => {
+    const items = byArea[a];
+    return '<div class="section"><div class="section-hd"><h2>' + a + '</h2><span class="cnt">' + items.length + ' indicador' + (items.length===1?'':'es') + '</span></div>' +
+      '<div class="grid">' + items.map(cardHtml).join('') + '</div></div>';
+  }).join('');
+}
+
+function openModal(i) {
+  const d = ITEMS[i];
+  const code=d[0], name=d[1], area=d[2], val=d[3], lastDate=d[4], obj=d[5], st=d[6], pts=d[7],
+        objDesc=d[9], metodo=d[10], frecuencia=d[11], resp=d[12], acciones=d[13];
+  const stArr = ST[st]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
+
+  const rows = pts.slice().reverse().map(p => {
+    const [iso, punt, pobj] = p;
+    const cumpleRow = (punt !== null && pobj !== null) ? (punt >= pobj) : null;
+    const badge = cumpleRow === null ? '' : (cumpleRow ? '<span style="color:#16a34a;font-weight:700">&#10003;</span>' : '<span style="color:#dc2626;font-weight:700">&#10007;</span>');
+    return '<tr><td>' + fdate(iso) + '</td><td>' + (pobj !== null ? fmt1(pobj) : '—') + '</td><td style="font-weight:600">' + (punt !== null ? fmt(punt) : '—') + '</td><td>' + badge + '</td></tr>';
+  }).join('');
+
+  let metaHtml = '';
+  if (objDesc) {
+    metaHtml = '<div class="meta-box">' +
+      '<div class="meta-row"><b>Objetivo</b><span>' + objDesc + '</span></div>' +
+      (metodo ? '<div class="meta-row"><b>M&eacute;todo</b><span>' + metodo + '</span></div>' : '') +
+      (frecuencia ? '<div class="meta-row"><b>Frecuencia</b><span>' + frecuencia + '</span></div>' : '') +
+      (resp ? '<div class="meta-row"><b>Responsables</b><span>' + resp + '</span></div>' : '') +
+      (acciones ? '<div class="meta-row"><b>Acciones</b><span>' + acciones + '</span></div>' : '') +
+      '</div>';
+  }
+
+  const modal = document.getElementById('modal');
+  modal.innerHTML = '<div class="modal-top"><div><div class="mcode">' + code + '</div><h2>' + name + '</h2><div class="marea">' + area + '</div></div>' +
+    '<button class="modal-close" onclick="closeModal()" aria-label="Cerrar">&times;</button></div>' +
+    '<div class="c-mid" style="margin-top:4px"><span class="c-val" style="font-size:32px">' + fmt(val) + '</span>' +
+    '<span class="c-obj">' + (obj !== null ? ('Objetivo actual ' + fmt1(obj)) : 'Sin objetivo definido') + ' &middot; &uacute;ltima medici&oacute;n ' + fdate(lastDate) + '</span>' +
+    '<span class="pill" style="background:' + sBg + ';color:' + sFg + ';margin-left:auto">' + sLbl + '</span></div>' +
+    metaHtml +
+    '<div class="legend"><span><span class="sw" style="background:' + GREEN + '"></span>Por encima del objetivo</span><span><span class="sw" style="background:' + RED + '"></span>Por debajo del objetivo</span><span><span class="sw" style="background:#cbd5e1"></span>Objetivo</span></div>' +
+    '<div class="bigchart"><canvas id="bigcanvas" role="img" aria-label="Evolucion historica de ' + name + '"></canvas></div>' +
+    '<div class="hist-wrap"><table class="hist-table"><thead><tr><th>Fecha</th><th>Objetivo</th><th>Puntaje</th><th>Cumple</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  document.getElementById('ov').classList.add('open');
+
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+  const ctx = document.getElementById('bigcanvas');
+  const labels = pts.map(p => fdate(p[0]));
+  const puntajes = pts.map(p => p[1]);
+  const objs = pts.map(p => p[2]);
+  const pointColors = pts.map(p => (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : GRAY);
+
+  chartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Puntaje',
+          data: puntajes,
+          borderColor: GRAY,
+          backgroundColor: 'transparent',
+          fill: false,
+          spanGaps: true,
+          tension: 0.15,
+          pointRadius: 3,
+          pointBackgroundColor: pointColors,
+          pointBorderColor: pointColors,
+          borderWidth: 1.5,
+          segment: {
+            borderColor: (ctx2) => {
+              const i2 = ctx2.p1DataIndex;
+              const p = puntajes[i2], o = objs[i2];
+              if (p === null || o === null) return GRAY;
+              return p >= o ? GREEN : RED;
+            }
+          }
+        },
+        { label: 'Objetivo', data: objs, borderColor: '#cbd5e1', backgroundColor: 'transparent', fill: false, spanGaps: true, borderDash: [5,4], tension: 0, pointRadius: 0, borderWidth: 1.6 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (item) => item.dataset.label + ': ' + (item.raw !== null ? item.raw.toFixed(2).replace('.',',') : 'sin dato') } } },
+      scales: {
+        y: { min: 0, max: 10, ticks: { stepSize: 2 }, grid: { color: '#f1f5f9' } },
+        x: { ticks: { autoSkip: true, maxRotation: 45 }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function closeModal() {
+  document.getElementById('ov').classList.remove('open');
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+render();
+</script>
+</body>
+</html>
