@@ -31,8 +31,9 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .c-name{font-size:13px;color:#0f172a;margin-top:2px;line-height:1.3;font-weight:500}
 .pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap}
 .c-mid{display:flex;align-items:baseline;gap:6px;margin:8px 0 4px;flex-wrap:wrap}
-.c-val{font-size:28px;font-weight:700}
+.c-val{font-size:34px;font-weight:800}
 .c-obj{font-size:11px;color:#94a3b8}
+.c-next{font-size:11px;color:#94a3b8;margin-bottom:6px}
 .spark{display:block;width:100%;height:110px}
 .spark-ej{display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-top:2px;padding:0 2px}
 .spark-wrap{display:flex;gap:4px;margin-top:6px}
@@ -136,15 +137,21 @@ function fdate(iso) { if(!iso) return '—'; const [y,m,d] = iso.split('-'); ret
 function fdateLast(s) { return s || '—'; }
 
 function cardHtml(d) {
-  const code = d[0], name = d[1], val = d[3], lastDate = d[4], obj = d[5], st = d[6], ejSeries = d[8];
-  const stArr = ST[st]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
-  const valTxt = fmt(val);
-  const objTxt = obj !== null ? ('Obj ' + fmt1(obj)) : 'Sin objetivo';
+  const code = d[0], name = d[1], ejSeries = d[8];
+  const lastIdx = ejSeries.map(p => p[1]).reduce((acc, v, i) => v !== null ? i : acc, -1);
+  const lastEj = ejSeries[lastIdx];
+  const nextEj = ejSeries[lastIdx + 1];
+  const compliant = (lastEj[1] !== null && lastEj[2] !== null) ? (lastEj[1] >= lastEj[2] ? 1 : 0) : -1;
+  const stArr = ST[compliant]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
+  const valTxt = fmt(lastEj[1]);
+  const objTxt = lastEj[2] !== null ? ('Obj ' + fmt1(lastEj[2])) : 'Sin objetivo';
+  const nextTxt = (nextEj && nextEj[2] !== null) ? ('Ejercicio ' + nextEj[0] + ' &middot; objetivo propuesto ' + fmt1(nextEj[2])) : '';
   const i = ITEMS.indexOf(d);
   return '<div class="card" style="border-left-color:' + sLine + '" onclick="openModal(' + i + ')">' +
     '<div class="c-top"><div><div class="c-code">' + code + '</div><div class="c-name">' + name + '</div></div>' +
     '<span class="pill" style="background:' + sBg + ';color:' + sFg + '">' + sLbl + '</span></div>' +
-    '<div class="c-mid"><span class="c-val" style="color:' + (sLine==='#cbd5e1'?'#94a3b8':'#0f172a') + '">' + valTxt + '</span><span class="c-obj">' + objTxt + ' &middot; ' + fdateLast(lastDate) + '</span></div>' +
+    '<div class="c-mid"><span class="c-val" style="color:' + (sLine==='#cbd5e1'?'#94a3b8':'#0f172a') + '">' + valTxt + '</span><span class="c-obj">Ejercicio ' + lastEj[0] + ' &middot; ' + objTxt + '</span></div>' +
+    (nextTxt ? '<div class="c-next">' + nextTxt + '</div>' : '') +
     spark(ejSeries, sLine) + '</div>';
 }
 
