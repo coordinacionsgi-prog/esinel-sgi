@@ -136,9 +136,17 @@ function fmt1(v) { return v !== null ? v.toFixed(1).replace('.', ',') : '—'; }
 function fdate(iso) { if(!iso) return '—'; const [y,m,d] = iso.split('-'); return d+'/'+m+'/'+y; }
 function fdateLast(s) { return s || '—'; }
 
+function currentEjercicio() {
+  const now = new Date();
+  const y = now.getFullYear(), mo = now.getMonth() + 1;
+  return mo >= 4 ? y - 1991 : y - 1992;
+}
+
 function cardHtml(d) {
   const code = d[0], name = d[1], ejSeries = d[8];
-  const lastIdx = ejSeries.map(p => p[1]).reduce((acc, v, i) => v !== null ? i : acc, -1);
+  const closedEjNum = currentEjercicio() - 1;
+  let lastIdx = ejSeries.findIndex(p => p[0] === closedEjNum);
+  if (lastIdx === -1) lastIdx = ejSeries.map(p => p[1]).reduce((acc, v, i) => v !== null ? i : acc, -1);
   const lastEj = ejSeries[lastIdx];
   const nextEj = ejSeries[lastIdx + 1];
   const compliant = (lastEj[1] !== null && lastEj[2] !== null) ? (lastEj[1] >= lastEj[2] ? 1 : 0) : -1;
