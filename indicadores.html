@@ -71,10 +71,10 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
   <h1>Indicadores del SGI</h1>
   <div class="sub">Esinel S.R.L. &middot; Promedio por ejercicio (vista general) &middot; hist&oacute;rico completo al detalle</div>
   <div class="stats">
-    <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val">28</div></div>
-    <div class="stat"><div class="stat-lbl">Cumplen</div><div class="stat-val" style="color:#16a34a">20</div></div>
-    <div class="stat"><div class="stat-lbl">No cumplen</div><div class="stat-val" style="color:#dc2626">4</div></div>
-    <div class="stat"><div class="stat-lbl">Sin dato</div><div class="stat-val" style="color:#94a3b8">0</div></div>
+    <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="st-total">&mdash;</div></div>
+    <div class="stat"><div class="stat-lbl">Cumplen</div><div class="stat-val" style="color:#16a34a" id="st-cumplen">&mdash;</div></div>
+    <div class="stat"><div class="stat-lbl">No cumplen</div><div class="stat-val" style="color:#dc2626" id="st-nocumplen">&mdash;</div></div>
+    <div class="stat"><div class="stat-lbl">Sin dato</div><div class="stat-val" style="color:#94a3b8" id="st-sindato">&mdash;</div></div>
   </div>
   <div class="areas" id="areas">
     <button class="abtn act" data-a="" onclick="setArea('')">Todos</button>
@@ -142,14 +142,24 @@ function currentEjercicio() {
   return mo >= 4 ? y - 1991 : y - 1992;
 }
 
-function cardHtml(d) {
-  const code = d[0], name = d[1], ejSeries = d[8];
+function closedEjStatus(ejSeries) {
   const closedEjNum = currentEjercicio() - 1;
   let lastIdx = ejSeries.findIndex(p => p[0] === closedEjNum);
   if (lastIdx === -1) lastIdx = ejSeries.map(p => p[1]).reduce((acc, v, i) => v !== null ? i : acc, -1);
   const lastEj = ejSeries[lastIdx];
   const nextEj = ejSeries[lastIdx + 1];
   const compliant = (lastEj[1] !== null && lastEj[2] !== null) ? (lastEj[1] >= lastEj[2] ? 1 : 0) : -1;
+  return { lastEj, nextEj, compliant };
+}
+
+function naturalCode(code) {
+  const m = code.match(/^([A-Za-z]+)(\d*)$/);
+  return m ? [m[1], parseInt(m[2] || '0', 10)] : [code, 0];
+}
+
+function cardHtml(d) {
+  const code = d[0], name = d[1], ejSeries = d[8];
+  const { lastEj, nextEj, compliant } = closedEjStatus(ejSeries);
   const stArr = ST[compliant]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
   const valTxt = fmt(lastEj[1]);
   const objTxt = lastEj[2] !== null ? ('Obj ' + fmt1(lastEj[2])) : 'Sin objetivo';
@@ -163,12 +173,32 @@ function cardHtml(d) {
     spark(ejSeries, sLine) + '</div>';
 }
 
+function updateStats() {
+  let cumplen = 0, noCumplen = 0, sinDato = 0;
+  ITEMS.forEach(d => {
+    const { compliant } = closedEjStatus(d[8]);
+    if (compliant === 1) cumplen++;
+    else if (compliant === 0) noCumplen++;
+    else sinDato++;
+  });
+  document.getElementById('st-total').textContent = ITEMS.length;
+  document.getElementById('st-cumplen').textContent = cumplen;
+  document.getElementById('st-nocumplen').textContent = noCumplen;
+  document.getElementById('st-sindato').textContent = sinDato;
+}
+
 function render() {
   const wrap = document.getElementById('sections');
   const list = ITEMS.filter(d => !activeArea || d[2] === activeArea);
   if (!list.length) { wrap.innerHTML = '<div class="empty">Sin resultados</div>'; return; }
   const byArea = {};
   list.forEach(d => { (byArea[d[2]] = byArea[d[2]] || []).push(d); });
+  Object.keys(byArea).forEach(a => {
+    byArea[a].sort((x, y) => {
+      const [lx, nx] = naturalCode(x[0]), [ly, ny] = naturalCode(y[0]);
+      return lx === ly ? nx - ny : lx.localeCompare(ly);
+    });
+  });
   const areaOrder = DATA.areas.filter(a => byArea[a]);
   wrap.innerHTML = areaOrder.map(a => {
     const items = byArea[a];
@@ -270,6 +300,7 @@ function closeModal() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+updateStats();
 render();
 </script>
 </body>
