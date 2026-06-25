@@ -135,7 +135,7 @@ function spark(ejSeriesRaw, color, w, h) {
   const vw = n * (bw + gap) - gap + 2*padX;
   const sx = i => padX + i * (bw + gap);
   const sy = v => (h - padBottom) - (v - ymin)/(ymax - ymin || 1) * (h - padTop - padBottom);
-  const fmtCompact = v => (Math.round(v * 10) % 10 === 0) ? String(Math.round(v)) : fmt1(v);
+  const fmtCompact = v => { const f = Math.floor(v * 10) / 10; return (Math.round(f * 10) % 10 === 0) ? String(Math.floor(f)) : fmt1(v); };
 
   const gridVals = [0, 5, 11];
   const grid = gridVals.map(v => {
