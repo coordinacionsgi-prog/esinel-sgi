@@ -204,6 +204,12 @@ function naturalCode(code) {
   return m ? [m[1], parseInt(m[2] || '0', 10)] : [code, 0];
 }
 
+function histAvg(ejSeries) {
+  const vals = ejSeries.map(p => p[1]).filter(v => v !== null);
+  if (!vals.length) return null;
+  return vals.reduce((a,b) => a+b, 0) / vals.length;
+}
+
 function cardHtml(d) {
   const code = d[0], name = d[1], ejSeries = d[8];
   const { lastEj, nextEj, compliant } = closedEjStatus(ejSeries);
@@ -211,12 +217,14 @@ function cardHtml(d) {
   const valTxt = fmt(lastEj[1]);
   const objTxt = lastEj[2] !== null ? ('Obj ' + fmt1(lastEj[2])) : 'Sin objetivo';
   const nextTxt = (nextEj && nextEj[2] !== null) ? ('Ejercicio ' + nextEj[0] + ' &middot; objetivo propuesto ' + fmt1(nextEj[2])) : '';
+  const avg = histAvg(ejSeries);
+  const avgTxt = avg !== null ? ('Promedio hist&oacute;rico ' + fmt1(avg)) : '';
   const i = ITEMS.indexOf(d);
   return '<div class="card" style="border-left-color:' + sLine + '" onclick="openModal(' + i + ')">' +
     '<div class="c-top"><div><div class="c-code">' + code + '</div><div class="c-name">' + name + '</div></div>' +
     '<span class="pill" style="background:' + sBg + ';color:' + sFg + '">' + sLbl + '</span></div>' +
     '<div class="c-mid"><span class="c-val" style="color:' + sLine + '">' + valTxt + '</span><span class="c-obj">Ejercicio ' + lastEj[0] + ' &middot; ' + objTxt + '</span></div>' +
-    (nextTxt ? '<div class="c-next">' + nextTxt + '</div>' : '') +
+    (avgTxt ? '<div class="c-next">' + avgTxt + (nextTxt ? ' &middot; ' + nextTxt : '') + '</div>' : (nextTxt ? '<div class="c-next">' + nextTxt + '</div>' : '')) +
     spark(ejSeries, sLine) + '</div>';
 }
 
