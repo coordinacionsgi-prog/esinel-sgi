@@ -34,14 +34,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .c-val{font-size:34px;font-weight:800}
 .c-obj{font-size:11px;color:#94a3b8}
 .c-next{font-size:11px;color:#94a3b8;margin-bottom:6px}
-.spark{display:block;width:100%;height:128px;overflow:visible}
-.spark-ej{display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-top:2px;padding:0 2px}
+.spark{display:block;width:100%;height:110px;overflow:visible}
 .spark-wrap{display:flex;gap:4px;margin-top:6px}
-.spark-axis{position:relative;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:128px;line-height:1;min-width:16px;text-align:right}
+.spark-axis{position:relative;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:110px;line-height:1;min-width:16px;text-align:right;padding-bottom:13px}
 .spark-axis-obj{position:absolute;left:0;transform:translateY(-50%);font-size:9px;font-weight:700;color:#475569;white-space:nowrap}
 .spark-body{flex:1;min-width:0}
 .spark-chart{position:relative}
-.spark-val{font-size:7.5px;font-weight:700;text-anchor:middle;font-family:-apple-system,sans-serif}
+.spark-val{font-size:7.5px;font-weight:600;text-anchor:middle;font-family:-apple-system,sans-serif}
 .empty{text-align:center;padding:40px;font-size:13px;color:#94a3b8}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
 .ov.open{display:flex}
@@ -103,10 +102,10 @@ function setArea(a) {
 }
 
 function spark(ejSeries, color, w, h) {
-  w = w || 124; h = h || 128;
+  w = w || 124; h = h || 110;
   const pts = ejSeries.filter(p => p[1] !== null);
   if (pts.length < 2) return '';
-  const padTop = 12, padBottom = 3, padX = 2;
+  const padTop = 3, padBottom = 13, padX = 2;
   const objs = pts.map(p => p[2]);
   const ymin = 0, ymax = 10;
   const n = pts.length;
@@ -122,28 +121,27 @@ function spark(ejSeries, color, w, h) {
   }).join('');
   const axisLine = '<line x1="0.5" y1="' + sy(0).toFixed(1) + '" x2="0.5" y2="' + sy(10).toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>';
 
-  const fsize = Math.max(5.5, Math.min(7.5, bw * 0.85)).toFixed(1);
-  const fmtCompact = v => (Math.round(v * 10) % 10 === 0) ? String(Math.round(v)) : fmt1(v);
+  const ejFsize = Math.max(6, Math.min(8, bw * 0.9)).toFixed(1);
   const bars = pts.map((p,i) => {
     const barColor = (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : color;
     const y0 = sy(ymin), y1 = sy(p[1]);
     const x = sx(i);
+    const cx = (x + bw/2).toFixed(1);
     const rect = '<rect x="' + x.toFixed(1) + '" y="' + Math.min(y0,y1).toFixed(1) + '" width="' + Math.max(bw,1).toFixed(1) + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1.5" fill="' + barColor + '"/>';
-    const lbl = '<text x="' + (x + bw/2).toFixed(1) + '" y="' + Math.max(Math.min(y0,y1) - 3, 8).toFixed(1) + '" class="spark-val" style="font-size:' + fsize + 'px" fill="' + barColor + '">' + fmtCompact(p[1]) + '</text>';
-    return rect + lbl;
+    const ejLbl = '<text x="' + cx + '" y="' + (h - 2.5).toFixed(1) + '" class="spark-val" style="font-size:' + ejFsize + 'px" fill="#94a3b8">' + p[0] + '</text>';
+    return rect + ejLbl;
   }).join('');
   const objPts = pts.map((p,i) => p[2] !== null ? (sx(i) + (bw/2)).toFixed(1) + ',' + sy(p[2]).toFixed(1) : null).filter(Boolean);
   const objLine = objPts.length > 1 ? ('<polyline points="' + objPts.join(' ') + '" fill="none" stroke="#475569" stroke-width="1.4" stroke-dasharray="4,3"/>') : '';
   const svg = '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' + grid + axisLine + bars + objLine + '</svg>';
   const lastObj = objs.filter(v => v !== null).slice(-1)[0];
   const objPct = lastObj !== undefined ? (((ymax - lastObj) / (ymax - ymin)) * (h - padTop - padBottom) + padTop) / h * 100 : null;
-  const ejLabels = '<div class="spark-ej">' + pts.map(p => '<span>Ej' + p[0] + '</span>').join('') + '</div>';
   let objAxisLbl = '';
   if (objPct !== null && objPct > 8 && objPct < 92) {
     objAxisLbl = '<span class="spark-axis-obj" style="top:' + objPct.toFixed(1) + '%">Obj ' + fmt1(lastObj) + '</span>';
   }
   const axis = '<div class="spark-axis"><span>10</span><span>5</span><span>0</span></div>' + objAxisLbl;
-  return '<div class="spark-wrap" style="position:relative">' + axis + '<div class="spark-body"><div class="spark-chart">' + svg + '</div>' + ejLabels + '</div></div>';
+  return '<div class="spark-wrap" style="position:relative">' + axis + '<div class="spark-body"><div class="spark-chart">' + svg + '</div></div></div>';
 }
 
 function fmt(v) { return v !== null ? v.toFixed(2).replace('.', ',') : '—'; }
