@@ -23,8 +23,8 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .section-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .section-hd h2{font-size:15px;font-weight:700;color:#0f172a}
 .section-hd .cnt{font-size:12px;color:#94a3b8;background:#f1f5f9;padding:2px 9px;border-radius:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;border-left:4px solid #cbd5e1;cursor:pointer;transition:box-shadow .15s,transform .1s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;border-left:4px solid #cbd5e1;cursor:pointer;transition:box-shadow .15s,transform .1s;max-width:340px}
 .card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);transform:translateY(-1px)}
 .c-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:6px}
 .c-code{font-family:'SF Mono',Consolas,monospace;font-size:11px;font-weight:700;color:#64748b}
@@ -105,42 +105,50 @@ function spark(ejSeries, color, w, h) {
   w = w || 124; h = h || 110;
   const pts = ejSeries.filter(p => p[1] !== null);
   if (pts.length < 2) return '';
-  const padTop = 3, padBottom = 13, padX = 2;
+  const padTop = 3, padBottom = 13, padX = 4;
   const objs = pts.map(p => p[2]);
   const ymin = 0, ymax = 10;
   const n = pts.length;
-  const gap = 3;
-  const bw = (w - 2*padX) / n - gap;
-  const sx = i => padX + i * (w - 2*padX) / n;
+  const bw = 9, gap = 4;
+  const contentW = n * (bw + gap) - gap + 2*padX;
+  const vw = Math.max(contentW, w);
+  const sx = i => padX + i * (bw + gap);
   const sy = v => (h - padBottom) - (v - ymin)/(ymax - ymin || 1) * (h - padTop - padBottom);
 
   const gridVals = [0, 5, 10];
   const grid = gridVals.map(v => {
     const y = sy(v).toFixed(1);
-    return '<line x1="0" y1="' + y + '" x2="' + w + '" y2="' + y + '" stroke="#eef1f5" stroke-width="1"/>';
+    return '<line x1="0" y1="' + y + '" x2="' + vw + '" y2="' + y + '" stroke="#eef1f5" stroke-width="1"/>';
   }).join('');
   const axisLine = '<line x1="0.5" y1="' + sy(0).toFixed(1) + '" x2="0.5" y2="' + sy(10).toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>';
 
-  const ejFsize = Math.max(6, Math.min(8, bw * 0.9)).toFixed(1);
   const bars = pts.map((p,i) => {
     const barColor = (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : color;
     const y0 = sy(ymin), y1 = sy(p[1]);
     const x = sx(i);
     const cx = (x + bw/2).toFixed(1);
-    const rect = '<rect x="' + x.toFixed(1) + '" y="' + Math.min(y0,y1).toFixed(1) + '" width="' + Math.max(bw,1).toFixed(1) + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1.5" fill="' + barColor + '"/>';
-    const ejLbl = '<text x="' + cx + '" y="' + (h - 2.5).toFixed(1) + '" class="spark-val" style="font-size:' + ejFsize + 'px" fill="#94a3b8">' + p[0] + '</text>';
+    const rect = '<rect x="' + x.toFixed(1) + '" y="' + Math.min(y0,y1).toFixed(1) + '" width="' + bw + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1.5" fill="' + barColor + '"/>';
+    const ejLbl = '<text x="' + cx + '" y="' + (h - 2.5).toFixed(1) + '" class="spark-val" fill="#94a3b8">' + p[0] + '</text>';
     return rect + ejLbl;
   }).join('');
   const objPts = pts.map((p,i) => p[2] !== null ? (sx(i) + (bw/2)).toFixed(1) + ',' + sy(p[2]).toFixed(1) : null).filter(Boolean);
   const objLine = objPts.length > 1 ? ('<polyline points="' + objPts.join(' ') + '" fill="none" stroke="#475569" stroke-width="1.4" stroke-dasharray="4,3"/>') : '';
-  const svg = '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' + grid + axisLine + bars + objLine + '</svg>';
-  const lastObj = objs.filter(v => v !== null).slice(-1)[0];
-  const objPct = lastObj !== undefined ? (((ymax - lastObj) / (ymax - ymin)) * (h - padTop - padBottom) + padTop) / h * 100 : null;
-  let objAxisLbl = '';
-  if (objPct !== null && objPct > 8 && objPct < 92) {
-    objAxisLbl = '<span class="spark-axis-obj" style="top:' + objPct.toFixed(1) + '%">Obj ' + fmt1(lastObj) + '</span>';
+
+  const lastObjIdx = objs.map((v,i) => v !== null ? i : -1).reduce((acc,v) => v>=0?v:acc, -1);
+  let objLbl = '';
+  if (lastObjIdx >= 0) {
+    const lastObj = objs[lastObjIdx];
+    const lx = sx(lastObjIdx) + bw/2;
+    let ly = sy(lastObj) - 5;
+    ly = Math.max(padTop + 6, Math.min(h - padBottom - 2, ly));
+    const txt = 'Obj ' + fmt1(lastObj);
+    const tw = txt.length * 4.6;
+    objLbl = '<rect x="' + (lx - tw/2 - 2).toFixed(1) + '" y="' + (ly - 7).toFixed(1) + '" width="' + (tw+4).toFixed(1) + '" height="9" rx="2" fill="#fff" opacity="0.85"/>' +
+      '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" class="spark-val" fill="#475569">' + txt + '</text>';
   }
-  const axis = '<div class="spark-axis"><span>10</span><span>5</span><span>0</span></div>' + objAxisLbl;
+
+  const svg = '<svg class="spark" viewBox="0 0 ' + vw + ' ' + h + '" preserveAspectRatio="none">' + grid + axisLine + bars + objLine + objLbl + '</svg>';
+  const axis = '<div class="spark-axis"><span>10</span><span>5</span><span>0</span></div>';
   return '<div class="spark-wrap" style="position:relative">' + axis + '<div class="spark-body"><div class="spark-chart">' + svg + '</div></div></div>';
 }
 
