@@ -34,9 +34,9 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .c-val{font-size:40px;font-weight:800}
 .c-obj{font-size:11px;color:#94a3b8}
 .c-next{font-size:11px;color:#94a3b8;margin-bottom:6px}
-.spark{display:block;width:100%;height:140px;overflow:visible}
+.spark{display:block;width:100%;height:156px;overflow:visible}
 .spark-wrap{display:flex;gap:4px;margin-top:6px}
-.spark-axis{position:relative;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:140px;line-height:1;min-width:16px;text-align:right;padding-bottom:13px}
+.spark-axis{position:relative;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#94a3b8;height:156px;line-height:1;min-width:16px;text-align:right;padding-bottom:13px}
 .spark-axis-obj{position:absolute;left:0;transform:translateY(-50%);font-size:9px;font-weight:700;color:#475569;white-space:nowrap}
 .spark-body{flex:1;min-width:0}
 .spark-chart{position:relative}
@@ -124,12 +124,12 @@ function setArea(a) {
 }
 
 function spark(ejSeriesRaw, color, w, h) {
-  w = w || 150; h = h || 71;
+  w = w || 150; h = h || 79;
   const pts = alignEj(ejSeriesRaw);
   const hasData = pts.some(p => p[1] !== null);
   if (!hasData) return '';
   const padTop = 7, padBottom = 8, padX = 4;
-  const ymin = 0, ymax = 10;
+  const ymin = 0, ymax = 11;
   const n = pts.length;
   const bw = 12, gap = 5;
   const vw = n * (bw + gap) - gap + 2*padX;
