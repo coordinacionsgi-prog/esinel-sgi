@@ -41,6 +41,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .spark-body{flex:1;min-width:0}
 .spark-chart{position:relative}
 .spark-val{font-size:7.5px;font-weight:600;text-anchor:middle;font-family:-apple-system,sans-serif}
+.spark-val-sm{font-size:6px;font-weight:700}
 .empty{text-align:center;padding:40px;font-size:13px;color:#94a3b8}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
 .ov.open{display:flex}
@@ -105,31 +106,36 @@ function spark(ejSeries, color, w, h) {
   w = w || 124; h = h || 110;
   const pts = ejSeries.filter(p => p[1] !== null);
   if (pts.length < 2) return '';
-  const padTop = 3, padBottom = 13, padX = 4;
+  const padTop = 10, padBottom = 13, padX = 4;
   const objs = pts.map(p => p[2]);
   const ymin = 0, ymax = 10;
   const n = pts.length;
   const bw = 9, gap = 4;
   const contentW = n * (bw + gap) - gap + 2*padX;
   const vw = Math.max(contentW, w);
-  const sx = i => padX + i * (bw + gap);
+  const leftOffset = vw - contentW;
+  const sx = i => leftOffset + padX + i * (bw + gap);
   const sy = v => (h - padBottom) - (v - ymin)/(ymax - ymin || 1) * (h - padTop - padBottom);
+  const fmtCompact = v => (Math.round(v * 10) % 10 === 0) ? String(Math.round(v)) : fmt1(v);
 
+  const frameX0 = leftOffset;
   const gridVals = [0, 5, 10];
   const grid = gridVals.map(v => {
     const y = sy(v).toFixed(1);
-    return '<line x1="0" y1="' + y + '" x2="' + vw + '" y2="' + y + '" stroke="#eef1f5" stroke-width="1"/>';
+    return '<line x1="' + frameX0 + '" y1="' + y + '" x2="' + vw + '" y2="' + y + '" stroke="#eef1f5" stroke-width="1"/>';
   }).join('');
-  const axisLine = '<line x1="0.5" y1="' + sy(0).toFixed(1) + '" x2="0.5" y2="' + sy(10).toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>';
+  const axisLine = '<line x1="' + (frameX0+0.5) + '" y1="' + sy(0).toFixed(1) + '" x2="' + (frameX0+0.5) + '" y2="' + sy(10).toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>';
 
   const bars = pts.map((p,i) => {
     const barColor = (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : color;
     const y0 = sy(ymin), y1 = sy(p[1]);
     const x = sx(i);
     const cx = (x + bw/2).toFixed(1);
-    const rect = '<rect x="' + x.toFixed(1) + '" y="' + Math.min(y0,y1).toFixed(1) + '" width="' + bw + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1.5" fill="' + barColor + '"/>';
+    const top = Math.min(y0,y1);
+    const rect = '<rect x="' + x.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + bw + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1.5" fill="' + barColor + '"/>';
+    const valLbl = '<text x="' + cx + '" y="' + Math.max(top - 4.5, 7).toFixed(1) + '" class="spark-val spark-val-sm" fill="' + barColor + '">' + fmtCompact(p[1]) + '</text>';
     const ejLbl = '<text x="' + cx + '" y="' + (h - 2.5).toFixed(1) + '" class="spark-val" fill="#94a3b8">' + p[0] + '</text>';
-    return rect + ejLbl;
+    return rect + valLbl + ejLbl;
   }).join('');
   const objPts = pts.map((p,i) => p[2] !== null ? (sx(i) + (bw/2)).toFixed(1) + ',' + sy(p[2]).toFixed(1) : null).filter(Boolean);
   const objLine = objPts.length > 1 ? ('<polyline points="' + objPts.join(' ') + '" fill="none" stroke="#475569" stroke-width="1.4" stroke-dasharray="4,3"/>') : '';
