@@ -467,8 +467,9 @@ function renderNotas() {
     grid.innerHTML = '<div class="nota-empty" style="grid-column:1/-1">Todav&iacute;a no hay notas cargadas. Se completan en la planilla "Notas gerenciales" y aparecen aqu&iacute; al actualizar el dashboard.</div>';
     return;
   }
+  const norm = s => (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   grid.innerHTML = NOTA_CATS.map(cat => {
-    const items = NOTAS.filter(n => (n.categoria || '').toLowerCase().startsWith(cat.key.slice(0, 6)));
+    const items = NOTAS.filter(n => norm(n.categoria).startsWith(cat.key.slice(0, 6)));
     const body = items.length
       ? items.map(n =>
           '<div class="nota-card">' +
