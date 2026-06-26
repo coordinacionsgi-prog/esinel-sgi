@@ -93,12 +93,44 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .nota-card .n-fecha{font-size:10px;color:#94a3b8;margin-top:4px}
 .nota-empty{font-size:12px;color:#94a3b8;padding:6px 0}
 @media (max-width:900px){.notas-grid{grid-template-columns:1fr 1fr}}
+.title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}
+.informe-btn{background:#0f172a;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.informe-btn:hover{background:#1e293b}
+.informe-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:60;padding:24px;overflow-y:auto}
+.informe-ov.open{display:block}
+.informe-doc{background:#fff;max-width:880px;margin:0 auto;border-radius:14px;padding:36px 40px;position:relative}
+.informe-toolbar{position:sticky;top:0;display:flex;justify-content:flex-end;gap:8px;margin-bottom:-8px}
+.informe-toolbar button{border-radius:8px;border:1px solid #e2e8f0;background:#fff;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;color:#475569}
+.informe-toolbar button.primary{background:#0f172a;color:#fff;border-color:#0f172a}
+.inf-hd{text-align:center;margin-bottom:26px;padding-bottom:18px;border-bottom:2px solid #0f172a}
+.inf-hd h1{font-size:22px}
+.inf-hd .inf-sub{color:#64748b;font-size:13px;margin-top:4px}
+.inf-sec{margin-bottom:24px}
+.inf-sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#0f172a;border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:12px}
+.inf-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.inf-kpi{background:#f8fafc;border-radius:10px;padding:10px 12px;text-align:center}
+.inf-kpi-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase}
+.inf-kpi-val{font-size:16px;font-weight:700;margin-top:2px}
+.inf-table{width:100%;border-collapse:collapse;font-size:12px}
+.inf-table th{text-align:left;color:#94a3b8;font-size:10.5px;text-transform:uppercase;padding:4px 8px;border-bottom:1px solid #e2e8f0}
+.inf-table td{padding:5px 8px;border-bottom:1px solid #f1f5f9}
+.inf-empty{font-size:12px;color:#94a3b8}
+@media print{
+  body *{visibility:hidden}
+  .informe-doc, .informe-doc *{visibility:visible}
+  .informe-ov{position:absolute;background:#fff;padding:0}
+  .informe-doc{position:absolute;left:0;top:0;width:100%;max-width:100%;box-shadow:none}
+  .no-print{display:none!important}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Gestión de Vehículos</h1>
-  <div class="sub">Esinel S.R.L. &middot; RO-12-04 &middot; mantenimiento, documentación y costos por vehículo</div>
+  <div class="title-row">
+    <div><h1>Gestión de Vehículos</h1>
+    <div class="sub">Esinel S.R.L. &middot; RO-12-04 &middot; mantenimiento, documentación y costos por vehículo</div></div>
+    <button class="informe-btn no-print" onclick="openInforme()">📄 Ver informe semestral</button>
+  </div>
 
   <div class="stats">
     <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="st-total">&mdash;</div></div>
@@ -147,6 +179,16 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 
 <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modal"></div>
+</div>
+
+<div class="informe-ov" id="informe-ov">
+  <div class="informe-doc">
+    <div class="informe-toolbar no-print">
+      <button onclick="window.print()" class="primary">🖨️ Imprimir / Exportar PDF</button>
+      <button onclick="closeInforme()">Cerrar</button>
+    </div>
+    <div id="informe-content"></div>
+  </div>
 </div>
 
 <script>
@@ -482,6 +524,82 @@ function renderNotas() {
     return '<div><div class="nota-col-hd" style="color:' + cat.color + ';border-color:' + cat.color + '">' + cat.label + '</div>' + body + '</div>';
   }).join('');
 }
+
+function buildInformeHtml() {
+  const withCost = VEHICULOS.filter(v => v.costo && v.costo.total !== null);
+  const periodo = withCost.length ? withCost[0].costo.periodo : '—';
+  const totalFlota = withCost.reduce((s, v) => s + (v.costo.total || 0), 0);
+  const withKm = withCost.filter(v => v.costo.km && v.costo.km > 0);
+  const promKm = withKm.length ? withKm.reduce((s, v) => s + v.costo.costoKm, 0) / withKm.length : null;
+  const maxV = withCost.slice().sort((a, b) => b.costo.total - a.costo.total)[0];
+  const minV = withKm.slice().sort((a, b) => a.costo.costoKm - b.costo.costoKm)[0];
+
+  let venc = 0, atn = 0, ok = 0;
+  const atencion = [];
+  VEHICULOS.forEach(v => {
+    const items = vehItems(v);
+    const w = worstStatus(items);
+    if (w === 'vencido') venc++; else if (w === 'proximo') atn++; else ok++;
+    const pend = items.filter(i => i.st === 'vencido' || i.st === 'proximo');
+    if (pend.length) atencion.push({ v, pend, peor: w });
+  });
+  atencion.sort((a, b) => (a.peor === 'vencido' ? 0 : 1) - (b.peor === 'vencido' ? 0 : 1));
+
+  const topAntiguos = VEHICULOS.filter(v => v.anio && !isNaN(parseInt(v.anio, 10))).slice().sort((a, b) => parseInt(a.anio, 10) - parseInt(b.anio, 10)).slice(0, 5);
+  const topKm = VEHICULOS.filter(v => v.km !== null).slice().sort((a, b) => b.km - a.km).slice(0, 5);
+  const topValor = VEHICULOS.filter(v => v.valorMercado !== null).slice().sort((a, b) => b.valorMercado - a.valorMercado).slice(0, 5);
+
+  const tableRows = (arr, cols) => arr.map(r => '<tr>' + cols.map(c => '<td>' + c(r) + '</td>').join('') + '</tr>').join('') || '<tr><td class="inf-empty" colspan="' + cols.length + '">Sin datos</td></tr>';
+
+  return '' +
+    '<div class="inf-hd"><h1>Informe de Gestión de Vehículos</h1><div class="inf-sub">Esinel S.R.L. &middot; RO-12-04 &middot; Período: ' + periodo + ' &middot; Generado el ' + new Date().toLocaleDateString('es-AR') + '</div></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Resumen de costos</div><div class="inf-kpis">' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Costo total flota</div><div class="inf-kpi-val">' + fmt$(totalFlota) + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Promedio costo/km</div><div class="inf-kpi-val">' + (promKm !== null ? fmt$(promKm) + '/km' : '—') + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Más costoso</div><div class="inf-kpi-val">' + (maxV ? maxV.dominio : '—') + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Mejor costo/km</div><div class="inf-kpi-val">' + (minV ? minV.dominio : '—') + '</div></div>' +
+    '</div></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Estado de la flota</div><div class="inf-kpis">' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Total vehículos</div><div class="inf-kpi-val">' + VEHICULOS.length + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Vencidos</div><div class="inf-kpi-val" style="color:#dc2626">' + venc + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Atención próxima</div><div class="inf-kpi-val" style="color:#d97706">' + atn + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Al día</div><div class="inf-kpi-val" style="color:#16a34a">' + ok + '</div></div>' +
+    '</div></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Vehículos que requieren atención</div><table class="inf-table"><tr><th>Dominio</th><th>Marca</th><th>Pendientes</th></tr>' +
+      tableRows(atencion, [a => a.v.dominio, a => a.v.marca, a => a.pend.map(p => p.label + ' (' + p.txt + ')').join(', ')]) +
+    '</table></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Top 5 · Más antiguos</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Año</th></tr>' +
+      tableRows(topAntiguos, [(v,i)=>topAntiguos.indexOf(v)+1, v => v.dominio, v => v.marca, v => v.anio]) +
+    '</table></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Top 5 · Mayor kilometraje</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Km</th></tr>' +
+      tableRows(topKm, [v=>topKm.indexOf(v)+1, v => v.dominio, v => v.marca, v => fmtKm(v.km)]) +
+    '</table></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Top 5 · Mayor valor de mercado</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Valor</th></tr>' +
+      tableRows(topValor, [v=>topValor.indexOf(v)+1, v => v.dominio, v => v.marca, v => fmt$(v.valorMercado)]) +
+    '</table></div>' +
+
+    '<div class="inf-sec"><div class="inf-sec-title">Notas gerenciales</div>' +
+      (NOTAS.length ? NOTA_CATS.map(cat => {
+        const norm = s => (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const items = NOTAS.filter(n => norm(n.categoria).startsWith(cat.key.slice(0, 6)));
+        if (!items.length) return '';
+        return '<div style="margin-bottom:10px"><b style="color:' + cat.color + ';font-size:12px">' + cat.label + '</b><ul style="margin:4px 0 0 18px;font-size:12.5px">' +
+          items.map(n => '<li>' + (n.vehiculo ? '<b>' + n.vehiculo + ':</b> ' : '') + n.descripcion + '</li>').join('') + '</ul></div>';
+      }).join('') : '<div class="inf-empty">Sin notas cargadas.</div>') +
+    '</div>';
+}
+
+function openInforme() {
+  document.getElementById('informe-content').innerHTML = buildInformeHtml();
+  document.getElementById('informe-ov').classList.add('open');
+}
+function closeInforme() { document.getElementById('informe-ov').classList.remove('open'); }
 
 renderAnalysis();
 renderRankings();
