@@ -129,11 +129,25 @@ let activeFilter = '';
 function fmt$(n) { return n === null || n === undefined ? '—' : '$' + Math.round(n).toLocaleString('es-AR'); }
 function fmtKm(n) { return n === null || n === undefined ? '—' : Math.round(n).toLocaleString('es-AR') + ' km'; }
 
-function kmStatus(current, prox) {
+function toNumLoose(v) {
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v === 'number') return v;
+  const s = v.toString().trim();
+  if (!/^\d[\d.]*$/.test(s)) return null;
+  const n = parseFloat(s.replace(/\./g, ''));
+  return isNaN(n) ? null : n;
+}
+function intervalFor(frecRaw, prox, fallback) {
+  const n = toNumLoose(frecRaw);
+  if (n !== null && prox !== null && prox > n) return prox - n;
+  return fallback;
+}
+function kmStatus(current, prox, intervalGuess) {
   if (current === null || prox === null) return { st: 'sin', txt: 'Sin dato' };
+  const warnAt = Math.max(500, Math.round((intervalGuess || 1500) * 0.1));
   const rest = prox - current;
   if (rest <= 0) return { st: 'vencido', txt: 'Vencido (' + Math.round(-rest).toLocaleString('es-AR') + ' km)' };
-  if (rest <= 1500) return { st: 'proximo', txt: 'En ' + Math.round(rest).toLocaleString('es-AR') + ' km' };
+  if (rest <= warnAt) return { st: 'proximo', txt: 'En ' + Math.round(rest).toLocaleString('es-AR') + ' km' };
   return { st: 'ok', txt: 'En ' + Math.round(rest).toLocaleString('es-AR') + ' km' };
 }
 function dateStatus(dateVal) {
@@ -148,9 +162,9 @@ function dateStatus(dateVal) {
 
 function vehItems(v) {
   return [
-    { label: 'Aceite', ...kmStatus(v.km, v.aceite.prox) },
-    { label: 'Agua', ...kmStatus(v.km, v.agua.prox) },
-    { label: 'Correa', ...kmStatus(v.km, v.correa.prox) },
+    { label: 'Aceite', ...kmStatus(v.km, v.aceite.prox, intervalFor(v.aceite.frec, v.aceite.prox, 10000)) },
+    { label: 'Agua', ...kmStatus(v.km, v.agua.prox, intervalFor(v.agua.frec, v.agua.prox, 40000)) },
+    { label: 'Correa', ...kmStatus(v.km, v.correa.prox, intervalFor(v.correa.frec, v.correa.prox, 40000)) },
     { label: 'VTV', ...dateStatus(v.vtv.proxima) },
     { label: 'Botiqu&iacute;n', ...dateStatus(v.botiquin.proxima) },
     { label: 'Matafuego', ...dateStatus(v.matafuego.proxima) }
