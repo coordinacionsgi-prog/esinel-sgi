@@ -393,7 +393,7 @@ const METRICS = [
   { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km', desc: 'Cargas de combustible (nafta / gasoil)' },
   { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumáticos, reparaciones mecánicas y service' },
   { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vía tag / telepeaje)' },
-  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente y VTV (costos independientes del uso)' }
+  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' }
 ];
 let activeMetric = 'total';
 
