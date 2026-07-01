@@ -145,9 +145,10 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
     <div class="analysis-hd"><h2>An&aacute;lisis de costos &middot; flota</h2><span class="per" id="an-periodo">&mdash;</span></div>
     <div class="an-kpis">
       <div class="an-kpi"><div class="an-kpi-lbl">Costo total flota</div><div class="an-kpi-val" id="an-total">&mdash;</div></div>
+      <div class="an-kpi"><div class="an-kpi-lbl">Promedio costo por veh&iacute;culo</div><div class="an-kpi-val" id="an-promveh">&mdash;</div></div>
       <div class="an-kpi"><div class="an-kpi-lbl">Promedio costo/km</div><div class="an-kpi-val" id="an-promkm">&mdash;</div></div>
-      <div class="an-kpi"><div class="an-kpi-lbl">Veh&iacute;culo m&aacute;s costoso</div><div class="an-kpi-val" id="an-max">&mdash;</div><div class="an-kpi-sub" id="an-max-sub"></div></div>
-      <div class="an-kpi"><div class="an-kpi-lbl">Mejor costo/km</div><div class="an-kpi-val" id="an-min">&mdash;</div><div class="an-kpi-sub" id="an-min-sub"></div></div>
+      <div class="an-kpi"><div class="an-kpi-lbl">Peor costo/km</div><div class="an-kpi-val" id="an-max">&mdash;</div><div class="an-kpi-sub" id="an-max-sub"></div></div>
+      <div class="an-kpi"><div class="an-kpi-lbl">Antig&uuml;edad promedio flota</div><div class="an-kpi-val" id="an-edad">&mdash;</div></div>
     </div>
     <div class="charts-row">
       <div>
@@ -409,14 +410,18 @@ function drawTotalChart() {
   const vals = sorted.map(v => metric.get(v.costo));
   const colors = vals.map((v, i) => i === 0 ? '#dc2626' : '#6366f1');
 
+  const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
   if (chartTotalInst) chartTotalInst.destroy();
   chartTotalInst = new Chart(document.getElementById('chartTotal'), {
     type: 'bar',
-    data: { labels, datasets: [{ label: metric.label, data: vals, backgroundColor: colors, borderRadius: 4 }] },
+    data: { labels, datasets: [
+      { label: metric.label, data: vals, backgroundColor: colors, borderRadius: 4 },
+      { label: 'Promedio', data: vals.map(() => avg), type: 'line', borderColor: '#f97316', borderWidth: 2, borderDash: [6, 3], pointRadius: 0, fill: false, tooltip: { callbacks: { label: it => 'Promedio: ' + metric.fmt(it.raw) } } }
+    ]},
     options: {
       indexAxis: 'y',
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: it => metric.fmt(it.raw) } } },
+      plugins: { legend: { display: true, labels: { boxWidth: 16, font: { size: 11 } } }, tooltip: { callbacks: { label: it => it.datasetIndex === 1 ? 'Promedio: ' + metric.fmt(it.raw) : metric.fmt(it.raw) } } },
       scales: {
         x: { ticks: { callback: v => metric.key === 'km' ? Math.round(v/1000) + 'k km' : (metric.key === 'total' ? '$' + (v/1000) + 'k' : '$' + Math.round(v)) }, grid: { color: '#f1f5f9' } },
         y: { grid: { display: false } }
@@ -432,17 +437,19 @@ function renderAnalysis() {
   document.getElementById('an-periodo').textContent = periodo;
 
   const totalFlota = withCost.reduce((s, v) => s + (v.costo.total || 0), 0);
+  const promVeh = withCost.length ? totalFlota / withCost.length : null;
   const withKm = withCost.filter(v => v.costo.km && v.costo.km > 0);
   const promKm = withKm.length ? withKm.reduce((s, v) => s + v.costo.costoKm, 0) / withKm.length : null;
-  const maxV = withCost.slice().sort((a, b) => b.costo.total - a.costo.total)[0];
-  const minV = withKm.slice().sort((a, b) => a.costo.costoKm - b.costo.costoKm)[0];
+  const maxV = withKm.slice().sort((a, b) => b.costo.costoKm - a.costo.costoKm)[0];
+  const anioActual = new Date().getFullYear();
+  const edadProm = VEHICULOS.length ? Math.round(VEHICULOS.reduce((s, v) => s + (anioActual - parseInt(v.anio || anioActual)), 0) / VEHICULOS.length) : null;
 
   document.getElementById('an-total').textContent = fmt$(totalFlota);
+  document.getElementById('an-promveh').textContent = promVeh !== null ? fmt$(promVeh) : '—';
   document.getElementById('an-promkm').textContent = promKm !== null ? fmt$(promKm) + '/km' : '—';
   document.getElementById('an-max').textContent = maxV ? maxV.dominio : '—';
-  document.getElementById('an-max-sub').textContent = maxV ? fmt$(maxV.costo.total) : '';
-  document.getElementById('an-min').textContent = minV ? minV.dominio : '—';
-  document.getElementById('an-min-sub').textContent = minV ? fmt$(minV.costo.costoKm) + '/km' : '';
+  document.getElementById('an-max-sub').textContent = maxV ? fmt$(maxV.costo.costoKm) + '/km' : '';
+  document.getElementById('an-edad').textContent = edadProm !== null ? edadProm + ' años' : '—';
 
   document.getElementById('metric-tabs').innerHTML = METRICS.map(m =>
     '<span class="mtab' + (m.key === activeMetric ? ' act' : '') + '" data-k="' + m.key + '" onclick="setMetric(\'' + m.key + '\')">' + m.label + '</span>'
