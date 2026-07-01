@@ -55,6 +55,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .mtab:hover{border-color:#cbd5e1}
 .mtab.act{border-color:#6366f1;background:#eef2ff;color:#4338ca}
 .mo-chart-box{position:relative;height:220px;margin-top:10px}
+.cost-breakdown{margin-top:4px}
+.cb-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px}
+.cb-label{width:130px;color:#475569;flex-shrink:0}
+.cb-bar-wrap{flex:1;background:#f1f5f9;border-radius:4px;height:12px;overflow:hidden}
+.cb-bar{height:100%;border-radius:4px;transition:width .4s}
+.cb-vals{width:170px;flex-shrink:0;display:flex;justify-content:space-between;color:#0f172a;font-weight:600}
+.cb-vals span{color:#64748b;font-weight:400;font-size:11px}
 @media (max-width:900px){.charts-row{grid-template-columns:1fr}.an-kpis{grid-template-columns:repeat(2,1fr)}}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
 .ov.open{display:flex}
@@ -364,6 +371,36 @@ function kvCell(label, val, status) {
   return '<div class="kv ' + cls + '"><div class="kv-lbl">' + label + '</div><div class="kv-val">' + (val || '—') + '</div></div>';
 }
 
+function costBreakdownHTML(c) {
+  const components = [
+    { label: 'Combustible',   total: c.combustible,   km: c.combustibleKm,   color: '#3b82f6' },
+    { label: 'Mantenimiento', total: c.mantenimiento, km: c.mantenimientoKm, color: '#f59e0b' },
+    { label: 'Telepeaje',     total: c.telepeaje,     km: c.telepeajeKm,     color: '#10b981' },
+    { label: 'Costo fijo',    total: c.costoFijo,     km: c.costoFijoKm,     color: '#ef4444' },
+  ];
+  const base = c.total || 1;
+  let rows = components.map(comp => {
+    if (!comp.total) return '';
+    const pct = Math.round((comp.total / base) * 100);
+    const kmStr = comp.km ? fmt$(comp.km) + '/km' : '';
+    return '<div class="cb-row">' +
+      '<div class="cb-label">' + comp.label + '</div>' +
+      '<div class="cb-bar-wrap"><div class="cb-bar" style="width:' + pct + '%;background:' + comp.color + '"></div></div>' +
+      '<div class="cb-vals">' + fmt$(comp.total) + ' <span>(' + pct + '%) ' + kmStr + '</span></div>' +
+    '</div>';
+  }).join('');
+  const oporRow = c.costoOportunidad
+    ? '<div class="cb-row" style="opacity:.7;border-top:1px dashed #e2e8f0;padding-top:7px;margin-top:3px">' +
+        '<div class="cb-label">Costo oportunidad</div>' +
+        '<div class="cb-bar-wrap"></div>' +
+        '<div class="cb-vals">' + fmt$(c.costoOportunidad) + ' <span>tasa ' + (c.tasaBCRA ? c.tasaBCRA.toFixed(0) : '?') + '%</span></div>' +
+      '</div>'
+    : '';
+  return '<div class="sec"><div class="sec-hd" style="display:flex;justify-content:space-between"><span>Costos &middot; ' + c.periodo + '</span>' +
+    '<span style="font-size:12px;font-weight:700;color:#0f172a">' + fmt$(c.total) + (c.costoKm ? ' &middot; ' + fmt$(c.costoKm) + '/km' : '') + (c.km ? ' &middot; ' + fmtKm(c.km) : '') + '</span></div>' +
+    '<div class="cost-breakdown">' + rows + oporRow + '</div></div>';
+}
+
 function openModal(idx) {
   const v = VEHICULOS[idx];
   const items = vehItems(v);
@@ -389,11 +426,7 @@ function openModal(idx) {
       kvCell('&Uacute;ltimo paso por taller', v.taller.fecha) + kvCell('Taller', v.taller.nombre) + kvCell('Tareas realizadas', v.taller.descripcion) +
       kvCell('Observaciones', v.observaciones.descripcion !== '-' ? v.observaciones.descripcion : 'Sin observaciones') +
     '</div></div>' +
-    (c ? '<div class="sec"><div class="sec-hd">Costos &middot; ' + c.periodo + '</div><div class="kv-grid">' +
-      kvCell('Costo total', fmt$(c.total)) + kvCell('Costo/km', fmt$(c.costoKm)) +
-      kvCell('Combustible', fmt$(c.combustible)) + kvCell('Combustible/km', fmt$(c.combustibleKm)) +
-      kvCell('Telepeaje', fmt$(c.telepeaje)) + kvCell('Mantenimiento', fmt$(c.mantenimiento)) +
-    '</div></div>' : '') +
+    (c ? costBreakdownHTML(c) : '') +
     (v.mensual && v.mensual.length ? '<div class="sec"><div class="sec-hd">Gastos por mes</div><div class="mo-chart-box"><canvas id="chartMensual"></canvas></div></div>' : '');
   document.getElementById('ov').classList.add('open');
   if (v.mensual && v.mensual.length) drawMensual(v.mensual);
@@ -471,6 +504,7 @@ function drawTotalChart() {
     ctx2.fillText(metric.fmt(avg), pt.x + 6, pt.y + 4);
     ctx2.restore();
   }};
+  const sortedVehiculos = sorted; // capture for click handler
   if (chartTotalInst) chartTotalInst.destroy();
   chartTotalInst = new Chart(document.getElementById('chartTotal'), {
     plugins: [avgLabelPlugin],
@@ -489,6 +523,13 @@ function drawTotalChart() {
       scales: {
         x: { ticks: { callback: v => metric.key === 'km' ? Math.round(v/1000) + 'k km' : (v >= 1000000 ? '$' + (v/1000000).toFixed(1) + 'M' : '$' + Math.round(v)) }, grid: { color: '#f1f5f9' } },
         y: { grid: { display: false } }
+      },
+      onClick: (evt, elements) => {
+        if (!elements.length || elements[0].datasetIndex !== 0) return;
+        const barIdx = elements[0].index;
+        const clickedV = sortedVehiculos[barIdx];
+        const vIdx = VEHICULOS.indexOf(clickedV);
+        if (vIdx >= 0) openModal(vIdx);
       }
     }
   });
