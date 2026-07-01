@@ -152,6 +152,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
       <div class="an-kpi"><div class="an-kpi-lbl">Mayor costo fijo/km</div><div class="an-kpi-val" id="an-maxfijo">&mdash;</div><div class="an-kpi-sub" id="an-maxfijo-sub"></div></div>
       <div class="an-kpi"><div class="an-kpi-lbl">M&aacute;s km recorridos</div><div class="an-kpi-val" id="an-maxkm">&mdash;</div><div class="an-kpi-sub" id="an-maxkm-sub"></div></div>
       <div class="an-kpi"><div class="an-kpi-lbl">Mayor costo total</div><div class="an-kpi-val" id="an-maxtotal">&mdash;</div><div class="an-kpi-sub" id="an-maxtotal-sub"></div></div>
+      <div class="an-kpi"><div class="an-kpi-lbl">Costo oportunidad flota</div><div class="an-kpi-val" id="an-opor">&mdash;</div><div class="an-kpi-sub" id="an-opor-sub"></div></div>
     </div>
     <div class="charts-row">
       <div>
@@ -393,7 +394,8 @@ const METRICS = [
   { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km', desc: 'Cargas de combustible (nafta / gasoil)' },
   { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumáticos, reparaciones mecánicas y service' },
   { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vía tag / telepeaje)' },
-  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' }
+  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' },
+  { key: 'costoOportunidadKm', label: 'Costo oportunidad/km', get: c => c.costoOportunidadKm, fmt: v => fmt$(v) + '/km', desc: 'Costo de capital inmovilizado en el vehículo (valorMercado × tasa BADLAR BCRA / 2 semestre)' }
 ];
 let activeMetric = 'total';
 
@@ -481,6 +483,11 @@ function renderAnalysis() {
   document.getElementById('an-maxkm-sub').textContent = maxKmV ? fmtKm(maxKmV.costo.km) : '';
   document.getElementById('an-maxtotal').textContent = maxTotalV ? maxTotalV.dominio : '—';
   document.getElementById('an-maxtotal-sub').textContent = maxTotalV ? fmt$(maxTotalV.costo.total) : '';
+  const withOpor = withCost.filter(v => v.costo.costoOportunidad);
+  const totalOpor = withOpor.reduce((s, v) => s + v.costo.costoOportunidad, 0);
+  const tasa = withOpor.length ? withOpor[0].costo.tasaBCRA : null;
+  document.getElementById('an-opor').textContent = withOpor.length ? fmt$(totalOpor) : '—';
+  document.getElementById('an-opor-sub').textContent = tasa ? 'Tasa BADLAR: ' + tasa.toFixed(1) + '% TNA' : 'Sincronizá para calcular';
 
   document.getElementById('metric-tabs').innerHTML = METRICS.map(m =>
     '<span class="mtab' + (m.key === activeMetric ? ' act' : '') + '" data-k="' + m.key + '" onclick="setMetric(\'' + m.key + '\')">' + m.label + '</span>'
