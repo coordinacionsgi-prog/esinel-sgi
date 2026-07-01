@@ -464,7 +464,7 @@ function renderAnalysis() {
     ? VEHICULOS.filter(v => v.valorMercado).reduce((s, v) => s + v.valorMercado, 0) / VEHICULOS.filter(v => v.valorMercado).length
     : null;
   const maxFijoKm = withKm.slice().sort((a, b) => b.costo.costoFijoKm - a.costo.costoFijoKm)[0];
-  const maxKmV = VEHICULOS.slice().sort((a, b) => (b.km || 0) - (a.km || 0))[0];
+  const maxKmV = withKm.slice().sort((a, b) => (b.costo.km || 0) - (a.costo.km || 0))[0];
   const maxTotalV = withCost.slice().sort((a, b) => b.costo.total - a.costo.total)[0];
 
   document.getElementById('an-total').textContent = promValor !== null ? fmt$(promValor) : '—';
@@ -476,7 +476,7 @@ function renderAnalysis() {
   document.getElementById('an-maxfijo').textContent = maxFijoKm ? maxFijoKm.dominio : '—';
   document.getElementById('an-maxfijo-sub').textContent = maxFijoKm ? fmt$(maxFijoKm.costo.costoFijoKm) + '/km' : '';
   document.getElementById('an-maxkm').textContent = maxKmV ? maxKmV.dominio : '—';
-  document.getElementById('an-maxkm-sub').textContent = maxKmV ? fmtKm(maxKmV.km) : '';
+  document.getElementById('an-maxkm-sub').textContent = maxKmV ? fmtKm(maxKmV.costo.km) : '';
   document.getElementById('an-maxtotal').textContent = maxTotalV ? maxTotalV.dominio : '—';
   document.getElementById('an-maxtotal-sub').textContent = maxTotalV ? fmt$(maxTotalV.costo.total) : '';
 
