@@ -75,10 +75,10 @@ tbody tr:last-child td{border-bottom:none}
       <div class="card-val" id="cnt-r">—</div>
       <div class="card-sub">control &gt; 1 a&ntilde;o</div>
     </div>
-    <div class="card c-red" onclick="setStatus('s')" style="cursor:pointer">
-      <div class="card-label">Sin control</div>
+    <div class="card c-red" onclick="setStatus('x')" style="cursor:pointer">
+      <div class="card-label">Discontinuado</div>
       <div class="card-val" id="cnt-s">—</div>
-      <div class="card-sub">sin fecha registrada</div>
+      <div class="card-sub">dados de baja</div>
     </div>
   </div>
 
@@ -101,7 +101,7 @@ tbody tr:last-child td{border-bottom:none}
       <option value="">Todos los estados</option>
       <option value="v">Vigente</option>
       <option value="r">A revisar</option>
-      <option value="s">Sin control</option>
+      <option value="x">Discontinuado</option>
       <option value="x">Discontinuado</option>
     </select>
   </div>
@@ -136,7 +136,7 @@ const DOCS = DATA.d;
   document.getElementById('cnt-all').textContent = visible.length;
   document.getElementById('cnt-v').textContent = visible.filter(d=>d[6]==='v').length;
   document.getElementById('cnt-r').textContent = visible.filter(d=>d[6]==='r').length;
-  document.getElementById('cnt-s').textContent = visible.filter(d=>d[6]==='s').length;
+  document.getElementById('cnt-s').textContent = DOCS.filter(d=>d[6]==='x').length;
 })();
 
 const TL = {PG:'Procedimiento',IN:'Instructivo',RE:'Registro',CA:'Capacitaci\u00f3n',DO:'Documento'};
