@@ -31,6 +31,9 @@ table{width:100%;border-collapse:collapse}
 thead th{background:#f8fafc;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;white-space:nowrap;cursor:pointer;user-select:none}
 thead th:hover{background:#f1f5f9;color:#475569}
 tbody tr:hover{background:#f8fafc}
+tbody tr.clickable{cursor:pointer}
+tbody tr.clickable:hover{background:#eff6ff}
+.disc-txt{text-decoration:line-through;color:#94a3b8}
 tbody td{padding:9px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.2px}
@@ -93,6 +96,7 @@ tbody tr:last-child td{border-bottom:none}
       <option value="v">Vigente</option>
       <option value="r">A revisar</option>
       <option value="s">Sin control</option>
+      <option value="x">Discontinuado</option>
     </select>
   </div>
 
@@ -108,7 +112,6 @@ tbody tr:last-child td{border-bottom:none}
           <th onclick="sortBy(3)" title="Ordenar">Proceso &nbsp;&#8597;</th>
           <th onclick="sortBy(4)" title="Ordenar">Fecha control &nbsp;&#8597;</th>
           <th>Estado</th>
-          <th style="width:44px;text-align:center">Link</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -129,7 +132,8 @@ const TC = {
 const SC = {
   v:['Vigente','#15803d','#dcfce7'],
   r:['A revisar','#a16207','#fef9c3'],
-  s:['Sin control','#b91c1c','#fee2e2']
+  s:['Sin control','#b91c1c','#fee2e2'],
+  x:['Discontinuado','#6b7280','#f1f5f9']
 };
 
 let filtered = [...DOCS];
@@ -198,7 +202,7 @@ function render() {
       : `Mostrando ${filtered.length} de ${total} documentos`;
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">Sin resultados para los filtros seleccionados</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">Sin resultados para los filtros seleccionados</td></tr>';
     return;
   }
 
@@ -207,21 +211,21 @@ function render() {
     const [tFg, tBg] = TC[tipo] || ['#475569','#f1f5f9'];
     const [sLabel, sFg, sBg] = SC[status] || ['\u2014','#6b7280','#f3f4f6'];
     const proceso = PROCESOS[proc_idx] || '';
+    const isDisc = status === 'x';
     const codCell = codigo ? `<span class="cod">${esc(codigo)}</span>` : '<span style="color:#cbd5e1">\u2014</span>';
-    const linkCell = link
-      ? `<a href="${esc(link)}" target="_blank" class="link-btn" title="Abrir en Drive">&#8599;</a>`
-      : '<span class="no-link">\u2014</span>';
+    const nameCls = isDisc ? 'nombre-txt disc-txt' : 'nombre-txt';
     const dateCls = status === 's' ? 'ctrl-date" style="color:#b91c1c;font-weight:600' : status === 'r' ? 'ctrl-date" style="color:#a16207' : 'ctrl-date';
     const dateVal = fecha_ctrl || '<span style="color:#cbd5e1">Sin fecha</span>';
-    return `<tr>
+    const trCls = link ? ' class="clickable"' : '';
+    const trClick = link ? ` onclick="if(event.target.tagName!=='A')window.open('${esc(link)}','_blank')"` : '';
+    return `<tr${trCls}${trClick}>
       <td>${codCell}</td>
       <td><span class="badge" style="background:${tBg};color:${tFg}">${TL[tipo]||tipo}</span></td>
-      <td class="nombre-cell"><span class="nombre-txt" title="${esc(nombre)}">${esc(nombre)}</span></td>
+      <td class="nombre-cell"><span class="${nameCls}" title="${esc(nombre)}">${esc(nombre)}</span></td>
       <td><span class="rev-badge">${esc(rev||'\u2014')}</span></td>
       <td style="font-size:12px;color:#475569">${esc(proceso)}</td>
       <td><span class="${dateCls}">${dateVal}</span></td>
       <td><span class="badge" style="background:${sBg};color:${sFg}">${sLabel}</span></td>
-      <td style="text-align:center">${linkCell}</td>
     </tr>`;
   }).join('');
 }
