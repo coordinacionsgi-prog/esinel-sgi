@@ -221,9 +221,11 @@ function kmStatus(current, prox, intervalGuess) {
   if (current === null || prox === null) return { st: 'sin', txt: 'Sin dato' };
   const warnAt = Math.max(500, Math.round((intervalGuess || 1500) * 0.1));
   const rest = prox - current;
-  if (rest <= 0) return { st: 'vencido', txt: 'Vencido (' + Math.round(-rest).toLocaleString('es-AR') + ' km)' };
-  if (rest <= warnAt) return { st: 'proximo', txt: 'En ' + Math.round(rest).toLocaleString('es-AR') + ' km' };
-  return { st: 'ok', txt: 'En ' + Math.round(rest).toLocaleString('es-AR') + ' km' };
+  const proxFmt = Math.round(prox).toLocaleString('es-AR') + ' km';
+  const restFmt = Math.round(Math.abs(rest)).toLocaleString('es-AR') + ' km';
+  if (rest <= 0) return { st: 'vencido', txt: 'A los ' + proxFmt + ' (vencido por ' + restFmt + ')' };
+  if (rest <= warnAt) return { st: 'proximo', txt: 'A los ' + proxFmt + ' (faltan ' + restFmt + ')' };
+  return { st: 'ok', txt: 'A los ' + proxFmt + ' (faltan ' + restFmt + ')' };
 }
 function dateStatus(dateVal) {
   if (!dateVal) return { st: 'sin', txt: 'Sin dato' };
