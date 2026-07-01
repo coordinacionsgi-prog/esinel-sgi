@@ -360,7 +360,7 @@ function drawMensual(meses) {
         { type: 'bar', label: 'Combustible', data: meses.map(m => m.combustible), backgroundColor: '#3b82f6', stack: 's' },
         { type: 'bar', label: 'Mantenimiento', data: meses.map(m => m.mantenimiento), backgroundColor: '#f59e0b', stack: 's' },
         { type: 'bar', label: 'Telepeaje', data: meses.map(m => m.telepeaje), backgroundColor: '#10b981', stack: 's' },
-        { type: 'bar', label: 'Costo fijo', data: meses.map(m => m.costoFijo), backgroundColor: '#8b5cf6', stack: 's' },
+        { type: 'bar', label: 'Costo fijo', data: meses.map(m => m.costoFijo), backgroundColor: '#ef4444', stack: 's' },
         { type: 'line', label: 'Km', data: meses.map(m => m.km), borderColor: '#0f172a', backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.2, pointRadius: 2 }
       ]
     },
@@ -466,7 +466,7 @@ function renderAnalysis() {
         { label: 'Combustible', data: dsCombustible, backgroundColor: '#3b82f6' },
         { label: 'Mantenimiento', data: dsMantenimiento, backgroundColor: '#f59e0b' },
         { label: 'Telepeaje', data: dsTelepeaje, backgroundColor: '#10b981' },
-        { label: 'Costo fijo', data: dsFijo, backgroundColor: '#8b5cf6' }
+        { label: 'Costo fijo', data: dsFijo, backgroundColor: '#ef4444' }
       ]
     },
     options: {
