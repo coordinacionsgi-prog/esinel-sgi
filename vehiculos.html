@@ -159,6 +159,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
           <span id="chartTotal-title">Costo total por veh&iacute;culo</span>
           <span class="metric-tabs" id="metric-tabs"></span>
         </div>
+        <div id="metric-desc" style="font-size:11px;color:#64748b;margin:4px 0 6px;min-height:16px"></div>
         <div class="chart-box"><canvas id="chartTotal"></canvas></div>
       </div>
       <div><div class="chart-title">Composici&oacute;n del costo (top 8)</div><div class="chart-box"><canvas id="chartComposicion"></canvas></div></div>
@@ -386,19 +387,21 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 let chartTotalInst = null, chartCompInst = null;
 
 const METRICS = [
-  { key: 'total', label: 'Costo total', get: c => c.total, fmt: fmt$ },
-  { key: 'km', label: 'Km totales', get: c => c.km, fmt: fmtKm },
-  { key: 'costoKm', label: 'Costo/km', get: c => c.costoKm, fmt: v => fmt$(v) + '/km' },
-  { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km' },
-  { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km' },
-  { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km' },
-  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km' }
+  { key: 'total', label: 'Costo total', get: c => c.total, fmt: fmt$, desc: 'Combustible + mantenimiento + telepeaje + costo fijo' },
+  { key: 'km', label: 'Km totales', get: c => c.km, fmt: fmtKm, desc: 'Kilómetros recorridos en el período' },
+  { key: 'costoKm', label: 'Costo/km', get: c => c.costoKm, fmt: v => fmt$(v) + '/km', desc: 'Costo total dividido km recorridos (combustible + mantenimiento + telepeaje + costo fijo)' },
+  { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km', desc: 'Cargas de combustible (nafta / gasoil)' },
+  { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumáticos, reparaciones mecánicas y service' },
+  { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vía tag / telepeaje)' },
+  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente y VTV (costos independientes del uso)' }
 ];
 let activeMetric = 'total';
 
 function setMetric(key) {
   activeMetric = key;
   document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('act', b.dataset.k === key));
+  const m = METRICS.find(m => m.key === key);
+  document.getElementById('metric-desc').textContent = m ? '✦ Incluye: ' + m.desc : '';
   drawTotalChart();
 }
 
@@ -482,6 +485,8 @@ function renderAnalysis() {
   document.getElementById('metric-tabs').innerHTML = METRICS.map(m =>
     '<span class="mtab' + (m.key === activeMetric ? ' act' : '') + '" data-k="' + m.key + '" onclick="setMetric(\'' + m.key + '\')">' + m.label + '</span>'
   ).join('');
+  const activeMeta = METRICS.find(m => m.key === activeMetric);
+  document.getElementById('metric-desc').textContent = activeMeta ? '✦ Incluye: ' + activeMeta.desc : '';
   drawTotalChart();
 
   const sorted = withCost.slice().sort((a, b) => b.costo.total - a.costo.total);
