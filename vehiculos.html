@@ -439,8 +439,7 @@ const METRICS = [
   { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km', desc: 'Cargas de combustible (nafta / gasoil)' },
   { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumáticos, reparaciones mecánicas y service' },
   { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vía tag / telepeaje)' },
-  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' },
-  { key: 'costoOportunidadKm', label: 'Costo oportunidad/km', get: c => c.costoOportunidadKm, fmt: v => fmt$(v) + '/km', desc: 'Costo de capital inmovilizado en el vehículo (valorMercado × tasa BADLAR BCRA / 2 semestre)' }
+  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' }
 ];
 let activeMetric = 'total';
 
@@ -532,7 +531,7 @@ function renderAnalysis() {
   const totalOpor = withOpor.reduce((s, v) => s + v.costo.costoOportunidad, 0);
   const tasa = withOpor.length ? withOpor[0].costo.tasaBCRA : null;
   document.getElementById('an-opor').textContent = withOpor.length ? fmt$(totalOpor) : '—';
-  document.getElementById('an-opor-sub').textContent = tasa ? 'Tasa BADLAR: ' + tasa.toFixed(1) + '% TNA' : 'Sincronizá para calcular';
+  document.getElementById('an-opor-sub').textContent = tasa ? 'Capital inmovilizado · tasa ' + tasa.toFixed(0) + '% anual' : 'Sincronizá para calcular';
 
   document.getElementById('metric-tabs').innerHTML = METRICS.map(m =>
     '<span class="mtab' + (m.key === activeMetric ? ' act' : '') + '" data-k="' + m.key + '" onclick="setMetric(\'' + m.key + '\')">' + m.label + '</span>'
