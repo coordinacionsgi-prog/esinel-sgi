@@ -102,7 +102,7 @@ tbody tr:last-child td{border-bottom:none}
 
   <div class="charts-row">
     <div class="ch-card" style="flex:2"><div class="ch-title">Documentos por año de vigencia</div><div class="ch-inner"><svg id="donut-svg" viewBox="0 0 260 260" width="230" height="230"></svg><div class="ch-legend" id="donut-legend"></div></div></div>
-    <div class="ch-card" style="flex:1;min-width:200px"><div class="ch-title">Documentos por tipo</div><div class="bar-wrap" id="bar-chart"></div></div>
+    <div class="ch-card" style="flex:1.4;min-width:220px"><div class="ch-title">Documentos por tipo</div><div class="bar-wrap" id="bar-chart"></div></div>
   </div>
 
   <div class="tipo-bar" id="tipo-bar">
@@ -175,7 +175,7 @@ function buildDonut() {
   });
   const yrs = Object.keys(byYear).map(Number).sort((a,b)=>b-a);
   const total = DOCS.length;
-  const cx=130, cy=130, r0=58, r1=110;
+  const cx=130, cy=130, r0=34, r1=116;
   const toRad = a => (a-90)*Math.PI/180;
   const pt = (r,a) => [cx+r*Math.cos(toRad(a)), cy+r*Math.sin(toRad(a))];
   function arcP(a1,a2) {
