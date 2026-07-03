@@ -175,7 +175,7 @@ function buildDonut() {
   });
   const yrs = Object.keys(byYear).map(Number).sort((a,b)=>b-a);
   const total = DOCS.length;
-  const cx=130, cy=130, r0=34, r1=116;
+  const cx=130, cy=130, r0=56, r1=116;
   const toRad = a => (a-90)*Math.PI/180;
   const pt = (r,a) => [cx+r*Math.cos(toRad(a)), cy+r*Math.sin(toRad(a))];
   function arcP(a1,a2) {
@@ -200,8 +200,8 @@ function buildDonut() {
     }
     angle += span + GAP;
   });
-  paths += `<text x="130" y="122" text-anchor="middle" font-size="36" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
-  paths += `<text x="130" y="145" text-anchor="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
+  paths += `<text x="130" y="126" text-anchor="middle" font-size="30" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
+  paths += `<text x="130" y="146" text-anchor="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
   document.getElementById('donut-svg').innerHTML = paths + labels;
 }
 
