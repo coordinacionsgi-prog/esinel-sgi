@@ -185,16 +185,24 @@ function buildDonut() {
   }
   const GAP = yrs.length > 1 ? 2 : 0;
   const totalAngle = 360 - yrs.length * GAP;
-  let paths = '', angle = 0;
+  let paths = '', labels = '', angle = 0;
+  const midR = (r0 + r1) / 2;
   yrs.forEach(yr => {
     const span = (byYear[yr]/total)*totalAngle;
     const col = yColor(yr);
     paths += `<path d="${arcP(angle, angle+span)}" fill="${col}" id="dna-${yr}" class="dn-arc" style="cursor:pointer;transition:opacity .2s" onclick="filterByYear(${yr})"/>`;
+    if (span > 12) {
+      const mid = angle + span/2;
+      const [lx,ly] = pt(midR, mid);
+      const fs = span > 25 ? 10 : 8;
+      labels += `<text x="${lx.toFixed(1)}" y="${(ly - (span>18?5:2)).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${fs}" font-weight="700" fill="#fff" style="pointer-events:none">${yr||'S/F'}</text>`;
+      if (span > 18) labels += `<text x="${lx.toFixed(1)}" y="${(ly+7).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${fs+2}" font-weight="800" fill="#fff" style="pointer-events:none">${byYear[yr]}</text>`;
+    }
     angle += span + GAP;
   });
-  paths += `<text x="130" y="124" text-anchor="middle" font-size="32" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
-  paths += `<text x="130" y="146" text-anchor="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
-  document.getElementById('donut-svg').innerHTML = paths;
+  paths += `<text x="130" y="130" text-anchor="middle" dominant-baseline="middle" font-size="34" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
+  paths += `<text x="130" y="152" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
+  document.getElementById('donut-svg').innerHTML = paths + labels;
   let leg = '';
   yrs.forEach(yr => {
     const col = yColor(yr);
