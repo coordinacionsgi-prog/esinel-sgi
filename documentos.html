@@ -101,7 +101,7 @@ tbody tr:last-child td{border-bottom:none}
   </div>
 
   <div class="charts-row">
-    <div class="ch-card" style="flex:2"><div class="ch-title">Documentos por año de vigencia</div><div class="ch-inner"><svg id="donut-svg" viewBox="0 0 260 260" width="230" height="230"></svg><div class="ch-legend" id="donut-legend"></div></div></div>
+    <div class="ch-card" style="flex:2"><div class="ch-title">Documentos por año de vigencia</div><svg id="donut-svg" viewBox="0 0 260 260" style="width:100%;max-width:260px;display:block;margin:0 auto"></svg></div>
     <div class="ch-card" style="flex:1.4;min-width:220px"><div class="ch-title">Documentos por tipo</div><div class="bar-wrap" id="bar-chart"></div></div>
   </div>
 
@@ -200,18 +200,9 @@ function buildDonut() {
     }
     angle += span + GAP;
   });
-  paths += `<text x="130" y="130" text-anchor="middle" dominant-baseline="middle" font-size="34" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
-  paths += `<text x="130" y="152" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
+  paths += `<text x="130" y="122" text-anchor="middle" font-size="36" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
+  paths += `<text x="130" y="145" text-anchor="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
   document.getElementById('donut-svg').innerHTML = paths + labels;
-  let leg = '';
-  yrs.forEach(yr => {
-    const col = yColor(yr);
-    leg += `<div class="ch-leg-row" id="dnl-${yr}" onclick="filterByYear(${yr})">` +
-      `<span class="ch-dot" style="background:${col}"></span>` +
-      `<span class="ch-lbl">${yr||'Sin fecha'}</span>` +
-      `<span class="ch-n">${byYear[yr]}</span></div>`;
-  });
-  document.getElementById('donut-legend').innerHTML = leg;
 }
 
 function buildBarChart() {
