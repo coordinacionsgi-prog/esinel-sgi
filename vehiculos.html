@@ -428,7 +428,9 @@ function openModal(idx) {
       kvCell('Patente &middot; &uacute;ltimo pago', v.patente.ultimoPago) + kvCell('Patente &middot; vencimiento', v.patente.proxVenc) +
       kvCell('Seguro &middot; &uacute;ltimo pago', v.seguro.ultimoPago) + kvCell('Seguro &middot; vencimiento', v.seguro.proxVenc) +
       kvCell('Licencia de conducir', items[6].txt, items[6].st) +
-    '</div></div>' +
+    '</div>' +
+    '<div style="margin-top:10px"><img src="licencias/' + v.dominio + '.jpg" onerror="this.style.display=\'none\'" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:8px;border:1px solid #e2e8f0;display:block;background:#f8fafc"></div>' +
+    '</div>' +
     '<div class="sec"><div class="sec-hd">Taller / observaciones</div><div class="kv-grid">' +
       kvCell('&Uacute;ltimo paso por taller', v.taller.fecha) + kvCell('Taller', v.taller.nombre) + kvCell('Tareas realizadas', v.taller.descripcion) +
       kvCell('Observaciones', v.observaciones.descripcion !== '-' ? v.observaciones.descripcion : 'Sin observaciones') +
