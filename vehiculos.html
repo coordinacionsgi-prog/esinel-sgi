@@ -383,7 +383,7 @@ function costBreakdownHTML(c) {
     { label: 'Mantenimiento', total: c.mantenimiento, km: c.mantenimientoKm, color: '#f59e0b' },
     { label: 'Telepeaje',     total: c.telepeaje,     km: c.telepeajeKm,     color: '#10b981' },
     { label: 'Costo fijo',    total: c.costoFijo,     km: c.costoFijoKm,     color: '#ef4444' },
-    { label: 'Plazo fijo ' + (c.tasaBCRA || 21) + '% anual', total: c.costoOportunidad, km: null, color: '#8b5cf6', dashed: true },
+    { label: 'Plazo fijo ' + (c.tasaBCRA || 21) + '% anual', total: c.costoOportunidad, km: null, color: '#f43f5e', dashed: true },
   ];
   const base = c.total || 1;
   let rows = components.map(comp => {
@@ -609,7 +609,7 @@ function renderAnalysis() {
         { label: 'Mantenimiento', data: dsMantenimiento, backgroundColor: '#f59e0b' },
         { label: 'Telepeaje', data: dsTelepeaje, backgroundColor: '#10b981' },
         { label: 'Costo fijo', data: dsFijo, backgroundColor: '#ef4444' },
-        { label: 'Costo oportunidad', data: dsOpor, backgroundColor: '#8b5cf6' }
+        { label: 'Costo oportunidad', data: dsOpor, backgroundColor: '#f43f5e' }
       ]
     },
     options: {
