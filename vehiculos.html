@@ -397,9 +397,9 @@ function costBreakdownHTML(c) {
   }).join('');
   const oporRow = c.costoOportunidad
     ? '<div class="cb-row" style="opacity:.7;border-top:1px dashed #e2e8f0;padding-top:7px;margin-top:3px">' +
-        '<div class="cb-label">Costo oportunidad</div>' +
+        '<div class="cb-label">Plazo fijo ' + (c.tasaBCRA ? c.tasaBCRA.toFixed(0) : '21') + '% anual</div>' +
         '<div class="cb-bar-wrap"></div>' +
-        '<div class="cb-vals">' + fmt$(c.costoOportunidad) + ' <span>tasa ' + (c.tasaBCRA ? c.tasaBCRA.toFixed(0) : '?') + '%</span></div>' +
+        '<div class="cb-vals">' + fmt$(c.costoOportunidad) + ' <span>capital inmovilizado / semestre</span></div>' +
       '</div>'
     : '';
   return '<div class="sec"><div class="sec-hd" style="display:flex;justify-content:space-between"><span>Costos &middot; ' + c.periodo + '</span>' +
@@ -581,7 +581,7 @@ function renderAnalysis() {
   const totalOpor = withOpor.reduce((s, v) => s + v.costo.costoOportunidad, 0);
   const tasa = withOpor.length ? withOpor[0].costo.tasaBCRA : null;
   document.getElementById('an-opor').textContent = withOpor.length ? fmt$(totalOpor) : '—';
-  document.getElementById('an-opor-sub').textContent = tasa ? 'Capital inmovilizado · tasa ' + tasa.toFixed(0) + '% anual' : 'Sincronizá para calcular';
+  document.getElementById('an-opor-sub').textContent = tasa ? 'Lo que hubiera ganado en plazo fijo · ' + tasa.toFixed(0) + '% anual' : 'Sincronizá para calcular';
 
   document.getElementById('metric-tabs').innerHTML = METRICS.map(m =>
     '<span class="mtab' + (m.key === activeMetric ? ' act' : '') + '" data-k="' + m.key + '" onclick="setMetric(\'' + m.key + '\')">' + m.label + '</span>'
