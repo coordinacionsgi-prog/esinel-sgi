@@ -24,8 +24,8 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;border-left:4px solid #cbd5e1;cursor:pointer;transition:box-shadow .15s,transform .1s;overflow:hidden}
 .card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);transform:translateY(-1px)}
-.c-photo{width:calc(100% + 32px);margin:-16px -16px 12px;height:140px;object-fit:cover;display:block;background:#f1f5f9}
-.modal-photo{width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:14px;display:block;background:#f1f5f9}
+.c-photo{width:calc(100% + 32px);margin:-16px -16px 12px;height:160px;object-fit:contain;display:block;background:#f8fafc}
+.modal-photo{width:100%;height:220px;object-fit:contain;border-radius:10px;margin-bottom:14px;display:block;background:#f8fafc}
 .c-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:6px}
 .c-dom{font-family:'SF Mono',Consolas,monospace;font-size:13px;font-weight:700;color:#0f172a}
 .c-marca{font-size:12.5px;color:#475569;margin-top:1px}
@@ -295,6 +295,11 @@ function dateStatus(dateVal) {
   return { st: 'ok', txt: dateVal.text };
 }
 
+function licenciaStatus(v) {
+  if (!v.licencia) return { st: 'sin', txt: 'Sin dato' };
+  return dateStatus(v.licencia);
+}
+
 function vehItems(v) {
   return [
     { label: 'Aceite', ...kmStatus(v.km, v.aceite.prox, intervalFor(v.aceite.frec, v.aceite.prox, 10000)) },
@@ -302,7 +307,8 @@ function vehItems(v) {
     { label: 'Correa', ...kmStatus(v.km, v.correa.prox, intervalFor(v.correa.frec, v.correa.prox, 40000)) },
     { label: 'VTV', ...dateStatus(v.vtv.proxima) },
     { label: 'Botiqu&iacute;n', ...dateStatus(v.botiquin.proxima) },
-    { label: 'Matafuego', ...dateStatus(v.matafuego.proxima) }
+    { label: 'Matafuego', ...dateStatus(v.matafuego.proxima) },
+    { label: 'Licencia', ...licenciaStatus(v) }
   ];
 }
 function worstStatus(items) {
@@ -338,7 +344,7 @@ function updateStats() {
 function cardHtml(v, idx) {
   const items = vehItems(v);
   const w = worstStatus(items);
-  const chips = items.filter(i => i.st !== 'ok').map(i =>
+  const chips = items.filter(i => i.st !== 'ok' && !(i.label === 'Licencia' && i.st === 'sin')).map(i =>
     '<span class="alert-chip" style="background:' + ST_BG[i.st] + ';color:' + ST_COLOR[i.st] + '">' + i.label + '</span>'
   ).join('') || '<span class="alert-chip" style="background:' + ST_BG.ok + ';color:' + GREEN + '">Todo al d&iacute;a</span>';
   const c = v.costo;
@@ -421,6 +427,7 @@ function openModal(idx) {
     '<div class="sec"><div class="sec-hd">Documentaci&oacute;n</div><div class="kv-grid">' +
       kvCell('Patente &middot; &uacute;ltimo pago', v.patente.ultimoPago) + kvCell('Patente &middot; vencimiento', v.patente.proxVenc) +
       kvCell('Seguro &middot; &uacute;ltimo pago', v.seguro.ultimoPago) + kvCell('Seguro &middot; vencimiento', v.seguro.proxVenc) +
+      kvCell('Licencia de conducir', items[6].txt, items[6].st) +
     '</div></div>' +
     '<div class="sec"><div class="sec-hd">Taller / observaciones</div><div class="kv-grid">' +
       kvCell('&Uacute;ltimo paso por taller', v.taller.fecha) + kvCell('Taller', v.taller.nombre) + kvCell('Tareas realizadas', v.taller.descripcion) +
