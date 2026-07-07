@@ -383,28 +383,27 @@ function costBreakdownHTML(c) {
     { label: 'Mantenimiento', total: c.mantenimiento, km: c.mantenimientoKm, color: '#f59e0b' },
     { label: 'Telepeaje',     total: c.telepeaje,     km: c.telepeajeKm,     color: '#10b981' },
     { label: 'Costo fijo',    total: c.costoFijo,     km: c.costoFijoKm,     color: '#ef4444' },
+    { label: 'Plazo fijo ' + (c.tasaBCRA || 21) + '% anual', total: c.costoOportunidad, km: null, color: '#8b5cf6', dashed: true },
   ];
   const base = c.total || 1;
   let rows = components.map(comp => {
     if (!comp.total) return '';
     const pct = Math.round((comp.total / base) * 100);
     const kmStr = comp.km ? fmt$(comp.km) + '/km' : '';
-    return '<div class="cb-row">' +
+    const sep = comp.dashed ? 'border-top:1px dashed #e2e8f0;padding-top:7px;margin-top:3px;opacity:.85' : '';
+    const barStyle = comp.dashed
+      ? 'width:' + pct + '%;background:repeating-linear-gradient(90deg,#8b5cf6 0,#8b5cf6 6px,transparent 6px,transparent 10px)'
+      : 'width:' + pct + '%;background:' + comp.color;
+    const sub = comp.dashed ? 'capital inmovilizado / semestre' : '(' + pct + '%) ' + kmStr;
+    return '<div class="cb-row" style="' + sep + '">' +
       '<div class="cb-label">' + comp.label + '</div>' +
-      '<div class="cb-bar-wrap"><div class="cb-bar" style="width:' + pct + '%;background:' + comp.color + '"></div></div>' +
-      '<div class="cb-vals">' + fmt$(comp.total) + ' <span>(' + pct + '%) ' + kmStr + '</span></div>' +
+      '<div class="cb-bar-wrap"><div class="cb-bar" style="' + barStyle + '"></div></div>' +
+      '<div class="cb-vals">' + fmt$(comp.total) + ' <span>' + sub + '</span></div>' +
     '</div>';
   }).join('');
-  const oporRow = c.costoOportunidad
-    ? '<div class="cb-row" style="opacity:.7;border-top:1px dashed #e2e8f0;padding-top:7px;margin-top:3px">' +
-        '<div class="cb-label">Plazo fijo ' + (c.tasaBCRA ? c.tasaBCRA.toFixed(0) : '21') + '% anual</div>' +
-        '<div class="cb-bar-wrap"></div>' +
-        '<div class="cb-vals">' + fmt$(c.costoOportunidad) + ' <span>capital inmovilizado / semestre</span></div>' +
-      '</div>'
-    : '';
   return '<div class="sec"><div class="sec-hd" style="display:flex;justify-content:space-between"><span>Costos &middot; ' + c.periodo + '</span>' +
     '<span style="font-size:12px;font-weight:700;color:#0f172a">' + fmt$(c.total) + (c.costoKm ? ' &middot; ' + fmt$(c.costoKm) + '/km' : '') + (c.km ? ' &middot; ' + fmtKm(c.km) : '') + '</span></div>' +
-    '<div class="cost-breakdown">' + rows + oporRow + '</div></div>';
+    '<div class="cost-breakdown">' + rows + '</div></div>';
 }
 
 function openModal(idx) {
@@ -481,7 +480,8 @@ const METRICS = [
   { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km', desc: 'Cargas de combustible (nafta / gasoil)' },
   { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumáticos, reparaciones mecánicas y service' },
   { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vía tag / telepeaje)' },
-  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' }
+  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' },
+  { key: 'costoOportunidad', label: 'Costo oportunidad', get: c => c.costoOportunidad, fmt: fmt$, desc: 'Capital inmovilizado: lo que hubiera ganado en plazo fijo al 21% anual por semestre' }
 ];
 let activeMetric = 'total';
 
@@ -597,6 +597,7 @@ function renderAnalysis() {
   const dsMantenimiento = top8.map(v => v.costo.mantenimiento || 0);
   const dsTelepeaje = top8.map(v => v.costo.telepeaje || 0);
   const dsFijo = top8.map(v => v.costo.costoFijo || 0);
+  const dsOpor = top8.map(v => v.costo.costoOportunidad || 0);
 
   if (chartCompInst) chartCompInst.destroy();
   chartCompInst = new Chart(document.getElementById('chartComposicion'), {
@@ -607,7 +608,8 @@ function renderAnalysis() {
         { label: 'Combustible', data: dsCombustible, backgroundColor: '#3b82f6' },
         { label: 'Mantenimiento', data: dsMantenimiento, backgroundColor: '#f59e0b' },
         { label: 'Telepeaje', data: dsTelepeaje, backgroundColor: '#10b981' },
-        { label: 'Costo fijo', data: dsFijo, backgroundColor: '#ef4444' }
+        { label: 'Costo fijo', data: dsFijo, backgroundColor: '#ef4444' },
+        { label: 'Costo oportunidad', data: dsOpor, backgroundColor: '#8b5cf6' }
       ]
     },
     options: {
