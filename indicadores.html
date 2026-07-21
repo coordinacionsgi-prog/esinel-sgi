@@ -81,6 +81,10 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
     <button class="abtn act" data-a="" onclick="setArea('')">Todos</button>
     <button class="abtn" data-a="Comercial" onclick="setArea('Comercial')">Comercial</button><button class="abtn" data-a="Ingeniería" onclick="setArea('Ingeniería')">Ingeniería</button><button class="abtn" data-a="Compras" onclick="setArea('Compras')">Compras</button><button class="abtn" data-a="Producción" onclick="setArea('Producción')">Producción</button><button class="abtn" data-a="Obra" onclick="setArea('Obra')">Obra</button><button class="abtn" data-a="RRHH" onclick="setArea('RRHH')">RRHH</button><button class="abtn" data-a="Medio Ambiente" onclick="setArea('Medio Ambiente')">Medio Ambiente</button><button class="abtn" data-a="Seguridad e Higiene" onclick="setArea('Seguridad e Higiene')">Seguridad e Higiene</button>
   </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+    <span style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px">Ejercicio</span>
+    <div id="ejercicios" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+  </div>
   <div id="sections"></div>
 </div>
 
@@ -94,6 +98,7 @@ const ITEMS = DATA.d;
 const ST = {1:["Cumple","#166534","#dcfce7","#16a34a"],0:["No cumple","#991b1b","#fee2e2","#dc2626"],"-1":["Sin dato","#475569","#f1f5f9","#cbd5e1"]};
 const GREEN = '#16a34a', RED = '#dc2626', GRAY = '#94a3b8';
 let activeArea = '';
+let activeEj = null;
 let chartInst = null;
 
 let GLOBAL_MIN_EJ = Infinity, GLOBAL_MAX_EJ = -Infinity;
@@ -119,13 +124,21 @@ function alignEj(ejSeries) {
 
 function setArea(a) {
   activeArea = a;
-  document.querySelectorAll('.abtn').forEach(b => b.classList.toggle('act', b.dataset.a === a));
+  document.querySelectorAll('.abtn[data-a]').forEach(b => b.classList.toggle('act', b.dataset.a === a));
   render();
 }
 
-function spark(ejSeriesRaw, color, w, h) {
+function setEj(ej) {
+  activeEj = ej;
+  document.querySelectorAll('.ejbtn').forEach(b => b.classList.toggle('act', (b.dataset.ej === '' ? null : +b.dataset.ej) === ej));
+  updateStats();
+  render();
+}
+
+function spark(ejSeriesRaw, color, w, h, maxEj) {
   w = w || 150; h = h || 79;
-  const pts = alignEj(ejSeriesRaw);
+  let pts = alignEj(ejSeriesRaw);
+  if (maxEj != null) pts = pts.filter(p => p[0] <= maxEj);
   const hasData = pts.some(p => p[1] !== null);
   if (!hasData) return '';
   const padTop = 7, padBottom = 8, padX = 4;
@@ -189,12 +202,19 @@ function currentEjercicio() {
   return mo >= 4 ? y - 1991 : y - 1992;
 }
 
-function closedEjStatus(ejSeries) {
-  const closedEjNum = currentEjercicio() - 1;
-  let lastIdx = ejSeries.findIndex(p => p[0] === closedEjNum);
-  if (lastIdx === -1) lastIdx = ejSeries.map(p => p[1]).reduce((acc, v, i) => v !== null ? i : acc, -1);
-  const lastEj = ejSeries[lastIdx];
-  const nextEj = ejSeries[lastIdx + 1];
+function closedEjStatus(ejSeries, targetEj) {
+  let idx;
+  if (targetEj != null) {
+    idx = ejSeries.findIndex(p => p[0] === targetEj);
+    if (idx === -1) return { lastEj: [targetEj, null, null], nextEj: null, compliant: -1 };
+  } else {
+    const closedEjNum = currentEjercicio() - 1;
+    idx = ejSeries.findIndex(p => p[0] === closedEjNum);
+    if (idx === -1) idx = ejSeries.map(p => p[1]).reduce((acc, v, j) => v !== null ? j : acc, -1);
+  }
+  if (idx === -1) return { lastEj: ejSeries[0] || [0, null, null], nextEj: null, compliant: -1 };
+  const lastEj = ejSeries[idx];
+  const nextEj = ejSeries[idx + 1] || null;
   const compliant = (lastEj[1] !== null && lastEj[2] !== null) ? (lastEj[1] >= lastEj[2] ? 1 : 0) : -1;
   return { lastEj, nextEj, compliant };
 }
@@ -204,20 +224,20 @@ function naturalCode(code) {
   return m ? [m[1], parseInt(m[2] || '0', 10)] : [code, 0];
 }
 
-function histAvg(ejSeries) {
-  const vals = ejSeries.map(p => p[1]).filter(v => v !== null);
+function histAvg(ejSeries, maxEj) {
+  const vals = ejSeries.filter(p => maxEj == null || p[0] <= maxEj).map(p => p[1]).filter(v => v !== null);
   if (!vals.length) return null;
   return vals.reduce((a,b) => a+b, 0) / vals.length;
 }
 
 function cardHtml(d) {
   const code = d[0], name = d[1], ejSeries = d[8];
-  const { lastEj, nextEj, compliant } = closedEjStatus(ejSeries);
+  const { lastEj, nextEj, compliant } = closedEjStatus(ejSeries, activeEj);
   const stArr = ST[compliant]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
   const valTxt = fmt(lastEj[1]);
   const objTxt = lastEj[2] !== null ? ('Obj ' + fmt1(lastEj[2])) : 'Sin objetivo';
   const nextTxt = (nextEj && nextEj[2] !== null) ? ('Ejercicio ' + nextEj[0] + ' &middot; objetivo propuesto ' + fmt1(nextEj[2])) : '';
-  const avg = histAvg(ejSeries);
+  const avg = histAvg(ejSeries, activeEj);
   const avgTxt = avg !== null ? ('Promedio hist&oacute;rico ' + fmt1(avg)) : '';
   const i = ITEMS.indexOf(d);
   return '<div class="card" style="border-left-color:' + sLine + '" onclick="openModal(' + i + ')">' +
@@ -225,13 +245,13 @@ function cardHtml(d) {
     '<span class="pill" style="background:' + sBg + ';color:' + sFg + '">' + sLbl + '</span></div>' +
     '<div class="c-mid"><span class="c-val" style="color:' + sLine + '">' + valTxt + '</span><span class="c-obj">Ejercicio ' + lastEj[0] + ' &middot; ' + objTxt + '</span></div>' +
     (avgTxt ? '<div class="c-next">' + avgTxt + (nextTxt ? ' &middot; ' + nextTxt : '') + '</div>' : (nextTxt ? '<div class="c-next">' + nextTxt + '</div>' : '')) +
-    spark(ejSeries, sLine) + '</div>';
+    spark(ejSeries, sLine, undefined, undefined, activeEj) + '</div>';
 }
 
 function updateStats() {
   let cumplen = 0, noCumplen = 0, sinDato = 0;
   ITEMS.forEach(d => {
-    const { compliant } = closedEjStatus(d[8]);
+    const { compliant } = closedEjStatus(d[8], activeEj);
     if (compliant === 1) cumplen++;
     else if (compliant === 0) noCumplen++;
     else sinDato++;
@@ -357,6 +377,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 updateStats();
 render();
+const _ejNums=[...new Set(ITEMS.flatMap(d=>(d[8]||[]).map(p=>p[0])))].sort((a,b)=>a-b);
+document.getElementById('ejercicios').innerHTML='<button class="ejbtn abtn act" data-ej="" onclick="setEj(null)">Todos</button>'+_ejNums.map(e=>'<button class="ejbtn abtn" data-ej="'+e+'" onclick="setEj('+e+')">Ej '+e+'</button>').join('');
 </script>
 </body>
 </html>
