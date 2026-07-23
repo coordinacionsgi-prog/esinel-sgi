@@ -81,11 +81,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
     <button class="abtn act" data-a="" onclick="setArea('')">Todos</button>
     <button class="abtn" data-a="Comercial" onclick="setArea('Comercial')">Comercial</button><button class="abtn" data-a="Ingeniería" onclick="setArea('Ingeniería')">Ingeniería</button><button class="abtn" data-a="Compras" onclick="setArea('Compras')">Compras</button><button class="abtn" data-a="Producción" onclick="setArea('Producción')">Producción</button><button class="abtn" data-a="Obra" onclick="setArea('Obra')">Obra</button><button class="abtn" data-a="RRHH" onclick="setArea('RRHH')">RRHH</button><button class="abtn" data-a="Medio Ambiente" onclick="setArea('Medio Ambiente')">Medio Ambiente</button><button class="abtn" data-a="Seguridad e Higiene" onclick="setArea('Seguridad e Higiene')">Seguridad e Higiene</button>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap">
-    <span style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px">Ejercicio</span>
-    <div id="ejercicios" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+  <div style="display:flex;gap:16px;align-items:flex-start;margin-top:8px">
+    <div style="display:flex;flex-direction:column;gap:4px;padding-top:2px;flex-shrink:0">
+      <span style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Ejercicio</span>
+      <div id="ejercicios" style="display:flex;flex-direction:column;gap:4px;align-items:stretch"></div>
+    </div>
+    <div id="sections" style="flex:1;min-width:0"></div>
   </div>
-  <div id="sections"></div>
 </div>
 
 <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
@@ -137,8 +139,7 @@ function setEj(ej) {
 
 function spark(ejSeriesRaw, color, w, h, maxEj) {
   w = w || 150; h = h || 79;
-  let pts = alignEj(ejSeriesRaw);
-  if (maxEj != null) pts = pts.filter(p => p[0] <= maxEj);
+  const pts = maxEj != null ? ejSeriesRaw.filter(p => p[0] === maxEj) : alignEj(ejSeriesRaw);
   const hasData = pts.some(p => p[1] !== null);
   if (!hasData) return '';
   const padTop = 7, padBottom = 8, padX = 4;
@@ -377,7 +378,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 updateStats();
 render();
-const _ejNums=[...new Set(ITEMS.flatMap(d=>(d[8]||[]).map(p=>p[0])))].sort((a,b)=>a-b);
+const _ejNums=[...new Set(ITEMS.flatMap(d=>(d[8]||[]).map(p=>p[0])))].filter(e=>e<=currentEjercicio()).sort((a,b)=>a-b);
 document.getElementById('ejercicios').innerHTML='<button class="ejbtn abtn act" data-ej="" onclick="setEj(null)">Todos</button>'+_ejNums.map(e=>'<button class="ejbtn abtn" data-ej="'+e+'" onclick="setEj('+e+')">Ej '+e+'</button>').join('');
 </script>
 </body>
