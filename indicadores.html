@@ -165,7 +165,7 @@ function spark(ejSeriesRaw, color, w, h, maxEj, periodData) {
   const ymin = 0, ymax = 11;
   const n = pts.length;
   const bw = 12, gap = 5;
-  const vw = n * (bw + gap) - gap + 2*padX;
+  const vw = Math.max(n * (bw + gap) - gap + 2*padX, w);
   const sx = i => padX + i * (bw + gap);
   const sy = v => (h - padBottom) - (v - ymin)/(ymax - ymin || 1) * (h - padTop - padBottom);
   const fmtCompact = v => { const f = Math.floor(v * 10) / 10; return (Math.round(f * 10) % 10 === 0) ? String(Math.floor(f)) : fmt1(v); };
