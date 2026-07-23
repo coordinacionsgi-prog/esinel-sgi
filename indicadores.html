@@ -65,6 +65,21 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .hist-table td{padding:6px 8px;border-bottom:1px solid #f1f5f9}
 .hist-table tr:last-child td{border-bottom:none}
 .hist-wrap{max-height:240px;overflow-y:auto;border:1px solid #f1f5f9;border-radius:8px}
+.c-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.c-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.c-meta{flex:1;display:flex;flex-direction:column;gap:1px}
+.c-freq{font-size:10px;color:#94a3b8;font-style:italic;display:block}
+.c-name{font-size:13px;font-weight:500;color:#334155;line-height:1.35;margin-bottom:6px}
+.c-row{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.c-val{font-size:26px;font-weight:700;line-height:1}
+.c-sub{font-size:11px;color:#94a3b8}
+.c-foot{font-size:11px;color:#94a3b8;margin-top:4px;border-top:1px solid #f1f5f9;padding-top:5px}
+.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid transparent;white-space:nowrap}
+.chip-ok{background:#dcfce7;color:#16a34a;border-color:#bbf7d0}
+.chip-no{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+.chip-nd{background:#f8fafc;color:#94a3b8;border-color:#e2e8f0}
+.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,transform .15s;border-left:none!important}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.06);transform:translateY(-2px)}
 </style>
 </head>
 <body>
@@ -137,9 +152,13 @@ function setEj(ej) {
   render();
 }
 
-function spark(ejSeriesRaw, color, w, h, maxEj) {
+function ejOfDate(iso){var y=+iso.slice(0,4),mo=+iso.slice(5,7);return mo>=4?y-1991:y-1992;}
+
+function spark(ejSeriesRaw, color, w, h, maxEj, periodData) {
   w = w || 150; h = h || 79;
-  const pts = maxEj != null ? ejSeriesRaw.filter(p => p[0] === maxEj) : alignEj(ejSeriesRaw);
+  var MESES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+  var pts;
+  if(maxEj!=null){var pBars=(periodData||[]).filter(function(p){return ejOfDate(p[0])===maxEj&&p[1]!=null;});if(pBars.length>0){pts=pBars.map(function(p){return[MESES[+p[0].slice(5,7)-1],p[1],p[2]];});}else{var fe=ejSeriesRaw.filter(function(p){return p[0]===maxEj;})[0];pts=fe&&fe[1]!=null?[[maxEj,fe[1],fe[2]]]:[];}}else{pts=alignEj(ejSeriesRaw);}
   const hasData = pts.some(p => p[1] !== null);
   if (!hasData) return '';
   const padTop = 7, padBottom = 8, padX = 4;
@@ -232,23 +251,30 @@ function histAvg(ejSeries, maxEj) {
 }
 
 function cardHtml(d) {
-  const code = d[0], name = d[1], ejSeries = d[8];
-  const { lastEj, nextEj, compliant } = closedEjStatus(ejSeries, activeEj);
-  const stArr = ST[compliant]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
-  const valTxt = fmt(lastEj[1]);
-  const objTxt = lastEj[2] !== null ? ('Obj ' + fmt1(lastEj[2])) : 'Sin objetivo';
-  const nextTxt = (nextEj && nextEj[2] !== null) ? ('Ejercicio ' + nextEj[0] + ' &middot; objetivo propuesto ' + fmt1(nextEj[2])) : '';
-  const avg = histAvg(ejSeries, activeEj);
-  const avgTxt = avg !== null ? ('Promedio hist&oacute;rico ' + fmt1(avg)) : '';
-  const i = ITEMS.indexOf(d);
-  return '<div class="card" style="border-left-color:' + sLine + '" onclick="openModal(' + i + ')">' +
-    '<div class="c-top"><div><div class="c-code">' + code + '</div><div class="c-name">' + name + '</div></div>' +
-    '<span class="pill" style="background:' + sBg + ';color:' + sFg + '">' + sLbl + '</span></div>' +
-    '<div class="c-mid"><span class="c-val" style="color:' + sLine + '">' + valTxt + '</span><span class="c-obj">Ejercicio ' + lastEj[0] + ' &middot; ' + objTxt + '</span></div>' +
-    (avgTxt ? '<div class="c-next">' + avgTxt + (nextTxt ? ' &middot; ' + nextTxt : '') + '</div>' : (nextTxt ? '<div class="c-next">' + nextTxt + '</div>' : '')) +
-    spark(ejSeries, sLine, undefined, undefined, activeEj) + '</div>';
+  var code=d[0],name=d[1],area=d[2],ejSeries=d[8],pData=d[7],freq=d[11]||'';
+  var s=closedEjStatus(ejSeries,activeEj),lastEj=s.lastEj,nextEj=s.nextEj,c=s.compliant;
+  var avg=histAvg(ejSeries,activeEj),puntaje=lastEj[1],obj=lastEj[2],ejNum=lastEj[0];
+  var AC={Comercial:'#3b82f6',Ingeniería:'#8b5cf6',Compras:'#f59e0b',Producción:'#10b981',Obra:'#64748b',RRHH:'#ec4899','Medio Ambiente':'#22c55e','Seguridad e Higiene':'#ef4444'};
+  var col=AC[area]||' #94a3b8',init=(area||'?')[0];
+  var sLine=c===1?'#16a34a':c===0?'#dc2626':'#94a3b8';
+  var chipCls=c===1?'chip-ok':c===0?'chip-no':'chip-nd';
+  var chipLbl=c===1?'Cumple':c===0?'No cumple':'Sin dato';
+  var sc=puntaje!=null?fmt1(puntaje):'—',ob=obj!=null?fmt1(obj):'—';
+  var foot='';
+  if(avg!=null)foot='Hist '+fmt1(avg);
+  if(nextEj&&nextEj[2]!=null)foot+=(foot?' &middot; ':'')+'Ej '+nextEj[0]+' obj '+fmt1(nextEj[2]);
+  var i=ITEMS.indexOf(d);
+  return '<div class="card" onclick="openModal('+i+')">'+
+    '<div class="c-head"><div class="c-dot" style="background:'+col+'">'+ init +'</div>'+
+    '<div class="c-meta"><b class="c-code">'+code+'</b>'+
+    (freq?'<span class="c-freq">'+freq+'</span>':'')+
+    '</div><span class="chip '+chipCls+'">'+ chipLbl +'</span></div>'+
+    '<div class="c-name">'+name+'</div>'+
+    '<div class="c-row"><span class="c-val" style="color:'+sLine+'">'+ sc +'</span>'+
+    '<span class="c-sub">Ej '+ejNum+' &middot; Obj '+ob+'</span></div>'+
+    spark(ejSeries,col,undefined,undefined,activeEj,pData)+
+    '<div class="c-foot">'+foot+'</div></div>';
 }
-
 function updateStats() {
   let cumplen = 0, noCumplen = 0, sinDato = 0;
   ITEMS.forEach(d => {
