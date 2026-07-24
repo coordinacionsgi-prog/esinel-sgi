@@ -2,6 +2,148 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Indicadores SGI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex;height:100vh;overflow:hidden}
+/* SIDEBAR */
+.sb{width:220px;background:#fff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sb-logo{padding:18px 16px 12px;border-bottom:1px solid #f1f5f9}
+.sb-logo span{font-size:13px;font-weight:700;color:#1e293b;letter-spacing:.3px}
+.sb-logo sub{display:block;font-size:10px;color:#94a3b8;font-weight:400;margin-top:1px}
+.sb-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px 10px;border-bottom:1px solid #f1f5f9}
+.sb-stat{background:#f8fafc;border-radius:8px;padding:8px 10px}
+.sb-stat-n{font-size:18px;font-weight:700;color:#1e293b;line-height:1}
+.sb-stat-l{font-size:9px;color:#94a3b8;margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
+.sb-stat.ok .sb-stat-n{color:#16a34a}
+.sb-stat.no .sb-stat-n{color:#dc2626}
+.sb-stat.nd .sb-stat-n{color:#94a3b8}
+.sb-section{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;padding:10px 14px 4px}
+.sb-scroll{overflow-y:auto;flex:1}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:#475569;border-radius:0;transition:background .1s}
+.sb-item:hover{background:#f8fafc}
+.sb-item.active{background:#eff6ff;color:#2563eb;font-weight:600}
+.sb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sb-count{margin-left:auto;font-size:10px;color:#94a3b8;background:#f1f5f9;border-radius:10px;padding:1px 6px}
+.sb-item.active .sb-count{background:#dbeafe;color:#3b82f6}
+/* MAIN LIST */
+.list{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.list-top{padding:16px 20px 12px;background:#fff;border-bottom:1px solid #e2e8f0;flex-shrink:0}
+.list-top h1{font-size:15px;font-weight:700;color:#1e293b}
+.list-top p{font-size:11px;color:#94a3b8;margin-top:2px}
+.list-body{overflow-y:auto;flex:1;padding:0}
+.sec-hd{padding:10px 20px 4px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;background:#f1f5f9;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:2}
+.ind-row{display:flex;align-items:center;gap:10px;padding:9px 20px;background:#fff;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .1s}
+.ind-row:hover{background:#f8fafc}
+.ind-row.active{background:#eff6ff}
+.row-dot{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.row-info{flex:1;min-width:0}
+.row-code{font-size:10px;color:#94a3b8;font-weight:500}
+.row-name{font-size:12px;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.row-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.row-score{font-size:15px;font-weight:700;line-height:1}
+.row-score.ok{color:#16a34a}
+.row-score.no{color:#dc2626}
+.row-score.nd{color:#94a3b8}
+.chip{font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px}
+.chip-ok{background:#dcfce7;color:#16a34a}
+.chip-no{background:#fee2e2;color:#dc2626}
+.chip-nd{background:#f1f5f9;color:#94a3b8}
+/* DETAIL PANEL */
+.detail{width:420px;background:#fff;border-left:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transform:translateX(420px);transition:transform .2s}
+.detail.open{transform:translateX(0)}
+.det-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:18px;color:#94a3b8;cursor:pointer;z-index:3;padding:4px 8px;border-radius:6px}
+.det-close:hover{background:#f1f5f9;color:#475569}
+.det-hd{padding:20px;border-bottom:1px solid #f1f5f9;position:relative}
+.det-dot{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
+.det-code{font-size:10px;color:#94a3b8;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.det-name{font-size:15px;font-weight:700;color:#1e293b;margin:4px 0 8px;line-height:1.3}
+.det-tags{display:flex;gap:6px;flex-wrap:wrap}
+.det-tag{font-size:10px;background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:10px}
+.kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 20px;border-bottom:1px solid #f1f5f9}
+.kpi{background:#f8fafc;border-radius:10px;padding:10px}
+.kpi-n{font-size:20px;font-weight:700;color:#1e293b;line-height:1}
+.kpi-n.ok{color:#16a34a}
+.kpi-n.no{color:#dc2626}
+.kpi-l{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.chart-sec{flex:1;display:flex;flex-direction:column;padding:14px 20px;overflow:hidden}
+.chart-toggle{display:flex;gap:0;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:12px;width:fit-content}
+.toggle-btn{padding:5px 14px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;color:#64748b;background:none;transition:all .15s}
+.toggle-btn.active{background:#fff;color:#1e293b;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.chart-wrap{flex:1;overflow:hidden;min-height:0}
+.chart-wrap svg{width:100%;height:100%}
+.det-foot{padding:12px 20px;border-top:1px solid #f1f5f9;font-size:11px;color:#64748b;display:flex;gap:16px;flex-wrap:wrap}
+.det-foot span{display:flex;align-items:center;gap:4px}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:90%;max-width:700px;max-height:90vh;overflow:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:#64748b;margin-bottom:20px}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;margin-top:-4px}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-logo">
+    <span>SGI Indicadores</span>
+    <sub id="sb-ej-label">Cargando...</sub>
+  </div>
+  <div class="sb-stats" id="sb-stats"></div>
+  <div class="sb-scroll">
+    <div class="sb-section">Áreas</div>
+    <div id="sb-areas"></div>
+    <div class="sb-section">Ejercicio</div>
+    <div id="sb-ejs"></div>
+  </div>
+</aside>
+
+<!-- MAIN LIST -->
+<main class="list">
+  <div class="list-top">
+    <h1 id="list-title">Todos los indicadores</h1>
+    <p id="list-sub"></p>
+  </div>
+  <div class="list-body" id="list-body"></div>
+</main>
+
+<!-- DETAIL PANEL -->
+<aside class="detail" id="detail">
+  <button class="det-close" onclick="closeDetail()">×</button>
+  <div class="det-hd">
+    <div class="det-dot" id="det-dot"></div>
+    <div class="det-code" id="det-code"></div>
+    <div class="det-name" id="det-name"></div>
+    <div class="det-tags" id="det-tags"></div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="chart-sec">
+    <div class="chart-toggle">
+      <button class="toggle-btn active" id="btn-ej" onclick="setMode('ej')">Por ejercicio</button>
+      <button class="toggle-btn" id="btn-per" onclick="setMode('per')">Períodos</button>
+    </div>
+    <div class="chart-wrap" id="chart-wrap"></div>
+  </div>
+  <div class="det-foot" id="det-foot"></div>
+</aside>
+
+<!-- MODAL (reuse existing) -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modalTitle"></h2>
+    <div class="modal-sub" id="modalSub"></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const ITEMS = l>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SGI - Indicadores</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -110,302 +252,322 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 </div>
 
 <script>
-const DATA = {"areas":["Comercial","Ingeniería","Compras","Producción","Obra","RRHH","Medio Ambiente","Seguridad e Higiene"],"d":[["COME1","Encuesta anual a clientes","Comercial",8.7,"30/06/2026",7.5,1,[["2018-12-31",8.7,6],["2019-12-31",7.9,7],["2020-12-31",8.8,7],["2021-12-31",8.5,7],["2022-03-31",9.1,7],["2023-03-31",null,7],["2023-06-30",10,7],["2023-09-30",8.7,7],["2023-12-31",null,7],["2024-03-31",null,7],["2024-06-30",9.2,7],["2024-09-30",7,7],["2024-12-31",8,7],["2025-03-31",10,7],["2025-06-30",8.8,7],["2025-09-30",8.6,7],["2025-12-31",8.4,7],["2026-03-31",8.2,7],["2026-06-30",8.7,7.5],["2026-09-30",null,7.5],["2026-12-31",null,7.5],["2027-03-31",null,7.5]],[[27,8.7,6],[28,7.9,7],[29,8.8,7],[30,8.8,7],[31,null,7],[32,9.35,7],[33,8.55,7],[34,8.5,7],[35,8.7,7.5]],"Mantener la satisfacción de los Clientes","Encuesta de satisfacción","Trimestral","Comercial - Gerencia General","Ej.33->34: Llamado del encargado de obra al cliente para obtener opinion directa y actualizada (objetivo Ej.34: 7 pts). | Ej.34->35: Aumentar objetivo a 7,50 pts y medir % de participacion. Segmentar encuestas por tipo de contrato (Ing/Obra/Tab). Seguimiento intermedio (50% avance) en obras > 4 meses. Implementar dashboard en HPOT (objetivo Ej.35: 7,50 pts)."],["COME2","Clientes potenciales","Comercial",10,"31/03/2026",8,1,[["2018-03-18",8,6],["2018-07-18",10,6],["2018-11-30",10,6],["2019-03-31",10,6],["2019-07-31",8,8],["2019-11-30",10,8],["2020-03-31",10,8],["2020-07-31",10,8],["2020-11-30",10,8],["2021-03-31",8,8],["2021-07-31",9,8],["2021-11-30",8,8],["2022-03-31",10,8],["2022-07-31",10,8],["2022-11-30",10,8],["2023-03-31",10,8],["2023-07-31",10,8],["2023-11-30",10,8],["2024-03-31",10,8],["2024-07-31",10,8],["2024-11-30",10,8],["2025-03-31",10,8],["2025-07-31",10,8],["2025-11-30",10,8],["2026-03-31",10,8],["2026-07-31",null,8],["2026-11-30",null,8],["2027-03-31",null,8],["2027-07-31",null,8]],[[26,8,6],[27,10,6],[28,9.33,8],[29,9.33,8],[30,9,8],[31,10,8],[32,10,8],[33,10,8],[34,10,8],[35,null,8],[36,null,8]],"Aumentar cantidad de Clientes Potenciales","Incorporar Datos de nuevos clientes (desde abril 2024 solo nuevos, no repetidos)","Cuatrimestral","Comercial - Gerencia General","Ej.33->34: Filtrar por rango de cliente segun magnitud e importancia de la obra (objetivo Ej.34: 8 pts). | Ej.34->35: Elevar objetivo de clientes nuevos. Segmentar por bases: Santa Fe, AMBA y Mar del Plata. Clientes recuperados (>3 anios) tomados como nuevos. Uso de HPOT para automatizacion y registro preciso (objetivo Ej.35: 8 pts)."],["COME3","Obras cotizadas vs adjudicadas","Comercial",9,"31/05/2026",8,1,[["2018-03-31",10,8],["2018-07-31",8,8],["2018-11-30",8,8],["2019-03-31",8,8],["2019-07-31",8,8],["2019-11-30",10,8],["2020-03-31",10,8],["2020-07-31",9,8],["2020-11-30",8,8],["2021-03-31",10,8],["2021-07-31",5,8],["2021-11-30",8,8],["2022-03-31",8,8],["2022-07-31",8,7.5],["2022-11-30",9,7.5],["2023-03-31",10,7.5],["2023-07-31",10,8],["2023-11-30",10,8],["2024-03-31",9,8],["2024-07-31",8,8],["2024-11-30",8,8],["2025-03-31",8,8],["2025-05-31",9,8],["2025-07-31",8,8],["2025-09-30",7,8],["2025-11-30",9,8],["2026-01-31",9,8],["2026-03-31",10,8],["2026-05-31",9,8],["2026-07-31",null,8],["2026-09-30",null,8],["2026-11-30",null,8],["2027-01-31",null,8],["2027-03-31",null,8]],[[26,10,8],[27,8,8],[28,9.33,8],[29,9,8],[30,7,8],[31,9,7.5],[32,9.67,8],[33,8,8],[34,8.67,8],[35,9,8]],"Mantener buena relación Obras cotizadas/adjudicadas","Estudio del cliente y posibilidades de  contratación antes de la cotización (desde abril 2024 solo obras o contratos sin adicionales)","Bimestral","Comercial - Gerencia General","Ej.33->34: Medicion cada 2 meses para anticipar desvios entre obras cotizadas y ganadas (objetivo Ej.34: 8 pts). | Ej.34->35: Nueva formula que incluye cantidad y volumen economico. L. Fissolo y N. Heredia finalizan calculo por magnitud economica. Segmentacion de presentacion por industria acordada (objetivo Ej.35: 8 pts)."],["COME5","Proyectos de impacto positivo","Comercial",5,"31/03/2026",6,0,[["2024-09-30",5,6],["2025-03-31",6,6],["2025-09-30",7,6],["2026-03-31",5,6],["2026-09-30",null,null],["2027-03-31",null,null]],[[33,5.5,6],[34,6,6],[35,null,null]],"Evaluar la cantidad de obras y proyectos adjudicados con enfoque sostenible","Indicador proyectos sostenibles [%] ≃ obras y proyectos adjudicados con enfoque sostenible / total de obras y proyectos adjudicados * 100","Semestral","Ingeniería","Cantidad de horas insumidas en buscar,presupuestar, analizar este tipo de proyectos (ver de armar un centro de cómputos aparte por obra). Analizar la línea de base del primer ejercicio con este indicador."],["INGE1","Estandarización de presentación","Ingeniería",7.81,"24/03/2026",8,0,[["2018-03-18",10,6],["2018-06-18",10,6],["2018-09-30",10,6],["2018-12-18",10,6],["2019-03-19",9,6],["2019-06-19",10,8],["2019-09-30",8.4,8],["2019-12-19",10,8],["2020-03-20",9,8],["2020-06-20",null,8],["2020-09-30",8,8],["2020-12-20",9.67,8],["2021-03-21",8,8],["2021-06-21",6.65,8],["2021-09-30",7.96,8],["2021-12-21",7.71,8],["2022-03-22",null,8],["2022-06-22",8.01,8],["2022-09-30",8.8,8],["2022-12-22",null,8],["2023-03-23",8.6,8],["2023-06-23",8.69,8],["2023-09-30",8.63,8],["2023-12-23",8.54,8],["2024-03-24",8.29,8],["2024-06-24",null,8],["2024-09-30",8.8,8],["2024-12-24",8.54,8],["2025-03-25",7.6,8],["2025-06-24",8.17,8],["2025-09-23",8,8],["2025-12-23",8,8],["2026-03-24",7.81,8],["2026-06-23",null,8],["2026-09-22",null,8],["2026-12-22",null,8],["2027-03-23",null,8]],[[26,10,6],[27,9.75,6],[28,9.35,8],[29,8.56,8],[30,7.44,8],[31,8.47,8],[32,8.54,8],[33,8.31,8],[34,8,8],[35,null,8]],"Mantener estándares de Presentación y procesos/métodos","Por comparación con anterior","Trimestral","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 8 pts). | Ej.34->35: Subdivision de supervision y desarrollo de agente virtual corrector. Busqueda de equilibrio entre estandarizacion y calidad del producto final (objetivo Ej.35: 8 pts).","Evaluar competencia, proponer cambios o mejoras. Verificación continua y estandarización de formatos"],["INGE3","Mejora de proyectos","Ingeniería",10,"31/03/2026",6,1,[["2024-09-30",5,6],["2025-03-31",10,6],["2025-09-30",9,6],["2026-03-31",10,6],["2026-09-30",null,6],["2027-03-31",null,6]],[[33,7.5,6],[34,9.5,6],[35,null,6]],"Analizar la cantidad de propuestas de mejora con impacto positivo en proyectos de ingeniería/obras convencionales","Cantidad de propuestas de mejoras en proyectos u obras en los que participamos / Cantidad de proyectos u obras no sostenibles en los que participamos * 100","Semestral","Ingeniería","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 6 pts). | Ej.34->35: Se analizara el proceso y reestructurara la escala de medicion para ser mas restrictivo. Se aumentara el objetivo propuesto, pasando del 10% al 40% de proyectos cotizados (objetivo Ej.35: 6 pts)."],["COMP1","Evaluación de proveedores","Compras",7.33,"31/03/2026",7,1,[["2018-09-30",7.29,7],["2019-03-31",7.12,7],["2019-09-30",7.31,7],["2020-03-31",7.29,7],["2020-09-30",7.49,7],["2021-03-31",7.82,7],["2021-09-30",7.93,7],["2022-03-31",8.01,7],["2022-09-30",7.78,7],["2023-03-31",7.71,7],["2023-09-30",7.7,7],["2024-03-31",7.59,7],["2024-09-30",7.44,7],["2025-03-31",7.55,7],["2025-09-30",7.44,7],["2026-03-31",7.33,7],["2026-09-30",null,7.5]],[[27,7.21,7],[28,7.3,7],[29,7.66,7],[30,7.97,7],[31,7.75,7],[32,7.65,7],[33,7.5,7],[34,7.39,7],[35,null,7.5]],"Mantener calidad y cantidad de Proveedores","Evaluación del proveedor","Semestral","Compras","Ej.33->34: Evaluar a los contratistas por separado para mantener mejor la calidad y cantidad de proveedores (objetivo Ej.34: 7 pts). | Ej.34->35: Se mejora elevando objetivo de 7 a 7,5 (objetivo Ej.35: 7,5 pts)."],["COMP2","Evaluación de materiales de obras","Compras",10,"31/03/2026",8,1,[["2018-03-31",6.89,6],["2018-06-30",9.5,6],["2018-09-30",10,6],["2018-12-31",9.25,6],["2019-03-31",9.14,6],["2019-06-30",10,7],["2019-09-30",8,7],["2019-12-31",10,7],["2020-03-31",6,7],["2020-06-30",8,7],["2020-09-30",6,7],["2020-12-31",8,7],["2021-03-31",10,7],["2021-06-30",6,6],["2021-09-30",6,6],["2021-12-31",6,6],["2022-03-31",9,6],["2022-06-30",6,6],["2022-09-30",8,6],["2022-12-31",8,6],["2023-03-31",8,6],["2023-06-30",8,7],["2023-09-30",8,7],["2023-12-31",8,7],["2024-03-31",9,7],["2024-06-30",8,8],["2024-09-30",10,8],["2024-12-31",10,8],["2025-03-31",10,8],["2025-06-30",8,8],["2025-09-30",8,8],["2025-12-31",8,8],["2026-03-31",10,8],["2026-06-30",null,8],["2026-09-30",null,8],["2026-12-31",null,8],["2027-03-31",null,8],["2027-06-30",null,8]],[[26,6.89,6],[27,9.47,6],[28,8.5,7],[29,8,7],[30,6.75,6],[31,7.5,6],[32,8.25,7],[33,9.5,8],[34,8.5,8],[35,null,8],[36,null,8]],"Mantener capacidad de negociación con Proveedores","Evaluación del costo de elemento representativo entre compra efectiva y precio de cotización","Trimestral","Compras","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 8 pts). | Ej.34->35: Se redefinira la metodologia de medicion para reflejar el esfuerzo de negociacion desde la preventa hasta la fase final de la compra, y se ajustara la escala de puntuacion (objetivo Ej.35: 8 pts)."],["ARMTAB1","SOL armado de tableros","Producción",8.6,"30/06/2026",8.5,1,[["2018-06-30",6.67,6],["2018-09-30",7.07,6],["2018-12-31",7.24,6],["2019-03-31",7.24,6],["2019-06-30",7.49,7],["2019-09-30",7.62,7],["2019-12-31",7.89,7],["2020-03-31",7.72,7],["2020-06-30",8,8],["2020-09-30",8.11,8],["2020-12-31",7.93,8],["2021-03-31",7.79,8],["2021-06-30",7.81,8],["2021-09-30",7.11,8],["2021-12-31",7.93,8],["2022-03-31",8.11,8],["2022-06-30",8.11,8],["2022-09-30",8.24,8],["2022-12-31",8.38,8],["2023-03-31",8.04,8],["2023-06-30",8.31,8],["2023-09-30",8.76,8],["2023-12-31",9.07,8],["2024-03-31",8.44,8],["2024-06-30",8.49,8],["2024-09-30",9.24,8],["2024-12-31",8.27,8],["2025-03-31",8.31,8],["2025-06-30",8.06,8],["2025-09-30",9.42,8],["2025-12-31",9.49,8],["2026-03-31",8.58,8],["2026-06-30",8.6,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[27,7.06,6],[28,7.68,7],[29,7.96,8],[30,7.74,8],[31,8.19,8],[32,8.65,8],[33,8.58,8],[34,8.89,8],[35,8.6,8.5]],"Mejorar el orden y la limpieza de los sectores y gestión de los residuos.","Inspección visual","Trimestral","Producción","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 8 pts). | Ej.34->35: Se mejora elevando objetivo de 8 a 8,5 (objetivo Ej.35: 8,5 pts)."],["ARMTAB3","Estandarización armado de tableros","Producción",10,"30/06/2026",8.5,1,[["2018-09-30",7,5],["2019-03-31",8,5],["2019-09-30",7.6,7],["2020-03-31",8.8,7],["2020-09-30",10,8],["2021-03-31",9,8],["2021-09-30",9.33,8],["2022-03-31",10,8],["2022-06-30",10,8],["2022-09-30",9.33,8],["2022-12-31",9.2,8],["2023-03-31",9,8],["2023-06-30",10,8],["2023-09-30",9,8],["2023-12-31",10,8],["2024-03-31",10,8],["2024-06-30",10,8],["2024-09-30",10,8],["2024-12-31",10,8],["2025-03-31",10,8],["2025-06-30",9,8],["2025-09-30",10,8],["2025-12-31",10,8],["2026-03-31",9,8],["2026-06-30",10,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[27,7.5,5],[28,8.2,7],[29,9.5,8],[30,9.66,8],[31,9.38,8],[32,9.75,8],[33,10,8],[34,9.5,8],[35,10,8.5]],"Mantener la estandarización en la fabricación","Desarrollo de manual","Trimestral","Producción","Ej.33->34: Incorporar la opinion del jefe de obra en la evaluacion (objetivo Ej.34: 8 pts). | Ej.34->35: Se mejora elevando objetivo de 8 a 8,5 (objetivo Ej.35: 8,5 pts)."],["OBRA1","SOL en obra","Obra",8.63,"30/06/2026",8.5,1,[["2018-03-31",5.81,4],["2018-06-30",5.84,4],["2018-09-30",5.86,4],["2018-12-31",6.34,4],["2019-03-31",7.71,4],["2019-06-30",7.68,6],["2019-09-30",7.81,6],["2019-12-31",7.8,6],["2020-03-31",8,6],["2020-06-30",8.3,7],["2020-09-30",8.37,7],["2020-12-31",8.28,7],["2021-03-31",8.49,7],["2021-06-30",8.52,8],["2021-09-30",8.29,8],["2021-12-31",8.08,8],["2022-03-31",8.19,8],["2022-06-30",9,8],["2022-09-30",8.76,8],["2022-12-31",8.43,8],["2023-03-31",8.34,8],["2023-06-30",8.35,8],["2023-09-30",8.1,8],["2023-12-31",8.13,8],["2024-03-31",8.22,8],["2024-06-30",8.77,8],["2024-09-30",8.93,8],["2024-12-31",8.31,8],["2025-03-31",7.96,8],["2025-06-30",8.06,8],["2025-09-30",8.19,8],["2025-12-31",8.67,8],["2026-03-31",8.66,8],["2026-06-30",8.63,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[26,5.81,4],[27,6.44,4],[28,7.82,6],[29,8.36,7],[30,8.27,8],[31,8.63,8],[32,8.2,8],[33,8.49,8],[34,8.4,8],[35,8.63,8.5]],"Mejorar Orden, limpieza y gestión de residuos en obra","Control visual","Trimestral","Obra","Ej.33->34: Definir que las mediciones las haga el tecnico de H&S, con monitoreo del jefe de obra (objetivo Ej.34: 8 pts). | Ej.34->35: Se eleva objetivo de 8 a 8,5 para reflejar el compromiso de mejora continua. Organizar el material fotografico separando imagenes de scrap y fotos representativas del estado general de la obra (objetivo Ej.35: 8,5 pts)."],["OBRA3","Estandarización de obras","Obra",8.86,"31/03/2026",8,1,[["2018-09-30",6,5],["2019-03-31",7.5,5],["2019-09-30",7.14,6],["2020-03-31",7.56,6],["2020-09-30",8.67,7],["2021-03-31",7.71,7],["2021-09-30",8,8],["2022-03-31",8,8],["2022-09-30",9,8],["2023-03-31",8.29,8],["2023-06-30",8.8,8],["2023-09-30",8.4,8],["2023-12-31",7.71,8],["2024-03-31",8,8],["2024-06-30",8.33,8],["2024-09-30",8,8],["2024-12-31",8.5,8],["2025-03-31",8,8],["2025-06-30",8.29,8],["2025-09-30",8.5,8],["2025-12-31",8.75,8],["2026-03-31",8.86,8],["2026-06-30",null,8.5],["2026-09-30",null,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[27,6.75,5],[28,7.35,6],[29,8.19,7],[30,8,8],[31,8.65,8],[32,8.23,8],[33,8.21,8],[34,8.6,8],[35,null,8.5]],"Mejorar la estandarización y calidad en el montaje","Desarrollo de manual","Trimestral","Obra","Ej.33->34: Evaluacion cruzada entre areas, sumando mas evaluaciones y promediando resultados (objetivo Ej.34: 8 pts). | Ej.34->35: Se eleva objetivo de 8 a 8,5. Se adjuntan fotos de evidencia de cada obra analizada (objetivo Ej.35: 8,5 pts)."],["OBRA4","Cumplimiento de plazo de obra","Obra",10,"31/03/2026",10,1,[["2019-09-30",6,6],["2019-12-31",null,6],["2020-03-31",6,6],["2020-06-30",null,7],["2020-09-30",null,7],["2020-12-31",8,7],["2021-03-31",10,7],["2021-06-30",10,6],["2021-09-30",10,6],["2021-12-31",10,6],["2022-03-31",10,6],["2022-06-30",10,10],["2022-09-30",10,10],["2022-12-31",10,10],["2023-03-31",10,10],["2023-06-30",10,10],["2023-09-30",null,10],["2023-12-31",10,10],["2024-03-31",10,10],["2024-06-30",10,10],["2024-09-30",10,10],["2024-12-31",10,10],["2025-03-31",10,10],["2025-06-30",6,10],["2025-09-30",10,10],["2025-12-31",10,10],["2026-03-31",10,10],["2026-06-30",null,10],["2026-09-30",null,10],["2026-12-31",null,10],["2027-03-31",null,10]],[[28,6,6],[29,9,7],[30,10,6],[31,10,10],[32,10,10],[33,10,10],[34,9,10],[35,null,10]],"Control de cumplimiento de Plazos","Control de fechas de entrega","Trimestral","Obra","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: CUMPLIDO). | Ej.34->35: Rediseñar el indicador (Obra 4) para reflejar con precision las demoras internas (objetivo Ej.35: CUMPLIDO)."],["RRHH1","Comunicación y trabajo en equipo","RRHH",8,"31/03/2026",8,1,[["2018-11-30",5.3,4],["2019-07-31",6,6],["2020-03-31",5.41,6],["2020-06-30",5.91,6],["2020-09-30",6.02,6],["2020-12-31",5.39,6],["2021-03-31",6.48,6],["2021-06-30",7.15,6],["2021-09-30",6.5,6],["2021-12-31",7.35,6],["2022-03-31",6.28,6],["2022-06-30",6.93,7],["2022-09-30",6.64,7],["2022-12-31",6.75,7],["2023-03-31",6.7,7],["2023-06-30",7.94,7],["2024-06-30",7.02,7],["2025-03-31",7.2,8],["2026-03-31",8,8],["2027-03-31",null,8]],[[27,5.3,4],[28,5.71,6],[29,5.95,6],[30,6.82,6],[31,6.76,7],[32,7.94,7],[33,7.11,7.5],[34,8,8],[35,null,8]],"Crear y mantener un buen clima laboral","Encuesta","Anual","RRHH","Ej.33->34: Pasar la medicion a frecuencia anual, alineada con el cierre del ejercicio (objetivo Ej.34: 8 pts). | Ej.34->35: Aumentar la escucha y capacitacion para elevar la productividad. El 70% cuenta con herramientas; se busca revisar y mejorar este alcance. Reforzar el uso de Learnhub (59% sin uso) y formacion (objetivo Ej.35: 8 pts)."],["RRHH2","Ausentismo e impuntualidad","RRHH",6,"30/06/2026",8,0,[["2018-04-30",8,5],["2018-05-30",8,5],["2018-06-30",8,5],["2018-07-30",4,5],["2018-08-30",8,5],["2018-09-30",6,5],["2018-10-30",8,5],["2018-11-30",8,5],["2018-12-30",6,5],["2019-01-30",8,5],["2019-02-28",6,5],["2019-03-30",6,5],["2019-04-30",6,6],["2019-05-30",8,6],["2019-06-30",6,6],["2019-07-30",6,6],["2019-08-30",6,6],["2019-09-30",8,6],["2019-10-30",6,6],["2019-11-30",8,6],["2019-12-30",6,6],["2020-01-30",6,6],["2020-02-29",6,6],["2020-03-30",8,6],["2020-04-30",null,6],["2020-05-30",null,6],["2020-06-30",8,6],["2020-07-30",6,6],["2020-08-30",6,6],["2020-09-30",6,6],["2020-10-30",6,6],["2020-11-30",6,6],["2020-12-30",6,6],["2021-01-30",6,6],["2021-02-28",8,6],["2021-03-30",8,6],["2021-04-30",8,6],["2021-05-30",6,6],["2021-06-30",6,6],["2021-07-30",6,6],["2021-08-30",8,6],["2021-09-30",8,6],["2021-10-30",4,6],["2021-11-30",6,6],["2021-12-30",8,6],["2022-01-30",6,6],["2022-02-28",8,6],["2022-03-30",8,6],["2022-04-30",6,8],["2022-05-30",8,8],["2022-06-30",8,8],["2022-07-30",8,8],["2022-08-30",8,8],["2022-09-30",8,8],["2022-10-30",8,8],["2022-11-30",8,8],["2022-12-30",8,8],["2023-01-30",8,8],["2023-02-28",6,8],["2023-03-30",8,8],["2023-04-30",8,8],["2023-05-30",8,8],["2023-06-30",8,8],["2023-07-30",8,8],["2023-08-30",6,8],["2023-09-30",8,8],["2023-10-30",8,8],["2023-11-30",8,8],["2023-12-30",8,8],["2024-01-30",8,8],["2024-02-29",8,8],["2024-03-30",8,8],["2024-06-30",8,8],["2024-09-30",8,8],["2024-12-31",8,8],["2025-03-31",8,8],["2025-06-30",8,8],["2025-09-30",6,8],["2025-12-31",8,8],["2026-03-31",8,8],["2026-06-30",6,8],["2026-09-30",null,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[27,7,5],[28,6.67,6],[29,6.6,6],[30,6.83,6],[31,7.67,8],[32,7.83,8],[33,8,8],[34,7.5,8],[35,6,8]],"Mantener bajas las inasistencias","Control de ausentismo por sistema","Trimestral","RRHH","Ej.33->34: Cambiar la medicion a trimestral, modificar la forma de comunicacion y sumar control con plataforma Lenox (objetivo Ej.34: 8 pts). | Ej.34->35: Migrar de Excel a estadisticas y graficos de Humand. Sigue como indicador de mejora (objetivo 8 no cumplido). Premiar cumplimiento y establecer limites para recurrencias (objetivo Ej.35: 8 pts)."],["RRHH3","Capacitación","RRHH",10,"30/06/2026",8,1,[["2018-06-30",2,5],["2018-09-30",6,5],["2018-12-30",6,5],["2019-03-30",2,5],["2019-06-30",4,6],["2019-09-30",6,6],["2019-12-30",6,6],["2020-03-30",6,6],["2020-06-30",8,6],["2020-09-30",6,6],["2020-12-30",6,6],["2021-03-30",2,6],["2021-06-30",6,6],["2021-09-30",6,6],["2021-12-30",6,6],["2022-01-30",2,6],["2022-02-28",6,6],["2022-03-30",8,6],["2022-04-30",8,8],["2022-05-30",6,8],["2022-06-30",10,8],["2022-07-30",10,8],["2022-08-30",8,8],["2022-09-30",10,8],["2022-10-30",6,8],["2022-11-30",8,8],["2022-12-30",4,8],["2023-01-30",8,8],["2023-02-28",6,8],["2023-03-30",6,8],["2023-04-30",8,8],["2023-05-30",10,8],["2023-06-30",10,8],["2023-07-30",8,8],["2023-08-30",10,8],["2023-09-30",8,8],["2023-10-30",8,8],["2023-11-30",6,8],["2023-12-30",8,8],["2024-01-30",8,8],["2024-02-29",10,8],["2024-03-30",8,8],["2024-06-30",8.67,8],["2024-09-30",8,8],["2024-12-30",8,8],["2025-03-30",8,8],["2025-06-30",8,8],["2025-09-30",8,8],["2025-12-30",6,8],["2026-03-30",6,8],["2026-06-30",10,8],["2026-09-30",null,8],["2026-12-30",null,8],["2027-03-30",null,8]],[[27,4,5],[28,5.5,6],[29,5.5,6],[30,5.67,6],[31,7.5,8],[32,8.5,8],[33,8.17,8],[34,7,8],[35,10,8]],"Planificar y dar seguimiento de un plan anual de formación continuo en todo el personal","Planilla de registro de capacitaciones","Trimestral","RRHH","Ej.33->34: Pasar a frecuencia trimestral, enfocandose en calidad de capacitaciones, cambiando el plan anual alineado con escala y objetivos (objetivo Ej.34: 8 pts). | Ej.34->35: Plan personalizado por rol y seniority. Registro automatizado via DNI. Uso de Learnhub y canal de YouTube. Incorporacion de mentores tecnicos. Unificacion con horas de S&S (ART). Mayor feedback de lideres y gerentes (objetivo Ej.35: 8 pts)."],["RRHH4","Accidentes laborales","RRHH",9,"30/06/2026",8,1,[["2018-06-30",8,5],["2018-09-30",6,5],["2018-12-30",10,5],["2019-03-30",6,5],["2019-06-30",6,6],["2019-09-30",6,6],["2019-12-30",4,6],["2020-03-30",6,6],["2020-06-30",10,6],["2020-09-30",8,6],["2020-12-30",8,6],["2021-03-30",8,6],["2021-06-30",8,6],["2021-09-30",8,6],["2021-12-30",8,6],["2022-03-30",8,6],["2022-06-30",8,8],["2022-09-30",6,8],["2022-12-30",6,8],["2023-03-30",8,8],["2023-06-30",10,8],["2023-09-30",6,8],["2023-12-30",6,8],["2024-03-30",10,8],["2024-06-30",6,8],["2024-09-30",8,8],["2024-12-30",8,8],["2025-03-30",8,8],["2025-06-30",8,8],["2025-09-30",9,8],["2025-12-30",9,8],["2026-03-30",3,8],["2026-06-30",9,8],["2026-09-30",null,8],["2026-12-30",null,8],["2027-03-30",null,8]],[[27,7.5,5],[28,5.5,6],[29,8.5,6],[30,8,6],[31,7,8],[32,8,8],[33,7.5,8],[34,7.25,8],[35,9,8]],"Mantener bajo el índice de accidentes laborales","Planilla de registro de accidentes y seguimiento con área de HyS","Trimestral","RRHH / HyS","Ej.33->34: Seguimiento a cargo de la tecnica de HyS (objetivo Ej.34: 8 pts). | Ej.34->35: Se cambiara la ponderacion para separar cantidad de accidentes y horas de baja, evitando impactos negativos por eventos leves (objetivo Ej.35: 8 pts)."],["RRHH5","Seguimiento personal juvenil","RRHH",10,"30/03/2026",8,1,[["2025-03-30",10,8],["2026-03-30",10,8],["2027-03-30",null,8]],[[33,10,8],[34,10,8],[35,null,8]],null,null,null,null,null],["RRHH6","Nuevos ingresos efectivos","RRHH",6,"30/03/2026",6,1,[["2024-09-30",6.5,6],["2025-03-30",6.5,6],["2025-09-30",8.23,6],["2026-03-30",6,6],["2026-09-30",null,6],["2027-03-30",null,6]],[[33,6.5,6],[34,7.12,6],[35,null,6]],"Fomentar las alianzas para la empleabilidad (pasantías y prácticas)","Medir el porcentaje de nuevos ingresos efectivos en la empresa a través de estos programas.","Semestral","RRHH","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 6 pts). | Ej.34->35: Se incorporara cualquier nuevo tipo de alianza detectada por el equipo en la base de datos de alianzas y stakeholders del SGI. Se trabaja en un instructivo formal para alianzas que detalle el proceso actual. El indicador desafia a seguir generando alianzas para busqueda de personal y acciones comerciales (objetivo Ej.35: 6 pts)."],["AMB1","Reducción de residuos","Medio Ambiente",9,"30/03/2026",7,1,[["2018-12-30",8,5],["2019-03-30",2,5],["2019-06-30",6,6],["2019-09-30",6,6],["2019-12-30",8,6],["2020-03-30",6,6],["2020-06-30",8,6],["2020-09-30",8,6],["2020-12-30",8,6],["2021-03-30",6,6],["2021-06-30",6,6],["2021-09-30",6,6],["2021-12-30",6,6],["2022-03-30",8,6],["2022-06-30",8,6],["2022-09-30",6,6],["2022-12-30",8,6],["2023-03-30",8,6],["2023-06-30",8,7],["2023-09-30",9,7],["2023-12-30",8,7],["2024-03-30",8,7],["2024-06-30",9,7],["2024-09-30",9,7],["2024-12-30",9,7],["2025-03-30",9,7],["2025-06-30",9,7],["2025-09-30",9,7],["2025-12-30",9,7],["2026-03-30",9,7],["2026-06-30",null,7],["2026-09-30",null,7],["2026-12-30",null,7],["2027-03-30",null,7]],[[27,5,5],[28,6.5,6],[29,7.5,6],[30,6.5,6],[31,7.5,6],[32,8.25,7],[33,9,7],[34,9,7],[35,null,7]],"Mantener baja cantidad de residuos emitidos (basura orgánica, basura reciclable, residuos peligrosos y pilas)","Medición de kg de basura // Relación con porcentaje de horas trabajadas (cuáles son las horas que se toman?)","Trimestral","Producción y HyS","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 7 pts). | Ej.34->35: Se investigan convenios con empresas como Green Computer (CABA) para donacion o credito por reutilizacion de residuos electronicos. Se investigaran opciones de disposicion final para residuos no reutilizables en Santo Tome y Mar del Plata (objetivo Ej.35: 7 pts)."],["AMB2","Reducción de consumos","Medio Ambiente",8.9,"30/03/2026",8,1,[["2018-06-30",6.5,5],["2018-09-30",5.4,5],["2018-12-30",10,5],["2019-03-30",10,5],["2019-06-30",7.8,6],["2019-09-30",6.3,6],["2019-12-30",10,6],["2020-03-30",8.9,6],["2020-06-30",10,6],["2020-09-30",10,6],["2020-12-30",10,6],["2021-03-30",10,6],["2021-06-30",10,6],["2021-09-30",8.9,6],["2021-12-30",10,6],["2022-03-30",9.5,6],["2022-06-30",10,8],["2022-09-30",8.1,8],["2022-12-30",8.1,8],["2023-03-30",7.4,8],["2023-06-30",7.4,8],["2023-09-30",7.8,8],["2023-12-30",8.9,8],["2024-03-30",8.5,8],["2024-06-30",7.8,8],["2024-09-30",7.8,8],["2024-12-30",8.4,8],["2025-03-30",8.4,8],["2025-06-30",7.95,8],["2025-09-30",8.61,8],["2025-12-30",8.59,8],["2026-03-30",8.9,8],["2026-06-30",null,8],["2026-09-30",null,8],["2026-12-30",null,8],["2027-03-30",null,8]],[[27,7.98,5],[28,8.25,6],[29,10,6],[30,9.6,6],[31,8.4,8],[32,8.15,8],[33,8.1,8],[34,8.51,8],[35,null,8]],"Comparar trimestralmente con el año anterior la baja de consumos (energía eléctrica, papel, gas y agua) para el desarrollo de las actividades de oficina (Remedios - Santo Tomé - Mosconi)","Medición de KWs mensuales en la factura de suministro eléctrico + consumo de papel + medición de mts3 de gas + medición de litros/mts2","Trimestral","Administración","Ej.33->34: Se mantiene igual que el ejercicio anterior (objetivo Ej.34: 8 pts). | Ej.34->35: Disenar comunicaciones (flyers o posts de Slack) promoviendo habitos de ahorro de energia y consumos (objetivo Ej.35: 8 pts)."],["AMB4","Huella de carbono","Medio Ambiente",6,"30/03/2026",6,1,[["2024-03-30",7,6],["2025-03-30",2,6],["2026-03-30",6,6],["2027-03-30",null,6]],[[32,7,6],[33,2,6],[34,6,6],[35,null,6]],"Lograr una aproximación hacia la carbono neutralidad de Esinel","Medición de Huella de Carbono + acciones de compensación","Anual (con revisiones internas semestrales)","Administración","Buscar la reducción de consumos en los 3 alcances (generación de CO2 propia, generación CO2 de consumo elétrico, generación de CO2 de actividades terceras) de la Huella de Carbono y buscar métodos adicionales de compensación de emisiones (compra de bonos de carbono)"],["SAL2","Chequeo de variables de salud","Seguridad e Higiene",7,"30/03/2026",7,1,[["2018-10-30",7.82,5],["2019-10-30",8.52,7],["2020-03-30",8.59,7],["2020-09-30",8.24,7],["2021-03-30",8.28,7],["2021-09-30",8.27,7],["2022-03-30",8.27,7],["2022-09-30",8.25,8],["2023-03-30",8.4,8],["2023-09-30",8.48,7],["2024-03-30",7,7],["2025-03-30",6,7],["2026-03-30",7,7],["2027-03-30",null,7]],[[27,7.82,5],[28,8.56,7],[29,8.26,7],[30,8.27,7],[31,8.32,8],[32,7.74,7],[33,6,7],[34,7,7],[35,null,7]],"Monitoreo y control del estado de salud general de todo el personal","Encuesta","Anual","RRHH","Revisión y análisis de la encuesta y derivar en sus respectivas acciones de mejora en cada una de las áreas que están siendo evaluadas (Alimentación, Actividad física, Enfermedades y controles médicos, Salud mental)"],["SAL3","Inasistencias por enfermedad","Seguridad e Higiene",8,"30/03/2026",8,1,[["2021-04-30",2,6],["2021-05-30",2,6],["2021-06-30",2,6],["2021-07-30",2,6],["2021-08-30",8,6],["2021-09-30",6,6],["2021-10-30",4,6],["2021-11-30",2,6],["2021-12-30",2,6],["2022-01-30",2,6],["2022-02-28",2,6],["2022-03-30",2,6],["2022-04-30",10,6],["2022-05-30",10,6],["2022-06-30",8,6],["2022-07-30",6,6],["2022-08-30",8,6],["2022-09-30",6,6],["2022-10-30",8,6],["2022-11-30",10,6],["2022-12-30",10,6],["2023-01-30",10,6],["2023-02-28",10,6],["2023-03-30",10,6],["2023-04-30",10,8],["2023-05-30",8,8],["2023-06-30",4,8],["2023-07-30",10,8],["2023-08-30",6,8],["2023-09-30",4,8],["2023-10-30",4,8],["2023-11-30",10,8],["2023-12-30",8,8],["2024-01-30",8,8],["2024-02-29",6,8],["2024-03-30",8,8],["2024-06-30",6,8],["2024-09-30",8,8],["2024-12-30",10,8],["2025-03-30",10,8],["2025-06-30",10,8],["2025-09-30",8,8],["2025-12-30",10,8],["2026-03-30",8,8],["2026-06-30",null,8],["2026-09-30",null,8],["2026-12-30",null,8],["2027-03-30",null,8]],[[30,3,6],[31,8.83,6],[32,7.17,8],[33,8.5,8],[34,9,8],[35,null,8]],"Reducción de la cantidad de horas perdidas por enfermedades inculpables (enfermedades preventivas)","Registro de enfermedades inculpables","Trimestral (seguimiento estacional)","RRHH","Ej.34->35: Abordar la planificacion y sobrecarga de trabajo entre areas para mitigar causas de ausentismo. Mejora en la presentacion, formato via estadisticas y graficos de Humand (objetivo Ej.35: 8 pts)."],["COME4","Informe mensual de rentabilidad teórica de ventas","Comercial",10,"31/03/2026",8,1,[["2018-03-31",10,6],["2018-07-31",8,6],["2018-11-30",10,6],["2019-03-31",8,6],["2019-07-31",6,7],["2019-11-30",8,7],["2020-03-31",8,7],["2020-07-31",4,6],["2020-11-30",8,6],["2021-03-31",8,6],["2021-07-31",10,7],["2021-11-30",8,7],["2022-03-31",8,7],["2022-07-31",8,8],["2022-11-30",10,8],["2023-03-31",8,8],["2023-07-31",10,7],["2023-11-30",10,7],["2024-03-31",8,7],["2024-07-31",6,8],["2024-11-30",10,8],["2025-03-31",6,8],["2025-07-31",8,8],["2025-11-30",8,8],["2026-03-31",10,8],["2026-07-31",null,8],["2026-11-30",null,8],["2027-03-31",null,8]],[[26,10,6],[27,8.67,6],[28,7.33,7],[29,6.67,6],[30,8.67,7],[31,8.67,8],[32,9.33,7],[33,7.33,8],[34,8.67,8],[35,null,8]],"Mejorar rentabilidad de ejercicio","Mejorar rentabilidad teórica","Cuatrimestral","Comercial - Gerencia General","Aumentar el valor de rentabilidad bruta teórico en ventas"],["INGE2","Seguimiento de Costos de Ingenierías mensual","Ingeniería",8,"31/05/2026",8,1,[["2018-08-31",8,6],["2018-09-30",7,6],["2018-10-31",5,6],["2018-11-30",5,6],["2018-12-31",4,6],["2019-01-31",4,6],["2019-02-28",4,6],["2019-03-31",4,6],["2019-04-30",5,6],["2019-05-31",5,6],["2019-06-30",5,6],["2019-07-31",5,6],["2019-08-31",5,6],["2019-09-30",7,6],["2019-10-31",7,6],["2019-11-30",5,6],["2019-12-31",4,6],["2020-01-31",8,6],["2020-02-29",8,6],["2020-03-31",10,6],["2020-04-30",null,6],["2020-05-31",null,6],["2020-06-30",10,6],["2020-07-31",10,6],["2020-08-31",null,6],["2020-09-30",10,6],["2020-10-31",10,6],["2020-11-30",10,6],["2020-12-31",10,6],["2021-01-31",10,6],["2021-02-28",7,6],["2021-03-31",7,6],["2021-04-30",4,6],["2021-05-31",7,6],["2021-06-30",7,6],["2021-07-31",8,6],["2021-08-31",7,6],["2021-09-30",7,6],["2021-10-31",7,6],["2021-11-30",8,6],["2021-12-31",10,6],["2022-01-31",10,6],["2022-02-28",8,6],["2022-03-31",8,6],["2022-04-30",8,7],["2022-05-31",8,7],["2022-06-30",7,7],["2022-07-31",0,7],["2022-08-31",4,7],["2022-09-30",7,7],["2022-10-31",8,7],["2022-11-30",10,7],["2022-12-31",10,7],["2023-01-31",7,7],["2023-02-28",8,7],["2023-03-31",7,7],["2023-04-30",7,7],["2023-05-31",8,7],["2023-06-30",8,7],["2023-07-31",7,7],["2023-08-31",8,7],["2023-09-30",7,7],["2023-10-31",8,7],["2023-11-30",8,7],["2023-12-31",10,7],["2024-01-31",10,7],["2024-02-29",7,7],["2024-03-31",8,7],["2024-04-30",7,7],["2024-05-31",7,7],["2024-06-30",7,7],["2024-07-31",7,7],["2024-08-31",7,7],["2024-09-30",8,7],["2024-10-31",8,7],["2024-11-30",10,7],["2024-12-31",9,7],["2025-01-31",10,7],["2025-02-28",9,7],["2025-03-31",10,7],["2025-04-30",10,7],["2025-05-31",10,7],["2025-06-30",9,7],["2025-07-31",10,7],["2025-08-31",10,7],["2025-09-30",9,7],["2025-10-31",9,7],["2025-11-30",9,7],["2025-12-31",8,7],["2026-01-31",9,7],["2026-02-28",8,7],["2026-03-31",8,7],["2026-04-30",8,8],["2026-05-31",8,8],["2026-06-30",null,8],["2026-07-31",null,8],["2026-08-31",null,8],["2026-09-30",null,8],["2026-10-31",null,8],["2026-11-30",null,8],["2026-12-31",null,8],["2027-01-31",null,8],["2027-02-28",null,8],["2027-03-31",null,8]],[[27,5.13,6],[28,6.17,6],[29,9.33,6],[30,7.58,6],[31,7,7],[32,8,7],[33,8.25,7],[34,9.08,7],[35,8,8]],"Mantener control de horas de Ingeniería & Mejorar rendimientos del resultado obtenido","Planilla de control - reporte - Planilla de seguimiento","Mensual","Ingeniería","Carga diaria y real de las horas. Completar mensualmente la planilla y analizarla con conclusiones"],["ARMTAB2","Seguimiento mensual de Costos de Armado de tableros","Producción",7,"30/04/2026",8,0,[["2018-11-30",7,6],["2018-12-31",8,6],["2019-01-31",9,6],["2019-02-28",8,6],["2019-03-31",8,6],["2019-04-30",8,7],["2019-05-31",8,7],["2019-06-30",7,7],["2019-07-31",7,7],["2019-08-31",7,7],["2019-09-30",8,7],["2019-10-31",8,7],["2019-11-30",9,7],["2019-12-31",10,7],["2020-01-31",8,7],["2020-02-29",8,7],["2020-03-31",8,7],["2020-04-30",0,7],["2020-05-31",0,7],["2020-06-30",0,7],["2020-07-31",0,7],["2020-08-31",0,7],["2020-09-30",7,7],["2020-10-31",8,7],["2020-11-30",9,7],["2020-12-31",8,7],["2021-01-31",8,7],["2021-02-28",8,7],["2021-03-31",8,7],["2021-04-30",7,8],["2021-05-31",7,8],["2021-06-30",7,8],["2021-07-31",8,8],["2021-08-31",8,8],["2021-09-30",9,8],["2021-10-31",10,8],["2021-11-30",8,8],["2021-12-31",8,8],["2022-01-31",8,8],["2022-02-28",8,8],["2022-03-31",8,8],["2022-04-30",8,8],["2022-05-31",7,8],["2022-06-30",7,8],["2022-07-31",3,8],["2022-08-31",4,8],["2022-09-30",8,8],["2022-10-31",7,8],["2022-11-30",7,8],["2022-12-31",7,8],["2023-01-31",7,8],["2023-02-28",8,8],["2023-03-31",8,8],["2023-04-30",8,8],["2023-05-31",8,8],["2023-06-30",9,8],["2023-07-31",9,8],["2023-08-31",8,8],["2023-09-30",8,8],["2023-10-31",8,8],["2023-11-30",8,8],["2023-12-31",8,8],["2024-01-31",8,8],["2024-02-29",9,8],["2024-03-31",9,8],["2024-04-30",9,8],["2024-05-31",10,8],["2024-06-30",10,8],["2024-07-31",10,8],["2024-08-31",10,8],["2024-09-30",9,8],["2024-10-31",10,8],["2024-11-30",10,8],["2024-12-31",10,8],["2025-01-31",9,8],["2025-02-28",10,8],["2025-03-31",9,8],["2025-04-30",9,8],["2025-05-31",9,8],["2025-06-30",9,8],["2025-07-31",9,8],["2025-08-31",9,8],["2025-09-30",9,8],["2025-10-31",9,8],["2025-11-30",9,8],["2025-12-31",9,8],["2026-01-31",8,8],["2026-02-28",8,8],["2026-03-31",7,8],["2026-04-30",7,8],["2026-05-31",null,8],["2026-06-30",null,8],["2026-07-31",null,8],["2026-08-31",null,8],["2026-09-30",null,8],["2026-10-31",null,8],["2026-11-30",null,8],["2026-12-31",null,8],["2027-01-31",null,8],["2027-02-28",null,8],["2027-03-31",null,8]],[[27,8,6],[28,8,7],[29,4.67,7],[30,8,8],[31,6.75,8],[32,8.33,8],[33,9.67,8],[34,8.67,8],[35,7,8]],"Mejorar rendimientos de Armado de Tableros\\","Control de planilla de seguimiento de obra","Mensual","Producción","Completar mensualmente la planilla y analizarla con conclusiones"],["OBRA2","Seguimiento mensual de Costos de Obras","Obra",5,"31/03/2026",8,0,[["2018-08-31",0,5],["2018-09-30",6,5],["2018-10-31",8,5],["2018-11-30",8,5],["2018-12-31",8,5],["2019-01-31",6,5],["2019-02-28",6,5],["2019-03-31",6,5],["2019-04-30",6,6],["2019-05-31",6,6],["2019-06-30",6,6],["2019-07-31",6,6],["2019-08-31",8,6],["2019-09-30",8,6],["2019-10-31",7,6],["2019-11-30",7,6],["2019-12-31",6,6],["2020-01-31",6,6],["2020-02-29",6,6],["2020-03-31",6,6],["2020-04-30",6,6],["2020-05-31",6,6],["2020-06-30",6,6],["2020-07-31",6,6],["2020-08-31",7,6],["2020-09-30",8,6],["2020-10-31",7,6],["2020-11-30",7,6],["2020-12-31",4,6],["2021-01-31",7,6],["2021-02-28",8,6],["2021-03-31",8,6],["2021-04-30",7,6],["2021-05-31",8,6],["2021-06-30",4,6],["2021-07-31",7,6],["2021-08-31",10,6],["2021-09-30",10,6],["2021-10-31",10,6],["2021-11-30",10,6],["2021-12-31",10,6],["2022-01-31",10,6],["2022-02-28",7,6],["2022-03-31",7,6],["2022-04-30",7,8],["2022-05-31",8,8],["2022-06-30",8,8],["2022-07-31",7,8],["2022-08-31",10,8],["2022-09-30",10,8],["2022-10-31",0,8],["2022-11-30",7,8],["2022-12-31",7,8],["2023-01-31",8,8],["2023-02-28",8,8],["2023-03-31",8,8],["2023-04-30",8,8],["2023-05-31",8,8],["2023-06-30",8,8],["2023-07-31",9,8],["2023-08-31",8,8],["2023-09-30",8,8],["2023-10-31",8,8],["2023-11-30",10,8],["2023-12-31",10,8],["2024-01-31",10,8],["2024-02-29",10,8],["2024-03-31",9,8],["2024-04-30",10,8],["2024-05-31",10,8],["2024-06-30",10,8],["2024-07-31",8,8],["2024-08-31",9,8],["2024-09-30",9,8],["2024-10-31",9,8],["2024-11-30",10,8],["2024-12-31",10,8],["2025-01-31",8,8],["2025-02-28",10,8],["2025-03-31",9,8],["2025-04-30",10,8],["2025-05-31",9,8],["2025-06-30",9,8],["2025-07-31",9,8],["2025-08-31",8,8],["2025-09-30",7,8],["2025-10-31",8,8],["2025-11-30",7,8],["2025-12-31",8,8],["2026-01-31",7,8],["2026-02-28",5,8],["2026-03-31",5,8],["2026-04-30",null,8],["2026-05-31",null,8],["2026-06-30",null,8],["2026-07-31",null,8],["2026-08-31",null,8],["2026-09-30",null,8],["2026-10-31",null,8],["2026-11-30",null,8],["2026-12-31",null,8],["2027-01-31",null,8],["2027-02-28",null,8],["2027-03-31",null,8]],[[27,6,5],[28,6.5,6],[29,6.67,6],[30,8.33,6],[31,7.33,8],[32,8.83,8],[33,9.33,8],[34,7.67,8],[35,null,8]],"Mantener rendimientos de obra","Control de planilla de seguimiento de obra","Mensual","Obra","Completar mensualmente la planilla y analizarla con conclusiones. Hacer seguimientos de obra en forma quincenal"]]};
-const ITEMS = DATA.d;
-const ST = {1:["Cumple","#166534","#dcfce7","#16a34a"],0:["No cumple","#991b1b","#fee2e2","#dc2626"],"-1":["Sin dato","#475569","#f1f5f9","#cbd5e1"]};
-const GREEN = '#16a34a', RED = '#dc2626', GRAY = '#94a3b8';
-let activeArea = '';
-let activeEj = null;
-let chartInst = null;
+const DATA = {"areas":["Comercial","Ingeniería","Compras","Producción","Obra","RRHH","Medio Ambiente","Seguridad e Higiene"];
 
-let GLOBAL_MIN_EJ = Infinity, GLOBAL_MAX_EJ = -Infinity;
-ITEMS.forEach(d => {
-  const ej = d[8];
-  if (ej) ej.forEach(p => {
-    if (p[1] !== null) {
-      GLOBAL_MIN_EJ = Math.min(GLOBAL_MIN_EJ, p[0]);
-      GLOBAL_MAX_EJ = Math.max(GLOBAL_MAX_EJ, p[0]);
+const AREA_COLORS = {
+  'Comercial':'#3b82f6',
+  'Ingeniería':'#8b5cf6',
+  'Compras':'#f59e0b',
+  'Producción':'#10b981',
+  'Obra':'#64748b',
+  'RRHH':'#ec4899',
+  'Medio Ambiente':'#22c55e',
+  'Seguridad e Higiene':'#ef4444'
+};
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+// ── data helpers ─────────────────────────────────────────────
+function fmt1(v){return v==null?'—':+v%1===0?String(+v):(+v).toFixed(1)}
+
+function activeEjercicio(items){
+  // find most recent ej with data across all items
+  let maxEj = 0;
+  for(const d of items){
+    const ejs = d[8]||[];
+    for(const e of ejs) if(e[0]>maxEj && e[1]!=null) maxEj=e[0];
+  }
+  return maxEj||1;
+}
+
+let activeEj = 1;
+
+function ejStatus(ejSeries, ej){
+  if(!ejSeries||!ejSeries.length) return {puntaje:null,obj:null,compliant:null,ejNum:ej};
+  const sorted = [...ejSeries].sort((a,b)=>b[0]-a[0]);
+  // find last ej with data <= ej
+  let last = sorted.find(e=>e[0]<=ej && e[1]!=null);
+  if(!last) last = sorted[sorted.length-1];
+  const puntaje = last?last[1]:null;
+  const obj = last?last[2]:null;
+  const compliant = puntaje!=null && obj!=null ? (puntaje>=obj?1:0) : null;
+  return {puntaje,obj,compliant,ejNum:last?last[0]:ej};
+}
+
+function histAvg(ejSeries,ej){
+  if(!ejSeries) return null;
+  const vals = ejSeries.filter(e=>e[0]<ej && e[1]!=null).map(e=>e[1]);
+  if(!vals.length) return null;
+  return vals.reduce((a,b)=>a+b,0)/vals.length;
+}
+
+// ── state ─────────────────────────────────────────────────────
+let filterArea = null;
+let filterEj = null;
+let activeIdx = null;
+let detailMode = 'ej';
+
+// ── sidebar ───────────────────────────────────────────────────
+function renderSidebar(){
+  activeEj = activeEjercicio(ITEMS);
+  document.getElementById('sb-ej-label').textContent = 'Ejercicio ' + activeEj;
+
+  // stats
+  let total=0,ok=0,no=0,nd=0;
+  const areaMap = {};
+  for(const d of ITEMS){
+    total++;
+    const s = ejStatus(d[8],filterEj||activeEj);
+    if(s.compliant===1) ok++;
+    else if(s.compliant===0) no++;
+    else nd++;
+    const a = d[2]||'Sin área';
+    if(!areaMap[a]) areaMap[a]={total:0,ok:0,no:0,nd:0};
+    areaMap[a].total++;
+    if(s.compliant===1) areaMap[a].ok++;
+    else if(s.compliant===0) areaMap[a].no++;
+    else areaMap[a].nd++;
+  }
+
+  document.getElementById('sb-stats').innerHTML =
+    `<div class="sb-stat"><div class="sb-stat-n">${total}</div><div class="sb-stat-l">Total</div></div>
+     <div class="sb-stat ok"><div class="sb-stat-n">${ok}</div><div class="sb-stat-l">Cumplen</div></div>
+     <div class="sb-stat no"><div class="sb-stat-n">${no}</div><div class="sb-stat-l">No cumplen</div></div>
+     <div class="sb-stat nd"><div class="sb-stat-n">${nd}</div><div class="sb-stat-l">Sin dato</div></div>`;
+
+  // area nav
+  const areas = Object.keys(areaMap).sort();
+  let html = `<div class="sb-item${!filterArea?' active':''}" onclick="selectArea(null)">
+    <div class="sb-dot" style="background:#94a3b8"></div>Todas las áreas
+    <span class="sb-count">${total}</span></div>`;
+  for(const a of areas){
+    const col = AREA_COLORS[a]||'#94a3b8';
+    const init = a[0];
+    html += `<div class="sb-item${filterArea===a?' active':''}" onclick="selectArea('${a.replace(/'/g,"\\\\'")}')">
+      <div class="sb-dot" style="background:${col}"></div>${a}
+      <span class="sb-count">${areaMap[a].total}</span></div>`;
+  }
+  document.getElementById('sb-areas').innerHTML = html;
+
+  // ej nav
+  const allEjs = new Set();
+  for(const d of ITEMS) (d[8]||[]).forEach(e=>allEjs.add(e[0]));
+  const ejList = [...allEjs].sort((a,b)=>b-a);
+  let ejHtml = `<div class="sb-item${!filterEj?' active':''}" onclick="selectEj(null)">
+    Todos los ejercicios<span class="sb-count">${ejList.length}</span></div>`;
+  for(const e of ejList){
+    ejHtml += `<div class="sb-item${filterEj===e?' active':''}" onclick="selectEj(${e})">
+      Ejercicio ${e}</div>`;
+  }
+  document.getElementById('sb-ejs').innerHTML = ejHtml;
+}
+
+function selectArea(a){filterArea=a;activeIdx=null;closeDetail();renderAll()}
+function selectEj(e){filterEj=e;activeIdx=null;closeDetail();renderAll()}
+
+// ── list ──────────────────────────────────────────────────────
+function renderList(){
+  const ej = filterEj||activeEj;
+  const items = filterArea
+    ? ITEMS.filter(d=>(d[2]||'Sin área')===filterArea)
+    : ITEMS;
+
+  document.getElementById('list-title').textContent =
+    filterArea ? filterArea : 'Todos los indicadores';
+  document.getElementById('list-sub').textContent =
+    items.length + ' indicadores · Ej ' + ej;
+
+  // group by area
+  const groups = {};
+  for(const d of items){
+    const a = d[2]||'Sin área';
+    if(!groups[a]) groups[a]=[];
+    groups[a].push(d);
+  }
+
+  let html = '';
+  for(const [area, rows] of Object.entries(groups).sort()){
+    const col = AREA_COLORS[area]||'#94a3b8';
+    if(!filterArea) html += `<div class="sec-hd">${area}</div>`;
+    for(const d of rows){
+      const idx = ITEMS.indexOf(d);
+      const s = ejStatus(d[8], ej);
+      const sc = s.puntaje!=null ? fmt1(s.puntaje) : '—';
+      const cls = s.compliant===1?'ok':s.compliant===0?'no':'nd';
+      const chipCls = s.compliant===1?'chip-ok':s.compliant===0?'chip-no':'chip-nd';
+      const chipLbl = s.compliant===1?'Cumple':s.compliant===0?'No cumple':'Sin dato';
+      const init = (area||'?')[0];
+      const freq = d[11]||'';
+      html += `<div class="ind-row${activeIdx===idx?' active':''}" onclick="openDetail(${idx})">
+        <div class="row-dot" style="background:${col}">${init}</div>
+        <div class="row-info">
+          <div class="row-code">${d[0]}${freq?' · '+freq:''}</div>
+          <div class="row-name">${d[1]}</div>
+        </div>
+        <div class="row-right">
+          <div class="row-score ${cls}">${sc}</div>
+          <span class="chip ${chipCls}">${chipLbl}</span>
+        </div>
+      </div>`;
     }
-  });
-});
-
-function alignEj(ejSeries) {
-  const map = {};
-  ejSeries.forEach(p => { map[p[0]] = p; });
-  const out = [];
-  for (let e = GLOBAL_MIN_EJ; e <= GLOBAL_MAX_EJ; e++) {
-    out.push(map[e] || [e, null, null]);
   }
-  return out;
+  document.getElementById('list-body').innerHTML = html;
 }
 
-function setArea(a) {
-  activeArea = a;
-  document.querySelectorAll('.abtn[data-a]').forEach(b => b.classList.toggle('act', b.dataset.a === a));
-  render();
+// ── detail ────────────────────────────────────────────────────
+function openDetail(idx){
+  activeIdx = idx;
+  renderList(); // update active row
+
+  const d = ITEMS[idx];
+  const ej = filterEj||activeEj;
+  const s = ejStatus(d[8], ej);
+  const area = d[2]||'Sin área';
+  const col = AREA_COLORS[area]||'#94a3b8';
+  const init = (area||'?')[0];
+
+  document.getElementById('det-dot').style.background = col;
+  document.getElementById('det-dot').textContent = init;
+  document.getElementById('det-code').textContent = d[0];
+  document.getElementById('det-name').textContent = d[1];
+
+  const tags = [area, d[11]||''].filter(Boolean);
+  document.getElementById('det-tags').innerHTML = tags.map(t=>`<span class="det-tag">${t}</span>`).join('');
+
+  const pCls = s.compliant===1?'ok':s.compliant===0?'no':'';
+  const avg = histAvg(d[8],ej);
+  document.getElementById('kpis').innerHTML =
+    `<div class="kpi"><div class="kpi-n ${pCls}">${fmt1(s.puntaje)}</div><div class="kpi-l">Puntaje Ej ${s.ejNum}</div></div>
+     <div class="kpi"><div class="kpi-n">${fmt1(s.obj)}</div><div class="kpi-l">Objetivo</div></div>
+     <div class="kpi"><div class="kpi-n">${avg!=null?fmt1(avg):'—'}</div><div class="kpi-l">Histórico</div></div>`;
+
+  const foot = [];
+  if(avg!=null) foot.push('<span>📊 Hist avg: '+fmt1(avg)+'</span>');
+  // next ej obj
+  const ejs = d[8]||[];
+  const next = ejs.find(e=>e[0]===ej+1);
+  if(next&&next[2]!=null) foot.push('<span>🎯 Ej '+(ej+1)+' obj: '+fmt1(next[2])+'</span>');
+  document.getElementById('det-foot').innerHTML = foot.join('');
+
+  document.getElementById('detail').classList.add('open');
+  drawChart();
 }
 
-function setEj(ej) {
-  activeEj = ej;
-  document.querySelectorAll('.ejbtn').forEach(b => b.classList.toggle('act', (b.dataset.ej === '' ? null : +b.dataset.ej) === ej));
-  updateStats();
-  render();
+function closeDetail(){
+  document.getElementById('detail').classList.remove('open');
+  activeIdx=null;
+  renderList();
 }
 
-function ejOfDate(iso){var y=+iso.slice(0,4),mo=+iso.slice(5,7);return mo>=4?y-1991:y-1992;}
-
-function spark(ejSeriesRaw, color, w, h, maxEj, periodData) {
-  w = w || 150; h = h || 79;
-  var MESES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
-  var pts;
-  if(maxEj!=null){var pBars=(periodData||[]).filter(function(p){return ejOfDate(p[0])===maxEj&&p[1]!=null;});if(pBars.length>0){pts=pBars.map(function(p){return[MESES[+p[0].slice(5,7)-1],p[1],p[2]];});}else{var fe=ejSeriesRaw.filter(function(p){return p[0]===maxEj;})[0];pts=fe&&fe[1]!=null?[[maxEj,fe[1],fe[2]]]:[];}}else{pts=alignEj(ejSeriesRaw);}
-  const hasData = pts.some(p => p[1] !== null);
-  if (!hasData) return '';
-  const padTop = 7, padBottom = 8, padX = 4;
-  const ymin = 0, ymax = 11;
-  const n = pts.length;
-  const bw = 12, gap = 5;
-  const vw = Math.max(n * (bw + gap) - gap + 2*padX, w);
-  const sx = i => padX + i * (bw + gap);
-  const sy = v => (h - padBottom) - (v - ymin)/(ymax - ymin || 1) * (h - padTop - padBottom);
-  const fmtCompact = v => { const f = Math.floor(v * 10) / 10; return (Math.round(f * 10) % 10 === 0) ? String(Math.floor(f)) : fmt1(v); };
-
-  const gridVals = [0, 5, 11];
-  const grid = gridVals.map(v => {
-    const y = sy(v).toFixed(1);
-    return '<line x1="0" y1="' + y + '" x2="' + vw + '" y2="' + y + '" stroke="#eef1f5" stroke-width="1"/>';
-  }).join('');
-  const axisLine = '<line x1="0.5" y1="' + sy(0).toFixed(1) + '" x2="0.5" y2="' + sy(11).toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>';
-
-  const bars = pts.map((p,i) => {
-    const cx = (sx(i) + bw/2).toFixed(1);
-    const ejLbl = '<text x="' + cx + '" y="' + (h - 2.5).toFixed(1) + '" class="spark-val" fill="#cbd5e1">' + p[0] + '</text>';
-    if (p[1] === null) return ejLbl;
-    const barColor = (p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : color;
-    const y0 = sy(ymin), y1 = sy(p[1]);
-    const x = sx(i);
-    const top = Math.min(y0,y1);
-    const rect = '<rect x="' + x.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + bw + '" height="' + Math.max(Math.abs(y0-y1),1).toFixed(1) + '" rx="1.5" fill="' + barColor + '"/>';
-    const valLbl = '<text x="' + cx + '" y="' + Math.max(top - 2.3, 4).toFixed(1) + '" class="spark-val spark-val-sm" fill="' + barColor + '">' + fmtCompact(p[1]) + '</text>';
-    return rect + valLbl + ejLbl;
-  }).join('');
-  const objPts = pts.map((p,i) => p[2] !== null ? (sx(i) + (bw/2)).toFixed(1) + ',' + sy(p[2]).toFixed(1) : null).filter(Boolean);
-  const objLine = objPts.length > 1 ? ('<polyline points="' + objPts.join(' ') + '" fill="none" stroke="#475569" stroke-width="1.4" stroke-dasharray="4,3"/>') : '';
-
-  const objs = pts.map(p => p[2]);
-  const lastObjIdx = objs.map((v,i) => v !== null ? i : -1).reduce((acc,v) => v>=0?v:acc, -1);
-  let objLbl = '';
-  if (lastObjIdx >= 0) {
-    const lastObj = objs[lastObjIdx];
-    const lx = sx(lastObjIdx) + bw/2;
-    let ly = sy(lastObj) - 2.5;
-    ly = Math.max(padTop + 3, Math.min(h - padBottom - 1, ly));
-    const txt = 'Obj ' + fmt1(lastObj);
-    const tw = txt.length * 4.4;
-    objLbl = '<rect x="' + (lx - tw/2 - 2).toFixed(1) + '" y="' + (ly - 3.3).toFixed(1) + '" width="' + (tw+4).toFixed(1) + '" height="4.3" rx="1.5" fill="#fff" opacity="0.85"/>' +
-      '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" class="spark-val" fill="#475569">' + txt + '</text>';
-  }
-
-  const svg = '<svg class="spark" viewBox="0 0 ' + vw + ' ' + h + '" preserveAspectRatio="none">' + grid + axisLine + bars + objLine + objLbl + '</svg>';
-  const axis = '<div class="spark-axis"><span>11</span><span>5</span><span>0</span></div>';
-  return '<div class="spark-wrap" style="position:relative">' + axis + '<div class="spark-body"><div class="spark-chart">' + svg + '</div></div></div>';
+function setMode(m){
+  detailMode=m;
+  document.getElementById('btn-ej').classList.toggle('active',m==='ej');
+  document.getElementById('btn-per').classList.toggle('active',m==='per');
+  drawChart();
 }
 
-function fmt(v) { return v !== null ? (Math.floor(v*100)/100).toFixed(2).replace('.', ',') : '—'; }
-function fmt1(v) { return v !== null ? (Math.floor(v*10)/10).toFixed(1).replace('.', ',') : '—'; }
-function fdate(iso) { if(!iso) return '—'; const [y,m,d] = iso.split('-'); return d+'/'+m+'/'+y; }
-function fdateLast(s) { return s || '—'; }
-
-function currentEjercicio() {
-  const now = new Date();
-  const y = now.getFullYear(), mo = now.getMonth() + 1;
-  return mo >= 4 ? y - 1991 : y - 1992;
-}
-
-function closedEjStatus(ejSeries, targetEj) {
-  let idx;
-  if (targetEj != null) {
-    idx = ejSeries.findIndex(p => p[0] === targetEj);
-    if (idx === -1) return { lastEj: [targetEj, null, null], nextEj: null, compliant: -1 };
+function drawChart(){
+  if(activeIdx==null) return;
+  const d = ITEMS[activeIdx];
+  const ej = filterEj||activeEj;
+  const col = AREA_COLORS[d[2]||'Sin área']||'#94a3b8';
+  const wrap = document.getElementById('chart-wrap');
+  if(detailMode==='ej'){
+    wrap.innerHTML = drawEjSVG(d[8]||[], col, ej);
   } else {
-    const closedEjNum = currentEjercicio() - 1;
-    idx = ejSeries.findIndex(p => p[0] === closedEjNum);
-    if (idx === -1) idx = ejSeries.map(p => p[1]).reduce((acc, v, j) => v !== null ? j : acc, -1);
+    wrap.innerHTML = drawPerSVG(d[7]||[], d[8]||[], col, ej);
   }
-  if (idx === -1) return { lastEj: ejSeries[0] || [0, null, null], nextEj: null, compliant: -1 };
-  const lastEj = ejSeries[idx];
-  const nextEj = ejSeries[idx + 1] || null;
-  const compliant = (lastEj[1] !== null && lastEj[2] !== null) ? (lastEj[1] >= lastEj[2] ? 1 : 0) : -1;
-  return { lastEj, nextEj, compliant };
 }
 
-function naturalCode(code) {
-  const m = code.match(/^([A-Za-z]+)(\d*)$/);
-  return m ? [m[1], parseInt(m[2] || '0', 10)] : [code, 0];
-}
+function drawEjSVG(ejs, col, activeEjNum){
+  const W=360, H=160, padX=30, padY=12, bw=24, gap=8;
+  if(!ejs.length) return `<svg viewBox="0 0 ${W} ${H}"><text x="${W/2}" y="${H/2}" text-anchor="middle" fill="#94a3b8" font-size="12">Sin datos</text></svg>`;
+  const sorted = [...ejs].sort((a,b)=>a[0]-b[0]);
+  const vals = sorted.map(e=>e[1]).filter(v=>v!=null);
+  const objs = sorted.map(e=>e[2]).filter(v=>v!=null);
+  const allV = [...vals,...objs];
+  const minV = Math.min(...allV)*0.85, maxV = Math.max(...allV)*1.1;
+  const n = sorted.length;
+  const chartW = n*(bw+gap)-gap;
+  const cW = Math.max(chartW, W-padX*2);
+  const vw = cW + padX*2;
+  const ch = H-padY*2-20;
 
-function histAvg(ejSeries, maxEj) {
-  const vals = ejSeries.filter(p => maxEj == null || p[0] <= maxEj).map(p => p[1]).filter(v => v !== null);
-  if (!vals.length) return null;
-  return vals.reduce((a,b) => a+b, 0) / vals.length;
-}
+  function ys(v){ return padY + ch - (v-minV)/(maxV-minV)*ch; }
 
-function cardHtml(d) {
-  var code=d[0],name=d[1],area=d[2],ejSeries=d[8],pData=d[7],freq=d[11]||'';
-  var s=closedEjStatus(ejSeries,activeEj),lastEj=s.lastEj,nextEj=s.nextEj,c=s.compliant;
-  var avg=histAvg(ejSeries,activeEj),puntaje=lastEj[1],obj=lastEj[2],ejNum=lastEj[0];
-  var AC={Comercial:'#3b82f6','Ingenier\u00eda':'#8b5cf6',Compras:'#f59e0b','Producci\u00f3n':'#10b981',Obra:'#64748b',RRHH:'#ec4899','Medio Ambiente':'#22c55e','Seguridad e Higiene':'#ef4444'};
-  var col=AC[area]||'#94a3b8',init=(area||'?')[0];
-  var sLine=c===1?'#16a34a':c===0?'#dc2626':'#94a3b8';
-  var chipCls=c===1?'chip-ok':c===0?'chip-no':'chip-nd';
-  var chipLbl=c===1?'Cumple':c===0?'No cumple':'Sin dato';
-  var sc=puntaje!=null?fmt1(puntaje):'\u2014',ob=obj!=null?fmt1(obj):'\u2014';
-  var foot='';
-  if(avg!=null)foot='Hist '+fmt1(avg);
-  if(nextEj&&nextEj[2]!=null)foot+=(foot?' &middot; ':'')+' Ej '+nextEj[0]+' obj '+fmt1(nextEj[2]);
-  var i=ITEMS.indexOf(d);
-  return '<div class="card" onclick="openModal('+i+')">'+
-    '<div class="c-head"><div class="c-dot" style="background:'+col+'">'+init+'</div>'+
-    '<div class="c-meta"><b class="c-code">'+code+'</b>'+
-    (freq?'<span class="c-freq">'+freq+'</span>':'')+
-    '</div><span class="chip '+chipCls+'">'+chipLbl+'</span></div>'+
-    '<div class="c-name">'+name+'</div>'+
-    '<div class="c-row"><span class="c-val" style="color:'+sLine+'">'+sc+'</span>'+
-    '<span class="c-sub">Ej '+ejNum+' &middot; Obj '+ob+'</span></div>'+
-    spark(ejSeries,col,undefined,undefined,activeEj,pData)+
-    '<div class="c-foot">'+foot+'</div></div>';
-}
-function updateStats() {
-  let cumplen = 0, noCumplen = 0, sinDato = 0;
-  ITEMS.forEach(d => {
-    const { compliant } = closedEjStatus(d[8], activeEj);
-    if (compliant === 1) cumplen++;
-    else if (compliant === 0) noCumplen++;
-    else sinDato++;
-  });
-  document.getElementById('st-total').textContent = ITEMS.length;
-  document.getElementById('st-cumplen').textContent = cumplen;
-  document.getElementById('st-nocumplen').textContent = noCumplen;
-  document.getElementById('st-sindato').textContent = sinDato;
-}
-
-function render() {
-  const wrap = document.getElementById('sections');
-  const list = ITEMS.filter(d => !activeArea || d[2] === activeArea);
-  if (!list.length) { wrap.innerHTML = '<div class="empty">Sin resultados</div>'; return; }
-  const byArea = {};
-  list.forEach(d => { (byArea[d[2]] = byArea[d[2]] || []).push(d); });
-  Object.keys(byArea).forEach(a => {
-    byArea[a].sort((x, y) => {
-      const [lx, nx] = naturalCode(x[0]), [ly, ny] = naturalCode(y[0]);
-      return lx === ly ? nx - ny : lx.localeCompare(ly);
-    });
-  });
-  const areaOrder = DATA.areas.filter(a => byArea[a]);
-  wrap.innerHTML = areaOrder.map(a => {
-    const items = byArea[a];
-    return '<div class="section"><div class="section-hd"><h2>' + a + '</h2><span class="cnt">' + items.length + ' indicador' + (items.length===1?'':'es') + '</span></div>' +
-      '<div class="grid">' + items.map(cardHtml).join('') + '</div></div>';
-  }).join('');
-}
-
-function openModal(i) {
-  const d = ITEMS[i];
-  const code=d[0], name=d[1], area=d[2], val=d[3], lastDate=d[4], obj=d[5], st=d[6], pts=d[7], ejPts=d[8],
-        objDesc=d[9], metodo=d[10], frecuencia=d[11], resp=d[12], acciones=d[13];
-  const stArr = ST[st]; const sLbl = stArr[0], sFg = stArr[1], sBg = stArr[2], sLine = stArr[3];
-
-  const rows = pts.slice().reverse().map(p => {
-    const [iso, punt, pobj] = p;
-    const cumpleRow = (punt !== null && pobj !== null) ? (punt >= pobj) : null;
-    const badge = cumpleRow === null ? '' : (cumpleRow ? '<span style="color:#16a34a;font-weight:700">&#10003;</span>' : '<span style="color:#dc2626;font-weight:700">&#10007;</span>');
-    return '<tr><td>' + fdate(iso) + '</td><td>' + (pobj !== null ? fmt1(pobj) : '—') + '</td><td style="font-weight:600">' + (punt !== null ? fmt(punt) : '—') + '</td><td>' + badge + '</td></tr>';
-  }).join('');
-
-  let metaHtml = '';
-  if (objDesc) {
-    metaHtml = '<div class="meta-box">' +
-      '<div class="meta-row"><b>Objetivo</b><span>' + objDesc + '</span></div>' +
-      (metodo ? '<div class="meta-row"><b>M&eacute;todo</b><span>' + metodo + '</span></div>' : '') +
-      (frecuencia ? '<div class="meta-row"><b>Frecuencia</b><span>' + frecuencia + '</span></div>' : '') +
-      (resp ? '<div class="meta-row"><b>Responsables</b><span>' + resp + '</span></div>' : '') +
-      (acciones ? '<div class="meta-row"><b>Acciones</b><span>' + acciones + '</span></div>' : '') +
-      '</div>';
-  }
-
-  const modal = document.getElementById('modal');
-  modal.innerHTML = '<div class="modal-top"><div><div class="mcode">' + code + '</div><h2>' + name + '</h2><div class="marea">' + area + '</div></div>' +
-    '<button class="modal-close" onclick="closeModal()" aria-label="Cerrar">&times;</button></div>' +
-    '<div class="c-mid" style="margin-top:4px"><span class="c-val" style="font-size:32px">' + fmt(val) + '</span>' +
-    '<span class="c-obj">' + (obj !== null ? ('Objetivo actual ' + fmt1(obj)) : 'Sin objetivo definido') + ' &middot; &uacute;ltima medici&oacute;n ' + fdateLast(lastDate) + '</span>' +
-    '<span class="pill" style="background:' + sBg + ';color:' + sFg + ';margin-left:auto">' + sLbl + '</span></div>' +
-    metaHtml +
-    '<div class="legend"><span><span class="sw" style="background:' + GREEN + '"></span>Cumple objetivo</span><span><span class="sw" style="background:' + RED + '"></span>No cumple</span><span><span class="sw" style="background:#475569"></span>Objetivo</span><span><span class="sw" style="background:#6366f1"></span>Tendencia</span></div>' +
-    '<div class="bigchart"><canvas id="bigcanvas" role="img" aria-label="Evolucion historica de ' + name + '"></canvas></div>' +
-    '<div class="hist-wrap"><table class="hist-table"><thead><tr><th>Fecha</th><th>Objetivo</th><th>Puntaje</th><th>Cumple</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-  document.getElementById('ov').classList.add('open');
-
-  if (chartInst) { chartInst.destroy(); chartInst = null; }
-  const ctx = document.getElementById('bigcanvas');
-  const labels = pts.map(p => fdate(p[0]));
-  const puntajes = pts.map(p => p[1]);
-  const objs = pts.map(p => p[2]);
-  const pointColors = pts.map(p => (p[1] !== null && p[2] !== null) ? (p[1] >= p[2] ? GREEN : RED) : GRAY);
-  const trend = trendLine(puntajes);
-
-  chartInst = new Chart(ctx, {
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          type: 'bar',
-          label: 'Puntaje',
-          data: puntajes,
-          backgroundColor: pointColors,
-          borderRadius: 2,
-          maxBarThickness: 22,
-          order: 2
-        },
-        { type: 'line', label: 'Objetivo', data: objs, borderColor: '#475569', backgroundColor: 'transparent', fill: false, spanGaps: true, borderDash: [5,4], tension: 0, pointRadius: 0, borderWidth: 1.6, order: 0 },
-        { type: 'line', label: 'Tendencia', data: trend, borderColor: '#6366f1', backgroundColor: 'transparent', fill: false, spanGaps: true, tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, borderWidth: 2.5, order: 1 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (item) => item.dataset.label + ': ' + (item.raw !== null ? item.raw.toFixed(2).replace('.',',') : 'sin dato') } } },
-      scales: {
-        y: { min: 0, max: 10, ticks: { stepSize: 2 }, grid: { color: '#f1f5f9' } },
-        x: { ticks: { autoSkip: true, maxRotation: 45 }, grid: { display: false } }
-      }
+  let bars='', labels='';
+  for(let i=0;i<sorted.length;i++){
+    const e = sorted[i];
+    const x = padX + i*(bw+gap);
+    const isActive = e[0]===activeEjNum;
+    const v = e[1];
+    const obj = e[2];
+    if(v!=null){
+      const y = ys(v), barH = H-padY-20-y;
+      const meetsObj = obj!=null && v>=obj;
+      const barCol = meetsObj?'#16a34a':'#dc2626';
+      const op = isActive?'1':'0.35';
+      bars += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" rx="3" fill="${barCol}" opacity="${op}"/>`;
     }
-  });
+    if(obj!=null){
+      const yo = ys(obj);
+      bars += `<line x1="${x}" y1="${yo}" x2="${x+bw}" y2="${yo}" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>`;
+    }
+    labels += `<text x="${x+bw/2}" y="${H-padY+14}" text-anchor="middle" fill="${e[0]===activeEjNum?'#1e293b':'#94a3b8'}" font-size="9" font-weight="${e[0]===activeEjNum?'700':'400'}">Ej${e[0]}</text>`;
+  }
+
+  return `<svg viewBox="0 0 ${vw} ${H}" xmlns="http://www.w3.org/2000/svg">${bars}${labels}</svg>`;
 }
 
-function trendLine(values) {
-  const n = values.length;
-  const window = Math.max(3, Math.round(n / 6));
-  const half = Math.floor(window / 2);
-  return values.map((_, i) => {
-    const lo = Math.max(0, i - half), hi = Math.min(n - 1, i + half);
-    const slice = values.slice(lo, hi + 1).filter(v => v !== null);
-    if (!slice.length) return null;
-    return slice.reduce((s, v) => s + v, 0) / slice.length;
-  });
+function drawPerSVG(perData, ejSeries, col, activeEjNum){
+  const W=360, H=160, padX=20, padY=12, gap=4;
+  // perData: [[yyyy-mm, val, obj], ...]
+  // build 12 months for active ej (approximate: use all perData entries)
+  if(!perData||!perData.length) return `<svg viewBox="0 0 ${W} ${H}"><text x="${W/2}" y="${H/2}" text-anchor="middle" fill="#94a3b8" font-size="12">Sin datos de período</text></svg>`;
+
+  const sorted = [...perData].sort((a,b)=>a[0]<b[0]?-1:1);
+  const n = sorted.length;
+  const bw = Math.floor((W-padX*2-(n-1)*gap)/n);
+  const vals = sorted.map(e=>e[1]).filter(v=>v!=null);
+  const objs = sorted.map(e=>e[2]).filter(v=>v!=null);
+  const allV = [...vals,...objs];
+  if(!allV.length) return `<svg viewBox="0 0 ${W} ${H}"><text x="${W/2}" y="${H/2}" text-anchor="middle" fill="#94a3b8" font-size="12">Sin datos</text></svg>`;
+  const minV = Math.min(...allV)*0.85, maxV = Math.max(...allV)*1.1;
+  const ch = H-padY*2-18;
+  function ys(v){ return padY + ch - (v-minV)/(maxV-minV)*ch; }
+
+  let bars='';
+  for(let i=0;i<sorted.length;i++){
+    const e = sorted[i];
+    const x = padX + i*(bw+gap);
+    const mo = parseInt(e[0].slice(5,7),10)-1;
+    const lbl = MESES[mo]||e[0].slice(5,7);
+    const v = e[1];
+    const obj = e[2];
+    if(v!=null){
+      const y = ys(v), barH = H-padY-18-y;
+      const meetsObj = obj!=null && v>=obj;
+      const barCol = meetsObj?'#16a34a':'#dc2626';
+      bars += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" rx="3" fill="${barCol}" opacity="0.8"/>`;
+    } else {
+      // pending: dashed placeholder
+      bars += `<rect x="${x}" y="${padY}" width="${bw}" height="${ch}" rx="3" fill="none" stroke="#cbd5e1" stroke-dasharray="4,3"/>`;
+    }
+    if(obj!=null){
+      const yo = ys(obj);
+      bars += `<line x1="${x}" y1="${yo}" x2="${x+bw}" y2="${yo}" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>`;
+    }
+    bars += `<text x="${x+bw/2}" y="${H-2}" text-anchor="middle" fill="#94a3b8" font-size="8">${lbl}</text>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`;
 }
 
-function closeModal() {
-  document.getElementById('ov').classList.remove('open');
-  if (chartInst) { chartInst.destroy(); chartInst = null; }
-}
+// ── modal (legacy, for backward compat) ──────────────────────
+function openModal(i){ openDetail(i); }
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-updateStats();
-render();
-const _ejNums=[...new Set(ITEMS.flatMap(d=>(d[8]||[]).map(p=>p[0])))].filter(e=>e<=currentEjercicio()).sort((a,b)=>a-b);
-document.getElementById('ejercicios').innerHTML='<button class="ejbtn abtn act" data-ej="" onclick="setEj(null)">Todos</button>'+_ejNums.map(e=>'<button class="ejbtn abtn" data-ej="'+e+'" onclick="setEj('+e+')">Ej '+e+'</button>').join('');
+// ── init ──────────────────────────────────────────────────────
+function renderAll(){ renderSidebar(); renderList(); }
+renderAll();
 </script>
 </body>
 </html>
