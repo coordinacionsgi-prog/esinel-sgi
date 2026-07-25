@@ -246,7 +246,7 @@ canvas{display:block}
 </div>
 </div>
 <script>
-const DATA = __DATA__;
+const ITEMS = __DATA__;
 // ─── theme ───────────────────────────────────────────
 let dark=true;
 document.documentElement.setAttribute('data-theme','dark');
@@ -259,8 +259,8 @@ function dateToEj(ds){const d=new Date(ds);const m=d.getMonth()+1,y=d.getFullYea
 // ─── data ────────────────────────────────────────────
 const AC={"Comercial":"#3b82f6","Ingeniería":"#8b5cf6","Compras":"#f59e0b","Producción":"#10b981","Obra":"#06b6d4","RRHH":"#e91e8c","Medio Ambiente":"#84cc16","Seguridad e Higiene":"#f97316"};
 const AREAS=Object.keys(AC);
-// DATA injected by deployV7 / actualizarDashboard
-const D = DATA.d;
+// ITEMS injected by deployV7 / actualizarDashboard
+const D = ITEMS;
 
 // ─── globals ─────────────────────────────────────────
 let curArea=null,curInd=null,activeTab='ej',selectedEj=null;
