@@ -11,7 +11,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 :root{--mg:#e91e8c;--bg:#0d1117;--sb:#0a1020;--surf:#131c2b;--bdr:#1e2d44;--mut:#475569;--sub:#64748b;--tx:#e2e8f0;--tx2:#cbd5e1;--grid:#1e2d44;--tick:#475569;--row:#111827;--top:#0d1117;--bf:#1e2d44;--cg-bg:#052e16;--cg:#86efac;--cr-bg:#450a0a;--cr:#fca5a5;--bok-bg:#052e16;--bok:#86efac;--bbad-bg:#450a0a;--bbad:#fca5a5;--bnd-bg:#1e2d44;--bnd:#475569}
 [data-theme=light]{--bg:#f1f5f9;--sb:#fff;--surf:#fff;--bdr:#e2e8f0;--mut:#94a3b8;--sub:#94a3b8;--tx:#0f172a;--tx2:#334155;--grid:#e2e8f0;--tick:#94a3b8;--row:#f8fafc;--top:#fff;--bf:#e2e8f0;--cg-bg:#dcfce7;--cg:#166534;--cr-bg:#fee2e2;--cr:#991b1b;--bok-bg:#dcfce7;--bok:#166534;--bbad-bg:#fee2e2;--bbad:#991b1b;--bnd-bg:#f1f5f9;--bnd:#94a3b8}
 body{background:var(--bg);color:var(--tx)}
-.shell{display:flex;height:100%}
+.shell{display:flex;height:100%}h
 /* SIDEBAR */
 .sb{width:218px;flex-shrink:0;background:var(--sb);border-right:1px solid var(--bdr);display:flex;flex-direction:column;transition:background .2s}
 .sb-hd{padding:15px 14px 12px;border-bottom:1px solid var(--bdr)}
@@ -535,7 +535,7 @@ function drawInd(d,color){
   const container=document.getElementById('ej-scroll');
   const cW=container.clientWidth||600,n=d[8].length;
   const colW=Math.max(52,Math.floor(cW/n));
-  const W=Math.max(cW,colW*n+48),H=170;
+  const W=Math.max(cW,colW*n+48),H=280;
   const ctx=setupCanvas('iChart',W,H);
   const pL=36,pR=24,pT=24,pB=24,cH=H-pT-pB;
   const xP=i=>pL+i*colW+colW/2;
@@ -557,7 +557,7 @@ function drawPeriod(d,color){
   const container=document.getElementById('per-scroll');
   const cW=container.clientWidth||600,n=pts.length;
   const colW=Math.max(54,Math.floor(cW/n));
-  const W=Math.max(cW,colW*n+48),H=170;
+  const W=Math.max(cW,colW*n+48),H=280;
   const ctx=setupCanvas('perChart',W,H);
   const pL=36,pR=24,pT=24,pB=26;
   const xP=i=>pL+i*colW+colW/2;
@@ -578,3 +578,4 @@ function redrawActive(){
 </script>
 </body>
 </html>
+h
