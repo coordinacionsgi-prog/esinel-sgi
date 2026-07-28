@@ -512,7 +512,7 @@ function drawArea(area,color,inds){
   const ejSet=new Set();inds.forEach(d=>d[8].forEach(p=>{if(p[1]!==null)ejSet.add(p[0]);}));
   const ejList=Array.from(ejSet).sort((a,b)=>a-b);if(!ejList.length)return;
   const container=document.getElementById('aChart').parentElement;
-  const W=container.clientWidth||600,H=120;
+  const W=container.clientWidth||600,H=200;
   const ctx=setupCanvas('aChart',W,H);
   const pL=32,pR=20,pT=10,pB=22,cW=W-pL-pR;
   const minE=ejList[0],maxE=ejList[ejList.length-1];
