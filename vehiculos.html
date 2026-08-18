@@ -143,6 +143,15 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .aa-row .rd.up{color:#dc2626}.aa-row .rd.dn{color:#16a34a}
 .aa-note{font-size:11px;color:#64748b;margin-top:10px;font-style:italic}
 @media(max-width:900px){.aa-cols{grid-template-columns:1fr 1fr}}
+.ti-btn{width:18px;height:18px;border-radius:50%;border:1.5px solid #cbd5e1;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:#94a3b8;font-size:10px;font-weight:700;font-style:normal;line-height:1;transition:all .15s;vertical-align:middle;flex-shrink:0}
+.ti-btn:hover,.ti-btn.ti-on{border-color:#0ea5e9;color:#0369a1;background:#e0f2fe}
+.ti-panel{overflow:hidden;max-height:0;transition:max-height .25s ease}
+.ti-panel.ti-open{max-height:160px}
+.ti-inner{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:11px 18px 13px;border-top:1px solid #e0f2fe;background:#f0f9ff}
+.ti-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#0369a1;margin-bottom:4px}
+.ti-txt{font-size:11.5px;color:#475569;line-height:1.5}
+.comp-hd-wrap{display:flex;align-items:center;gap:8px}
+@media(max-width:600px){.ti-inner{grid-template-columns:1fr}}
 .title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}
 .informe-btn{background:#0f172a;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
 .informe-btn:hover{background:#1e293b}
@@ -226,11 +235,26 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 
   <div class="comp" id="comp-section" style="display:none">
     <div class="comp-hd">
-      <h2>Comparativa semestral</h2>
+      <div class="comp-hd-wrap">
+        <h2>Comparativa semestral</h2>
+        <button class="ti-btn" onclick="tiTog(this,'ti-comp')" aria-label="Información sobre esta sección">i</button>
+      </div>
       <span class="comp-vs" id="comp-vs">&mdash;</span>
     </div>
+    <div class="ti-panel" id="ti-comp">
+      <div class="ti-inner">
+        <div><div class="ti-lbl">Qué mide</div><div class="ti-txt">Tabla lado a lado del costo total, km y costo/km de cada vehículo en el período actual vs el anterior. Solo incluye vehículos presentes en ambos períodos.</div></div>
+        <div><div class="ti-lbl">Cómo interpretar</div><div class="ti-txt">Δ Costo muestra la variación en pesos. Rojo = aumentó. Verde = bajó. Vehículos nuevos o dados de baja en el período no aparecen aquí.</div></div>
+      </div>
+    </div>
     <div class="comp-kpis" id="comp-kpis"></div>
-    <div style="font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px">Por vehículo</div>
+    <div style="font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px;display:flex;align-items:center;gap:8px">Por vehículo <button class="ti-btn" onclick="tiTog(this,'ti-veh')" aria-label="Información sobre esta sección">i</button></div>
+    <div class="ti-panel" id="ti-veh">
+      <div class="ti-inner" style="margin-bottom:10px">
+        <div><div class="ti-lbl">Qué mide</div><div class="ti-txt">Desglose individual de combustible, telepeaje, mantenimiento y costo fijo. El costo de oportunidad (valor de mercado × 20% anual ÷ 2) se muestra como referencia, no integra el costo operativo.</div></div>
+        <div><div class="ti-lbl">Cómo interpretar</div><div class="ti-txt">El costo/km es el indicador clave de eficiencia. Un costo total bajo con pocos km puede esconder un costo/km alto — señal de subutilización del vehículo.</div></div>
+      </div>
+    </div>
     <div style="overflow-x:auto"><table class="comp-table" id="comp-table">
       <thead><tr>
         <th>Vehículo</th>
@@ -774,6 +798,14 @@ function openInforme() {
   document.getElementById('informe-ov').classList.add('open');
 }
 function closeInforme() { document.getElementById('informe-ov').classList.remove('open'); }
+function tiTog(btn, id) {
+  const panel = document.getElementById(id);
+  if (!panel) return;
+  const open = panel.classList.contains('ti-open');
+  document.querySelectorAll('.ti-panel').forEach(p => p.classList.remove('ti-open'));
+  document.querySelectorAll('.ti-btn').forEach(b => b.classList.remove('ti-on'));
+  if (!open) { panel.classList.add('ti-open'); btn.classList.add('ti-on'); }
+}
 
 renderAnalysis();
 renderRankings();
@@ -907,7 +939,8 @@ function renderAutoAnalisis() {
 
   container.innerHTML = `
     <div class="aa-wrap">
-      <div class="aa-hd"><h2>Análisis automático · flota</h2>${badge}</div>
+      <div class="aa-hd"><h2>Análisis automático · flota <button class="ti-btn" onclick="tiTog(this,'ti-aa')" aria-label="Información sobre esta sección" style="border-color:#7dd3fc;color:#0369a1">i</button></h2>${badge}</div>
+      <div class="ti-panel" id="ti-aa"><div class="ti-inner" style="margin-bottom:12px"><div><div class="ti-lbl">Qué mide</div><div class="ti-txt">Resumen calculado automáticamente desde los datos de cada vehículo: costo total, km, promedio por km y mantenimiento acumulados en el semestre actual.</div></div><div><div class="ti-lbl">Cómo interpretar</div><div class="ti-txt">▲ rojo = subió vs semestre anterior. ▼ verde = bajó. Con semestre en curso los km se actualizan semanalmente — el costo/km aparece cuando estén completos.</div></div></div></div>
       ${kpisHTML}
       <div class="aa-cols">${colMayorCosto}${colKm}${colMant}</div>
       ${nota}
