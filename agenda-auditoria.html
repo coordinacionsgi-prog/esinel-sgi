@@ -112,6 +112,10 @@
                             <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-800 border border-sky-200">
                                 Auditoría P2 - DNV
                             </span>
+                            <!-- Cloud Real-time Status Badge -->
+                            <span id="cloud-status-badge" class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1">
+                                <i class="fa-solid fa-cloud-arrow-up text-amber-500 animate-pulse"></i> Sincronizando...
+                            </span>
                         </div>
                         <p class="text-xs text-slate-500">
                             <i class="fa-regular fa-calendar-check text-sky-600 mr-1"></i> 27 y 28 de Agosto, 2026 
@@ -393,7 +397,7 @@
                                     <div class="w-3 h-3 rounded-full bg-sky-500"></div>
                                     <h3 class="font-bold text-slate-900 text-sm">SITIO SANTO TOMÉ: José Costa (JC)</h3>
                                 </div>
-                                <span class="text-xs px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-semibold border border-sky-200">Diseño, Obras & Pañol</span>
+                                <span class="text-xs px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-semibold border border-sky-200">Admin, Obras & Pañol</span>
                             </div>
 
                             <div id="day2-track-jc" class="space-y-4">
@@ -441,7 +445,7 @@
                         <i class="fa-solid fa-users text-sky-600"></i> Directorio de Auditados por Área
                     </h2>
                     <p class="text-xs text-slate-500 mt-1">
-                        Consulte y edite quiénes participan en cada sección. Los cambios se guardan automáticamente.
+                        Consulte y edite quiénes participan en cada sección. Los cambios se sincronizan en tiempo real para todos.
                     </p>
                 </div>
                 
@@ -585,7 +589,7 @@
                         </div>
                     </div>
                     <div class="text-xs space-y-2 text-slate-700 pt-2 border-t border-slate-100">
-                        <p><strong class="text-slate-900">Procesos Evaluados:</strong> Ingeniería, Comercial, Administración, Pañol y Obras.</p>
+                        <p><strong class="text-slate-900">Procesos Evaluados:</strong> Administración, Comercial, Pañol y Obras.</p>
                         <p><strong class="text-slate-900">Referentes en Sitio:</strong> Juan Monti / Miguel Ángel Citta / Marisa Cercos</p>
                         <p><strong class="text-slate-900">Auditor Asignado Día 2:</strong> José Costa (JC)</p>
                     </div>
@@ -630,7 +634,7 @@
                             <i class="fa-solid fa-square-check text-emerald-600"></i> Checklist Interno de Preparación ESINEL
                         </h2>
                         <p class="text-xs text-slate-500 mt-1">
-                            Verifique que los ítems logísticos y documentales estén listos. Los cambios se guardan automáticamente.
+                            Verifique que los ítems logísticos y documentales estén listos. Los cambios se sincronizan en tiempo real.
                         </p>
                     </div>
                     <button onclick="resetChecklist()" class="text-xs text-slate-500 hover:text-rose-600 underline">
@@ -648,7 +652,7 @@
 
     </main>
 
-    <!-- Detailed Modal View for Activity Details & Edit Link -->
+    <!-- Modals for Modifying Data -->
     <div id="activity-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="clean-card bg-white w-full max-w-xl rounded-2xl border border-slate-200 p-6 space-y-5 relative shadow-2xl">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
@@ -792,8 +796,27 @@
         <p>Dashboard Interactivo ESINEL S.R.L. © 2026 | Auditoría DNV P2 (ISO 9001 / 14001 / 45001)</p>
     </footer>
 
-    <script>
-        const AGENDA_DATA = [
+    <!-- Firebase Script and Application State Management -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by environment or default fallbacks
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'esinel-audit-2026';
+        const firebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : {
+                apiKey: "AIzaSyDemoKeyOnlyForFallback",
+                authDomain: "esinel-audit.firebaseapp.com",
+                projectId: "esinel-audit",
+                storageBucket: "esinel-audit.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:abcdef123456"
+            };
+
+        // Static Master Data Definitions (Updated Agenda with Unified Engineering)
+        window.AGENDA_DATA = [
             // DÍA 1
             {
                 id: 'd1-opening',
@@ -865,7 +888,7 @@
                 day: '1',
                 date: '27/08/2026',
                 time: '08:15 - 11:00',
-                title: 'Diseño e Ingeniería Electromecánica',
+                title: 'Diseño e Ingeniería Electromecánica (Unificado CABA)',
                 auditorCode: 'JC',
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
@@ -967,19 +990,6 @@
                 clauses: ['5.1', '5.3']
             },
             {
-                id: 'd2-jc-diseno-st',
-                day: '2',
-                date: '28/08/2026',
-                time: '08:15 - 11:00',
-                title: 'Diseño e Ingeniería Santo Tomé',
-                auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
-                track: 'jc',
-                location: 'Sitio Santo Tomé - Ingeniería',
-                attendees: 'Martín Diamanti (Gte Ingeniería), Juan Monti (Líder Ing ST)',
-                clauses: ['8.1', '8.3']
-            },
-            {
                 id: 'd2-jc-admin-comercial',
                 day: '2',
                 date: '28/08/2026',
@@ -990,7 +1000,7 @@
                 track: 'jc',
                 location: 'Sitio Santo Tomé - Administración',
                 attendees: 'Marisa Cercos, Lisandro Fissolo, Andrea Chávez',
-                clauses: ['4.1', '4.2', '5.4', '6.1', '7.1-7.5', '8.1', '8.2', '9.1']
+                clauses: ['4.1', '4.2', '4.3', '4.4', '5.4', '6.1', '7.1-7.5', '8.1', '8.1.3', '8.2', '9.1']
             },
             {
                 id: 'd2-jc-obras-st',
@@ -1033,7 +1043,7 @@
             }
         ];
 
-        const OFFICIAL_ISO_CLAUSES = [
+        window.OFFICIAL_ISO_CLAUSES = [
             { code: '4.1', title: 'Comprensión de la organización y de su contexto', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '4.2', title: 'Necesidades y expectativas de las partes interesadas', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '4.3', title: 'Determinación del alcance del sistema de gestión', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
@@ -1070,9 +1080,9 @@
             { code: '10.3', title: 'Mejora continua del SGI', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] }
         ];
 
-        const INITIAL_PARTICIPANTS_LIST = [
+        window.INITIAL_PARTICIPANTS_LIST = [
             { name: 'Marcelo Piccione', role: 'Presidente / Gte Adm y RRHH', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
-            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Ingeniería', day1: '08:00, 08:15 (Diseño), 11:00 (Sistemas)', day2: '08:00 (Apertura ST), 08:15 (Diseño ST), 17:00 (Cierre)' },
+            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Ingeniería', day1: '08:00, 08:15 (Diseño Unificado), 11:00 (Sistemas)', day2: '08:00 (Apertura ST), 17:00 (Cierre)' },
             { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Producción', day1: '08:00, 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
             { name: 'Hernán Giacobbe', role: 'Gerente de Obras', area: 'Obras', day1: '08:00, 13:00 (Obras)', day2: '08:00 (Apertura ST), 13:30 (Obras ST), 17:00 (Cierre)' },
             { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'SGI/RRHH/Compras', day1: '08:00, 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI), 17:00 (Cierre)' },
@@ -1085,17 +1095,17 @@
             { name: 'Bautista Iestra', role: 'Asistente SySO', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
             { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'SGI/RRHH/Compras', day1: '08:00, 08:15 (Compras)', day2: '17:00 (Cierre)' },
             { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'SGI/RRHH/Compras', day1: '08:00, 08:15 (Compras)', day2: '16:00 (Pañol ST), 17:00 (Cierre)' },
-            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00, 08:15 (Diseño)', day2: '17:00 (Cierre)' },
+            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00, 08:15 (Diseño Unificado)', day2: '08:00 (Apertura ST), 17:00 (Cierre)' },
             { name: 'Daniel Carena', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '13:30 (Obras ST), 17:00 (Cierre)' },
             { name: 'Emiliano San Martin', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '17:00 (Cierre)' },
             { name: 'Diego Abella', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '17:00 (Cierre)' },
             { name: 'Romina Nievas', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '17:00 (Cierre)' },
             { name: 'Hernan Giorgietti', role: 'Líder de Producción', area: 'Producción', day1: '08:00', day2: '17:00 (Cierre)' },
-            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'SGI/RRHH/Compras', day1: '08:00', day2: '17:00 (Cierre)' },
+            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'SGI/RRHH/Compras', day1: '08:00', day2: '11:00 (Admin ST), 17:00 (Cierre)' },
             { name: 'Servicio Médico SUMO', role: 'Vigilancia de Salud / SST External', area: 'SGI/RRHH/Compras', day1: '11:00 (Servicio Médico)', day2: '17:00 (Cierre Requerido ENAC)' }
         ];
 
-        const DEFAULT_CHECKLIST = [
+        window.DEFAULT_CHECKLIST = [
             { id: 'c1', text: 'Confirmar conexión MS Teams / Meet y reservación de salas en Casa Central y Santo Tomé', done: false },
             { id: 'c2', text: 'Verificar celulares institucionales con cámara y plan de datos para recorrido virtual de taller/obras', done: false },
             { id: 'c3', text: 'Cargar enlaces de llamadas en cada bloque del dashboard para acceso directo', done: false },
@@ -1104,7 +1114,87 @@
             { id: 'c6', text: 'Asegurar presencia de Jefes de Obra y Taller en sus franjas horarias', done: false }
         ];
 
-        // UI State
+        // Shared App State
+        window.meetingLinks = JSON.parse(localStorage.getItem('esinel_meeting_links')) || {};
+        window.customAttendees = JSON.parse(localStorage.getItem('esinel_custom_attendees')) || {};
+        window.participantsList = JSON.parse(localStorage.getItem('esinel_participants_list')) || window.INITIAL_PARTICIPANTS_LIST;
+        window.checklistData = JSON.parse(localStorage.getItem('esinel_checklist')) || window.DEFAULT_CHECKLIST;
+
+        // Firebase Initialization
+        let db = null;
+        let sharedDocRef = null;
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            db = getFirestore(app);
+
+            // Path rule compliance: /artifacts/{appId}/public/data/{collectionName}
+            sharedDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'audit_state', 'shared_dashboard');
+
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+
+            // Real-time Cloud Sync Listener with error callback
+            onSnapshot(sharedDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.meetingLinks) window.meetingLinks = data.meetingLinks;
+                    if (data.customAttendees) window.customAttendees = data.customAttendees;
+                    if (data.participantsList) window.participantsList = data.participantsList;
+                    if (data.checklistData) window.checklistData = data.checklistData;
+
+                    window.renderAgenda();
+                    window.renderParticipants();
+                    window.renderChecklist();
+
+                    const badge = document.getElementById('cloud-status-badge');
+                    if (badge) {
+                        badge.className = "px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1";
+                        badge.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Cloud Sincronizado`;
+                    }
+                }
+            }, (error) => {
+                console.warn("Firestore snapshot error fallback to local:", error);
+                const badge = document.getElementById('cloud-status-badge');
+                if (badge) {
+                    badge.className = "px-2 py-0.5 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1";
+                    badge.innerHTML = `<i class="fa-solid fa-hard-drive text-amber-600"></i> Modo Local`;
+                }
+            });
+
+        } catch (e) {
+            console.warn("Firebase initialized in local mode:", e);
+        }
+
+        // Global Sync Helper Function
+        window.saveCloudState = async function() {
+            localStorage.setItem('esinel_meeting_links', JSON.stringify(window.meetingLinks));
+            localStorage.setItem('esinel_custom_attendees', JSON.stringify(window.customAttendees));
+            localStorage.setItem('esinel_participants_list', JSON.stringify(window.participantsList));
+            localStorage.setItem('esinel_checklist', JSON.stringify(window.checklistData));
+
+            if (db && sharedDocRef) {
+                try {
+                    await setDoc(sharedDocRef, {
+                        meetingLinks: window.meetingLinks,
+                        customAttendees: window.customAttendees,
+                        participantsList: window.participantsList,
+                        checklistData: window.checklistData,
+                        lastUpdated: new Date().toISOString()
+                    }, { merge: true });
+                } catch (err) {
+                    console.error("Error saving to cloud:", err);
+                }
+            }
+        };
+    </script>
+
+    <!-- Main Dynamic Application Script -->
+    <script>
         let currentDayFilter = 'all';
         let currentAuditorFilter = 'all';
         let currentViewMode = 'parallel';
@@ -1114,12 +1204,6 @@
         let selectedSessionForModal = null;
         let selectedSessionForFastPrompt = null;
         let editingParticipantIndex = -1;
-
-        // Saved Local Storage Stores
-        let meetingLinks = JSON.parse(localStorage.getItem('esinel_meeting_links')) || {};
-        let customAttendees = JSON.parse(localStorage.getItem('esinel_custom_attendees')) || {};
-        let participantsList = JSON.parse(localStorage.getItem('esinel_participants_list')) || INITIAL_PARTICIPANTS_LIST;
-        let checklistData = JSON.parse(localStorage.getItem('esinel_checklist')) || DEFAULT_CHECKLIST;
 
         document.addEventListener('DOMContentLoaded', () => {
             initCountdown();
@@ -1149,7 +1233,7 @@
         }
 
         function getAttendees(item) {
-            return customAttendees[item.id] || item.attendees;
+            return (window.customAttendees && window.customAttendees[item.id]) || item.attendees;
         }
 
         function switchTab(tabId) {
@@ -1168,7 +1252,8 @@
         }
 
         function getFilteredAgenda() {
-            return AGENDA_DATA.filter(item => {
+            if (!window.AGENDA_DATA) return [];
+            return window.AGENDA_DATA.filter(item => {
                 if (currentDayFilter !== 'all' && item.day !== currentDayFilter) return false;
                 if (currentAuditorFilter !== 'all' && !item.auditorCode.includes(currentAuditorFilter)) return false;
 
@@ -1252,7 +1337,7 @@
             const card = document.createElement('div');
             card.className = `clean-card clean-card-hover rounded-xl p-4 space-y-3 ${isFullWidth ? 'border-2 border-sky-300 bg-sky-50/50' : ''}`;
 
-            const link = meetingLinks[item.id] || '';
+            const link = (window.meetingLinks && window.meetingLinks[item.id]) || '';
             const attendeesStr = getAttendees(item);
             const auditorBadge = item.auditorCode.includes('RS') && item.auditorCode.includes('JC')
                 ? 'bg-purple-100 text-purple-800 border-purple-200'
@@ -1330,7 +1415,7 @@
             }
 
             filtered.forEach(item => {
-                const link = meetingLinks[item.id] || '';
+                const link = (window.meetingLinks && window.meetingLinks[item.id]) || '';
                 const attendeesStr = getAttendees(item);
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
@@ -1360,7 +1445,7 @@
         }
 
         function openModalById(id) {
-            const item = AGENDA_DATA.find(x => x.id === id);
+            const item = window.AGENDA_DATA.find(x => x.id === id);
             if (!item) return;
             selectedSessionForModal = item;
 
@@ -1389,7 +1474,7 @@
             `).join('');
 
             const linkInput = document.getElementById('modal-meet-input');
-            const savedLink = meetingLinks[item.id] || '';
+            const savedLink = (window.meetingLinks && window.meetingLinks[item.id]) || '';
             linkInput.value = savedLink;
 
             const linkActions = document.getElementById('modal-link-actions');
@@ -1429,12 +1514,12 @@
             if (!selectedSessionForModal) return;
             const newText = document.getElementById('modal-attendees-input').value.trim();
             if (newText) {
-                customAttendees[selectedSessionForModal.id] = newText;
+                window.customAttendees[selectedSessionForModal.id] = newText;
             } else {
-                delete customAttendees[selectedSessionForModal.id];
+                delete window.customAttendees[selectedSessionForModal.id];
             }
-            localStorage.setItem('esinel_custom_attendees', JSON.stringify(customAttendees));
-            showToast("Lista de auditados actualizada");
+            if (window.saveCloudState) window.saveCloudState();
+            showToast("Lista de auditados actualizada y sincronizada");
             
             document.getElementById('modal-attendees-view').innerText = getAttendees(selectedSessionForModal);
             cancelEditAttendees();
@@ -1445,24 +1530,24 @@
             if (!selectedSessionForModal) return;
             const newLink = document.getElementById('modal-meet-input').value.trim();
             if (newLink) {
-                meetingLinks[selectedSessionForModal.id] = newLink;
+                window.meetingLinks[selectedSessionForModal.id] = newLink;
             } else {
-                delete meetingLinks[selectedSessionForModal.id];
+                delete window.meetingLinks[selectedSessionForModal.id];
             }
-            localStorage.setItem('esinel_meeting_links', JSON.stringify(meetingLinks));
-            showToast("Link guardado correctamente");
+            if (window.saveCloudState) window.saveCloudState();
+            showToast("Link guardado y sincronizado correctamente");
             openModalById(selectedSessionForModal.id);
             renderAgenda();
         }
 
         function openFastLinkModal(id, evt) {
             if (evt) evt.stopPropagation();
-            const item = AGENDA_DATA.find(x => x.id === id);
+            const item = window.AGENDA_DATA.find(x => x.id === id);
             if (!item) return;
             selectedSessionForFastPrompt = item;
 
             document.getElementById('prompt-session-title').innerText = `${item.title} (${item.time})`;
-            document.getElementById('fast-meet-input').value = meetingLinks[item.id] || '';
+            document.getElementById('fast-meet-input').value = (window.meetingLinks && window.meetingLinks[item.id]) || '';
             document.getElementById('link-prompt-modal').classList.remove('hidden');
         }
 
@@ -1474,12 +1559,12 @@
             if (!selectedSessionForFastPrompt) return;
             const newLink = document.getElementById('fast-meet-input').value.trim();
             if (newLink) {
-                meetingLinks[selectedSessionForFastPrompt.id] = newLink;
+                window.meetingLinks[selectedSessionForFastPrompt.id] = newLink;
             } else {
-                delete meetingLinks[selectedSessionForFastPrompt.id];
+                delete window.meetingLinks[selectedSessionForFastPrompt.id];
             }
-            localStorage.setItem('esinel_meeting_links', JSON.stringify(meetingLinks));
-            showToast("Link guardado correctamente");
+            if (window.saveCloudState) window.saveCloudState();
+            showToast("Link guardado y sincronizado correctamente");
             closeFastLinkModal();
             renderAgenda();
         }
@@ -1546,11 +1631,12 @@
 
         function renderParticipants() {
             const grid = document.getElementById('participants-grid');
+            if (!grid) return;
             grid.innerHTML = '';
 
             const filtered = currentParticipantFilter === 'all' 
-                ? participantsList 
-                : participantsList.filter(p => p.area === currentParticipantFilter);
+                ? window.participantsList 
+                : window.participantsList.filter(p => p.area === currentParticipantFilter);
 
             filtered.forEach((p, idx) => {
                 const card = document.createElement('div');
@@ -1595,7 +1681,7 @@
 
         function editParticipant(index) {
             editingParticipantIndex = index;
-            const p = participantsList[index];
+            const p = window.participantsList[index];
             if (!p) return;
 
             document.getElementById('participant-modal-title').innerHTML = `<i class="fa-solid fa-user-pen text-sky-600"></i> Editar Auditado`;
@@ -1626,22 +1712,22 @@
             const itemData = { name, role, area, day1, day2 };
 
             if (editingParticipantIndex >= 0) {
-                participantsList[editingParticipantIndex] = itemData;
-                showToast("Auditado actualizado");
+                window.participantsList[editingParticipantIndex] = itemData;
+                showToast("Auditado actualizado y sincronizado");
             } else {
-                participantsList.push(itemData);
-                showToast("Nuevo auditado agregado");
+                window.participantsList.push(itemData);
+                showToast("Nuevo auditado agregado y sincronizado");
             }
 
-            localStorage.setItem('esinel_participants_list', JSON.stringify(participantsList));
+            if (window.saveCloudState) window.saveCloudState();
             closeParticipantModal();
             renderParticipants();
         }
 
         function deleteParticipant(index) {
             if (confirm("¿Desea eliminar a este auditado del directorio?")) {
-                participantsList.splice(index, 1);
-                localStorage.setItem('esinel_participants_list', JSON.stringify(participantsList));
+                window.participantsList.splice(index, 1);
+                if (window.saveCloudState) window.saveCloudState();
                 showToast("Auditado eliminado");
                 renderParticipants();
             }
@@ -1662,11 +1748,12 @@
 
         function renderClauseMatrix() {
             const container = document.getElementById('iso-clauses-interactive-list');
+            if (!container) return;
             container.innerHTML = '';
 
             const filtered = selectedClauseStandard === 'all'
-                ? OFFICIAL_ISO_CLAUSES
-                : OFFICIAL_ISO_CLAUSES.filter(item => item.std.includes(selectedClauseStandard));
+                ? window.OFFICIAL_ISO_CLAUSES
+                : window.OFFICIAL_ISO_CLAUSES.filter(item => item.std.includes(selectedClauseStandard));
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
@@ -1723,9 +1810,10 @@
 
         function renderChecklist() {
             const container = document.getElementById('checklist-items-container');
+            if (!container) return;
             container.innerHTML = '';
 
-            checklistData.forEach((item, index) => {
+            window.checklistData.forEach((item, index) => {
                 const div = document.createElement('div');
                 div.className = `p-3 rounded-xl border flex items-center justify-between gap-3 transition ${item.done ? 'bg-emerald-50 border-emerald-200 text-slate-500' : 'bg-white border-slate-200 text-slate-800'}`;
                 
@@ -1743,14 +1831,14 @@
         }
 
         function toggleChecklist(index) {
-            checklistData[index].done = !checklistData[index].done;
-            localStorage.setItem('esinel_checklist', JSON.stringify(checklistData));
+            window.checklistData[index].done = !window.checklistData[index].done;
+            if (window.saveCloudState) window.saveCloudState();
             renderChecklist();
         }
 
         function resetChecklist() {
-            checklistData = DEFAULT_CHECKLIST.map(item => ({ ...item, done: false }));
-            localStorage.setItem('esinel_checklist', JSON.stringify(checklistData));
+            window.checklistData = window.DEFAULT_CHECKLIST.map(item => ({ ...item, done: false }));
+            if (window.saveCloudState) window.saveCloudState();
             renderChecklist();
         }
     </script>
