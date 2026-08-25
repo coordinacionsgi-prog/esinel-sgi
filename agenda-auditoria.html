@@ -472,19 +472,23 @@
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="syncDirectorySchedules()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5" title="Sincronizar automáticamente con la agenda actual">
+                        <i class="fa-solid fa-rotate text-xs"></i> Sincronizar Horarios
+                    </button>
                     <button onclick="openAddParticipantModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
                         <i class="fa-solid fa-user-plus"></i> + Agregar Auditado
                     </button>
-                    <!-- Filter buttons by department -->
-                    <div class="flex flex-wrap gap-1.5">
-                        <button onclick="filterParticipants('all')" class="part-filter-btn px-3 py-1 text-xs font-semibold rounded-lg bg-sky-600 text-white">Todos</button>
-                        <button onclick="filterParticipants('Dirección')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Dirección</button>
-                        <button onclick="filterParticipants('Ingeniería')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Ingeniería</button>
-                        <button onclick="filterParticipants('Producción')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Producción/Taller</button>
-                        <button onclick="filterParticipants('Obras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Obras</button>
-                        <button onclick="filterParticipants('SGI/RRHH/Compras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Staff & SGI</button>
-                    </div>
                 </div>
+            </div>
+
+            <!-- Department Filters -->
+            <div class="flex flex-wrap gap-1.5 pb-1">
+                <button onclick="filterParticipants('all')" class="part-filter-btn px-3 py-1 text-xs font-semibold rounded-lg bg-sky-600 text-white">Todos</button>
+                <button onclick="filterParticipants('Dirección')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Dirección</button>
+                <button onclick="filterParticipants('Ingeniería')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Ingeniería</button>
+                <button onclick="filterParticipants('Producción')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Producción/Taller</button>
+                <button onclick="filterParticipants('Obras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Obras</button>
+                <button onclick="filterParticipants('SGI/RRHH/Compras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Staff & SGI</button>
             </div>
 
             <!-- Participant Grid -->
@@ -1144,27 +1148,31 @@
 
         const INITIAL_PARTICIPANTS_LIST = [
             { name: 'Marcelo Piccione', role: 'Presidente / Gte Adm y RRHH', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
-            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Ingeniería', day1: '08:00, 08:15 (Diseño CABA), 11:00 (Sistemas)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
-            { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Producción', day1: '08:00, 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Ingeniería', day1: '08:00 (Apertura), 08:15 (Diseño CABA), 11:00 (Sistemas)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
+            { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Producción', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
             { name: 'Hernán Giacobbe', role: 'Gerente de Obras', area: 'Obras', day1: '08:00 (Apertura)', day2: '08:00 (Apertura ST), 13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
-            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'SGI/RRHH/Compras', day1: '08:00, 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI), 17:00 (Cierre)' },
-            { name: 'Clarisa Piccione', role: 'Líder de Admin y RRHH', area: 'SGI/RRHH/Compras', day1: '08:00, 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
-            { name: 'Patricia Rodríguez', role: 'Responsable de RRHH', area: 'SGI/RRHH/Compras', day1: '08:00, 11:00 (RRHH)', day2: '17:00 (Cierre)' },
-            { name: 'Daniel Lértora', role: 'Responsable de Compras', area: 'SGI/RRHH/Compras', day1: '08:00, 08:15 (Compras)', day2: '17:00 (Cierre)' },
-            { name: 'Sergio Donda', role: 'Responsable / Jefe de Taller', area: 'Producción', day1: '08:00, 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura), 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 17:00 (Cierre)' },
+            { name: 'Clarisa Piccione', role: 'Líder de Admin y RRHH', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
+            { name: 'Patricia Rodríguez', role: 'Responsable de RRHH', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
+            { name: 'Mercedes Nahas', role: 'Responsable de Comunicación y Cultura', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Daniel Lértora', role: 'Responsable de Compras', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
+            { name: 'Lisandro Fissolo', role: 'Responsable Comercial', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Sergio Donda', role: 'Responsable / Jefe de Taller', area: 'Producción', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
             { name: 'Claudio Salazar', role: 'Oficial Electricista', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
             { name: 'Mariano Prieto', role: 'Responsable SySO', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
             { name: 'Bautista Iestra', role: 'Asistente SySO', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
-            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'SGI/RRHH/Compras', day1: '08:00, 08:15 (Compras)', day2: '17:00 (Cierre)' },
-            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'SGI/RRHH/Compras', day1: '08:00, 08:15 (Compras)', day2: '16:00 (Pañol ST Virtual), 17:00 (Cierre)' },
-            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00, 08:15 (Diseño)', day2: '17:00 (Cierre)' },
-            { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00', day2: '13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
-            { name: 'Emiliano San Martin', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '17:00 (Cierre)' },
-            { name: 'Diego Abella', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '17:00 (Cierre)' },
-            { name: 'Romina Nievas', role: 'Jefe de Obra', area: 'Obras', day1: '08:00', day2: '17:00 (Cierre)' },
-            { name: 'Hernan Giorgietti', role: 'Líder de Producción', area: 'Producción', day1: '08:00', day2: '17:00 (Cierre)' },
-            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'SGI/RRHH/Compras', day1: '08:00', day2: '11:00 (Admin ST Virtual), 17:00 (Cierre)' },
-            { name: 'Servicio Médico SUMO', role: 'Vigilancia de Salud / SST External', area: 'SGI/RRHH/Compras', day1: '11:00 (Servicio Médico)', day2: '17:00 (Cierre Requerido ENAC)' }
+            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
+            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '16:00 (Pañol ST Virtual), 17:00 (Cierre)' },
+            { name: 'Andrea Chávez', role: 'Responsable de Administración', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00 (Apertura), 08:15 (Diseño CABA)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
+            { name: 'Miguel Ángel Citta', role: 'Ingeniería Santo Tomé', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
+            { name: 'Emiliano San Martin', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Diego Abella', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Romina Nievas', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Hernan Giorgietti', role: 'Líder de Producción', area: 'Producción', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'SGI/RRHH/Compras', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Servicio Médico SUMO', role: 'Vigilancia de Salud / SST External', area: 'SGI/RRHH/Compras', day1: '11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre Requerido ENAC)' }
         ];
 
         const DEFAULT_CHECKLIST = [
@@ -1625,6 +1633,33 @@
             document.getElementById('view-parallel-btn').className = mode === 'parallel' ? 'px-2.5 py-1 text-xs rounded font-medium text-sky-700 bg-white shadow-sm' : 'px-2.5 py-1 text-xs rounded font-medium text-slate-600 hover:text-slate-900';
             document.getElementById('view-table-btn').className = mode === 'table' ? 'px-2.5 py-1 text-xs rounded font-medium text-sky-700 bg-white shadow-sm' : 'px-2.5 py-1 text-xs rounded font-medium text-slate-600 hover:text-slate-900';
             renderAgenda();
+        }
+
+        function syncDirectorySchedules() {
+            // Recalculates each person's exact day1 and day2 participation from AGENDA_DATA
+            participantsList.forEach(p => {
+                const day1Sessions = [];
+                const day2Sessions = [];
+
+                AGENDA_DATA.forEach(session => {
+                    const attendeesStr = getAttendees(session).toLowerCase();
+                    const nameParts = p.name.toLowerCase().split(' ');
+                    const match = nameParts.some(part => part.length > 2 && attendeesStr.includes(part));
+
+                    if (match) {
+                        const label = `${session.time} (${session.title.split('-')[0].trim()})`;
+                        if (session.day === '1') day1Sessions.push(label);
+                        if (session.day === '2') day2Sessions.push(label);
+                    }
+                });
+
+                if (day1Sessions.length > 0) p.day1 = day1Sessions.join(', ');
+                if (day2Sessions.length > 0) p.day2 = day2Sessions.join(', ');
+            });
+
+            localStorage.setItem('esinel_participants_list', JSON.stringify(participantsList));
+            showToast("Horarios del directorio sincronizados con la agenda");
+            renderParticipants();
         }
 
         function renderParticipants() {
