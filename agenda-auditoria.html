@@ -491,7 +491,8 @@
                 <button onclick="filterParticipants('RRHH')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-heart-pulse mr-1 text-rose-600"></i> RRHH, SGI & SySO</button>
                 <button onclick="filterParticipants('Administración')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-calculator mr-1 text-blue-600"></i> Administración</button>
                 <button onclick="filterParticipants('Comercial')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-chart-line mr-1 text-cyan-600"></i> Comercial</button>
-                <button onclick="filterParticipants('Compras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-cart-shopping mr-1 text-orange-600"></i> Compras & Abastecimiento</button>
+                <button onclick="filterParticipants('Compras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-cart-shopping mr-1 text-orange-600"></i> Compras</button>
+                <button onclick="filterParticipants('Abastecimiento')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-boxes-packing mr-1 text-teal-600"></i> Abastecimiento</button>
             </div>
 
             <!-- Participant Grid -->
@@ -858,7 +859,8 @@
                         <option value="RRHH">RRHH, SGI & SySO</option>
                         <option value="Administración">Administración</option>
                         <option value="Comercial">Comercial</option>
-                        <option value="Compras">Compras & Abastecimiento</option>
+                        <option value="Compras">Compras</option>
+                        <option value="Abastecimiento">Abastecimiento</option>
                     </select>
                 </div>
                 <div>
@@ -978,7 +980,7 @@
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
                 location: 'Casa Central - Oficina Ingeniería (Presencial)',
-                attendees: 'Martín Diamanti (Gte Ingeniería), Juan Monti (Líder Ing ST), Miguel Ángel Citta',
+                attendees: 'Martín Diamanti (Gte Ingeniería), Juan Monti (Líder Ing ST), Miguel Ángel Citta, Facundo, Pablo, Francisco, Sebastián, Gonzalo',
                 clauses: ['8.1', '8.3', '6.1', '6.2']
             },
             {
@@ -1162,6 +1164,11 @@
             // INGENIERÍA
             { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00 (Apertura), 08:15 (Diseño CABA)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
             { name: 'Miguel Ángel Citta', role: 'Ingeniería Santo Tomé', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Facundo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Pablo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Francisco', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Sebastián', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Gonzalo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
 
             // PRODUCCIÓN / TALLER (sin Iestra)
             { name: 'Hernan Giorgietti', role: 'Líder de Producción', area: 'Producción', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
@@ -1191,11 +1198,11 @@
             { name: 'Lisandro Fissolo', role: 'Responsable Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
             { name: 'Nahuel', role: 'Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST)' },
 
-            // COMPRAS & ABASTECIMIENTO
+            // COMPRAS & ABASTECIMIENTO SEPARADOS
             { name: 'Daniel Lértora', role: 'Responsable de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
             { name: 'Tomás', role: 'Asistente de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '-' },
-            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
-            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '08:30 (Pañol ST Virtual), 17:00 (Cierre)' }
+            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
+            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '08:30 (Pañol ST Virtual), 17:00 (Cierre)' }
         ];
 
         const DEFAULT_CHECKLIST = [
@@ -1674,7 +1681,8 @@
                 'RRHH': 'bg-rose-100 text-rose-800 border-rose-200',
                 'Administración': 'bg-blue-100 text-blue-800 border-blue-200',
                 'Comercial': 'bg-cyan-100 text-cyan-800 border-cyan-200',
-                'Compras': 'bg-orange-100 text-orange-800 border-orange-200'
+                'Compras': 'bg-orange-100 text-orange-800 border-orange-200',
+                'Abastecimiento': 'bg-teal-100 text-teal-800 border-teal-200'
             };
 
             filtered.forEach((p, idx) => {
