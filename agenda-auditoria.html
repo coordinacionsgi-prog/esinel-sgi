@@ -903,32 +903,13 @@
             return trimmed;
         }
 
-        // Official Google Meet Links Mapping for All Meetings
-        const DEFAULT_MEETING_LINKS = {
-            'd1-opening': 'https://meet.google.com/sqc-edzb-cgn',
-            'd1-rs-compras': 'https://meet.google.com/iut-wojf-ves',
-            'd1-rs-rrhh': 'https://meet.google.com/orr-vgrc-bca',
-            'd1-rs-taller': 'https://meet.google.com/xwq-jdyq-mnh',
-            'd1-rs-mantenimiento': 'https://meet.google.com/xnn-tkno-wfz',
-            'd1-jc-diseno': 'https://meet.google.com/tev-ruxi-pbe',
-            'd1-jc-sistemas': 'https://meet.google.com/iyu-ybmo-ebe',
-            'd2-rs-direccion': 'https://meet.google.com/txe-hikh-wwd',
-            'd2-rs-sgi-p1': 'https://meet.google.com/vfk-puzy-cvz',
-            'd2-rs-sgi-p2': 'https://meet.google.com/raw-hufb-zhc',
-            'd2-jc-apertura-st': 'https://meet.google.com/xhb-tzyh-qyy',
-            'd2-jc-panol-st': 'https://meet.google.com/iom-jnon-evn',
-            'd2-jc-admin-comercial': 'https://meet.google.com/wpw-kfug-wac',
-            'd2-jc-obras-panalab': 'https://meet.google.com/rrj-boiv-dfv',
-            'd2-closing': 'https://meet.google.com/maf-escc-cze'
-        };
-
         const AGENDA_DATA = [
             // DÍA 1
             {
                 id: 'd1-opening',
                 day: '1',
                 date: '27/08/2026',
-                time: '08:00 - 08:15',
+                time: '08:00',
                 title: 'Reunión de Apertura con la Alta Dirección',
                 auditorCode: 'RS / JC',
                 auditorName: 'Ricardo Segade (RS) & José Costa (JC)',
@@ -1003,17 +984,17 @@
                 clauses: ['8.1', '8.3', '6.1', '6.2']
             },
             {
-                id: 'd1-jc-sistemas',
+                id: 'd1-jc-panol-st',
                 day: '1',
                 date: '27/08/2026',
                 time: '11:00 - 12:30',
-                title: 'Sistema Informático & Procesos Clave SGI',
+                title: 'Depósito / Pañol Santo Tomé',
                 auditorCode: 'JC',
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
-                location: 'Casa Central - IT / SGI (Presencial)',
-                attendees: 'Martín Diamanti, Thiago Baira (Resp. SGI), Representante Nectica.',
-                clauses: ['4.4', '7.1.3', '7.5', '8.1', '8.5']
+                location: 'Sitio Santo Tomé - Pañol (Virtual TIC)',
+                attendees: 'Daniel Carena, Carlos de Abrantes (Resp. Pañol Sistema), Marisa Cercos.',
+                clauses: ['4.4', '8.1-8.7', '8.1.2']
             },
 
             // DÍA 2
@@ -1027,7 +1008,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Presidencia (Presencial)',
-                attendees: 'Marcelo Piccione, Hernan Giacobbe, Martín Diamanti, Clarisa Piccione',
+                attendees: 'Marcelo Piccione, Hernan Giacobbe, Martín Diamanti, Clarisa Piccione.',
                 clauses: ['4.1', '4.2', '5.1', '5.2', '5.3', '5.4', '6.2', '6.3', '7.1', '7.4', '9.1', '9.3', '10.3']
             },
             {
@@ -1040,7 +1021,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Oficina SGI (Presencial)',
-                attendees: 'Thiago Baira (Resp. SGI)',
+                attendees: 'Thiago Baira (Resp. SGI).',
                 clauses: ['4.1', '4.2', '4.3', '4.4', '6.1', '6.1.2', '6.1.3', '6.2', '7.5', '9.1.2', '9.2', '9.3', '10.2']
             },
             {
@@ -1053,7 +1034,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Oficina SGI (Presencial)',
-                attendees: 'Thiago Baira (Resp. SGI)',
+                attendees: 'Thiago Baira (Resp. SGI).',
                 clauses: ['7.1', '7.2', '7.3', '7.4', '8.2', '10.2', '10.3']
             },
             {
@@ -1079,21 +1060,21 @@
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
                 location: 'Sitio Santo Tomé (Virtual TIC)',
-                attendees: 'Marisa Cercos, Daniel Carena',
+                attendees: 'Marisa Cercos, Daniel Carena.',
                 clauses: ['5.1', '5.3']
             },
             {
-                id: 'd2-jc-panol-st',
+                id: 'd2-jc-sistemas',
                 day: '2',
                 date: '28/08/2026',
-                time: '08:30 - 10:00',
-                title: 'Depósito / Pañol Santo Tomé',
+                time: '09:30 - 11:00',
+                title: 'Sistema Informático & Procesos Clave SGI',
                 auditorCode: 'JC',
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
-                location: 'Sitio Santo Tomé - Pañol (Virtual TIC)',
-                attendees: 'Daniel Carena, Carlos de Abrantes (Resp. Pañol Sistema), Marisa Cercos.',
-                clauses: ['4.4', '8.1-8.7', '8.1.2']
+                location: 'Casa Central - IT / SGI (Virtual TIC)',
+                attendees: 'Martín Diamanti, Thiago Baira (Resp. SGI), Representante Nectica.',
+                clauses: ['4.4', '7.1.3', '7.5', '8.1', '8.5']
             },
             {
                 id: 'd2-jc-admin-comercial',
@@ -1174,9 +1155,9 @@
         ];
 
         const INITIAL_PARTICIPANTS_LIST = [
-            // DIRECCIÓN
+            // DIRECCIÓN (Gerencia)
             { name: 'Marcelo Piccione', role: 'Presidente / Gte Adm y RRHH', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
-            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Dirección', day1: '08:00 (Apertura), 08:15 (Compras), 08:15 (Diseño CABA), 11:00 (Sistemas)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
+            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Dirección', day1: '08:00 (Apertura), 08:15 (Compras), 08:15 (Diseño CABA)', day2: '08:00 (Alta Dirección), 09:30 (Sistemas Virtual), 17:00 (Cierre)' },
             { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Dirección', day1: '08:00 (Apertura)', day2: '-' },
             { name: 'Hernán Giacobbe', role: 'Gerente de Obras', area: 'Dirección', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '08:00 (Alta Dirección), 13:30 (Obra PANALAB), 17:00 (Cierre)' },
 
@@ -1195,7 +1176,7 @@
             { name: 'Claudio Salazar', role: 'Oficial Electricista', area: 'Producción', day1: '13:00 (Taller), 16:00 (Mantenimiento)', day2: '-' },
 
             // OBRAS (Jefes de Obra)
-            { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura)', day2: '08:00 (Apertura ST), 08:30 (Pañol ST), 17:00 (Cierre)' },
+            { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura), 11:00 (Pañol ST Virtual)', day2: '08:00 (Apertura ST), 17:00 (Cierre)' },
             { name: 'Emiliano San Martín', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB), 17:00 (Cierre)' },
             { name: 'Diego Abella', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
             { name: 'Romina Nievas', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB), 17:00 (Cierre)' },
@@ -1205,15 +1186,15 @@
             { name: 'Patricia Rodríguez', role: 'Responsable de RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
             { name: 'Mercedes Nahas', role: 'Responsable de Comunicación y Cultura', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
             { name: 'Florencia Oyuela', role: 'RRHH', area: 'RRHH', day1: '11:00 (RRHH y Serv. Médico)', day2: '-' },
-            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 17:00 (Cierre)' },
+            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'RRHH', day1: '08:00 (Apertura)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 09:30 (Sistemas Virtual), 17:00 (Cierre)' },
             { name: 'Mariano Prieto', role: 'Responsable SySO', area: 'RRHH', day1: '13:00 (Taller), 16:00 (Mantenimiento)', day2: '13:30 (Obra PANALAB)' },
             { name: 'Bautista Iestra', role: 'Asistente SySO', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '13:30 (Obra PANALAB), 17:00 (Cierre)' },
             { name: 'Servicio Médico SUMO', role: 'Vigilancia de Salud / SST External', area: 'RRHH', day1: '11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre Requerido ENAC)' },
-            { name: 'Representante Nectica', role: 'Sistemas / IT External', area: 'RRHH', day1: '11:00 (Sistemas)', day2: '-' },
+            { name: 'Representante Nectica', role: 'Sistemas / IT External', area: 'RRHH', day1: '-', day2: '09:30 (Sistemas Virtual)' },
 
             // ADMINISTRACIÓN
             { name: 'Andrea Chávez', role: 'Responsable de Administración', area: 'Administración', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
-            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'Administración', day1: '08:00 (Apertura)', day2: '08:00 (Apertura ST), 08:30 (Pañol ST), 11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'Administración', day1: '08:00 (Apertura), 11:00 (Pañol ST Virtual)', day2: '08:00 (Apertura ST), 11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
 
             // COMERCIAL
             { name: 'Lisandro Fissolo', role: 'Responsable Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
@@ -1225,7 +1206,7 @@
 
             // ABASTECIMIENTO
             { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'Abastecimiento', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
-            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Abastecimiento', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '08:30 (Pañol ST Virtual), 17:00 (Cierre)' }
+            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Abastecimiento', day1: '08:00 (Apertura), 11:00 (Pañol ST Virtual), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' }
         ];
 
         const DEFAULT_CHECKLIST = [
@@ -1248,10 +1229,10 @@
         let selectedSessionForFastPrompt = null;
         let editingParticipantIndex = -1;
 
-        // Saved Local Storage Stores initialized with DEFAULT_MEETING_LINKS
-        let meetingLinks = JSON.parse(localStorage.getItem('esinel_meeting_links_v3')) || DEFAULT_MEETING_LINKS;
+        // Saved Local Storage Stores
+        let meetingLinks = JSON.parse(localStorage.getItem('esinel_meeting_links')) || {};
         let customAttendees = JSON.parse(localStorage.getItem('esinel_custom_attendees')) || {};
-        let participantsList = JSON.parse(localStorage.getItem('esinel_participants_list_v3')) || INITIAL_PARTICIPANTS_LIST;
+        let participantsList = JSON.parse(localStorage.getItem('esinel_participants_list_v2')) || INITIAL_PARTICIPANTS_LIST;
         let checklistData = JSON.parse(localStorage.getItem('esinel_checklist')) || DEFAULT_CHECKLIST;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1260,15 +1241,7 @@
             renderParticipants();
             renderClauseMatrix();
             renderChecklist();
-            updateCloudStatusBadge(false);
         });
-
-        function updateCloudStatusBadge(online) {
-            const badge = document.getElementById('cloud-status-badge');
-            if (!badge) return;
-            badge.className = "px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1";
-            badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Enlaces Meet Cargados`;
-        }
 
         function initCountdown() {
             const auditDate = new Date('2026-08-27T08:00:00-03:00').getTime();
@@ -1327,7 +1300,7 @@
                 return true;
             });
 
-            // Ordenamiento cronológico explícito
+            // Ordenamiento cronológico explícito por hora de inicio
             return list.sort((a, b) => {
                 const timeA = a.time.split(' - ')[0].trim();
                 const timeB = b.time.split(' - ')[0].trim();
@@ -1400,7 +1373,7 @@
             const card = document.createElement('div');
             card.className = `clean-card clean-card-hover rounded-xl p-4 space-y-3 ${isFullWidth ? 'border-2 border-sky-300 bg-sky-50/50' : ''}`;
 
-            const rawLink = meetingLinks[item.id] || DEFAULT_MEETING_LINKS[item.id] || '';
+            const rawLink = meetingLinks[item.id] || '';
             const link = formatUrl(rawLink);
             const attendeesStr = getAttendees(item);
             const auditorBadge = item.auditorCode.includes('RS') && item.auditorCode.includes('JC')
@@ -1485,7 +1458,7 @@
             }
 
             filtered.forEach(item => {
-                const link = formatUrl(meetingLinks[item.id] || DEFAULT_MEETING_LINKS[item.id] || '');
+                const link = formatUrl(meetingLinks[item.id] || '');
                 const attendeesStr = getAttendees(item);
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
@@ -1544,7 +1517,7 @@
             `).join('');
 
             const linkInput = document.getElementById('modal-meet-input');
-            const savedLink = meetingLinks[item.id] || DEFAULT_MEETING_LINKS[item.id] || '';
+            const savedLink = meetingLinks[item.id] || '';
             linkInput.value = savedLink;
 
             const linkActions = document.getElementById('modal-link-actions');
@@ -1606,7 +1579,7 @@
             } else {
                 delete meetingLinks[selectedSessionForModal.id];
             }
-            localStorage.setItem('esinel_meeting_links_v3', JSON.stringify(meetingLinks));
+            localStorage.setItem('esinel_meeting_links', JSON.stringify(meetingLinks));
             showToast("Link guardado correctamente");
             openModalById(selectedSessionForModal.id);
             renderAgenda();
@@ -1619,7 +1592,7 @@
             selectedSessionForFastPrompt = item;
 
             document.getElementById('prompt-session-title').innerText = `${item.title} (${item.time})`;
-            document.getElementById('fast-meet-input').value = meetingLinks[item.id] || DEFAULT_MEETING_LINKS[item.id] || '';
+            document.getElementById('fast-meet-input').value = meetingLinks[item.id] || '';
             document.getElementById('link-prompt-modal').classList.remove('hidden');
         }
 
@@ -1636,7 +1609,7 @@
             } else {
                 delete meetingLinks[selectedSessionForFastPrompt.id];
             }
-            localStorage.setItem('esinel_meeting_links_v3', JSON.stringify(meetingLinks));
+            localStorage.setItem('esinel_meeting_links', JSON.stringify(meetingLinks));
             showToast("Link guardado correctamente");
             closeFastLinkModal();
             renderAgenda();
@@ -1724,7 +1697,7 @@
                 p.day2 = day2Sessions.length > 0 ? day2Sessions.join(', ') : '-';
             });
 
-            localStorage.setItem('esinel_participants_list_v3', JSON.stringify(participantsList));
+            localStorage.setItem('esinel_participants_list_v2', JSON.stringify(participantsList));
             showToast("Horarios del directorio sincronizados con la agenda");
             renderParticipants();
         }
@@ -1831,7 +1804,7 @@
                 showToast("Nuevo auditado agregado");
             }
 
-            localStorage.setItem('esinel_participants_list_v3', JSON.stringify(participantsList));
+            localStorage.setItem('esinel_participants_list_v2', JSON.stringify(participantsList));
             closeParticipantModal();
             renderParticipants();
         }
@@ -1839,7 +1812,7 @@
         function deleteParticipant(index) {
             if (confirm("¿Desea eliminar a este auditado del directorio?")) {
                 participantsList.splice(index, 1);
-                localStorage.setItem('esinel_participants_list_v3', JSON.stringify(participantsList));
+                localStorage.setItem('esinel_participants_list_v2', JSON.stringify(participantsList));
                 showToast("Auditado eliminado");
                 renderParticipants();
             }
