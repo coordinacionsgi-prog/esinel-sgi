@@ -464,10 +464,10 @@
             <div class="clean-card rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-sky-600"></i> Directorio de Auditados por Área
+                        <i class="fa-solid fa-users text-sky-600"></i> Directorio de Auditados por Rol y Área
                     </h2>
                     <p class="text-xs text-slate-500 mt-1">
-                        Consulte y edite quiénes participan en cada sección. Los cambios se guardan automáticamente.
+                        Consulte y edite quiénes participan en cada sección organizados por jerarquía y sector. Los cambios se guardan automáticamente.
                     </p>
                 </div>
                 
@@ -481,7 +481,7 @@
                 </div>
             </div>
 
-            <!-- Department / Sector Filters -->
+            <!-- Department / Role Filters -->
             <div class="flex flex-wrap gap-1.5 pb-1">
                 <button onclick="filterParticipants('all')" class="part-filter-btn px-3 py-1 text-xs font-semibold rounded-lg bg-sky-600 text-white">Todos</button>
                 <button onclick="filterParticipants('Dirección')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-user-tie mr-1 text-purple-600"></i> Dirección</button>
@@ -681,7 +681,7 @@
                     </div>
                     <div class="text-xs space-y-2 text-slate-700 pt-2 border-t border-slate-100">
                         <p><strong class="text-slate-900">Proceso Evaluado:</strong> Obras, montaje, puesta en marcha y gerenciamiento eléctrico.</p>
-                        <p><strong class="text-slate-900">Referentes de Obra:</strong> Hernán Giacobbe (Gte. Obras), Romina Nievas (Jefe de Obra PANALAB)</p>
+                        <p><strong class="text-slate-900">Referentes de Obra:</strong> Hernán Giacobbe (Gte. Obras), Daniel Carena (Jefe de Obra)</p>
                         <p><strong class="text-slate-900">Auditor Asignado Día 2:</strong> José Costa (JC - 13:30 hs In Situ)</p>
                     </div>
                 </div>
@@ -891,6 +891,122 @@
         <p>Dashboard Interactivo ESINEL S.R.L. © 2026 | Auditoría DNV P2 (ISO 9001 / 14001 / 45001)</p>
     </footer>
 
+    <!-- Firebase SDK Imports & Real-time Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // APP ID and Firebase Config (replace values below with your Firebase console config if needed)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'esinel-audit-2026';
+        
+        // Default or Environment Firebase Config
+        const defaultConfig = {
+            apiKey: "AIzaSy_demo_key_esinel",
+            authDomain: "esinel-audit.firebaseapp.com",
+            projectId: "esinel-audit",
+            storageBucket: "esinel-audit.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : defaultConfig;
+
+        let db = null;
+        let auth = null;
+        let isCloudConnected = false;
+
+        // Path following strict requirements: /artifacts/{appId}/public/data/dashboard_shared/shared_state
+        let sharedDocRef = null;
+
+        async function initCloudSync() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Authenticate before querying
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                sharedDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'dashboard_shared', 'shared_state');
+
+                // Real-time listener for all users
+                onSnapshot(sharedDocRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+                        if (data.meetingLinks) window.meetingLinks = data.meetingLinks;
+                        if (data.customAttendees) window.customAttendees = data.customAttendees;
+                        if (data.participantsList) window.participantsList = data.participantsList;
+                        if (data.checklistData) window.checklistData = data.checklistData;
+
+                        // Save locally as backup
+                        localStorage.setItem('esinel_meeting_links', JSON.stringify(window.meetingLinks));
+                        localStorage.setItem('esinel_custom_attendees', JSON.stringify(window.customAttendees));
+                        localStorage.setItem('esinel_participants_list', JSON.stringify(window.participantsList));
+                        localStorage.setItem('esinel_checklist', JSON.stringify(window.checklistData));
+
+                        window.renderAgenda();
+                        window.renderParticipants();
+                        window.renderChecklist();
+                    }
+                    updateCloudStatusBadge(true);
+                }, (error) => {
+                    console.warn("Firestore sync fallback to local mode:", error);
+                    updateCloudStatusBadge(false);
+                });
+
+            } catch (err) {
+                console.warn("Firebase initialization error, operating in local mode:", err);
+                updateCloudStatusBadge(false);
+            }
+        }
+
+        window.saveToCloud = async function() {
+            if (!db || !sharedDocRef || !auth?.currentUser) {
+                // Fallback to local storage
+                localStorage.setItem('esinel_meeting_links', JSON.stringify(window.meetingLinks));
+                localStorage.setItem('esinel_custom_attendees', JSON.stringify(window.customAttendees));
+                localStorage.setItem('esinel_participants_list', JSON.stringify(window.participantsList));
+                localStorage.setItem('esinel_checklist', JSON.stringify(window.checklistData));
+                return;
+            }
+
+            try {
+                await setDoc(sharedDocRef, {
+                    meetingLinks: window.meetingLinks,
+                    customAttendees: window.customAttendees,
+                    participantsList: window.participantsList,
+                    checklistData: window.checklistData,
+                    lastUpdated: new Date().toISOString()
+                }, { merge: true });
+                updateCloudStatusBadge(true);
+            } catch (err) {
+                console.error("Error saving to Firestore:", err);
+            }
+        };
+
+        function updateCloudStatusBadge(online) {
+            const badge = document.getElementById('cloud-status-badge');
+            if (!badge) return;
+            if (online) {
+                badge.className = "px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1";
+                badge.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-600"></i> Sincronizado en Vivo`;
+            } else {
+                badge.className = "px-2 py-0.5 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1";
+                badge.innerHTML = `<i class="fa-solid fa-cloud text-amber-600"></i> Modo Local (Offline)`;
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initCloudSync();
+        });
+    </script>
+
     <script>
         // Helper function to guarantee links start with https:// so target="_blank" opens external websites
         function formatUrl(url) {
@@ -915,7 +1031,7 @@
                 auditorName: 'Ricardo Segade (RS) & José Costa (JC)',
                 track: 'joint',
                 location: 'Casa Central HQ (Presencial)',
-                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Lisandro Fissolo, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos, Nahuel Heredia, Bautista Iestra.',
+                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Tomás, Lisandro Fissolo, Nahuel, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos',
                 clauses: ['4.1', '4.2', '5.1', '5.2', '5.3', '5.4']
             },
             {
@@ -928,7 +1044,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Sala Compras (Presencial)',
-                attendees: 'Daniel Lértora, Martin Diamanti, Tomas Noblia.',
+                attendees: 'Daniel Lértora, Tomás, José Luis Casares, Carlos de Abrantes',
                 clauses: ['4.4', '5.3', '6.1', '6.2', '6.3', '7.1', '8.1', '8.4', '9.1', '10.2', '10.3']
             },
             {
@@ -941,7 +1057,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Oficina RRHH (Presencial)',
-                attendees: 'Clarisa Piccione, Patricia Rodríguez, Mercedes Nahas, Florencia Oyuela, Bautista Iestra.',
+                attendees: 'Clarisa Piccione, Patricia Rodríguez, Mercedes Nahas, Servicio Médico (SUMO)',
                 clauses: ['4.4', '5.3', '5.4', '6.1', '6.2', '7.1', '7.2', '7.3', '8.1', '9.1', '10.2']
             },
             {
@@ -954,7 +1070,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Taller de Tableros In Situ (Presencial)',
-                attendees: 'Hernan Giorgetti (Lider de Produccion), Sergio Donda (Jefe Taller), Claudio Salazar (Of. Electricista), Mariano Prieto (Resp SySO), Bautista Iestra (Asist SySO), Jose Luis Casares (deposito), Hernan Giacobbe (Gerente de obras), Carlos de Abrantes.',
+                attendees: 'Oscar Schmuth (Gte Producción), Sergio Donda (Jefe Taller), Claudio Salazar (Of. Electricista), Mariano Prieto (Resp SySO), Bautista Iestra (Asist SySO)',
                 clauses: ['4.4', '8.1', '8.2', '8.4', '8.5', '8.6', '8.7', '9.1']
             },
             {
@@ -967,7 +1083,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Pañol / Mantenimiento (Presencial)',
-                attendees: 'Hernan Giorgetti, Sergio Donda, Jose Luis Casares, Claudio Salazar, Mariano Prieto, Bautista Iestra, Hernan Giacobbe, Carlos de Abrantes.',
+                attendees: 'Oscar Schmuth, Sergio Donda, Claudio Salazar, Mariano Prieto, Bautista Iestra',
                 clauses: ['7.1.5', '8.1', '8.5.1', '9.1']
             },
             {
@@ -984,17 +1100,17 @@
                 clauses: ['8.1', '8.3', '6.1', '6.2']
             },
             {
-                id: 'd1-jc-panol-st',
+                id: 'd1-jc-sgi',
                 day: '1',
                 date: '27/08/2026',
-                time: '11:00 - 12:30',
-                title: 'Depósito / Pañol Santo Tomé',
+                time: '14:00 - 16:15',
+                title: 'Evaluación Sistema Integrado de Gestión (SGI) - JC',
                 auditorCode: 'JC',
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
-                location: 'Sitio Santo Tomé - Pañol (Virtual TIC)',
-                attendees: 'Daniel Carena, Carlos de Abrantes (Resp. Pañol Sistema), Marisa Cercos.',
-                clauses: ['4.4', '8.1-8.7', '8.1.2']
+                location: 'Casa Central - Oficina SGI (Presencial / Virtual)',
+                attendees: 'Thiago Baira (Resp. SGI)',
+                clauses: ['4.1', '4.2', '4.3', '4.4', '6.1', '7.5', '9.2', '10.2']
             },
 
             // DÍA 2
@@ -1008,7 +1124,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Presidencia (Presencial)',
-                attendees: 'Marcelo Piccione, Hernan Giacobbe, Martín Diamanti, Clarisa Piccione.',
+                attendees: 'Marcelo Piccione (Presidente)',
                 clauses: ['4.1', '4.2', '5.1', '5.2', '5.3', '5.4', '6.2', '6.3', '7.1', '7.4', '9.1', '9.3', '10.3']
             },
             {
@@ -1021,7 +1137,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Oficina SGI (Presencial)',
-                attendees: 'Thiago Baira (Resp. SGI).',
+                attendees: 'Thiago Baira (Resp. SGI)',
                 clauses: ['4.1', '4.2', '4.3', '4.4', '6.1', '6.1.2', '6.1.3', '6.2', '7.5', '9.1.2', '9.2', '9.3', '10.2']
             },
             {
@@ -1034,7 +1150,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Oficina SGI (Presencial)',
-                attendees: 'Thiago Baira (Resp. SGI).',
+                attendees: 'Thiago Baira (Resp. SGI)',
                 clauses: ['7.1', '7.2', '7.3', '7.4', '8.2', '10.2', '10.3']
             },
             {
@@ -1064,10 +1180,23 @@
                 clauses: ['5.1', '5.3']
             },
             {
+                id: 'd2-jc-panol-st',
+                day: '2',
+                date: '28/08/2026',
+                time: '08:15 - 10:00',
+                title: 'Depósito / Pañol Santo Tomé',
+                auditorCode: 'JC',
+                auditorName: 'José Costa (JC)',
+                track: 'jc',
+                location: 'Sitio Santo Tomé - Pañol (Virtual TIC)',
+                attendees: 'Daniel Carena, Carlos de Abrantes (Resp. Pañol Sistema), Marisa Cercos.',
+                clauses: ['4.4', '8.1-8.7', '8.1.2']
+            },
+            {
                 id: 'd2-jc-sistemas',
                 day: '2',
                 date: '28/08/2026',
-                time: '09:30 - 11:00',
+                time: '10:00 - 11:00',
                 title: 'Sistema Informático & Procesos Clave SGI',
                 auditorCode: 'JC',
                 auditorName: 'José Costa (JC)',
@@ -1086,7 +1215,7 @@
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
                 location: 'Sitio Santo Tomé - Administración (Virtual TIC)',
-                attendees: 'Lisandro Fissolo, Nahuel Heredia, Gerencia. (Comercial) Andrea Chávez, Marisa Cercos. (Administracion)',
+                attendees: 'Marisa Cercos, Lisandro Fissolo, Nahuel, Andrea Chávez',
                 clauses: ['4.1', '4.2', '5.4', '6.1', '7.1-7.5', '8.1', '8.2', '9.1']
             },
             {
@@ -1099,8 +1228,21 @@
                 auditorName: 'José Costa (JC)',
                 track: 'jc',
                 location: 'Obra PANALAB (Presencial In Situ)',
-                attendees: 'Hernán Giacobbe (Gte. Obras), Romina Nievas (Jefe de Obra PANALAB), Emiliano San Martín, Bautista Iestra, Mariano Prieto.',
+                attendees: 'Hernán Giacobbe (Gte. Obras), Daniel Carena (Jefe de Obra PANALAB)',
                 clauses: ['4.4', '7.1', '8.1', '8.4', '8.5', '8.6', '8.7']
+            },
+            {
+                id: 'd2-jc-panol-st',
+                day: '2',
+                date: '28/08/2026',
+                time: '08:30 - 10:00',
+                title: 'Depósito / Pañol Santo Tomé',
+                auditorCode: 'JC',
+                auditorName: 'José Costa (JC)',
+                track: 'jc',
+                location: 'Sitio Santo Tomé - Pañol (Virtual TIC)',
+                attendees: 'Carlos de Abrantes (Resp. Pañol)',
+                clauses: ['4.4', '8.1-8.7', '8.1.2']
             },
             {
                 id: 'd2-closing',
@@ -1112,7 +1254,7 @@
                 auditorName: 'Ricardo Segade (RS) & José Costa (JC)',
                 track: 'joint',
                 location: 'Casa Central (Presencial) + Conexión Santo Tomé (Virtual) / Teams',
-                attendees: 'Marcelo Piccione, Martin Diamanti, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Lisandro Fissolo, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos, Nahuel Heredia, Bautista Iestra.',
+                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Lisandro Fissolo, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos, Servicio Médico SUMO / Delegados SST',
                 clauses: ['5.1', '5.4', '9.3', '10.2', '10.3']
             }
         ];
@@ -1157,56 +1299,52 @@
         const INITIAL_PARTICIPANTS_LIST = [
             // DIRECCIÓN (Gerencia)
             { name: 'Marcelo Piccione', role: 'Presidente / Gte Adm y RRHH', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
-            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Dirección', day1: '08:00 (Apertura), 08:15 (Compras), 08:15 (Diseño CABA)', day2: '08:00 (Alta Dirección), 09:30 (Sistemas Virtual), 17:00 (Cierre)' },
-            { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Dirección', day1: '08:00 (Apertura)', day2: '-' },
-            { name: 'Hernán Giacobbe', role: 'Gerente de Obras', area: 'Dirección', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '08:00 (Alta Dirección), 13:30 (Obra PANALAB), 17:00 (Cierre)' },
+            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Dirección', day1: '08:00 (Apertura), 08:15 (Diseño CABA), 11:00 (Sistemas)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
+            { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Dirección', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            { name: 'Hernán Giacobbe', role: 'Gerente de Obras', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Apertura ST), 13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
 
             // INGENIERÍA
-            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00 (Apertura), 08:15 (Diseño CABA)', day2: '17:00 (Cierre)' },
+            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00 (Apertura), 08:15 (Diseño CABA)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
             { name: 'Miguel Ángel Citta', role: 'Ingeniería Santo Tomé', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Francisco Briani', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Pablo Barrionuevo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Facundo Guerrero', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Gonzalo Gigliotti', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Sebastian Bechard', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Facundo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Pablo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Francisco', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Sebastián', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            { name: 'Gonzalo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
 
-            // PRODUCCIÓN / TALLER
-            { name: 'Hernan Giorgetti', role: 'Líder de Producción', area: 'Producción', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
-            { name: 'Sergio Donda', role: 'Responsable / Jefe de Taller', area: 'Producción', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
-            { name: 'Claudio Salazar', role: 'Oficial Electricista', area: 'Producción', day1: '13:00 (Taller), 16:00 (Mantenimiento)', day2: '-' },
+            // PRODUCCIÓN / TALLER (sin Iestra)
+            { name: 'Hernan Giorgietti', role: 'Líder de Producción', area: 'Producción', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Sergio Donda', role: 'Responsable / Jefe de Taller', area: 'Producción', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            { name: 'Claudio Salazar', role: 'Oficial Electricista', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
+            { name: 'Mariano Prieto', role: 'Responsable SySO', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
 
             // OBRAS (Jefes de Obra)
-            { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura), 11:00 (Pañol ST Virtual)', day2: '08:00 (Apertura ST), 17:00 (Cierre)' },
-            { name: 'Emiliano San Martín', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB), 17:00 (Cierre)' },
+            { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
+            { name: 'Emiliano San Martin', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
             { name: 'Diego Abella', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
-            { name: 'Romina Nievas', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB), 17:00 (Cierre)' },
+            { name: 'Romina Nievas', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
 
-            // RRHH, SGI & SySO
-            { name: 'Clarisa Piccione', role: 'Líder de Admin y RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
+            // RRHH, SGI & SySO (con Bautista Iestra)
+            { name: 'Clarisa Piccione', role: 'Líder de Admin y RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
             { name: 'Patricia Rodríguez', role: 'Responsable de RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
-            { name: 'Mercedes Nahas', role: 'Responsable de Comunicación y Cultura', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
-            { name: 'Florencia Oyuela', role: 'RRHH', area: 'RRHH', day1: '11:00 (RRHH y Serv. Médico)', day2: '-' },
-            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'RRHH', day1: '08:00 (Apertura)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 09:30 (Sistemas Virtual), 17:00 (Cierre)' },
-            { name: 'Mariano Prieto', role: 'Responsable SySO', area: 'RRHH', day1: '13:00 (Taller), 16:00 (Mantenimiento)', day2: '13:30 (Obra PANALAB)' },
-            { name: 'Bautista Iestra', role: 'Asistente SySO', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '13:30 (Obra PANALAB), 17:00 (Cierre)' },
+            { name: 'Mercedes Nahas', role: 'Responsable de Comunicación y Cultura', area: 'RRHH', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 17:00 (Cierre)' },
+            { name: 'Bautista Iestra', role: 'Asistente SySO', area: 'RRHH', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
             { name: 'Servicio Médico SUMO', role: 'Vigilancia de Salud / SST External', area: 'RRHH', day1: '11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre Requerido ENAC)' },
-            { name: 'Representante Nectica', role: 'Sistemas / IT External', area: 'RRHH', day1: '-', day2: '09:30 (Sistemas Virtual)' },
 
             // ADMINISTRACIÓN
             { name: 'Andrea Chávez', role: 'Responsable de Administración', area: 'Administración', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
-            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'Administración', day1: '08:00 (Apertura), 11:00 (Pañol ST Virtual)', day2: '08:00 (Apertura ST), 11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'Administración', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
 
             // COMERCIAL
             { name: 'Lisandro Fissolo', role: 'Responsable Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
-            { name: 'Nahuel Heredia', role: 'Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Nahuel', role: 'Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST)' },
 
-            // COMPRAS
+            // COMPRAS & ABASTECIMIENTO SEPARADOS
             { name: 'Daniel Lértora', role: 'Responsable de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
-            { name: 'Tomas Noblia', role: 'Asistente de Compras', area: 'Compras', day1: '08:15 (Compras)', day2: '-' },
-
-            // ABASTECIMIENTO
-            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'Abastecimiento', day1: '08:00 (Apertura), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
-            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Abastecimiento', day1: '08:00 (Apertura), 11:00 (Pañol ST Virtual), 13:00 (Taller), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' }
+            { name: 'Tomás', role: 'Asistente de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '-' },
+            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
+            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '08:30 (Pañol ST Virtual), 17:00 (Cierre)' }
         ];
 
         const DEFAULT_CHECKLIST = [
@@ -1215,7 +1353,7 @@
             { id: 'c3', text: 'Cargar enlaces de llamadas Teams/Meet en cada bloque del dashboard para acceso remoto', done: false },
             { id: 'c4', text: 'Disponibilizar documentación del SGI en formato digital accesible para auditores', done: false },
             { id: 'c5', text: 'Convocar al Servicio Médico (SUMO) y delegados de SST para la reunión de cierre del Día 2 (Req. ENAC)', done: false },
-            { id: 'c6', text: 'Asegurar la presencia del Jefe de Obra PANALAB (Daniel Carena y Romina Nievas) In Situ a las 13:30 hs del Día 2', done: false }
+            { id: 'c6', text: 'Asegurar la presencia del Jefe de Obra PANALAB (Daniel Carena) In Situ a las 13:30 hs del Día 2', done: false }
         ];
 
         // UI State
@@ -1232,7 +1370,7 @@
         // Saved Local Storage Stores
         let meetingLinks = JSON.parse(localStorage.getItem('esinel_meeting_links')) || {};
         let customAttendees = JSON.parse(localStorage.getItem('esinel_custom_attendees')) || {};
-        let participantsList = JSON.parse(localStorage.getItem('esinel_participants_list_v2')) || INITIAL_PARTICIPANTS_LIST;
+        let participantsList = JSON.parse(localStorage.getItem('esinel_participants_list')) || INITIAL_PARTICIPANTS_LIST;
         let checklistData = JSON.parse(localStorage.getItem('esinel_checklist')) || DEFAULT_CHECKLIST;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1282,7 +1420,7 @@
         }
 
         function getFilteredAgenda() {
-            const list = AGENDA_DATA.filter(item => {
+            return AGENDA_DATA.filter(item => {
                 if (currentDayFilter !== 'all' && item.day !== currentDayFilter) return false;
                 if (currentAuditorFilter !== 'all' && !item.auditorCode.includes(currentAuditorFilter)) return false;
 
@@ -1298,13 +1436,6 @@
                     if (!matchTitle && !matchAttendees && !matchAuditor && !matchClauses && !matchLocation) return false;
                 }
                 return true;
-            });
-
-            // Ordenamiento cronológico explícito por hora de inicio
-            return list.sort((a, b) => {
-                const timeA = a.time.split(' - ')[0].trim();
-                const timeB = b.time.split(' - ')[0].trim();
-                return timeA.localeCompare(timeB);
             });
         }
 
@@ -1562,8 +1693,8 @@
             } else {
                 delete customAttendees[selectedSessionForModal.id];
             }
-            localStorage.setItem('esinel_custom_attendees', JSON.stringify(customAttendees));
-            showToast("Lista de auditados actualizada");
+            if (window.saveToCloud) window.saveToCloud();
+            showToast("Lista de auditados actualizada y sincronizada");
             
             document.getElementById('modal-attendees-view').innerText = getAttendees(selectedSessionForModal);
             cancelEditAttendees();
@@ -1579,25 +1710,10 @@
             } else {
                 delete meetingLinks[selectedSessionForModal.id];
             }
-            localStorage.setItem('esinel_meeting_links', JSON.stringify(meetingLinks));
-            showToast("Link guardado correctamente");
+            if (window.saveToCloud) window.saveToCloud();
+            showToast("Link guardado y sincronizado");
             openModalById(selectedSessionForModal.id);
             renderAgenda();
-        }
-
-        function openFastLinkModal(id, evt) {
-            if (evt) evt.stopPropagation();
-            const item = AGENDA_DATA.find(x => x.id === id);
-            if (!item) return;
-            selectedSessionForFastPrompt = item;
-
-            document.getElementById('prompt-session-title').innerText = `${item.title} (${item.time})`;
-            document.getElementById('fast-meet-input').value = meetingLinks[item.id] || '';
-            document.getElementById('link-prompt-modal').classList.remove('hidden');
-        }
-
-        function closeFastLinkModal() {
-            document.getElementById('link-prompt-modal').classList.add('hidden');
         }
 
         function saveFastLink() {
@@ -1609,177 +1725,10 @@
             } else {
                 delete meetingLinks[selectedSessionForFastPrompt.id];
             }
-            localStorage.setItem('esinel_meeting_links', JSON.stringify(meetingLinks));
-            showToast("Link guardado correctamente");
+            if (window.saveToCloud) window.saveToCloud();
+            showToast("Link guardado y sincronizado");
             closeFastLinkModal();
             renderAgenda();
-        }
-
-        function copyToClipboard(text, evt) {
-            if (evt) evt.stopPropagation();
-            const formatted = formatUrl(text);
-            navigator.clipboard.writeText(formatted).then(() => {
-                showToast("¡Link copiado al portapapeles!");
-            });
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast-notification');
-            document.getElementById('toast-message').innerText = msg;
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 2500);
-        }
-
-        function handleSearch() {
-            currentSearchQuery = document.getElementById('global-search').value;
-            renderAgenda();
-        }
-
-        function filterDay(day) {
-            currentDayFilter = day;
-            document.querySelectorAll('.day-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-sky-600', 'text-white');
-                btn.classList.add('bg-slate-100', 'text-slate-700');
-            });
-            document.getElementById(`day-btn-${day}`).classList.remove('bg-slate-100', 'text-slate-700');
-            document.getElementById(`day-btn-${day}`).classList.add('bg-sky-600', 'text-white');
-
-            renderAgenda();
-        }
-
-        function filterAuditor(auditor) {
-            currentAuditorFilter = auditor;
-            document.querySelectorAll('.auditor-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-slate-800', 'text-white');
-                btn.classList.add('bg-slate-100', 'text-slate-700');
-            });
-            document.getElementById(`auditor-btn-${auditor}`).classList.remove('bg-slate-100', 'text-slate-700');
-            document.getElementById(`auditor-btn-${auditor}`).classList.add('bg-slate-800', 'text-white');
-
-            renderAgenda();
-        }
-
-        function resetAgendaFilters() {
-            currentDayFilter = 'all';
-            currentAuditorFilter = 'all';
-            currentSearchQuery = '';
-            document.getElementById('global-search').value = '';
-            
-            filterDay('all');
-            filterAuditor('all');
-        }
-
-        function setViewMode(mode) {
-            currentViewMode = mode;
-            document.getElementById('view-parallel-btn').className = mode === 'parallel' ? 'px-2.5 py-1 text-xs rounded font-medium text-sky-700 bg-white shadow-sm' : 'px-2.5 py-1 text-xs rounded font-medium text-slate-600 hover:text-slate-900';
-            document.getElementById('view-table-btn').className = mode === 'table' ? 'px-2.5 py-1 text-xs rounded font-medium text-sky-700 bg-white shadow-sm' : 'px-2.5 py-1 text-xs rounded font-medium text-slate-600 hover:text-slate-900';
-            renderAgenda();
-        }
-
-        function syncDirectorySchedules() {
-            participantsList.forEach(p => {
-                const day1Sessions = [];
-                const day2Sessions = [];
-
-                AGENDA_DATA.forEach(session => {
-                    const attendeesStr = getAttendees(session).toLowerCase();
-                    const nameParts = p.name.toLowerCase().split(' ');
-                    const match = nameParts.some(part => part.length > 2 && attendeesStr.includes(part));
-
-                    if (match) {
-                        const label = `${session.time} (${session.title.split('-')[0].trim()})`;
-                        if (session.day === '1') day1Sessions.push(label);
-                        if (session.day === '2') day2Sessions.push(label);
-                    }
-                });
-
-                p.day1 = day1Sessions.length > 0 ? day1Sessions.join(', ') : '-';
-                p.day2 = day2Sessions.length > 0 ? day2Sessions.join(', ') : '-';
-            });
-
-            localStorage.setItem('esinel_participants_list_v2', JSON.stringify(participantsList));
-            showToast("Horarios del directorio sincronizados con la agenda");
-            renderParticipants();
-        }
-
-        function renderParticipants() {
-            const grid = document.getElementById('participants-grid');
-            grid.innerHTML = '';
-
-            const filtered = currentParticipantFilter === 'all' 
-                ? participantsList 
-                : participantsList.filter(p => p.area === currentParticipantFilter);
-
-            const badgeStyles = {
-                'Dirección': 'bg-purple-100 text-purple-800 border-purple-200',
-                'Ingeniería': 'bg-indigo-100 text-indigo-800 border-indigo-200',
-                'Producción': 'bg-emerald-100 text-emerald-800 border-emerald-200',
-                'Obras': 'bg-amber-100 text-amber-800 border-amber-200',
-                'RRHH': 'bg-rose-100 text-rose-800 border-rose-200',
-                'Administración': 'bg-blue-100 text-blue-800 border-blue-200',
-                'Comercial': 'bg-cyan-100 text-cyan-800 border-cyan-200',
-                'Compras': 'bg-orange-100 text-orange-800 border-orange-200',
-                'Abastecimiento': 'bg-teal-100 text-teal-800 border-teal-200'
-            };
-
-            filtered.forEach((p, idx) => {
-                const badgeClass = badgeStyles[p.area] || 'bg-slate-100 text-slate-600 border-slate-200';
-                const card = document.createElement('div');
-                card.className = "clean-card rounded-xl p-4 space-y-2 border border-slate-200 relative group";
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-2">
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-sm">${p.name}</h4>
-                            <p class="text-xs text-sky-700 font-medium">${p.role}</p>
-                        </div>
-                        <span class="px-2 py-0.5 text-[10px] font-bold rounded border ${badgeClass} whitespace-nowrap">
-                            ${p.area}
-                        </span>
-                    </div>
-                    <div class="text-[11px] space-y-1 text-slate-600 pt-2 border-t border-slate-100">
-                        <p><strong class="text-amber-700">Día 1:</strong> ${p.day1}</p>
-                        <p><strong class="text-sky-700">Día 2:</strong> ${p.day2}</p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-100 flex justify-end gap-2 text-xs">
-                        <button onclick="editParticipant(${idx})" class="text-sky-600 hover:text-sky-800 font-semibold text-[11px]">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </button>
-                        <button onclick="deleteParticipant(${idx})" class="text-rose-500 hover:text-rose-700 font-semibold text-[11px]">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function openAddParticipantModal() {
-            editingParticipantIndex = -1;
-            document.getElementById('participant-modal-title').innerHTML = `<i class="fa-solid fa-user-plus text-emerald-600"></i> Agregar Nuevo Auditado`;
-            document.getElementById('part-input-name').value = '';
-            document.getElementById('part-input-role').value = '';
-            document.getElementById('part-input-area').value = 'Dirección';
-            document.getElementById('part-input-day1').value = '';
-            document.getElementById('part-input-day2').value = '';
-            document.getElementById('participant-modal').classList.remove('hidden');
-        }
-
-        function editParticipant(index) {
-            editingParticipantIndex = index;
-            const p = participantsList[index];
-            if (!p) return;
-
-            document.getElementById('participant-modal-title').innerHTML = `<i class="fa-solid fa-user-pen text-sky-600"></i> Editar Auditado`;
-            document.getElementById('part-input-name').value = p.name;
-            document.getElementById('part-input-role').value = p.role;
-            document.getElementById('part-input-area').value = p.area;
-            document.getElementById('part-input-day1').value = p.day1;
-            document.getElementById('part-input-day2').value = p.day2;
-            document.getElementById('participant-modal').classList.remove('hidden');
-        }
-
-        function closeParticipantModal() {
-            document.getElementById('participant-modal').classList.add('hidden');
         }
 
         function saveParticipant() {
@@ -1804,7 +1753,7 @@
                 showToast("Nuevo auditado agregado");
             }
 
-            localStorage.setItem('esinel_participants_list_v2', JSON.stringify(participantsList));
+            if (window.saveToCloud) window.saveToCloud();
             closeParticipantModal();
             renderParticipants();
         }
@@ -1812,116 +1761,21 @@
         function deleteParticipant(index) {
             if (confirm("¿Desea eliminar a este auditado del directorio?")) {
                 participantsList.splice(index, 1);
-                localStorage.setItem('esinel_participants_list_v2', JSON.stringify(participantsList));
+                if (window.saveToCloud) window.saveToCloud();
                 showToast("Auditado eliminado");
                 renderParticipants();
             }
         }
 
-        function filterParticipants(area) {
-            currentParticipantFilter = area;
-            document.querySelectorAll('.part-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-sky-600', 'text-white');
-                btn.classList.add('bg-slate-100', 'text-slate-700');
-            });
-            if (event && event.target) {
-                event.target.classList.remove('bg-slate-100', 'text-slate-700');
-                event.target.classList.add('bg-sky-600', 'text-white');
-            }
-            renderParticipants();
-        }
-
-        function renderClauseMatrix() {
-            const container = document.getElementById('iso-clauses-interactive-list');
-            container.innerHTML = '';
-
-            const filtered = selectedClauseStandard === 'all'
-                ? OFFICIAL_ISO_CLAUSES
-                : OFFICIAL_ISO_CLAUSES.filter(item => item.std.includes(selectedClauseStandard));
-
-            filtered.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "clean-card rounded-xl p-3 flex flex-col justify-between space-y-2 hover:border-sky-400 hover:shadow-md cursor-pointer transition bg-white";
-                
-                const stdBadges = item.std.map(s => {
-                    if (s === 'ISO 9001') return `<span class="px-1.5 py-0.5 text-[9px] font-extrabold bg-blue-100 text-blue-800 rounded">9001</span>`;
-                    if (s === 'ISO 14001') return `<span class="px-1.5 py-0.5 text-[9px] font-extrabold bg-emerald-100 text-emerald-800 rounded">14001</span>`;
-                    return `<span class="px-1.5 py-0.5 text-[9px] font-extrabold bg-amber-100 text-amber-800 rounded">45001</span>`;
-                }).join(' ');
-
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-2">
-                        <span class="font-mono text-xs font-extrabold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
-                            ${item.code}
-                        </span>
-                        <div class="flex gap-1">
-                            ${stdBadges}
-                        </div>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-800 leading-snug">${item.title}</p>
-                    <div class="text-[10px] text-sky-600 font-bold flex items-center gap-1 pt-1 border-t border-slate-100">
-                        <span>Ver reuniones en agenda</span>
-                        <i class="fa-solid fa-arrow-right text-[9px]"></i>
-                    </div>
-                `;
-
-                card.onclick = () => {
-                    switchTab('agenda');
-                    document.getElementById('global-search').value = item.code;
-                    handleSearch();
-                };
-
-                container.appendChild(card);
-            });
-        }
-
-        function filterClauseStandard(std) {
-            selectedClauseStandard = std;
-            document.querySelectorAll('.std-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-sky-600', 'text-white', 'shadow-sm');
-                btn.classList.add('bg-white', 'text-slate-700');
-            });
-
-            const btnMap = { 'all': 'btn-std-all', 'ISO 9001': 'btn-std-9001', 'ISO 14001': 'btn-std-14001', 'ISO 45001': 'btn-std-45001' };
-            const activeBtn = document.getElementById(btnMap[std]);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-white', 'text-slate-700');
-                activeBtn.classList.add('bg-sky-600', 'text-white', 'shadow-sm');
-            }
-
-            renderClauseMatrix();
-        }
-
-        function renderChecklist() {
-            const container = document.getElementById('checklist-items-container');
-            container.innerHTML = '';
-
-            checklistData.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = `p-3 rounded-xl border flex items-center justify-between gap-3 transition ${item.done ? 'bg-emerald-50 border-emerald-200 text-slate-500' : 'bg-white border-slate-200 text-slate-800'}`;
-                
-                div.innerHTML = `
-                    <label class="flex items-center gap-3 cursor-pointer flex-1">
-                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklist(${index})" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 bg-white border-slate-300">
-                        <span class="text-xs font-medium ${item.done ? 'line-through text-slate-400' : 'text-slate-800'}">${item.text}</span>
-                    </label>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded font-mono ${item.done ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                        ${item.done ? 'LISTO' : 'PENDIENTE'}
-                    </span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
         function toggleChecklist(index) {
             checklistData[index].done = !checklistData[index].done;
-            localStorage.setItem('esinel_checklist', JSON.stringify(checklistData));
+            if (window.saveToCloud) window.saveToCloud();
             renderChecklist();
         }
 
         function resetChecklist() {
             checklistData = DEFAULT_CHECKLIST.map(item => ({ ...item, done: false }));
-            localStorage.setItem('esinel_checklist', JSON.stringify(checklistData));
+            if (window.saveToCloud) window.saveToCloud();
             renderChecklist();
         }
     </script>
