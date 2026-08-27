@@ -302,6 +302,7 @@ function selectEj(ej){
   document.querySelectorAll('.ejpb').forEach(b=>b.classList.toggle('on',b.textContent==='Ej.'+ej));
   updateEjLabels();
   refreshStats();
+  refreshSidebar();
   if(curArea)goArea(curArea);
   else if(curInd)goInd(curInd);
   else refreshHome();
@@ -321,7 +322,7 @@ updateEjLabels();
 let curArea=null,curInd=null,activeTab='ej',selectedEj=null;
 
 // ─── stats helpers ────────────────────────────────────
-function getEjVal(d,ej){const e=d[8].find(p=>p[0]===ej);return e&&e[1]!==null?e[1]:null;}
+function getEjVal(d,ej){const e=d[8].find(p=>p[0]===ej);if(e&&e[1]!==null)return e[1];if(ej===maxEj&&d[3]!==null&&d[3]!==undefined)return d[3];return null;}
 function getEjObj(d,ej){const e=d[8].find(p=>p[0]===ej);return e?e[2]:d[5];}
 function getStatus(d,ej){const v=getEjVal(d,ej),o=getEjObj(d,ej);return v===null?-1:(v>=o?1:0);}
 
@@ -338,12 +339,20 @@ refreshStats();
 // ─── init sidebar areas ───────────────────────────────
 const sbA=document.getElementById('sb-areas');
 AREAS.forEach(a=>{
-  const inds=D.filter(d=>d[2]===a);
-  const ao=inds.filter(d=>d[6]===1).length,ab=inds.filter(d=>d[6]===0).length;
   const el=document.createElement('div');el.className='ar';el.style.setProperty('--ac',AC[a]);
-  el.innerHTML=`<div class="ar-dot"></div><div class="ar-lbl">${a}</div><div class="chips"><span class="ch cg">${ao}</span><span class="ch cr">${ab}</span></div>`;
+  el.innerHTML=`<div class="ar-dot"></div><div class="ar-lbl">${a}</div><div class="chips"><span class="ch cg" data-area="${a}-ok">—</span><span class="ch cr" data-area="${a}-no">—</span></div>`;
   el.onclick=()=>goArea(a);sbA.appendChild(el);
 });
+function refreshSidebar(){
+  AREAS.forEach(a=>{
+    const inds=D.filter(d=>d[2]===a);
+    const ao=inds.filter(d=>getStatus(d,activeEj)===1).length;
+    const ab=inds.filter(d=>getStatus(d,activeEj)===0).length;
+    document.querySelector(`[data-area="${a}-ok"]`).textContent=ao;
+    document.querySelector(`[data-area="${a}-no"]`).textContent=ab;
+  });
+}
+refreshSidebar();
 
 // ─── home cards ───────────────────────────────────────
 function refreshHome(){
