@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esinel S.R.L. | Dashboards SGI ISO (RG-02-01 y RG-02-02)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS for client-side Excel Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+    </style>
+</head>
+<body class="h-full flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+
+    <!-- TOP NAVIGATION & DOCUMENT SWITCHER HEADER -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between py-3 md:h-20 gap-3">
+                
+                <!-- Brand & System Info -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-sky-600 p-2.5 rounded-xl text-white font-extrabold text-2xl tracking-wider flex items-center justify-center w-11 h-11 shadow-md border border-sky-400/30">
+                        E
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h1 class="font-extrabold text-xl tracking-tight text-white">ESINEL S.R.L.</h1>
+                            <span class="bg-sky-500/20 text-sky-300 border border-sky-400/30 text-[11px] px-2.5 py-0.5 rounded-full font-semibold">
+                                Vigencia: 01-04-2026
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400">Ingeniería Eléctrica, Producción de Tableros y Obras | SGI ISO 9001 / 14001 / 45001 (DNV GL)</p>
+                    </div>
+                </div>
+
+                <!-- MAIN MODULE SELECTOR (TWO SEPARATE DASHBOARDS) -->
+                <div class="flex items-center bg-slate-800 p-1 rounded-xl border border-slate-700">
+                    <button onclick="switchMainDashboard('contexto')" id="dashBtn-contexto" class="flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all bg-sky-600 text-white shadow">
+                        <i class="fa-solid fa-chart-diagram"></i>
+                        <span>RG-02-01: Análisis de Contexto</span>
+                    </button>
+                    <button onclick="switchMainDashboard('partes')" id="dashBtn-partes" class="flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span>RG-02-02: Partes Interesadas</span>
+                    </button>
+                </div>
+
+                <!-- Utility Tools -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="resetToSampleData()" title="Restablecer datos por defecto (01-04-2026)" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium transition flex items-center space-x-1 border border-slate-700">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span class="hidden sm:inline">Restablecer</span>
+                    </button>
+                    <button onclick="toggleDarkMode()" title="Cambiar Tema" class="p-2 text-slate-400 hover:text-amber-400 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition border border-slate-700">
+                        <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- UPLOAD & REVISION STATUS BANNER -->
+    <div class="bg-slate-800 border-b border-slate-700/80 px-4 py-2 text-xs text-slate-300">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="activeDocLabel" class="font-semibold text-white">Módulo Activo: RG-02-01 Rev04 - Análisis de Contexto</span>
+                <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded font-mono" id="sheetRevisionBadge">Solapa: 01-04-2026</span>
+            </div>
+
+            <!-- Upload File Input per Active Dashboard -->
+            <div class="flex items-center space-x-3">
+                <label class="cursor-pointer bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow flex items-center space-x-2">
+                    <i class="fa-solid fa-file-excel"></i>
+                    <span id="uploadBtnLabel">Subir Excel RG-02-01 (.xlsx)</span>
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="hidden" onchange="handleFileUpload(event)">
+                </label>
+                <div class="text-[11px] text-slate-400 flex items-center space-x-1">
+                    <span>Hoja activa:</span>
+                    <select id="sheetSelectDropdown" onchange="changeActiveSheet(this.value)" class="bg-slate-900 border border-slate-700 text-sky-400 rounded px-2 py-0.5 focus:outline-none font-medium">
+                        <option value="01-04-2026">01-04-2026 (Última Revisión)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-6">
+
+        <!-- ========================================================================= -->
+        <!-- DASHBOARD 1: RG-02-01 - ANÁLISIS DE CONTEXTO ORGANIZACIONAL (01-04-2026)  -->
+        <!-- ========================================================================= -->
+        <div id="dashboard-contexto" class="main-dashboard space-y-6">
+
+            <!-- Context Banner Header -->
+            <div class="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-slate-800 relative overflow-hidden">
+                <div class="absolute right-4 -bottom-6 opacity-10 text-9xl">
+                    <i class="fa-solid fa-compass-drafting"></i>
+                </div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center space-x-2 bg-sky-500/20 border border-sky-400/30 text-sky-300 text-xs px-3 py-1 rounded-full mb-3 font-medium">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Documento RG-02-01 Rev.04 | Revisión del 01-04-2026</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Análisis de Contexto Organizacional</h2>
+                    <p class="text-slate-300 text-sm mt-2 leading-relaxed">
+                        Evaluación estratégica del entorno interno y externo de <strong>Esinel S.R.L.</strong> en la ejecución de proyectos, gerenciamiento y montaje de obras electromecánicas, ingeniería básica/detalle y producción de tableros eléctricos para plantas industriales (alimenticias, aceiteras, cerealeras, químicas, biodiesel, metalmecánica).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tab Navigation for Dashboard Contexto -->
+            <div class="border-b border-slate-200 dark:border-slate-800 overflow-x-auto custom-scrollbar">
+                <nav class="flex space-x-4 min-w-max pb-1">
+                    <button onclick="switchSubTab('ctx', 'resumen')" id="ctxTab-resumen" class="ctx-tab active border-b-2 border-sky-600 text-sky-600 dark:text-sky-400 font-bold py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Resumen Ejecutivo</span>
+                    </button>
+                    <button onclick="switchSubTab('ctx', 'foda')" id="ctxTab-foda" class="ctx-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-table-cells-large"></i>
+                        <span>Matriz FODA</span>
+                        <span id="badge-foda-count" class="bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button onclick="switchSubTab('ctx', 'pestel')" id="ctxTab-pestel" class="ctx-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        <span>Análisis PESTEL</span>
+                        <span id="badge-pestel-count" class="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button onclick="switchSubTab('ctx', 'riesgos')" id="ctxTab-riesgos" class="ctx-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Riesgos y Oportunidades del Contexto</span>
+                        <span id="badge-ctx-riesgos" class="bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button onclick="switchSubTab('ctx', 'raw')" id="ctxTab-raw" class="ctx-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>Visor de Tabla Excel (01-04-2026)</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- SUB-TAB 1: RESUMEN EJECUTIVO CONTEXTO -->
+            <div id="ctxSub-resumen" class="ctx-subtab space-y-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Factores FODA Identificados</p>
+                            <h3 class="text-3xl font-black mt-1 text-slate-800 dark:text-white" id="ctxKpiFodaTotal">0</h3>
+                            <p class="text-xs text-sky-600 dark:text-sky-400 font-semibold mt-1" id="ctxKpiFodaSub">0 Internos / 0 Externos</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Impacto PESTEL Promedio</p>
+                            <h3 class="text-3xl font-black mt-1 text-purple-600 dark:text-purple-400" id="ctxKpiPestelAvg">0.0</h3>
+                            <p class="text-xs text-purple-600 dark:text-purple-300 font-semibold mt-1" id="ctxKpiPestelSub">6 Dimensiones Macro</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-earth-americas"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Riesgos de Contexto Altos/Críticos</p>
+                            <h3 class="text-3xl font-black mt-1 text-rose-600 dark:text-rose-400" id="ctxKpiRiesgosCriticos">0</h3>
+                            <p class="text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1" id="ctxKpiRiesgosSub">De 0 analizados</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-shield-cat"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Oportunidades Estratégicas</p>
+                            <h3 class="text-3xl font-black mt-1 text-emerald-600 dark:text-emerald-400" id="ctxKpiOportunidades">0</h3>
+                            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">Con planes de acción</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-column text-sky-500"></i>
+                            <span>Distribución FODA (Rev. 01-04-2026)</span>
+                        </h3>
+                        <div class="relative min-h-[260px]">
+                            <canvas id="ctxFodaChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-compass-drafting text-purple-500"></i>
+                            <span>Análisis de Radar PESTEL</span>
+                        </h3>
+                        <div class="relative min-h-[260px]">
+                            <canvas id="ctxPestelChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 2: MATRIZ FODA DETALLADA -->
+            <div id="ctxSub-foda" class="ctx-subtab hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Fortalezas -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm overflow-hidden">
+                        <div class="bg-emerald-600 text-white p-4 flex items-center justify-between">
+                            <span class="font-bold text-base flex items-center space-x-2">
+                                <i class="fa-solid fa-shield-heart"></i>
+                                <span>FORTALEZAS (Origen Interno)</span>
+                            </span>
+                            <span id="cntFodaF" class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div class="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar" id="fodaListF"></div>
+                    </div>
+
+                    <!-- Oportunidades -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-sky-200 dark:border-sky-900/50 shadow-sm overflow-hidden">
+                        <div class="bg-sky-600 text-white p-4 flex items-center justify-between">
+                            <span class="font-bold text-base flex items-center space-x-2">
+                                <i class="fa-solid fa-rocket"></i>
+                                <span>OPORTUNIDADES (Origen Externo)</span>
+                            </span>
+                            <span id="cntFodaO" class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div class="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar" id="fodaListO"></div>
+                    </div>
+
+                    <!-- Debilidades -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm overflow-hidden">
+                        <div class="bg-amber-500 text-white p-4 flex items-center justify-between">
+                            <span class="font-bold text-base flex items-center space-x-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>DEBILIDADES (Origen Interno)</span>
+                            </span>
+                            <span id="cntFodaD" class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div class="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar" id="fodaListD"></div>
+                    </div>
+
+                    <!-- Amenazas -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-rose-200 dark:border-rose-900/50 shadow-sm overflow-hidden">
+                        <div class="bg-rose-600 text-white p-4 flex items-center justify-between">
+                            <span class="font-bold text-base flex items-center space-x-2">
+                                <i class="fa-solid fa-skull-crossbones"></i>
+                                <span>AMENAZAS (Origen Externo)</span>
+                            </span>
+                            <span id="cntFodaA" class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div class="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar" id="fodaListA"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 3: PESTEL DETALLADO -->
+            <div id="ctxSub-pestel" class="ctx-subtab hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4">Dimensiones Macro-Ambientales PESTEL (01-04-2026)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="pestelGridCards"></div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 4: RIESGOS DEL CONTEXTO -->
+            <div id="ctxSub-riesgos" class="ctx-subtab hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm lg:col-span-1">
+                        <h3 class="font-bold text-base text-slate-800 dark:text-white mb-3">Mapa de Calor (5x5)</h3>
+                        <div id="ctxHeatmapGrid" class="grid grid-cols-5 gap-1.5 aspect-square"></div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm lg:col-span-2">
+                        <h3 class="font-bold text-base text-slate-800 dark:text-white mb-3">Listado de Riesgos y Oportunidades del Contexto</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+                                <thead class="bg-slate-100 dark:bg-slate-700 font-bold uppercase text-[10px]">
+                                    <tr>
+                                        <th class="p-2.5">ID / Factor</th>
+                                        <th class="p-2.5">Riesgo / Amenaza</th>
+                                        <th class="p-2.5">P x I</th>
+                                        <th class="p-2.5">Nivel</th>
+                                        <th class="p-2.5">Control / Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ctxRisksTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 5: VISOR TABLA EXCEL CONTEXTO -->
+            <div id="ctxSub-raw" class="ctx-subtab hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-base text-slate-800 dark:text-white">Explorador de Datos Raw (RG-02-01 - 01-04-2026)</h3>
+                        <button onclick="exportTableToCSV('ctxRawTable', 'RG-02-01_Analisis_Contexto_01-04-2026.csv')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Exportar CSV</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto max-h-96 custom-scrollbar border border-slate-200 dark:border-slate-700 rounded-xl">
+                        <table class="w-full text-left text-xs whitespace-nowrap" id="ctxRawTable">
+                            <thead id="ctxRawHeader" class="bg-slate-900 text-white font-bold sticky top-0"></thead>
+                            <tbody id="ctxRawBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- DASHBOARD 2: RG-02-02 - PARTES INTERESADAS (01-04-2026)                   -->
+        <!-- ========================================================================= -->
+        <div id="dashboard-partes" class="main-dashboard hidden space-y-6">
+
+            <!-- Stakeholders Header Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-slate-800 relative overflow-hidden">
+                <div class="absolute right-4 -bottom-6 opacity-10 text-9xl">
+                    <i class="fa-solid fa-users-gear"></i>
+                </div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs px-3 py-1 rounded-full mb-3 font-medium">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Documento RG-02-02 Rev.04 | Revisión del 01-04-2026</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Matriz de Partes Interesadas (Stakeholders)</h2>
+                    <p class="text-slate-300 text-sm mt-2 leading-relaxed">
+                        Mapeo de grupos de interés en obras electromecánicas industriales y producción de tableros. Alineado al alcance certificado por <strong>DNV GL desde marzo 2019</strong> bajo las normas <strong>ISO 9001:2015, ISO 14001:2015 e ISO 45001:2018</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tab Navigation for Dashboard Partes Interesadas -->
+            <div class="border-b border-slate-200 dark:border-slate-800 overflow-x-auto custom-scrollbar">
+                <nav class="flex space-x-4 min-w-max pb-1">
+                    <button onclick="switchSubTab('pi', 'resumen')" id="piTab-resumen" class="pi-tab active border-b-2 border-emerald-600 text-emerald-600 dark:text-emerald-400 font-bold py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Resumen Ejecutivo</span>
+                    </button>
+                    <button onclick="switchSubTab('pi', 'matriz')" id="piTab-matriz" class="pi-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Listado de Partes e Intereses</span>
+                        <span id="badge-pi-count" class="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button onclick="switchSubTab('pi', 'cuadrantes')" id="piTab-cuadrantes" class="pi-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <span>Matriz Poder vs. Interés</span>
+                    </button>
+                    <button onclick="switchSubTab('pi', 'normas')" id="piTab-normas" class="pi-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-certificate"></i>
+                        <span>Alineación Normas ISO</span>
+                    </button>
+                    <button onclick="switchSubTab('pi', 'raw')" id="piTab-raw" class="pi-tab border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium py-2 px-3 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>Visor Tabla Excel (01-04-2026)</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- SUB-TAB 1: RESUMEN STAKEHOLDERS -->
+            <div id="piSub-resumen" class="pi-subtab space-y-6">
+                <!-- KPI Cards Stakeholders -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Partes Interesadas</p>
+                            <h3 class="text-3xl font-black mt-1 text-slate-800 dark:text-white" id="piKpiTotal">0</h3>
+                            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1" id="piKpiSub">0 Internas / 0 Externas</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-people-group"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Gestión Prioritaria (Alto Poder/Int)</p>
+                            <h3 class="text-3xl font-black mt-1 text-emerald-600 dark:text-emerald-400" id="piKpiPrioritarias">0</h3>
+                            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">Estrategia "Gestionar Atentamente"</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Requisitos ISO Mapeados</p>
+                            <h3 class="text-3xl font-black mt-1 text-sky-600 dark:text-sky-400" id="piKpiIsoCount">0</h3>
+                            <p class="text-xs text-sky-600 dark:text-sky-400 font-semibold mt-1">ISO 9001, 14001, 45001</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Cumplimiento de Evaluación</p>
+                            <h3 class="text-3xl font-black mt-1 text-amber-500 dark:text-amber-400" id="piKpiCompliance">100%</h3>
+                            <p class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">Con mecanismo de seguimiento</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stakeholders Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-pie text-emerald-500"></i>
+                            <span>Distribución por Estrategia de Gestión</span>
+                        </h3>
+                        <div class="relative min-h-[260px]">
+                            <canvas id="piStrategyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-bar text-sky-500"></i>
+                            <span>Requisitos por Norma Aplicable (ISO)</span>
+                        </h3>
+                        <div class="relative min-h-[260px]">
+                            <canvas id="piIsoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 2: LISTADO COMPLETO STAKEHOLDERS -->
+            <div id="piSub-matriz" class="pi-subtab hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-white">Matriz de Requisitos de Partes Interesadas (RG-02-02 - 01-04-2026)</h3>
+                        <input type="text" id="piSearchInput" oninput="renderPiTable()" placeholder="Buscar parte interesada o requisito..." class="w-full sm:w-64 px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none">
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+                            <thead class="bg-slate-100 dark:bg-slate-700 font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-3">Parte Interesada</th>
+                                    <th class="p-3">Tipo</th>
+                                    <th class="p-3">Necesidades / Requisitos</th>
+                                    <th class="p-3">Norma ISO</th>
+                                    <th class="p-3">Estrategia</th>
+                                    <th class="p-3">Mecanismo / Frecuencia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="piTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 3: CUADRANTES PODER VS INTERES -->
+            <div id="piSub-cuadrantes" class="pi-subtab hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 p-5 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-amber-800 dark:text-amber-300 text-base">Mantener Satisfecho</span>
+                            <span class="text-xs font-semibold bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2.5 py-0.5 rounded-full">Alto Poder / Bajo Interés</span>
+                        </div>
+                        <ul id="piQuadSatisfecho" class="space-y-2 text-xs text-slate-700 dark:text-slate-200"></ul>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-5 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-emerald-800 dark:text-emerald-300 text-base">Gestionar Atentamente</span>
+                            <span class="text-xs font-semibold bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2.5 py-0.5 rounded-full">Alto Poder / Alto Interés</span>
+                        </div>
+                        <ul id="piQuadAtentamente" class="space-y-2 text-xs text-slate-700 dark:text-slate-200"></ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-slate-800 dark:text-slate-300 text-base">Monitorear</span>
+                            <span class="text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-300 px-2.5 py-0.5 rounded-full">Bajo Poder / Bajo Interés</span>
+                        </div>
+                        <ul id="piQuadMonitorear" class="space-y-2 text-xs text-slate-700 dark:text-slate-200"></ul>
+                    </div>
+
+                    <div class="bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/60 p-5 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-sky-800 dark:text-sky-300 text-base">Mantener Informado</span>
+                            <span class="text-xs font-semibold bg-sky-200 dark:bg-sky-900 text-sky-800 dark:text-sky-200 px-2.5 py-0.5 rounded-full">Bajo Poder / Alto Interés</span>
+                        </div>
+                        <ul id="piQuadInformado" class="space-y-2 text-xs text-slate-700 dark:text-slate-200"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 4: ALINEACIÓN NORMAS ISO -->
+            <div id="piSub-normas" class="pi-subtab hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="piIsoCardsGrid"></div>
+            </div>
+
+            <!-- SUB-TAB 5: VISOR TABLA EXCEL PARTES INTERESADAS -->
+            <div id="piSub-raw" class="pi-subtab hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-base text-slate-800 dark:text-white">Explorador de Datos Raw (RG-02-02 - 01-04-2026)</h3>
+                        <button onclick="exportTableToCSV('piRawTable', 'RG-02-02_Partes_Interesadas_01-04-2026.csv')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Exportar CSV</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto max-h-96 custom-scrollbar border border-slate-200 dark:border-slate-700 rounded-xl">
+                        <table class="w-full text-left text-xs whitespace-nowrap" id="piRawTable">
+                            <thead id="piRawHeader" class="bg-slate-900 text-white font-bold sticky top-0"></thead>
+                            <tbody id="piRawBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        /**
+         * DATASETS REVISIÓN 01-04-2026 FOR ESINEL S.R.L.
+         * Separated into RG-02-01 (Análisis de Contexto) and RG-02-02 (Partes Interesadas)
+         */
+        let currentMainDashboard = 'contexto';
+        let currentWorkbook = null;
+
+        // Sample Data RG-02-01 Rev.04 (Solapa 01-04-2026) - 8 Fortalezas / 0 Debilidades / 13 Externos (5 Oportunidades y 8 Amenazas)
+        let sampleContextoData = {
+            foda: [
+                // FACTORES INTERNOS (8 Fortalezas - 0 Debilidades)
+                { id: "F1", categoria: "F", factor: "Capacidad integral para el desarrollo de proyectos electromecánicos: desde relevamientos, ingeniería básica/detalle, hasta puesta en marcha y documentación conforme a obra", impacto: "Alto", area: "Ingeniería / Obras", tipo: "Interno" },
+                { id: "F2", categoria: "F", factor: "Sistema de Gestión Integrado certificado por DNV GL desde marzo 2019 en ISO 9001:2015, ISO 14001:2015 e ISO 45001:2018 (Ingeniería, Tableros, Obras)", impacto: "Alto", area: "SGI / DNV GL", tipo: "Interno" },
+                { id: "F3", categoria: "F", factor: "Taller propio con capacidad de diseño y producción estandarizada de tableros eléctricos de fuerza, comando y distribución industrial", impacto: "Alto", area: "Producción Tableros", tipo: "Interno" },
+                { id: "F4", categoria: "F", factor: "Cuerpo profesional consolidado y equipo operativo experimentado con trayectoria continua desde el inicio de la empresa", impacto: "Alto", area: "RRHH / Operaciones", tipo: "Interno" },
+                { id: "F5", categoria: "F", factor: "Infraestructura y recursos propios completos: obradores, flota de vehículos, herramental especializado y equipamiento de medición de alta tecnología", impacto: "Alto", area: "Logística / Maquinarias", tipo: "Interno" },
+                { id: "F6", categoria: "F", factor: "Sólida posición económica y recursos financieros para afrontar emprendimientos de gran envergadura y complejidad en todo el país", impacto: "Alto", area: "Finanzas", tipo: "Interno" },
+                { id: "F7", categoria: "F", factor: "Modelo de ejecución basado en trabajo planificado, cumplimiento riguroso de normativas y alto nivel de satisfacción de clientes industriales", impacto: "Alto", area: "Gestión Obras", tipo: "Interno" },
+                { id: "F8", categoria: "F", factor: "Presencia y capacidad de despliegue operativo de obras en todo el territorio nacional y regional", impacto: "Medio", area: "Comercial / Obras", tipo: "Interno" },
+
+                // FACTORES EXTERNOS (13 en total: 5 Oportunidades, 8 Amenazas)
+                { id: "O1", categoria: "O", factor: "Inversiones en obras nuevas y ampliaciones de plantas industriales (agroindustria, aceiteras, cerealeras, biodiesel, químicas y metalmecánica)", impacto: "Alto", area: "Comercial / Mercado", tipo: "Externo" },
+                { id: "O2", categoria: "O", factor: "Exigencia creciente de clientes industriales clave por contratar empresas con tri-certificación ISO internacional vigente (DNV GL)", impacto: "Alto", area: "Comercial / SGI", tipo: "Externo" },
+                { id: "O3", categoria: "O", factor: "Demanda de contratos llave en mano (EPC) que integran ingeniería básica/detalle, provisión de tableros propios y montaje en campo", impacto: "Alto", area: "Proyectos", tipo: "Externo" },
+                { id: "O4", categoria: "O", factor: "Proyectos de automatización industrial, modernización de tableros eléctricos y eficiencia energética en procesos productivos", impacto: "Alto", area: "Ingeniería / Tableros", tipo: "Externo" },
+                { id: "O5", categoria: "O", factor: "Desarrollo de proyectos electromecánicos en polos industriales regionales y parques agroindustriales con plazos exigentes de concreción", impacto: "Medio", area: "Comercial", tipo: "Externo" },
+
+                { id: "A1", categoria: "A", factor: "Alta volatilidad de precios en componentes eléctricos importados para tableros y materias primas (cobre, chapa, cables)", impacto: "Alto", area: "Finanzas / Compras", tipo: "Externo" },
+                { id: "A2", categoria: "A", factor: "Escasez de técnicos proyectistas de ingeniería y especialistas cualificados en montajes electromecánicos industriales", impacto: "Alto", area: "RRHH / Ingeniería", tipo: "Externo" },
+                { id: "A3", categoria: "A", factor: "Postergación o freno en proyectos de inversión privada industrial ante la volatilidad macroeconómica", impacto: "Alto", area: "Comercial", tipo: "Externo" },
+                { id: "A4", categoria: "A", factor: "Plazos contractuales de ejecución extremadamente exigentes que requieren máximo dinamismo y aceleración de obra", impacto: "Medio", area: "Obras", tipo: "Externo" },
+                { id: "A5", categoria: "A", factor: "Competencia informal o no certificada que ofrece montajes con menor apego a normas de seguridad laboral e ingeniería estandarizada", impacto: "Medio", area: "Comercial", tipo: "Externo" },
+                { id: "A6", categoria: "A", factor: "Demoras logísticas en la cadena de suministros para la importación o entrega de componentes eléctricos para tableros", impacto: "Alto", area: "Logística / Cadena de Valor", tipo: "Externo" },
+                { id: "A7", categoria: "A", factor: "Cambios o complejidades en normativas regulatorias y tramitaciones tributarias/ambientales que postergan el inicio de obras", impacto: "Medio", area: "Legal / SGI", tipo: "Externo" },
+                { id: "A8", categoria: "A", factor: "Riesgo de interferencias operativas imprevistas en plantas industriales en marcha que exigen reprogramación de montajes", impacto: "Medio", area: "Gestión Obras", tipo: "Externo" }
+            ],
+            pestel: [
+                { 
+                    dimension: "Político", 
+                    factor: "Políticas de incentivo a la inversión industrial, régimen de incentivos para agroindustria, químicas, biodiesel y normas de infraestructura eléctrica industrial", 
+                    tendencia: "Oportunidad", 
+                    impacto: 4, 
+                    plan: "Monitoreo permanente de proyectos de inversión industrial a nivel nacional y mantenimiento activo del registro de proveedores de grandes clientes EPC." 
+                },
+                { 
+                    dimension: "Económico", 
+                    factor: "Volatilidad de costos de componentes eléctricos importados para tableros, materiales metálicos/cobre y exigencias de financiamiento para proyectos de gran escala", 
+                    tendencia: "Riesgo", 
+                    impacto: 5, 
+                    plan: "Presupuestos con validez acotada, cláusulas de ajuste polinómico por variación de costos y acopio estratégico de insumos clave al recibir anticipos." 
+                },
+                { 
+                    dimension: "Social", 
+                    factor: "Exigencia de los clientes industriales por la seguridad y salud del personal en planta (SST) y valoración del trato cordial, profesional y personalizado", 
+                    tendencia: "Oportunidad", 
+                    impacto: 5, 
+                    plan: "Trabajo planificado bajo ISO 45001, análisis de riesgos en obra, inducciones diarias de seguridad y comunicación fluida con las supervisiones del cliente." 
+                },
+                { 
+                    dimension: "Tecnológico", 
+                    factor: "Innovación en componentes para tableros de distribución/fuerza, herramientas de diseño de ingeniería básica/detalle y equipos de medición calibrados", 
+                    tendencia: "Oportunidad", 
+                    impacto: 4, 
+                    plan: "Inversión continua en herramental e instrumental calibrado de última tecnología, junto con actualización de software de ingeniería y diseño de tableros." 
+                },
+                { 
+                    dimension: "Ecológico", 
+                    factor: "Normativas ambientales para la gestión de residuos en montaje, instalación de obradores temporales y eficiencia energética en plantas industriales", 
+                    tendencia: "Oportunidad", 
+                    impacto: 4, 
+                    plan: "Pauta estricta de gestión ambiental ISO 14001 en obras, segregación de residuos, orden/limpieza en obradores y reciclado de materiales sobrantes de montaje." 
+                },
+                { 
+                    dimension: "Legal", 
+                    factor: "Certificación tripartita con DNV GL (ISO 9001 / 14001 / 45001), reglamentaciones AEA para instalaciones industriales/tableros y Resoluciones SRT en obras", 
+                    tendencia: "Estable", 
+                    impacto: 5, 
+                    plan: "Mantenimiento y auditorías de recertificación con DNV GL, actualización de la Matriz Legal SGI y verificación de normas técnicas vigentes en cada anteproyecto." 
+                }
+            ],
+            riesgos: [
+                { id: "R01", factor: "Variación de precios de insumos/tableros", riesgo: "Descalce presupuestario en obras cerradas llave en mano", prob: 4, imp: 4, score: 16, nivel: "Crítico", control: "Cláusulas de ajuste contractual y acopio inmediato con anticipos" },
+                { id: "R02", factor: "Montaje electromecánico en plantas activas", riesgo: "Accidentes de trabajo o interferencias en procesos del cliente", prob: 2, imp: 5, score: 10, nivel: "Alto", control: "Permisos de trabajo, AST diario y procedimientos ISO 45001" },
+                { id: "R03", factor: "Plazos contractuales muy exigentes", riesgo: "Penalizaciones o demoras en la puesta en marcha de planta", prob: 3, imp: 4, score: 12, nivel: "Alto", control: "Cronograma de obra planificado, recursos propios y obradores en sitio" },
+                { id: "R04", factor: "Provisión de componentes para tableros", riesgo: "Retrasos en la entrega de tableros eléctricos ensamblados", prob: 3, imp: 3, score: 9, nivel: "Medio", control: "Stock de componentes estándar y homologación de proveedores alternativos" },
+                { id: "R05", factor: "Precisión en ingeniería básica/detalle", riesgo: "Reworks o modificaciones en etapa de montaje en obra", prob: 2, imp: 3, score: 6, nivel: "Medio", control: "Revisiones interdisciplinarias de ingeniería y validación previa con cliente" }
+            ],
+            excelRaw: []
+        };
+
+        // Sample Data RG-02-02 Rev.04 (Solapa 01-04-2026)
+        let samplePartesData = {
+            partes: [
+                { parte: "Clientes Plantas Industriales (Alimenticias, Aceiteras, Biodiesel, Químicas)", tipo: "Externo", requisito: "Cumplimiento de plazos exigentes, calidad en ingeniería/tableros, trabajo planificado y cero accidentes en obra", poder: "Alto", interes: "Alto", estrategia: "Gestionar Atentamente", iso: "ISO 9001 / 14001 / 45001", seguimiento: "Reuniones de avance de obra, encuestas de satisfacción e informes de HSEC" },
+                { parte: "Ente Certificador (DNV GL)", tipo: "Externo", requisito: "Demostración de conformidad y mejora continua del SGI en Servicios, Ingeniería, Producción de Tableros y Obras", poder: "Alto", interes: "Alto", estrategia: "Gestionar Atentamente", iso: "ISO 9001 / 14001 / 45001", seguimiento: "Auditorías de seguimiento/recertificación anuales" },
+                { parte: "Cuerpo Profesional y Personal Operativo Esinel", tipo: "Interno", requisito: "Ambiente de trabajo seguro, equipos/herramental adecuado, capacitación continua y trato respetuoso", poder: "Alto", interes: "Alto", estrategia: "Gestionar Atentamente", iso: "ISO 45001 / 9001", seguimiento: "Reuniones de planificación, capacitaciones SST e inspecciones de herramientas/EPP" },
+                { parte: "Dirección y Socios Esinel S.R.L.", tipo: "Interno", requisito: "Rentabilidad de proyectos, cumplimiento de compromisos, sostenibilidad del negocio y prestigio de marca", poder: "Alto", interes: "Alto", estrategia: "Gestionar Atentamente", iso: "ISO 9001 / 14001 / 45001", seguimiento: "Revisiones por la Dirección y tableros de gestión mensual" },
+                { parte: "Proveedores de Materiales Eléctricos y Componentes", tipo: "Externo", requisito: "Relación comercial previsible, especificaciones técnicas claras de tableros y cumplimiento de pagos", poder: "Bajo", interes: "Alto", estrategia: "Mantener Informado", iso: "ISO 9001", seguimiento: "Evaluación periódica de proveedores y homologación técnica" },
+                { parte: "Organismos Reguladores y ART / SRT", tipo: "Externo", requisito: "Cumplimiento estricto de normativas de higiene, seguridad laboral y reglamentaciones técnicas AEA", poder: "Alto", interes: "Bajo", estrategia: "Mantener Satisfecho", iso: "ISO 45001 / 9001", seguimiento: "Auditorías legales de campo y presentaciones de programas de seguridad" },
+                { parte: "Comunidad y Entorno de las Obras", tipo: "Externo", requisito: "Gestión adecuada de residuos en obra, orden en obradores y respeto ambiental", poder: "Bajo", interes: "Bajo", estrategia: "Monitorear", iso: "ISO 14001", seguimiento: "Plan de manejo ambiental en obra y recepción de inquietudes" }
+            ],
+            excelRaw: []
+        };
+
+        // Copies of working data
+        let ctxData = JSON.parse(JSON.stringify(sampleContextoData));
+        let piData = JSON.parse(JSON.stringify(samplePartesData));
+
+        // Chart instances
+        let ctxFodaChartInst = null;
+        let ctxPestelChartInst = null;
+        let piStrategyChartInst = null;
+        let piIsoChartInst = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        function initApp() {
+            renderContextoDashboard();
+            renderPartesDashboard();
+            switchMainDashboard('contexto');
+        }
+
+        function switchMainDashboard(mode) {
+            currentMainDashboard = mode;
+            document.querySelectorAll('.main-dashboard').forEach(d => d.classList.add('hidden'));
+
+            const btnCtx = document.getElementById('dashBtn-contexto');
+            const btnPi = document.getElementById('dashBtn-partes');
+            const label = document.getElementById('activeDocLabel');
+            const uploadBtnLabel = document.getElementById('uploadBtnLabel');
+
+            if (mode === 'contexto') {
+                document.getElementById('dashboard-contexto').classList.remove('hidden');
+                btnCtx.className = "flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all bg-sky-600 text-white shadow";
+                btnPi.className = "flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white";
+                label.innerText = "Módulo Activo: RG-02-01 Rev04 - Análisis de Contexto";
+                uploadBtnLabel.innerText = "Subir Excel RG-02-01 (.xlsx)";
+            } else {
+                document.getElementById('dashboard-partes').classList.remove('hidden');
+                btnPi.className = "flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all bg-emerald-600 text-white shadow";
+                btnCtx.className = "flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white";
+                label.innerText = "Módulo Activo: RG-02-02 Rev04 - Partes Interesadas";
+                uploadBtnLabel.innerText = "Subir Excel RG-02-02 (.xlsx)";
+            }
+        }
+
+        function switchSubTab(modulePrefix, tabId) {
+            const tabClass = `${modulePrefix}-tab`;
+            const subtabClass = `${modulePrefix}-subtab`;
+
+            document.querySelectorAll(`.${tabClass}`).forEach(b => {
+                b.classList.remove('active', 'border-sky-600', 'border-emerald-600', 'text-sky-600', 'text-emerald-600', 'dark:text-sky-400', 'dark:text-emerald-400', 'font-bold');
+                b.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.querySelectorAll(`.${subtabClass}`).forEach(s => s.classList.add('hidden'));
+
+            const targetBtn = document.getElementById(`${modulePrefix}Tab-${tabId}`);
+            const targetContent = document.getElementById(`${modulePrefix}Sub-${tabId}`);
+
+            if (targetBtn && targetContent) {
+                const colorClass = modulePrefix === 'ctx' ? 'border-sky-600 text-sky-600 dark:text-sky-400' : 'border-emerald-600 text-emerald-600 dark:text-emerald-400';
+                targetBtn.className = `${tabClass} active border-b-2 ${colorClass} font-bold py-2 px-3 text-sm flex items-center space-x-2`;
+                targetContent.classList.remove('hidden');
+            }
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.className = 'fa-solid fa-sun text-amber-400';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        function renderContextoDashboard() {
+            // Badges
+            document.getElementById('badge-foda-count').innerText = ctxData.foda.length;
+            document.getElementById('badge-pestel-count').innerText = ctxData.pestel.length;
+            document.getElementById('badge-ctx-riesgos').innerText = ctxData.riesgos.length;
+
+            // KPIs
+            const totalFoda = ctxData.foda.length;
+            const internos = ctxData.foda.filter(f => f.categoria === 'F' || f.categoria === 'D').length;
+            const externos = totalFoda - internos;
+            document.getElementById('ctxKpiFodaTotal').innerText = totalFoda;
+            document.getElementById('ctxKpiFodaSub').innerText = `${internos} Internos / ${externos} Externos`;
+
+            const pestelAvg = ctxData.pestel.length ? (ctxData.pestel.reduce((acc, p) => acc + p.impacto, 0) / ctxData.pestel.length).toFixed(1) : "0.0";
+            document.getElementById('ctxKpiPestelAvg').innerText = pestelAvg;
+
+            const highRisks = ctxData.riesgos.filter(r => r.score >= 10).length;
+            document.getElementById('ctxKpiRiesgosCriticos').innerText = highRisks;
+            document.getElementById('ctxKpiRiesgosSub').innerText = `De ${ctxData.riesgos.length} analizados`;
+
+            const opps = ctxData.foda.filter(f => f.categoria === 'O').length;
+            document.getElementById('ctxKpiOportunidades').innerText = opps;
+
+            // Charts
+            renderCtxFodaChart();
+            renderCtxPestelChart();
+
+            // FODA Lists
+            renderFodaCategory('fodaListF', ctxData.foda.filter(f => f.categoria === 'F'), 'emerald');
+            renderFodaCategory('fodaListO', ctxData.foda.filter(f => f.categoria === 'O'), 'sky');
+            renderFodaCategory('fodaListD', ctxData.foda.filter(f => f.categoria === 'D'), 'amber');
+            renderFodaCategory('fodaListA', ctxData.foda.filter(f => f.categoria === 'A'), 'rose');
+            
+            document.getElementById('cntFodaF').innerText = ctxData.foda.filter(f => f.categoria === 'F').length;
+            document.getElementById('cntFodaO').innerText = ctxData.foda.filter(f => f.categoria === 'O').length;
+            document.getElementById('cntFodaD').innerText = ctxData.foda.filter(f => f.categoria === 'D').length;
+            document.getElementById('cntFodaA').innerText = ctxData.foda.filter(f => f.categoria === 'A').length;
+
+            // PESTEL Cards
+            renderPestelCards();
+
+            // Heatmap & Risks
+            renderCtxHeatmap();
+            renderCtxRisksTable();
+        }
+
+        function renderCtxFodaChart() {
+            const ctx = document.getElementById('ctxFodaChart').getContext('2d');
+            const f = ctxData.foda.filter(x => x.categoria === 'F').length;
+            const o = ctxData.foda.filter(x => x.categoria === 'O').length;
+            const d = ctxData.foda.filter(x => x.categoria === 'D').length;
+            const a = ctxData.foda.filter(x => x.categoria === 'A').length;
+
+            if (ctxFodaChartInst) ctxFodaChartInst.destroy();
+            ctxFodaChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fortalezas', 'Oportunidades', 'Debilidades', 'Amenazas'],
+                    datasets: [{
+                        data: [f, o, d, a],
+                        backgroundColor: ['#10b981', '#0284c7', '#f59e0b', '#e11d48'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+        }
+
+        function renderCtxPestelChart() {
+            const ctx = document.getElementById('ctxPestelChart').getContext('2d');
+            const labels = ctxData.pestel.map(p => p.dimension);
+            const data = ctxData.pestel.map(p => p.impacto);
+
+            if (ctxPestelChartInst) ctxPestelChartInst.destroy();
+            ctxPestelChartInst = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Impacto (1-5)',
+                        data: data,
+                        backgroundColor: 'rgba(147, 51, 234, 0.25)',
+                        borderColor: '#9333ea',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { suggestedMin: 0, suggestedMax: 5 } }
+                }
+            });
+        }
+
+        function renderFodaCategory(containerId, items, color) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic">Sin registros</p>`;
+                return;
+            }
+
+            items.forEach(item => {
+                container.innerHTML += `
+                    <div class="p-3 rounded-xl border border-${color}-200 bg-${color}-50/30 dark:bg-${color}-950/20 text-xs space-y-1">
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-xs text-[10px]">${item.id}</span>
+                            <span class="text-[10px] text-slate-500 uppercase">${item.area}</span>
+                        </div>
+                        <p class="font-medium text-slate-800 dark:text-slate-100">${item.factor}</p>
+                        <p class="text-[10px] text-slate-500">Impacto: <strong>${item.impacto}</strong></p>
+                    </div>
+                `;
+            });
+        }
+
+        function renderPestelCards() {
+            const container = document.getElementById('pestelGridCards');
+            container.innerHTML = '';
+            ctxData.pestel.forEach(p => {
+                container.innerHTML += `
+                    <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex flex-col justify-between space-y-2">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sky-600 text-sm">${p.dimension}</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded font-bold ${p.tendencia === 'Oportunidad' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${p.tendencia}</span>
+                            </div>
+                            <p class="text-xs font-medium text-slate-800 dark:text-slate-200">${p.factor}</p>
+                        </div>
+                        <div class="text-[11px] pt-2 border-t border-slate-200 dark:border-slate-700">
+                            <p class="text-slate-500">Impacto: <strong>${p.impacto}/5</strong></p>
+                            <p class="text-slate-600 dark:text-slate-400 font-medium mt-0.5"><strong>Plan:</strong> ${p.plan}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderCtxHeatmap() {
+            const grid = document.getElementById('ctxHeatmapGrid');
+            grid.innerHTML = '';
+            for (let prob = 5; prob >= 1; prob--) {
+                for (let imp = 1; imp <= 5; imp++) {
+                    const score = prob * imp;
+                    let bg = score >= 15 ? 'bg-rose-600 text-white' : score >= 10 ? 'bg-orange-500 text-white' : score >= 5 ? 'bg-amber-400 text-slate-900' : 'bg-emerald-500 text-white';
+                    const cnt = ctxData.riesgos.filter(r => (r.prob * r.imp) === score).length;
+                    grid.innerHTML += `
+                        <div class="${bg} rounded flex flex-col items-center justify-center p-1" title="Prob: ${prob}, Imp: ${imp}">
+                            <span class="font-bold text-xs">${score}</span>
+                            <span class="text-[9px] font-mono">${cnt > 0 ? cnt : '-'}</span>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function renderCtxRisksTable() {
+            const tbody = document.getElementById('ctxRisksTableBody');
+            tbody.innerHTML = '';
+            ctxData.riesgos.forEach(r => {
+                const score = r.score || (r.prob * r.imp);
+                let badge = score >= 15 ? 'bg-rose-100 text-rose-700 border-rose-300' : score >= 10 ? 'bg-orange-100 text-orange-700 border-orange-300' : 'bg-amber-100 text-amber-700 border-amber-300';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <td class="p-2.5 font-bold">${r.id} <span class="block text-[10px] font-normal text-slate-400">${r.factor}</span></td>
+                        <td class="p-2.5 font-medium">${r.riesgo}</td>
+                        <td class="p-2.5 font-mono">${r.prob} x ${r.imp}</td>
+                        <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badge}">${r.nivel || 'N/A'} (${score})</span></td>
+                        <td class="p-2.5">${r.control}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPartesDashboard() {
+            document.getElementById('badge-pi-count').innerText = piData.partes.length;
+
+            // KPIs
+            const total = piData.partes.length;
+            const internas = piData.partes.filter(p => p.tipo.toLowerCase() === 'interno').length;
+            const externas = total - internas;
+            document.getElementById('piKpiTotal').innerText = total;
+            document.getElementById('piKpiSub').innerText = `${internas} Internas / ${externas} Externas`;
+
+            const prioritarias = piData.partes.filter(p => p.estrategia.includes('Atentamente')).length;
+            document.getElementById('piKpiPrioritarias').innerText = prioritarias;
+
+            const isoCount = piData.partes.filter(p => p.iso).length;
+            document.getElementById('piKpiIsoCount').innerText = isoCount;
+
+            // Charts
+            renderPiStrategyChart();
+            renderPiIsoChart();
+
+            // Tables & Quadrants
+            renderPiTable();
+            renderPiQuadrants();
+            renderPiIsoCards();
+        }
+
+        function renderPiStrategyChart() {
+            const ctx = document.getElementById('piStrategyChart').getContext('2d');
+            const at = piData.partes.filter(p => p.estrategia.includes('Atentamente')).length;
+            const sat = piData.partes.filter(p => p.estrategia.includes('Satisfecho')).length;
+            const inf = piData.partes.filter(p => p.estrategia.includes('Informado')).length;
+            const mon = piData.partes.filter(p => p.estrategia.includes('Monitorear')).length;
+
+            if (piStrategyChartInst) piStrategyChartInst.destroy();
+            piStrategyChartInst = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gestionar Atentamente', 'Mantener Satisfecho', 'Mantener Informado', 'Monitorear'],
+                    datasets: [{
+                        data: [at, sat, inf, mon],
+                        backgroundColor: ['#10b981', '#f59e0b', '#0284c7', '#64748b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function renderPiIsoChart() {
+            const ctx = document.getElementById('piIsoChart').getContext('2d');
+            const iso9 = piData.partes.filter(p => p.iso && p.iso.includes('9001')).length;
+            const iso14 = piData.partes.filter(p => p.iso && p.iso.includes('14001')).length;
+            const iso45 = piData.partes.filter(p => p.iso && p.iso.includes('45001')).length;
+
+            if (piIsoChartInst) piIsoChartInst.destroy();
+            piIsoChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ISO 9001 (Calidad)', 'ISO 14001 (A. Ambiente)', 'ISO 45001 (SST)'],
+                    datasets: [{
+                        label: 'Partes con Requisitos Asociados',
+                        data: [iso9, iso14, iso45],
+                        backgroundColor: ['#0284c7', '#10b981', '#f59e0b'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+        }
+
+        function renderPiTable() {
+            const query = (document.getElementById('piSearchInput')?.value || '').toLowerCase();
+            const tbody = document.getElementById('piTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = piData.partes.filter(p => p.parte.toLowerCase().includes(query) || p.requisito.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Sin coincidencias</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                let badge = p.estrategia.includes('Atentamente') ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-sky-100 text-sky-800 border-sky-300';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <td class="p-3 font-semibold text-slate-800 dark:text-white">${p.parte}</td>
+                        <td class="p-3 text-slate-500">${p.tipo}</td>
+                        <td class="p-3 font-medium text-slate-700 dark:text-slate-200">${p.requisito}</td>
+                        <td class="p-3 font-mono text-[11px] text-sky-600">${p.iso || 'SGI Integrado'}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badge}">${p.estrategia}</span></td>
+                        <td class="p-3 text-slate-500">${p.seguimiento}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPiQuadrants() {
+            document.getElementById('piQuadSatisfecho').innerHTML = buildPiList(piData.partes.filter(p => p.estrategia.includes('Satisfecho')));
+            document.getElementById('piQuadAtentamente').innerHTML = buildPiList(piData.partes.filter(p => p.estrategia.includes('Atentamente')));
+            document.getElementById('piQuadMonitorear').innerHTML = buildPiList(piData.partes.filter(p => p.estrategia.includes('Monitorear')));
+            document.getElementById('piQuadInformado').innerHTML = buildPiList(piData.partes.filter(p => p.estrategia.includes('Informado')));
+        }
+
+        function buildPiList(items) {
+            if (items.length === 0) return `<li class="text-slate-400 italic">Ninguna en este cuadrante</li>`;
+            return items.map(p => `<li class="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-xs border border-slate-200 dark:border-slate-700"><strong>${p.parte}:</strong> ${p.requisito}</li>`).join('');
+        }
+
+        function renderPiIsoCards() {
+            const container = document.getElementById('piIsoCardsGrid');
+            container.innerHTML = '';
+            
+            const normas = [
+                { title: "ISO 9001:2015", subtitle: "Gestión de la Calidad", color: "sky", items: piData.partes.filter(p => p.iso && p.iso.includes('9001')) },
+                { title: "ISO 14001:2015", subtitle: "Gestión Ambiental", color: "emerald", items: piData.partes.filter(p => p.iso && p.iso.includes('14001')) },
+                { title: "ISO 45001:2018", subtitle: "Seguridad y Salud en el Trabajo", color: "amber", items: piData.partes.filter(p => p.iso && p.iso.includes('45001')) }
+            ];
+
+            normas.forEach(n => {
+                let itemsList = n.items.map(i => `<li class="p-2 bg-slate-50 dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800 font-medium"><strong>${i.parte}</strong>: ${i.requisito}</li>`).join('');
+                container.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col space-y-3">
+                        <div class="border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <span class="font-bold text-lg text-${n.color}-600">${n.title}</span>
+                            <p class="text-xs text-slate-400">${n.subtitle}</p>
+                        </div>
+                        <ul class="space-y-2 text-xs flex-1">${itemsList || '<li class="text-slate-400 italic">Sin requisitos explícitos</li>'}</ul>
+                    </div>
+                `;
+            });
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    currentWorkbook = XLSX.read(data, { type: 'array' });
+
+                    // Find sheet matching "01-04-2026" or pick the last sheet
+                    let targetSheetName = currentWorkbook.SheetNames.find(s => s.includes('01-04-2026') || s.includes('01/04/2026')) || currentWorkbook.SheetNames[currentWorkbook.SheetNames.length - 1];
+
+                    // Update Sheet Dropdown
+                    const dropdown = document.getElementById('sheetSelectDropdown');
+                    dropdown.innerHTML = '';
+                    currentWorkbook.SheetNames.forEach(s => {
+                        dropdown.innerHTML += `<option value="${s}" ${s === targetSheetName ? 'selected' : ''}>${s}</option>`;
+                    });
+
+                    changeActiveSheet(targetSheetName);
+
+                } catch (err) {
+                    console.error("Error al procesar Excel:", err);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function changeActiveSheet(sheetName) {
+            if (!currentWorkbook || !currentWorkbook.Sheets[sheetName]) return;
+
+            const worksheet = currentWorkbook.Sheets[sheetName];
+            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (currentMainDashboard === 'contexto') {
+                ctxData.excelRaw = rows;
+                parseCustomContextoExcel(rows);
+                renderContextoDashboard();
+                renderRawTable('ctxRawHeader', 'ctxRawBody', rows);
+            } else {
+                piData.excelRaw = rows;
+                parseCustomPartesExcel(rows);
+                renderPartesDashboard();
+                renderRawTable('piRawHeader', 'piRawBody', rows);
+            }
+
+            document.getElementById('sheetRevisionBadge').innerText = `Solapa: ${sheetName}`;
+        }
+
+        function parseCustomContextoExcel(rows) {
+            if (rows.length < 2) return;
+            const newFoda = [];
+            const newPestel = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                const r = rows[i];
+                if (!r || r.length === 0 || r.every(cell => cell === null || cell === undefined || cell === '')) continue;
+                
+                const col0 = String(r[0] || '').trim();
+                const col1 = String(r[1] || '').trim();
+                const col2 = String(r[2] || '').trim();
+                const col3 = String(r[3] || '').trim();
+                const col4 = String(r[4] || '').trim();
+                const col5 = String(r[5] || '').trim();
+
+                const combinedRowStr = (col0 + ' ' + col1 + ' ' + col2 + ' ' + col3 + ' ' + col4 + ' ' + col5).toUpperCase();
+
+                // Check if row belongs to PESTEL dimensions
+                const pestelKeywords = ['POLÍTICO', 'POLITICO', 'ECONÓMICO', 'ECONOMICO', 'SOCIAL', 'TECNOLÓGICO', 'TECNOLOGICO', 'ECOLÓGICO', 'ECOLOGICO', 'AMBIENTAL', 'LEGAL'];
+                const matchedDim = pestelKeywords.find(k => col0.toUpperCase().includes(k) || col1.toUpperCase().includes(k));
+
+                if (matchedDim) {
+                    let normDim = 'Político';
+                    if (matchedDim.includes('POLITIC')) normDim = 'Político';
+                    if (matchedDim.includes('ECONOMIC')) normDim = 'Económico';
+                    if (matchedDim.includes('SOCIAL')) normDim = 'Social';
+                    if (matchedDim.includes('TECNOLOGIC')) normDim = 'Tecnológico';
+                    if (matchedDim.includes('ECOLOGIC') || matchedDim.includes('AMBIENT')) normDim = 'Ecológico';
+                    if (matchedDim.includes('LEGAL')) normDim = 'Legal';
+
+                    newPestel.push({
+                        dimension: normDim,
+                        factor: col1 || col0 || `Factor ${normDim}`,
+                        tendencia: combinedRowStr.includes('AMENAZA') || combinedRowStr.includes('RIESGO') ? 'Riesgo' : 'Oportunidad',
+                        impacto: parseInt(col3) || parseInt(col2) || 4,
+                        plan: col5 || col4 || col3 || 'Acción de seguimiento SGI'
+                    });
+                    continue;
+                }
+
+                // FODA parsing
+                let cat = 'F';
+                const upperCol0 = col0.toUpperCase();
+                const upperCol1 = col1.toUpperCase();
+
+                if (upperCol0.includes('FORTALEZA') || upperCol0 === 'F') cat = 'F';
+                else if (upperCol0.includes('DEBILIDAD') || upperCol0 === 'D') cat = 'D';
+                else if (upperCol0.includes('OPORTUNIDAD') || upperCol0 === 'O') cat = 'O';
+                else if (upperCol0.includes('AMENAZA') || upperCol0 === 'A') cat = 'A';
+                else if (upperCol1.includes('FORTALEZA')) cat = 'F';
+                else if (upperCol1.includes('DEBILIDAD')) cat = 'D';
+                else if (upperCol1.includes('OPORTUNIDAD')) cat = 'O';
+                else if (upperCol1.includes('AMENAZA')) cat = 'A';
+
+                const factor = col1 || col0 || `Factor ${i}`;
+                const impacto = col2 || 'Alto';
+                const area = col3 || 'General';
+                const tipoRaw = (col4 || col0 || col1).toUpperCase();
+                
+                let tipo = (cat === 'F' || cat === 'D') ? 'Interno' : 'Externo';
+                if (tipoRaw.includes('INTERN')) tipo = 'Interno';
+                if (tipoRaw.includes('EXTERN')) tipo = 'Externo';
+
+                newFoda.push({
+                    id: `${cat}${newFoda.filter(x => x.categoria === cat).length + 1}`,
+                    categoria: cat,
+                    factor: factor,
+                    impacto: impacto,
+                    area: area,
+                    tipo: tipo
+                });
+            }
+
+            if (newFoda.length > 0) ctxData.foda = newFoda;
+            if (newPestel.length > 0) ctxData.pestel = newPestel;
+        }
+
+        function parseCustomPartesExcel(rows) {
+            if (rows.length < 2) return;
+            const newPartes = [];
+            for (let i = 1; i < rows.length; i++) {
+                const r = rows[i];
+                if (!r || r.length === 0) continue;
+                newPartes.push({
+                    parte: String(r[0] || 'Parte Interesada'),
+                    tipo: String(r[1] || 'Externo'),
+                    requisito: String(r[2] || 'Requisito cargado'),
+                    poder: String(r[3] || 'Alto'),
+                    interes: String(r[4] || 'Alto'),
+                    estrategia: String(r[5] || 'Gestionar Atentamente'),
+                    iso: String(r[6] || 'ISO 9001'),
+                    seguimiento: String(r[7] || 'Revisión Periódica')
+                });
+            }
+            if (newPartes.length > 0) piData.partes = newPartes;
+        }
+
+        function renderRawTable(headerId, bodyId, rows) {
+            const thead = document.getElementById(headerId);
+            const tbody = document.getElementById(bodyId);
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if (!rows || rows.length === 0) return;
+
+            let hRow = '<tr>';
+            (rows[0] || []).forEach((c, idx) => {
+                hRow += `<th class="p-2.5 border-b border-slate-700 bg-slate-900">${c || `Col ${idx+1}`}</th>`;
+            });
+            hRow += '</tr>';
+            thead.innerHTML = hRow;
+
+            for (let i = 1; i < rows.length; i++) {
+                let rRow = '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">';
+                (rows[i] || []).forEach(val => {
+                    rRow += `<td class="p-2.5 border-b border-slate-100 dark:border-slate-800">${val || ''}</td>`;
+                });
+                rRow += '</tr>';
+                tbody.innerHTML += rRow;
+            }
+        }
+
+        function resetToSampleData() {
+            ctxData = JSON.parse(JSON.stringify(sampleContextoData));
+            piData = JSON.parse(JSON.stringify(samplePartesData));
+            renderContextoDashboard();
+            renderPartesDashboard();
+            document.getElementById('sheetRevisionBadge').innerText = "Solapa: 01-04-2026";
+        }
+
+        function exportTableToCSV(tableId, filename) {
+            const table = document.getElementById(tableId);
+            let csv = [];
+            for (let i = 0; i < table.rows.length; i++) {
+                let row = [], cols = table.rows[i].cells;
+                for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+                csv.push(row.join(","));
+            }
+            const link = document.createElement("a");
+            link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv.join("\n"));
+            link.download = filename;
+            link.click();
+        }
+    </script>
+</body>
+</html>
