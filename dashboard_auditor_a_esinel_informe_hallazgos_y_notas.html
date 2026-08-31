@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50 text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESINEL S.R.L. - Plataforma Consolidada Auditoría DNV P2</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dnv: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        esinel: {
+                            gold: '#f59e0b',
+                            amber: '#d97706',
+                            dark: '#0f172a',
+                            light: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN for visual analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        
+        .clean-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .clean-card-hover:hover {
+            transform: translateY(-2px);
+            border-color: #38bdf8;
+            box-shadow: 0 10px 20px -5px rgba(14, 165, 233, 0.12);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .clean-card {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Header Principal -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                
+                <!-- Identificación ESINEL & Proyecto DNV -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-md shadow-amber-500/20 font-extrabold text-slate-900 text-xl tracking-wider">
+                        E
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-xl font-bold text-slate-900 tracking-tight">ESINEL S.R.L.</h1>
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+                                DNV P2 • PRJC-582435-2018-MSC-ARG
+                            </span>
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i> Certificación Mantenida (0 NC)
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500">
+                            <i class="fa-regular fa-calendar-check text-sky-600 mr-1"></i> Cierre: 28 de Agosto, 2026 
+                            <span class="mx-1">•</span> 
+                            <i class="fa-solid fa-user-shield text-amber-500 mr-1"></i> Líder: Benito Ricardo Segade (RS) | Auditor: José Alfredo Costa (JC)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botones Globales -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="window.print()" class="no-print inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition shadow-sm">
+                        <i class="fa-solid fa-print mr-1.5 text-sky-600"></i> Imprimir / Exportar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegación por Tableros / Dashboards principales -->
+    <div class="no-print bg-slate-900 text-white border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 overflow-x-auto py-2.5">
+                <button onclick="switchDashboard('informe')" id="nav-btn-informe" class="nav-dash-btn px-4 py-2 text-xs font-bold rounded-xl bg-sky-600 text-white shadow-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-contract text-amber-400"></i> 1. Informe General de Auditoría DNV
+                </button>
+                <button onclick="switchDashboard('hallazgos')" id="nav-btn-hallazgos" class="nav-dash-btn px-4 py-2 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> 2. Matriz de Hallazgos (Obs & OM)
+                </button>
+                <button onclick="switchDashboard('notas')" id="nav-btn-notas" class="nav-dash-btn px-4 py-2 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list text-sky-400"></i> 3. Infografía de Notas del Auditor & Evidencias
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- ==========================================
+             DASHBOARD 1: INFORME GENERAL DE AUDITORÍA
+             ========================================== -->
+        <section id="dash-informe" class="dashboard-section space-y-6">
+            
+            <!-- Cards Resumen de Estado -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="clean-card rounded-2xl p-4 flex items-center justify-between border-l-4 border-l-emerald-500">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase">Estado de Certificación</span>
+                        <h3 class="text-lg font-extrabold text-emerald-700 mt-1">RECOMENDADO</h3>
+                        <p class="text-[11px] text-slate-500">Mantiene vigencia ISO 9001/14001/45001</p>
+                    </div>
+                    <div class="p-3 bg-emerald-100 text-emerald-700 rounded-xl">
+                        <i class="fa-solid fa-shield-check text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="clean-card rounded-2xl p-4 flex items-center justify-between border-l-4 border-l-sky-500">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase">No Conformidades</span>
+                        <h3 class="text-xl font-extrabold text-sky-700 mt-1">0 NCs</h3>
+                        <p class="text-[11px] text-slate-500">0 Mayores (Cat 1) | 0 Menores (Cat 2)</p>
+                    </div>
+                    <div class="p-3 bg-sky-100 text-sky-700 rounded-xl">
+                        <i class="fa-solid fa-check-double text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="clean-card rounded-2xl p-4 flex items-center justify-between border-l-4 border-l-amber-500">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase">Hallazgos Identificados</span>
+                        <h3 class="text-xl font-extrabold text-amber-700 mt-1">3 Obs / 2 OM</h3>
+                        <p class="text-[11px] text-slate-500">3 Observaciones | 2 Oportunidades Mejora</p>
+                    </div>
+                    <div class="p-3 bg-amber-100 text-amber-700 rounded-xl">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="clean-card rounded-2xl p-4 flex items-center justify-between border-l-4 border-l-indigo-500">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase">Área de Interés DNV</span>
+                        <h3 class="text-xl font-extrabold text-indigo-700 mt-1">Grado 5 / 5 (Alto)</h3>
+                        <p class="text-[11px] text-slate-500">Fidelización, Autogestión & Humand</p>
+                    </div>
+                    <div class="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
+                        <i class="fa-solid fa-users-gear text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha Técnica e Información General del Proyecto -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Datos del Proyecto & Equipo DNV -->
+                <div class="clean-card rounded-2xl p-5 space-y-4">
+                    <h2 class="text-base font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-id-card text-sky-600"></i> Ficha del Proyecto DNV
+                    </h2>
+                    <div class="space-y-2.5 text-xs">
+                        <div class="flex justify-between border-b pb-1">
+                            <span class="text-slate-500 font-semibold">N° Proyecto:</span>
+                            <span class="font-mono font-bold text-slate-900">PRJC-582435-2018-MSC-ARG</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1">
+                            <span class="text-slate-500 font-semibold">Tipo Auditoría:</span>
+                            <span class="font-bold text-sky-700">P2 (Periódica 2)</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1">
+                            <span class="text-slate-500 font-semibold">Fechas:</span>
+                            <span class="font-semibold text-slate-800">27/08/2026 - 28/08/2026</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-1">
+                            <span class="text-slate-500 font-semibold">Entidad Acreditadora:</span>
+                            <span class="font-bold text-indigo-700">ANAB (DNV USA Inc.)</span>
+                        </div>
+                        <div class="pt-2">
+                            <span class="text-slate-500 font-semibold block mb-1">Equipo Auditor DNV:</span>
+                            <div class="bg-slate-50 p-2.5 rounded-xl border space-y-1">
+                                <p class="font-bold text-slate-900"><i class="fa-solid fa-user-shield text-amber-500 mr-1"></i> Benito Ricardo Segade (Líder)</p>
+                                <p class="font-bold text-slate-800"><i class="fa-solid fa-user text-sky-500 mr-1"></i> José Alfredo Costa (Auditor)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alcance Certificado por Norma -->
+                <div class="lg:col-span-2 clean-card rounded-2xl p-5 space-y-4">
+                    <h2 class="text-base font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-certificate text-amber-600"></i> Alcance Oficial de Certificación
+                    </h2>
+                    <div class="space-y-3">
+                        <!-- ISO 9001 -->
+                        <div class="bg-blue-50/60 p-3.5 rounded-xl border border-blue-200 space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-extrabold text-xs text-blue-900">C712301 - ISO 9001:2015 (Calidad)</span>
+                                <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-200 text-blue-800 rounded">Vigente</span>
+                            </div>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                Design, development, execution, assembly, start-up and management of electrical engineering works. Design, development and manufacture of electrical switchboard. (Diseño, desarrollo, ejecución, montaje, puesta en marcha y gerenciamiento de obras de ingeniería eléctrica. Diseño, desarrollo y armado de tableros eléctricos).
+                            </p>
+                        </div>
+
+                        <!-- ISO 14001 & ISO 45001 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200 space-y-1">
+                                <span class="font-extrabold text-xs text-emerald-900 block">C712302 - ISO 14001:2015 (Medio Ambiente)</span>
+                                <p class="text-[11px] text-slate-700">Mismo alcance acreditado para gestión ambiental en sede HQ, taller y obras in situ.</p>
+                            </div>
+                            <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200 space-y-1">
+                                <span class="font-extrabold text-xs text-amber-900 block">C712300 - ISO 45001:2018 (SST)</span>
+                                <p class="text-[11px] text-slate-700">Mismo alcance acreditado para seguridad y salud en el trabajo con control operacional.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evaluación del Área de Interés DNV -->
+            <div class="clean-card rounded-2xl p-5 border-l-4 border-l-indigo-600 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Área de Interés Evaluada por DNV</span>
+                        <h3 class="text-base font-bold text-slate-900 mt-0.5">
+                            "Potenciar recursos humanos con la fidelización del personal, impulsando la autogestión, la capacitación y fortaleciendo las comunicaciones internas"
+                        </h3>
+                    </div>
+                    <div class="flex items-center gap-1 bg-indigo-100 text-indigo-900 px-3 py-1.5 rounded-xl font-bold text-sm">
+                        <span>Grado de Control:</span>
+                        <span class="text-indigo-700 text-base">5 / 5 (Alto)</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
+                    <div class="bg-slate-50 p-3.5 rounded-xl border space-y-2">
+                        <h4 class="font-bold text-emerald-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check"></i> Evidencias e Indicaciones Positivas
+                        </h4>
+                        <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                            <li>Informe de Recursos Humanos completo por Ejercicio presentado.</li>
+                            <li>Prioridad estratégica evidenciada en la gestión de capital humano.</li>
+                            <li>Lanzamiento e implementación de la nueva plataforma **HUMAND** para gestión integral de RRHH.</li>
+                            <li>Establecimiento y desarrollo de **Planes de Carrera**.</li>
+                            <li>Plan de Capacitación 2026 gestionado por áreas en base a evaluación de competencias (Técnica - SGI - MA - SST).</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-xl border space-y-2">
+                        <h4 class="font-bold text-amber-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb"></i> Recomendación del Auditor Líder
+                        </h4>
+                        <p class="text-slate-700 leading-relaxed">
+                            Debido al alto grado de madurez alcanzado en la gestión de RRHH y la consolidación de Humand, se recomienda definir una **nueva Área de Interés estratégica** para el próximo período auditado P3/Recertificación.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusiones Oficiales DNV -->
+            <div class="clean-card rounded-2xl p-5 space-y-3">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-sky-600"></i> Conclusiones del Informe Final DNV
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <span class="font-bold text-slate-900 block mb-1">Eficacia del Sistema</span>
+                        <p class="text-slate-600">El sistema de gestión se considera totalmente eficaz y conforme a las normas ISO 9001, 14001 y 45001.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <span class="font-bold text-slate-900 block mb-1">Muestreo de Centros</span>
+                        <p class="text-slate-600">Elegibilidad confirmada para muestreo descentralizado (HQ Remedios Escalada, Sitio Santo Tomé y Obra PANALAB).</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <span class="font-bold text-slate-900 block mb-1">Sin Auditoría Seguimiento</span>
+                        <p class="text-slate-600">Al no registrarse No Conformidades (0 NC), no se requiere auditoría extraordinaria de seguimiento.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ==========================================
+             DASHBOARD 2: MATRIZ DE HALLAZGOS Y ACCIONES
+             ========================================== -->
+        <section id="dash-hallazgos" class="dashboard-section hidden space-y-6">
+            
+            <!-- Banner de Resumen de Hallazgos -->
+            <div class="clean-card rounded-2xl p-5 bg-gradient-to-r from-slate-900 via-slate-800 to-sky-900 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-500 text-slate-900 uppercase tracking-wider">
+                        Balance Final de Auditoría
+                    </span>
+                    <h2 class="text-xl font-extrabold mt-2">Matriz Consolidada de Hallazgos DNV P2</h2>
+                    <p class="text-xs text-slate-300 mt-1">
+                        0 No Conformidades | 3 Observaciones | 2 Oportunidades de Mejora
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="text-center px-4 py-2 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
+                        <span class="text-2xl font-extrabold text-amber-400">3</span>
+                        <span class="block text-[10px] uppercase text-slate-300 font-semibold">Observaciones</span>
+                    </div>
+                    <div class="text-center px-4 py-2 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
+                        <span class="text-2xl font-extrabold text-sky-400">2</span>
+                        <span class="block text-[10px] uppercase text-slate-300 font-semibold">Op. Mejora</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado Detallado de las 3 Observaciones -->
+            <div class="space-y-4">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Observaciones Identificadas (3)
+                </h3>
+
+                <!-- Obs 1: Ventas / Acciones Correctivas -->
+                <div class="clean-card rounded-2xl p-5 border-l-4 border-l-amber-500 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 text-xs font-extrabold bg-amber-100 text-amber-800 rounded-md border border-amber-200">
+                                OBS N° 1
+                            </span>
+                            <span class="font-bold text-slate-900 text-sm">Tratamiento de Acciones Correctivas & Reclamos</span>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-500">Proceso: Ventas / SGI • Norma: ISO 9001 (10.2 / 10.3)</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-800 font-medium">
+                                <strong>Texto del Hallazgo:</strong> Al no estar clara la diferencia entre la fecha de implementación y la fecha de verificación de efectividad en el tratamiento de las acciones correctivas, se corre el riesgo de no asegurar la eficacia de la acción tomada.
+                            </p>
+                            <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-amber-900">
+                                <strong>Evidencia Asociada:</strong> Reclamo N° 18 (10/3/26) en el registro RG 06 01 Ver 04 con reuniones e implementación el 10/6/26. Caso cliente DON SATUR (satisfacción 6.0).
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded-xl border space-y-1.5">
+                            <span class="font-bold text-sky-700 block"><i class="fa-solid fa-wrench mr-1"></i> Acción Recomendada ESINEL</span>
+                            <p class="text-slate-600">
+                                Separar explícitamente en el procedimiento PG 06 y en los formularios el campo "Fecha de Cierre/Implementación" del campo "Fecha de Verificación de Eficacia" (mínimo 30-60 días posteriores).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Obs 2: Protocolos de Ensayos / Taller -->
+                <div class="clean-card rounded-2xl p-5 border-l-4 border-l-amber-500 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 text-xs font-extrabold bg-amber-100 text-amber-800 rounded-md border border-amber-200">
+                                OBS N° 2
+                            </span>
+                            <span class="font-bold text-slate-900 text-sm">Criterios de Aceptación en Ensayos de Tableros</span>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-500">Proceso: Producción / Taller • Norma: ISO 9001 (7.1.5 / 8.5.1)</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-800 font-medium">
+                                <strong>Texto del Hallazgo:</strong> Si bien se identifican los instrumentos empleados en los protocolos de prueba, al no especificarse los criterios de aceptación o Normas aplicables se corre el riesgo de no asegurar la validez de las mediciones.
+                            </p>
+                            <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-amber-900">
+                                <strong>Evidencia Asociada:</strong> Registro RO 06 02 Ver 04 "Protocolo de Pruebas para Tablero Obra PANALAB" del 24/8/26. Equipos CONIMED (INTI-SAC 181/26), METREL (202607) y SICE.
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded-xl border space-y-1.5">
+                            <span class="font-bold text-sky-700 block"><i class="fa-solid fa-wrench mr-1"></i> Acción Recomendada ESINEL</span>
+                            <p class="text-slate-600">
+                                Incluir en la plantilla RO 06 02 los valores límite/rangos aceptables (ej: Rigidez dieléctrica kV, R. Aislamiento MΩ) y la norma de referencia (IEC 61439).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Obs 3: Servicio Médico / Salud Ocupacional -->
+                <div class="clean-card rounded-2xl p-5 border-l-4 border-l-amber-500 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 text-xs font-extrabold bg-amber-100 text-amber-800 rounded-md border border-amber-200">
+                                OBS N° 3
+                            </span>
+                            <span class="font-bold text-slate-900 text-sm">Programa de Capacitaciones de Salud & Morbilidad</span>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-500">Proceso: Servicio Médico / SySO • Norma: ISO 45001 (7.2 / 9.1.2)</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-800 font-medium">
+                                <strong>Texto del Hallazgo:</strong> No está completo el programa de capacitaciones requeridas por el programa de salud y tampoco la estadística de ausentismo y morbilidad para la generación de planes de mejora. (Riesgo de no asegurar cumplimiento legal).
+                            </p>
+                            <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-amber-900">
+                                <strong>Evidencia Asociada:</strong> Auditoría Servicio Médico SUMO (Dr. Adolfo Taranto). Indicadores SAL 2 (Encuesta de salud) y SAL 3 (Morbilidad). Capacitaciones RCP (29/5/26) y Hábitos Saludables (10/9/25).
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded-xl border space-y-1.5">
+                            <span class="font-bold text-sky-700 block"><i class="fa-solid fa-wrench mr-1"></i> Acción Recomendada ESINEL</span>
+                            <p class="text-slate-600">
+                                Exigir a SUMO la entrega mensual del tablero con tasa de ausentismo por causas médicas, cuadro de morbilidad y cronograma completo Res. SRT 905.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado de las 2 Oportunidades de Mejora -->
+            <div class="space-y-4 pt-2">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-sky-500"></i> Oportunidades de Mejora Identificadas (2)
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- OM 1: Eslingas de Taller -->
+                    <div class="clean-card rounded-2xl p-5 border-t-4 border-t-sky-500 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2 py-0.5 text-[10px] font-extrabold bg-sky-100 text-sky-800 rounded">OM N° 1</span>
+                            <span class="text-xs text-slate-500">Producción / SySO</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">Control e Inspección de Eslingas de Izaje</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Es una oportunidad de mejora asegurar el control periódico del estado de las eslingas y fajas sintéticas que se emplean en el taller de tableros (inspección visual, código de colores y tarjeta de rechazo).
+                        </p>
+                    </div>
+
+                    <!-- OM 2: Nueva Área de Interés -->
+                    <div class="clean-card rounded-2xl p-5 border-t-4 border-t-sky-500 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2 py-0.5 text-[10px] font-extrabold bg-sky-100 text-sky-800 rounded">OM N° 2</span>
+                            <span class="text-xs text-slate-500">Alta Dirección / SGI</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">Selección de Nueva Área de Interés Estratégica</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Se recomienda la identificación de una nueva Área de Interés para el próximo período, dado el grado de consolidación máximo alcanzado en la gestión de RRHH.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ==========================================
+             DASHBOARD 3: INFOGRAFÍA DE NOTAS DEL AUDITOR
+             ========================================== -->
+        <section id="dash-notas" class="dashboard-section hidden space-y-6">
+            
+            <div class="clean-card rounded-2xl p-5 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-list text-sky-600"></i> Notas del Auditor & Infografía de Evidencias Objetivas
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            Desglose de cada proceso auditado con los documentos, registros, entrevistas y verificación legal realizada in situ por Ricardo Segade y José Costa.
+                        </p>
+                    </div>
+
+                    <!-- Selector de Proceso -->
+                    <div class="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-xl">
+                        <button onclick="filterNotesProcess('all')" class="note-proc-btn px-3 py-1 text-xs font-bold rounded-lg bg-sky-600 text-white">Todos</button>
+                        <button onclick="filterNotesProcess('direccion')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">Alta Gerencia</button>
+                        <button onclick="filterNotesProcess('sgi')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">SGI / Calidad</button>
+                        <button onclick="filterNotesProcess('compras')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">Compras</button>
+                        <button onclick="filterNotesProcess('ventas')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">Ventas CRM</button>
+                        <button onclick="filterNotesProcess('produccion')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">Producción / Obras</button>
+                        <button onclick="filterNotesProcess('diseno')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">Diseño e Ing.</button>
+                        <button onclick="filterNotesProcess('rrhh')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">RRHH & Humand</button>
+                        <button onclick="filterNotesProcess('legal')" class="note-proc-btn px-3 py-1 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-200">Matriz Legal</button>
+                    </div>
+                </div>
+
+                <!-- Grid de Infografías de Procesos Auditados -->
+                <div id="notes-process-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                    
+                    <!-- Proceso 1: Alta Gerencia -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="direccion">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Alta Gerencia & Dirección</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-purple-100 text-purple-800 rounded">ISO 9001/14k/45k</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Auditado:</strong> Marcelo Piccione (Director / Presidente)</p>
+                            <p><strong>Revisión Dirección:</strong> Realizada el 11/08/2026. Revisión de Políticas, Dirección Estratégica y Provisión de Recursos.</p>
+                            <div class="bg-purple-50 p-2 rounded-lg border border-purple-100 space-y-1">
+                                <span class="font-bold text-purple-900 block">Contexto & Partes Interesadas:</span>
+                                <p class="text-[11px]">RG 02 01 Análisis de Contexto • RG 02 02 Partes Interesadas. Oportunidades en parque automotriz eléctrico, rubro farmacéutico (FDA) e infraestructura.</p>
+                            </div>
+                            <p><strong>Cambio Climático:</strong> Evaluación de incidencia directa baja. Desarrollo del cálculo de **Huella de Carbono**.</p>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 2: SGI, Calidad & MA / SySO -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="sgi">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Sistema Integrado de Gestión (SGI)</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-sky-100 text-sky-800 rounded">ISO 9001/14k/45k</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Auditorías Internas:</strong> 9 al 11 de Junio (Período Marzo 2025 - Marzo 2026). 2 Observaciones registradas. 69 Certificaciones de cumplimiento legal.</p>
+                            <div class="bg-sky-50 p-2 rounded-lg border border-sky-100 space-y-1">
+                                <span class="font-bold text-sky-900 block">Indicadores Objetivos:</span>
+                                <p class="text-[11px]">Ganado/Ofertado &gt;40% • CSAT &gt;7.5 (Actual 8.7) • Residuos Reciclables &gt;30% • Accidentes con baja: 3 (1 in itinere, Tasa Incidencia 2026: 14 vs 45 en 2025).</p>
+                            </div>
+                            <p><strong>Investigación Accidentes:</strong> Caso Facundo Gómez (Obra CVN 28/1/26 - latigazo cable, gafas). RG 03 01 Planilla. Canal denuncias violencia/acoso RG 08 05 por Google Form web.</p>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 3: Compras & Proveedores -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="compras">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Compras & Proveedores Externos</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-orange-100 text-orange-800 rounded">ISO 9001 8.4</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Auditado:</strong> Daniel Lértora (Responsable Compras)</p>
+                            <p><strong>Flujo Documental Verificado:</strong> Procedimiento PO 01 Gestión de Compras • Requisitoria aprobada &gt; Nota de Pedido a Compras &gt; RO 01 01 Planilla Comparativa cotizaciones.</p>
+                            <div class="bg-orange-50 p-2 rounded-lg border border-orange-100 space-y-1">
+                                <span class="font-bold text-orange-900 block">Evaluación de Proveedores:</span>
+                                <p class="text-[11px]">PO 02 Evaluación Proveedores • PO 03 Evaluación Contratistas • RO 02 01 Proveedores Habilitados • RO 02 02 Evaluación (&lt;60% no se acepta).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 4: Ventas & CRM -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="ventas">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Ventas & Atención a Clientes</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-cyan-100 text-cyan-800 rounded">ISO 9001 8.2 / 9.1</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Auditado:</strong> Nahuel Heredia (Sitio Santo Tomé)</p>
+                            <p><strong>Gestión CRM Comercial:</strong> Pre-evaluación de pliegos, carga de proyectos en CRM, seguimiento automático de cotizaciones (COME 1 a COME 6).</p>
+                            <div class="bg-cyan-50 p-2 rounded-lg border border-cyan-100 space-y-1">
+                                <span class="font-bold text-cyan-900 block">Satisfacción del Cliente:</span>
+                                <p class="text-[11px]">Encuestas finales de obra vía Google Forms (21 respuestas, objetivo &gt;7.5, promedio actual 8.7). Caso cliente Don Satur (6.0) derivado a análisis de hallazgo.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 5: Producción, Taller & Obras -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="produccion">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Producción, Taller & Obras</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded">ISO 9001/14k/45k 8.1</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Auditados:</strong> Hernán Giacobbe (Gte Obras), Sergio Donda (Jefe Taller), José Casares (Pañol).</p>
+                            <p><strong>Taller de Tableros:</strong> Obras Unión Ganadera, Pelque, PANALAB. Protocolo RO 06 02 (24/8/26). Calibraciones INTI (CONIMED, METREL 202607, SICE).</p>
+                            <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-100 space-y-1">
+                                <span class="font-bold text-emerald-900 block">Obra Prolab Villa Soldati:</span>
+                                <p class="text-[11px]">Obrador contenedor, check list herramientas eléctricas RO 05 20 (Roto percutor Bosch N°4), plataforma tijera RK Elevaciones N° 5193 (14m, Checklist 00-31), Libro Orden de Servicio #01.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 6: Diseño e Ingeniería -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="diseno">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Diseño e Ingeniería Electromecánica</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-indigo-100 text-indigo-800 rounded">ISO 9001 8.3</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Auditados:</strong> Martín Diamanti (Gte Ing), Juan Monti (Líder ST), Miguel Á. Citta, Facundo Guerrero.</p>
+                            <p><strong>Proyecto PANALAB (Código 796):</strong> 335 hs de ingeniería. Verificación de ingeniería de detalle y disyuntores clase A para corrientes de fuga (LEDs/PCs).</p>
+                            <div class="bg-indigo-50 p-2 rounded-lg border border-indigo-100 space-y-1">
+                                <span class="font-bold text-indigo-900 block">Herramientas & Ciclo de Vida:</span>
+                                <p class="text-[11px]">Listado RMA-05 Fichas Ciclo de Vida • PO 04 Planificación Diseño • TRELLO planificación personal • Planos pararrayos IRAM 2184 con código QR.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 7: RRHH & Humand -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="rrhh">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">RRHH, Capacitación & Humand</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-800 rounded">ISO 9001/45k 7.2</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Ingreso & Manuales:</strong> RG 04 Proceso de Ingreso • RG 04 21 Manual para Ingresantes. Organigrama Rev 30. Perfiles de puesto cargados.</p>
+                            <div class="bg-rose-50 p-2 rounded-lg border border-rose-100 space-y-1">
+                                <span class="font-bold text-rose-900 block">Evaluación Desempeño en HUMAND:</span>
+                                <p class="text-[11px]">Evaluación 360° (Jefe, pares, autoevaluación). Promedio empresa: 3.18 / 5.0 (Ej Líder Ing: 3.67, Operario: 3.25).</p>
+                            </div>
+                            <p><strong>Plan Capacitación 2026:</strong> Registro RG 04 04. Capacitación Riesgo Eléctrico (26/04/26).</p>
+                        </div>
+                    </div>
+
+                    <!-- Proceso 8: Servicio Médico SUMO -->
+                    <div class="proc-card clean-card clean-card-hover rounded-xl p-4 space-y-3" data-proc="rrhh">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="font-bold text-slate-900 text-sm">Servicio Médico SUMO</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded">ISO 45001 7.2 / Res 905</span>
+                        </div>
+                        <div class="text-xs space-y-2 text-slate-700">
+                            <p><strong>Responsable:</strong> Dr. Adolfo Jorge Taranto (SUMO External)</p>
+                            <p><strong>Indicadores de Salud:</strong> SAL 2 Encuesta de Salud Anual • SAL 3 Morbilidad.</p>
+                            <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-100 space-y-1">
+                                <span class="font-bold text-emerald-900 block">Capacitaciones SRT Res 905:</span>
+                                <p class="text-[11px]">Primeros Auxilios y RCP (29/05/2026) • Hábitos Saludables (10/09/2025).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Matriz Completa de Seguimiento de Cumplimiento Legal -->
+            <div id="notes-legal-section" class="clean-card rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between border-b pb-2">
+                    <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced text-emerald-600"></i> Matriz de Seguimiento de Cumplimiento Legal (Auditada)
+                    </h3>
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        ISO 14001 / ISO 45001 (Cláusula 9.1.2)
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-700">
+                        <thead class="bg-slate-100 text-slate-600 font-bold uppercase border-b">
+                            <tr>
+                                <th class="p-3">Requisito / Tema Legal</th>
+                                <th class="p-3 text-center">Estado Verificado</th>
+                                <th class="p-3">Evidencia Objetiva Registrada en Auditoría</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Habilitación Municipal</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Santo Tomé S-1039 (15.05.2023). CABA (17.04.1995 Expte 019924/95) Fabricación dispositivos control/regulación.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Certificado Aptitud Ambiental (CAA)</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">EN TRÁMITE AGC</span></td>
+                                <td class="p-3">Presentado 02.06.2026 ante Agencia Gubernamental de Control CABA (Historial renovación desde 2013/2019/2021).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Seguro Ambiental Obligatorio (NCA)</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Nivel de Complejidad Ambiental calculado en 14 Puntos (Año 2024).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Agua Potable & Análisis de Tanques</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Limpieza tanque Abadía Fumigaciones (04/2026, Lic. Bóveda CPIA). Análisis Ivess 04/2026 N° 153686. Agua corriente sin restricción.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Residuos Peligrosos / Especiales</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Inscripto APRA CABA para Y8 y Y12. Transportista MD Servicios + Soluciones Ambientales Operador N° 1138583 (03/2026).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Iluminación en Ambiente de Trabajo</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Medición ejecutada en Septiembre 2025 conforme Res. SRT 84/12.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Ruido Laboral & Ruido al Vecindario</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Ruido laboral verificado 27/03/2025. Ruido molesto al vecindario verificado 17/03/2025.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Puesta a Tierra & Masa (PAT)</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Medición de continuidad de masas y PAT verificada el 25/10/2025 Res. SRT 900/15.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Ergonomía & Comités Mixtos</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">CUMPLE</span></td>
+                                <td class="p-3">Estudios ergonómicos en Oficina y Taller. Comités mixtos de seguridad constituidos y en funcionamiento.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-900">Efluentes / Carga Térmica / Presión</td>
+                                <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500">NO APLICA</span></td>
+                                <td class="p-3">Trabajos bajo techo con protocolo de refrigerio cada 2hs. Sin aparatos a presión ni efluentes industriales.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="no-print border-t border-slate-200 bg-white mt-12 py-4 text-center text-xs text-slate-500">
+        <p>ESINEL S.R.L. © 2026 | Plataforma Consolidada de Auditoría DNV P2 (ISO 9001 / 14001 / 45001)</p>
+    </footer>
+
+    <script>
+        // Función para cambiar de Tablero / Dashboard
+        function switchDashboard(dashId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.dashboard-section').forEach(sec => sec.classList.add('hidden'));
+            
+            // Restablecer estilos de botones de navegación
+            document.querySelectorAll('.nav-dash-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-600', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+            });
+
+            // Mostrar sección activa
+            document.getElementById(`dash-${dashId}`).classList.remove('hidden');
+
+            // Activar botón correspondiente
+            const activeBtn = document.getElementById(`nav-btn-${dashId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                activeBtn.classList.add('bg-sky-600', 'text-white', 'shadow-sm');
+            }
+        }
+
+        // Función para filtrar notas por proceso en el Dashboard 3
+        function filterNotesProcess(proc) {
+            const cards = document.querySelectorAll('.proc-card');
+            const legalSec = document.getElementById('notes-legal-section');
+
+            document.querySelectorAll('.note-proc-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-600', 'text-white');
+                btn.classList.add('text-slate-700');
+            });
+
+            if (event && event.target) {
+                event.target.classList.remove('text-slate-700');
+                event.target.classList.add('bg-sky-600', 'text-white');
+            }
+
+            if (proc === 'all') {
+                cards.forEach(c => c.classList.remove('hidden'));
+                legalSec.classList.remove('hidden');
+                return;
+            }
+
+            if (proc === 'legal') {
+                cards.forEach(c => c.classList.add('hidden'));
+                legalSec.classList.remove('hidden');
+                return;
+            }
+
+            legalSec.classList.add('hidden');
+            cards.forEach(c => {
+                if (c.getAttribute('data-proc') === proc) {
+                    c.classList.remove('hidden');
+                } else {
+                    c.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
