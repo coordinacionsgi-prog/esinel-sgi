@@ -1,110 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGI ESINEL - Dashboards</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 600px;
-            width: 100%;
-            padding: 48px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 32px;
-            color: #0f172a;
-            margin-bottom: 12px;
-        }
-        .subtitle {
-            font-size: 16px;
-            color: #64748b;
-            margin-bottom: 40px;
-        }
-        .links {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-        a {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #0f172a;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        a:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            transform: translateX(4px);
-        }
-        .icon {
-            font-size: 24px;
-        }
-        .arrow {
-            color: #94a3b8;
-            transition: color 0.2s;
-        }
-        a:hover .arrow {
-            color: white;
-        }
-        footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGI ESINEL</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f9fa;--bg2:#fff;--tx:#1a1a2e;--tx2:#555;--bdr:#e0e0e0;
+  --mg:#e91e8c;--mg2:#c2185b;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111;--bg2:#1e1e1e;--tx:#f0f0f0;--tx2:#aaa;--bdr:#333;
+  --shadow:0 2px 12px rgba(0,0,0,.4);
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+
+/* header */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:20px 32px;display:flex;align-items:center;gap:16px}
+.hdr-logo{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--mg);background:rgba(233,30,140,.1);padding:4px 10px;border-radius:4px}
+.hdr-title{font-size:16px;font-weight:700;color:var(--tx)}
+.hdr-sub{font-size:12px;color:var(--tx2);margin-top:1px}
+
+/* main */
+.main{max-width:900px;margin:0 auto;padding:40px 24px}
+.sec-title{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx2);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px}
+
+/* cards */
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:24px;text-decoration:none;color:var(--tx);display:flex;flex-direction:column;gap:12px;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12);border-color:var(--mg)}
+.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-body{flex:1}
+.card-name{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.card-desc{font-size:12px;color:var(--tx2);line-height:1.5}
+.card-arrow{font-size:16px;color:var(--bdr);align-self:flex-end;margin-top:4px;transition:color .15s}
+.card:hover .card-arrow{color:var(--mg)}
+
+footer{text-align:center;font-size:11px;color:var(--tx2);padding:24px;border-top:1px solid var(--bdr)}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>📊 SGI ESINEL</h1>
-        <div class="subtitle">Sistema de Gestión Integrada - Dashboards</div>
-        
-        <div class="links">
-            <a href="indicadores.html" title="Ver dashboard de indicadores">
-                <span><span class="icon">📈</span> Indicadores</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="documentos.html" title="Ver listado de documentos del SGI">
-                <span><span class="icon">📋</span> Listado de Documentos</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="vehiculos.html" title="Ver gestión de vehículos">
-                <span><span class="icon">🚗</span> Gestión de Vehículos</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="agenda-auditoria.html" title="Ver agenda de auditoría">
-                <span><span class="icon">🔍</span> Agenda de Auditoría</span>
-                <span class="arrow">→</span>
-            </a>
-        </div>
-        
-        <footer>
-            ESINEL S.R.L. | Sistema de Gestión Integrada ISO 9001 / 14001 / 45001
-        </footer>
-    </div>
+<div class="hdr">
+  <div>
+    <div class="hdr-logo">ESINEL SGI</div>
+  </div>
+  <div>
+    <div class="hdr-title">Sistema de Gestión Integrada</div>
+    <div class="hdr-sub">Dashboards · ISO 9001 / 14001 / 45001</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sec-title">Gestión de calidad</div>
+  <div class="grid">
+    <a class="card" href="indicadores.html">
+      <div class="card-icon" style="background:rgba(233,30,140,.1)">📈</div>
+      <div class="card-body">
+        <div class="card-name">Indicadores SGI</div>
+        <div class="card-desc">Seguimiento de los 28 indicadores de desempeño por ejercicio y área</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+    <a class="card" href="documentos.html">
+      <div class="card-icon" style="background:rgba(59,130,246,.1)">📋</div>
+      <div class="card-body">
+        <div class="card-name">Listado de Documentos</div>
+        <div class="card-desc">Documentos del sistema de gestión: procedimientos, registros e instructivos</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+    <a class="card" href="agenda-auditoria.html">
+      <div class="card-icon" style="background:rgba(16,185,129,.1)">🔍</div>
+      <div class="card-body">
+        <div class="card-name">Agenda de Auditoría</div>
+        <div class="card-desc">Planificación y seguimiento de auditorías internas y externas</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="sec-title">Flota de vehículos</div>
+  <div class="grid">
+    <a class="card" href="vehiculos.html">
+      <div class="card-icon" style="background:rgba(245,158,11,.1)">🚗</div>
+      <div class="card-body">
+        <div class="card-name">Gestión de Vehículos</div>
+        <div class="card-desc">Estado general de la flota, vencimientos y mantenimientos</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+    <a class="card" href="vehiculos-1-2026.html">
+      <div class="card-icon" style="background:rgba(245,158,11,.1)">🚙</div>
+      <div class="card-body">
+        <div class="card-name">Vehículos · Semestre 1 · 2026</div>
+        <div class="card-desc">Detalle de vehículos y vencimientos del primer semestre 2026</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+    <a class="card" href="vehiculos-2-2025.html">
+      <div class="card-icon" style="background:rgba(245,158,11,.1)">🚙</div>
+      <div class="card-body">
+        <div class="card-name">Vehículos · Semestre 2 · 2025</div>
+        <div class="card-desc">Detalle de vehículos y vencimientos del segundo semestre 2025</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </div>
+</div>
+
+<footer>ESINEL S.R.L. · Sistema de Gestión Integrada</footer>
 </body>
 </html>
