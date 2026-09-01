@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esinel SGI — Inicio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px}
+
+/* ── TOKENS ── */
+body.dark{
+  --sb-bg:#0d0d0f;--sb-border:#1e1e20;
+  --sb-text:#6b6b6b;--sb-text-active:#e2e2e0;
+  --sb-active-bg:#1c1c24;--sb-hover-bg:#161618;
+  --sb-accent:#7b96ff;--sb-accent-bg:#1a1a2e;
+  --main-bg:#111113;
+  --card-bg:#161618;--card-border:#222224;--card-hover:#2a2a3a55;
+  --text-h:#e2e2e0;--text-sub:#555;--text-muted:#444;
+  --stat:#e2e2e0;
+  --tag-bg:#1e1e2e;--tag-col:#7b96ff;
+  --tag-new-bg:#1e2a1e;--tag-new-col:#4ade80;
+  --dot-ok:#22c55e;--dot-info:#3b6bfa;--dot-warn:#f59e0b;--dot-err:#ef4444;
+  --toggle-bg:#161618;--toggle-border:#1e1e20;
+}
+body.light{
+  --sb-bg:#f7f7f5;--sb-border:#e5e5e1;
+  --sb-text:#999;--sb-text-active:#111;
+  --sb-active-bg:#eeeeff;--sb-hover-bg:#f0f0ee;
+  --sb-accent:#4a5fe0;--sb-accent-bg:#eeeeff;
+  --main-bg:#fafafa;
+  --card-bg:#fff;--card-border:#e8e8e4;--card-hover:#f5f5ff55;
+  --text-h:#111;--text-sub:#aaa;--text-muted:#bbb;
+  --stat:#111;
+  --tag-bg:#eeeeff;--tag-col:#4a5fe0;
+  --tag-new-bg:#e6fdf2;--tag-new-col:#166534;
+  --dot-ok:#16a34a;--dot-info:#2563eb;--dot-warn:#d97706;--dot-err:#dc2626;
+  --toggle-bg:#ededeb;--toggle-border:#e5e5e1;
+}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{
+  width:200px;flex-shrink:0;
+  background:var(--sb-bg);
+  border-right:0.5px solid var(--sb-border);
+  display:flex;flex-direction:column;
+  padding:14px 8px;
+  transition:background .2s,border-color .2s;
+}
+.main{
+  flex:1;overflow-y:auto;
+  background:var(--main-bg);
+  transition:background .2s;
+}
+
+/* ── SIDEBAR ── */
+.sb-logo{display:flex;align-items:center;gap:9px;padding:4px 8px;margin-bottom:20px}
+.sb-logo-sq{
+  width:28px;height:28px;border-radius:7px;
+  background:#3b6bfa;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sb-logo-sq i{font-size:14px;color:#fff}
+.sb-logo-name{font-size:13px;font-weight:600;color:var(--sb-text-active);letter-spacing:-.01em}
+
+.sb-section{
+  font-size:9.5px;font-weight:600;
+  color:var(--sb-text);
+  letter-spacing:.07em;text-transform:uppercase;
+  padding:0 8px;margin:12px 0 3px;
+}
+
+.sb-item{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 8px;border-radius:7px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:background .1s;
+}
+.sb-item:hover{background:var(--sb-hover-bg)}
+.sb-item.active{background:var(--sb-active-bg)}
+.sb-item i{font-size:14px;color:var(--sb-text);flex-shrink:0;transition:color .1s}
+.sb-item.active i{color:var(--sb-accent)}
+.sb-item span{font-size:12px;color:var(--sb-text);transition:color .1s;flex:1}
+.sb-item.active span{color:var(--sb-text-active);font-weight:500}
+.sb-badge{
+  font-size:9px;font-weight:600;
+  padding:1px 6px;border-radius:99px;
+  background:var(--sb-accent-bg);color:var(--sb-accent);
+}
+
+.sb-bottom{
+  margin-top:auto;
+  padding-top:12px;
+  border-top:0.5px solid var(--sb-border);
+}
+.toggle-btn{
+  display:flex;align-items:center;gap:8px;
+  width:100%;padding:7px 8px;border-radius:7px;
+  border:none;cursor:pointer;
+  background:var(--toggle-bg);
+  transition:background .15s;
+}
+.toggle-btn:hover{background:var(--sb-hover-bg)}
+.toggle-btn i{font-size:14px;color:var(--sb-text)}
+.toggle-btn span{font-size:12px;color:var(--sb-text)}
+
+/* ── MAIN CONTENT ── */
+.main-inner{padding:26px 24px;max-width:860px}
+.main-header{margin-bottom:24px}
+.main-title{font-size:18px;font-weight:600;color:var(--text-h);letter-spacing:-.02em}
+.main-subtitle{font-size:12px;color:var(--text-sub);margin-top:3px}
+
+.section{margin-bottom:22px}
+.section-label{
+  font-size:9.5px;font-weight:600;
+  color:var(--text-sub);
+  letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+
+.card{
+  background:var(--card-bg);
+  border:0.5px solid var(--card-border);
+  border-radius:11px;
+  padding:14px;
+  text-decoration:none;
+  display:block;
+  transition:border-color .15s,background .15s;
+  cursor:pointer;
+}
+.card:hover{border-color:var(--sb-accent);background:var(--card-hover)}
+
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.card-icon{font-size:18px;line-height:1}
+.dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.dot-ok{background:var(--dot-ok)}
+.dot-info{background:var(--dot-info)}
+.dot-warn{background:var(--dot-warn)}
+.dot-err{background:var(--dot-err)}
+
+.card-name{font-size:12.5px;font-weight:500;color:var(--text-h);margin-bottom:2px;line-height:1.3}
+.card-code{font-size:10px;color:var(--text-muted);font-family:'SF Mono',Consolas,monospace}
+.card-stat{font-size:22px;font-weight:600;color:var(--stat);margin:8px 0 2px;letter-spacing:-.02em}
+.card-meta{font-size:10.5px;color:var(--text-sub);line-height:1.4}
+
+.card-tag{
+  display:inline-block;
+  font-size:9px;font-weight:600;
+  padding:2px 7px;border-radius:99px;
+  margin-top:8px;letter-spacing:.02em;
+  background:var(--tag-bg);color:var(--tag-col);
+}
+.card-tag.new{background:var(--tag-new-bg);color:var(--tag-new-col)}
+</style>
+</head>
+<body class="dark">
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" aria-label="Navegación principal">
+    <div class="sb-logo">
+      <div class="sb-logo-sq"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+      <span class="sb-logo-name">Esinel SGI</span>
+    </div>
+
+    <p class="sb-section">Principal</p>
+    <a href="inicio.html" class="sb-item active">
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i>
+      <span>Inicio</span>
+    </a>
+
+    <p class="sb-section">Calidad</p>
+    <a href="index.html" class="sb-item">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      <span>Hallazgos</span>
+    </a>
+    <a href="agenda-auditoria.html" class="sb-item">
+      <i class="ti ti-calendar-event" aria-hidden="true"></i>
+      <span>Agenda de auditoría</span>
+    </a>
+    <a href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html" class="sb-item">
+      <i class="ti ti-report-analytics" aria-hidden="true"></i>
+      <span>Informe de auditoría</span>
+    </a>
+
+    <p class="sb-section">Análisis</p>
+    <a href="contexto.html" class="sb-item">
+      <i class="ti ti-building" aria-hidden="true"></i>
+      <span>Contexto</span>
+    </a>
+    <a href="indicadores.html" class="sb-item">
+      <i class="ti ti-chart-line" aria-hidden="true"></i>
+      <span>Indicadores</span>
+    </a>
+
+    <p class="sb-section">Operaciones</p>
+    <a href="vehiculos.html" class="sb-item">
+      <i class="ti ti-car" aria-hidden="true"></i>
+      <span>Vehículos</span>
+    </a>
+    <a href="documentos.html" class="sb-item">
+      <i class="ti ti-files" aria-hidden="true"></i>
+      <span>Documentos</span>
+    </a>
+
+    <div class="sb-bottom">
+      <button class="toggle-btn" id="toggleBtn" onclick="toggleMode()" aria-label="Cambiar tema">
+        <i class="ti ti-sun" id="toggleIcon" aria-hidden="true"></i>
+        <span id="toggleText">Modo claro</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-inner">
+      <div class="main-header">
+        <h1 class="main-title">Sistema de Gestión Integrado</h1>
+        <p class="main-subtitle">Esinel · Ejercicio fiscal 35 · Acceso rápido a todos los dashboards</p>
+      </div>
+
+      <div class="section">
+        <p class="section-label">Calidad y auditoría</p>
+        <div class="cards">
+          <a href="index.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-alert-circle card-icon" style="color:#7b96ff" aria-hidden="true"></i>
+              <div class="dot dot-ok"></div>
+            </div>
+            <p class="card-name">Hallazgos</p>
+            <p class="card-code">RG-06-01 · Rev 04</p>
+            <p class="card-stat">0</p>
+            <p class="card-meta">Abiertos · Ejercicio 35</p>
+            <span class="card-tag">activo</span>
+          </a>
+          <a href="agenda-auditoria.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-calendar-event card-icon" style="color:#a78bfa" aria-hidden="true"></i>
+              <div class="dot dot-info"></div>
+            </div>
+            <p class="card-name">Agenda de auditoría</p>
+            <p class="card-code">RG-06-02</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Auditorías planificadas</p>
+            <span class="card-tag">activo</span>
+          </a>
+          <a href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-report-analytics card-icon" style="color:#fb923c" aria-hidden="true"></i>
+              <div class="dot dot-ok"></div>
+            </div>
+            <p class="card-name">Informe de auditoría</p>
+            <p class="card-code">Informe general</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Hallazgos y notas por auditor</p>
+            <span class="card-tag">activo</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <p class="section-label">Análisis del sistema</p>
+        <div class="cards">
+          <a href="contexto.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-building card-icon" style="color:#34d399" aria-hidden="true"></i>
+              <div class="dot dot-warn"></div>
+            </div>
+            <p class="card-name">Contexto y partes interesadas</p>
+            <p class="card-code">RG-02-01 / RG-02-02</p>
+            <p class="card-stat">Rev 1</p>
+            <p class="card-meta">FODA · PESTEL · Partes int.</p>
+            <span class="card-tag new">nuevo</span>
+          </a>
+          <a href="indicadores.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-chart-line card-icon" style="color:#4ade80" aria-hidden="true"></i>
+              <div class="dot dot-ok"></div>
+            </div>
+            <p class="card-name">Indicadores SGI</p>
+            <p class="card-code">KPIs del sistema</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Metas y evolución temporal</p>
+            <span class="card-tag">activo</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <p class="section-label">Operaciones</p>
+        <div class="cards">
+          <a href="vehiculos.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-car card-icon" style="color:#f87171" aria-hidden="true"></i>
+              <div class="dot dot-ok"></div>
+            </div>
+            <p class="card-name">Vehículos</p>
+            <p class="card-code">Flota · Período actual</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Mantenimientos y licencias</p>
+            <span class="card-tag">activo</span>
+          </a>
+          <a href="vehiculos-1-2026.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-car card-icon" style="color:#f87171" aria-hidden="true"></i>
+              <div class="dot dot-ok"></div>
+            </div>
+            <p class="card-name">Vehículos 1-2026</p>
+            <p class="card-code">Flota · Período 1 / 2026</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Historial período 1</p>
+            <span class="card-tag">activo</span>
+          </a>
+          <a href="vehiculos-2-2025.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-car card-icon" style="color:#94a3b8" aria-hidden="true"></i>
+              <div class="dot dot-warn"></div>
+            </div>
+            <p class="card-name">Vehículos 2-2025</p>
+            <p class="card-code">Flota · Período 2 / 2025</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Historial período 2</p>
+            <span class="card-tag">archivo</span>
+          </a>
+          <a href="documentos.html" class="card">
+            <div class="card-top">
+              <i class="ti ti-files card-icon" style="color:#fbbf24" aria-hidden="true"></i>
+              <div class="dot dot-ok"></div>
+            </div>
+            <p class="card-name">Documentos</p>
+            <p class="card-code">Control documental</p>
+            <p class="card-stat">—</p>
+            <p class="card-meta">Registros vigentes del SGI</p>
+            <span class="card-tag">activo</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var saved = localStorage.getItem('esinel-theme') || 'dark';
+  applyTheme(saved);
+
+  function applyTheme(t){
+    document.body.className = t;
+    var icon = document.getElementById('toggleIcon');
+    var text = document.getElementById('toggleText');
+    if(t === 'dark'){
+      icon.className = 'ti ti-sun';
+      text.textContent = 'Modo claro';
+    } else {
+      icon.className = 'ti ti-moon';
+      text.textContent = 'Modo oscuro';
+    }
+  }
+
+  window.toggleMode = function(){
+    var next = document.body.className === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('esinel-theme', next);
+    applyTheme(next);
+  };
+})();
+</script>
+</body>
+</html>
