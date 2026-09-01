@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +27,9 @@
     </script>
 
     <style>
+        html, body {
+            min-height: 100vh;
+        }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -67,7 +70,7 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-3">
-                    <button onclick="toggleTheme()" class="bg-slate-800 dark:bg-slate-900/90 hover:bg-slate-700 text-slate-200 p-2 rounded-xl border border-slate-700 dark:border-slate-800 transition shadow-sm" title="Cambiar Tema Modo Claro / Oscuro"><i id="themeIcon" class="fa-solid fa-moon text-amber-300"></i></button>
+                    <button onclick="toggleTheme()" class="bg-slate-800 dark:bg-slate-900/90 hover:bg-slate-700 text-slate-200 p-2 rounded-xl border border-slate-700 dark:border-slate-800 transition shadow-sm" title="Cambiar Tema Modo Claro / Oscuro"><i id="themeIcon" class="fa-solid fa-sun text-amber-400"></i></button>
                     <button onclick="openConfigModal()" id="syncBadge" class="flex items-center space-x-1.5 bg-slate-800 dark:bg-slate-900/90 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-700 dark:border-slate-800 text-xs transition shadow-sm">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400" id="syncStatusDot"></span>
                         <span id="syncStatusText" class="text-slate-300 font-medium hidden sm:inline">Conectando...</span>
@@ -317,10 +320,10 @@
             <form id="hallazgoForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar text-slate-800 dark:text-slate-200">
                 <input type="hidden" id="editIndex" value="-1">
                 <div class="bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-900/50 p-3 rounded-xl flex items-center justify-between text-xs text-sky-900 dark:text-sky-300">
-                    <span class="font-semibold"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-sky-600 dark:text-sky-400"></i>Correlativos Automáticos Numericos:</span>
+                    <span class="font-semibold"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-sky-600 dark:text-sky-400"></i>Correlativos Automáticos Numéricos Puros:</span>
                     <div class="flex space-x-3 font-semibold">
-                        <span class="bg-white dark:bg-[#0b0f19] px-2.5 py-1 rounded border dark:border-slate-800">N° Hallazgo: <strong id="previewHallazgoNum" class="text-sky-700 dark:text-sky-400">001</strong></span>
-                        <span class="bg-white dark:bg-[#0b0f19] px-2.5 py-1 rounded border dark:border-slate-800">N° Acción: <strong id="previewAccionNum" class="text-sky-700 dark:text-sky-400">001</strong></span>
+                        <span class="bg-white dark:bg-[#0b0f19] px-2.5 py-1 rounded border dark:border-slate-800">N° Hallazgo: <strong id="previewHallazgoNum" class="text-sky-700 dark:text-sky-400">1</strong></span>
+                        <span class="bg-white dark:bg-[#0b0f19] px-2.5 py-1 rounded border dark:border-slate-800">N° Acción: <strong id="previewAccionNum" class="text-sky-700 dark:text-sky-400">1</strong></span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -479,7 +482,13 @@
 
         function toggleTheme() {
             const body = document.getElementById('appBody');
+            const htmlEl = document.documentElement;
             const isDark = body.classList.toggle('dark');
+            if (isDark) {
+                htmlEl.classList.add('dark');
+            } else {
+                htmlEl.classList.remove('dark');
+            }
             document.getElementById('themeIcon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-amber-300";
             localStorage.setItem('rg0601_theme', isDark ? 'dark' : 'light');
             if (activeTabId === 'dashboard') renderCharts();
@@ -507,9 +516,15 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('rg0601_theme') === 'dark') {
+            const savedTheme = localStorage.getItem('rg0601_theme');
+            if (savedTheme === 'dark' || !savedTheme) { // Default dark mode
+                document.documentElement.classList.add('dark');
                 document.getElementById('appBody').classList.add('dark');
                 document.getElementById('themeIcon').className = "fa-solid fa-sun text-amber-400";
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('appBody').classList.remove('dark');
+                document.getElementById('themeIcon').className = "fa-solid fa-moon text-amber-300";
             }
             const localData = localStorage.getItem('rg0601_data');
             if (localData) {
@@ -983,9 +998,9 @@
 
         function closeFormModal() { document.getElementById('formModal').classList.add('hidden'); }
 
-        // Smart correlative auto-numbering logic generating ONLY digits (e.g. 001, 002, 026)
+        // Smart correlative auto-numbering logic generating PURE NUMBERS WITHOUT LEADING ZEROS (e.g. 1, 2, 26, 104)
         function generateAutoNumber(typeValue, typeField, itemField) {
-            if (!typeValue) return '001';
+            if (!typeValue) return '1';
             const cleanType = String(typeValue).trim().toUpperCase();
             let maxNum = 0;
 
@@ -1007,7 +1022,7 @@
             });
 
             const nextNum = maxNum + 1;
-            return String(nextNum).padStart(3, '0');
+            return String(nextNum); // Pure numeric value without leading zero
         }
 
         function updateAutoNumbers() {
