@@ -589,9 +589,10 @@
         }
 
         async function fetchViaUrl(icon) {
-            if (!scriptUrl) { updateSyncStatus(false, "Modo Local"); renderAllViews(); if (icon) icon.classList.remove('fa-spin'); return; }
+            const activeUrl = scriptUrl || serverWebAppUrl;
+            if (!activeUrl) { updateSyncStatus(false, "Modo Local"); renderAllViews(); if (icon) icon.classList.remove('fa-spin'); return; }
             try {
-                const res = await fetch(scriptUrl); const json = await res.json();
+                const res = await fetch(activeUrl); const json = await res.json();
                 if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
                     dataset = json.data; saveDataToLocal(); populateDatalists(); renderAllViews(); updateSyncStatus(true, "Sheets Conectado");
                 }
