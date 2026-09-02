@@ -472,9 +472,16 @@ render();
   };
 
   try {
+    console.log('[docs-hallazgos] iniciando fetch...');
     const res = await fetch(API + '?format=json');
-    const json = await res.json();
-    if (json.status !== 'success' || !json.data?.length) return;
+    console.log('[docs-hallazgos] status HTTP:', res.status, res.ok);
+    const text = await res.text();
+    console.log('[docs-hallazgos] primeros 200 chars:', text.slice(0,200));
+    const json = JSON.parse(text);
+    if (json.status !== 'success' || !json.data?.length) {
+      console.log('[docs-hallazgos] sin datos:', json.status);
+      return;
+    }
 
     const sample = json.data[0];
     // DEBUG: ver claves reales del primer hallazgo
@@ -531,7 +538,7 @@ render();
     }).join('');
 
     panel.style.display = 'block';
-  } catch(e) {}
+  } catch(e) { console.error('[docs-hallazgos] error:', e); }
 })();
 </script>
 </body>
