@@ -30,19 +30,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card-badge.green{background:#f0fdf4;color:#16a34a}
 .card-badge.gray{background:#f8fafc;color:#64748b}
 .card-arrow{color:#cbd5e1;font-size:16px}
-/* ── Flujo del SGI ── */
-.flujo-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:32px}
-.flujo-grid{display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:4px}
-.flujo-node{flex:0 0 auto;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;min-width:110px;text-align:center}
-.flujo-node.fn-source{border-color:#3b82f6;background:#eff6ff}
-.flujo-node.fn-pivot{border-color:#f59e0b;background:#fffbeb}
-.flujo-node.fn-end{border-color:#8b5cf6;background:#faf5ff}
-.flujo-icon{font-size:18px;margin-bottom:3px}
-.flujo-label{font-size:11px;font-weight:700;color:#0f172a;line-height:1.3}
-.flujo-sub{font-size:9.5px;color:#64748b;margin-top:2px}
-.flujo-arrow{flex:0 0 auto;color:#cbd5e1;font-size:18px;padding:0 6px;display:flex;flex-direction:column;gap:12px;align-self:center}
-.flujo-arrow span{display:block;font-size:9px;color:#94a3b8;white-space:nowrap;text-align:center;margin-top:1px}
-.flujo-multi{display:flex;flex-direction:column;gap:6px}
 /* ── Estado del sistema ── */
 .estado-section{margin-bottom:32px}
 .estado-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
@@ -136,61 +123,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="main">
   <div class="page-title">Sistema de Gestión Integrado</div>
   <p class="page-sub">Acceso rápido a todos los módulos · ESINEL S.R.L. · Ejercicio fiscal 35</p>
-
-  <!-- ── Flujo de mejora del SGI ── -->
-  <div class="flujo-wrap">
-    <p class="section-title" style="margin-bottom:14px">Flujo de mejora continua del SGI</p>
-    <div class="flujo-grid">
-
-      <!-- FUENTES -->
-      <div class="flujo-multi">
-        <a href="contexto.html" class="flujo-node fn-source" style="text-decoration:none">
-          <div class="flujo-icon">🌐</div>
-          <div class="flujo-label">Contexto</div>
-          <div class="flujo-sub">Riesgos · Oportunidades</div>
-        </a>
-        <a href="indicadores.html" class="flujo-node fn-source" style="text-decoration:none">
-          <div class="flujo-icon">📈</div>
-          <div class="flujo-label">Indicadores</div>
-          <div class="flujo-sub">Desvíos de meta</div>
-        </a>
-        <a href="agenda-auditoria.html" class="flujo-node fn-source" style="text-decoration:none">
-          <div class="flujo-icon">📋</div>
-          <div class="flujo-label">Auditoría</div>
-          <div class="flujo-sub">NC · Observaciones</div>
-        </a>
-      </div>
-
-      <div class="flujo-arrow">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <span>genera</span>
-          <span style="font-size:18px;color:#cbd5e1">→</span>
-        </div>
-      </div>
-
-      <!-- PIVOT: HALLAZGOS -->
-      <a href="hallazgos.html" class="flujo-node fn-pivot" style="text-decoration:none;min-width:130px">
-        <div class="flujo-icon">⚠️</div>
-        <div class="flujo-label">Hallazgo (OM / NC)</div>
-        <div class="flujo-sub">Registro · Seguimiento · Cierre</div>
-      </a>
-
-      <div class="flujo-arrow">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <span>puede requerir</span>
-          <span style="font-size:18px;color:#cbd5e1">→</span>
-        </div>
-      </div>
-
-      <!-- SALIDA: DOCUMENTOS -->
-      <a href="documentos.html" class="flujo-node fn-end" style="text-decoration:none;min-width:130px">
-        <div class="flujo-icon">📄</div>
-        <div class="flujo-label">Documento nuevo o revisado</div>
-        <div class="flujo-sub">PG · IN · RE</div>
-      </a>
-
-    </div>
-  </div>
 
   <!-- ── Estado del Sistema (live) ── -->
   <div class="estado-section">
