@@ -148,15 +148,6 @@ tbody tr:last-child td{border-bottom:none}
   </div>
   <div class="sub">Esinel S.R.L. &middot; RG-01-01 Rev03 &middot; Sistema de Gesti&oacute;n Integrado ISO 9001 / 14001 / 45001</div>
 
-  <!-- Panel: documentos solicitados por hallazgos (se muestra solo si hay datos reales) -->
-  <div id="docs-por-hallazgos" style="display:none;background:#fefce8;border:1.5px solid #fde68a;border-radius:12px;padding:16px 20px;margin-bottom:20px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#92400e">📄 Documentos solicitados por hallazgos abiertos</span>
-      <a href="hallazgos.html" style="font-size:11px;font-weight:600;color:#b45309;text-decoration:none">Ver todos los hallazgos →</a>
-    </div>
-    <div id="docs-hallazgos-list" style="display:flex;flex-direction:column;gap:6px"></div>
-  </div>
-
   <div class="cards">
     <div class="card c-all" onclick="setStatus('')" style="cursor:pointer">
       <div class="card-label">Total</div>
@@ -444,77 +435,6 @@ function render() {
 initStats();
 render();
 
-// ── Documentos solicitados por hallazgos abiertos (lee de localStorage) ───────
-// Campos del dataset (nombres exactos del Apps Script):
-//   numHallazgo, tipoHallazgo, sectorResponsable, descripcion
-//   accionCorrectiva, accionPreventiva, accionMejora
-//   resultadoEficacia (vacío=abierto, OK=cerrado, NO=cerrado)
-//   requiereActualizar (Col W): "Sí" = solicita actualización de documento
-(function() {
-  const TIPO_KW = { PG: /procedimiento/i, IN: /instructivo/i, RE: /registro|formato/i };
-  const TIPO_STYLE = {
-    PG: 'background:#dbeafe;color:#1d4ed8',
-    IN: 'background:#dcfce7;color:#15803d',
-    RE: 'background:#f3e8ff;color:#7e22ce',
-    DOC:'background:#f1f5f9;color:#475569',
-  };
-
-  function esAbierto(h) {
-    const r = String(h.resultadoEficacia || '').toUpperCase().trim();
-    return r !== 'OK' && r !== 'NO';
-  }
-
-  function inferTipo(text) {
-    for (const [t, re] of Object.entries(TIPO_KW)) if (re.test(text)) return t;
-    return 'DOC';
-  }
-
-  function accionTexto(h) {
-    return [h.accionCorrectiva, h.accionMejora, h.accionPreventiva]
-      .map(v => String(v || '').trim())
-      .find(v => v && v !== '-') || '';
-  }
-
-  try {
-    const raw = localStorage.getItem('esinel_hallazgos_data');
-    if (!raw) return; // sin datos aún — el usuario no visitó Hallazgos
-
-    const { data } = JSON.parse(raw);
-    if (!data?.length) return;
-
-    // Filtrar: abiertos Y requiereActualizar === "Sí"
-    const solicitudes = data.filter(h =>
-      esAbierto(h) && String(h.requiereActualizar || '').trim().toLowerCase() === 'sí'
-    );
-
-    if (!solicitudes.length) return;
-
-    const panel = document.getElementById('docs-por-hallazgos');
-    const list  = document.getElementById('docs-hallazgos-list');
-    if (!panel || !list) return;
-
-    list.innerHTML = solicitudes.slice(0, 15).map(h => {
-      const accion = accionTexto(h);
-      const docTipo = inferTipo(accion);
-      const ts = TIPO_STYLE[docTipo];
-      const origen = [h.numHallazgo, h.tipoHallazgo, h.sectorResponsable].filter(Boolean).join(' · ');
-      const desc = String(h.descripcion || '').slice(0, 70);
-      return `<div style="display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid #fde68a;border-radius:8px;padding:9px 13px;flex-wrap:wrap">
-        <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;${ts}">${docTipo}</span>
-        <div style="flex:1;min-width:200px">
-          <div style="font-size:12px;font-weight:600;color:#1c1917;line-height:1.4">${accion.length > 130 ? accion.slice(0,130)+'…' : (accion || 'Requiere actualizar documentación')}</div>
-          <div style="font-size:10px;color:#78350f;margin-top:3px">↳ <strong>${origen}</strong>${desc ? ' — ' + desc : ''}</div>
-        </div>
-      </div>`;
-    }).join('');
-
-    // Actualizar el título con el conteo
-    const titulo = panel.querySelector('span[style*="uppercase"]');
-    if (titulo) titulo.textContent = `📄 Documentos solicitados por hallazgos abiertos (${solicitudes.length})`;
-
-    panel.style.display = 'block';
-  } catch(e) {}
-})();
 </script>
 </body>
 </html>
