@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script>
-        tailwind.config = {
+    tailwind.config = {}
             darkMode: 'class',
             theme: {
                 extend: {
@@ -446,8 +446,9 @@
         let dataset = [];
         let currentActiveItem = null;
         let scriptUrl = localStorage.getItem('rg0601_script_url') || "";
-        let serverWebAppUrl = "https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbEv/exec";
+        let serverWebAppUrl = "https://script.google.com/macros/s/AKfycbzeP51I_uK6BpgTSDqFRrNa-sl527tn2BHqPOh4XH8VIPMvMvx4-3hrQeHaczKbFv/exec";
         let chartStatusInstance = null, chartTypeInstance = null, searchDebounceTimer = null;
+        let sheetsUrl = '';
         let activeTabId = 'dashboard', currentSortColumn = 'numHallazgo', isSortAscending = true;
 
         const MAPEO_CORREOS_RESPONSABLES = {
@@ -535,6 +536,7 @@
                     if (url) serverWebAppUrl = url;
                 }).getWebAppUrl();
             }
+                if (typeof google !== 'undefined' && google.script && google.script.run) google.script.run.withSuccessHandler(url => { if (url) sheetsUrl = url; }).getSpreadsheetUrl();
             fetchFromGoogleSheets();
         });
 
@@ -589,10 +591,9 @@
         }
 
         async function fetchViaUrl(icon) {
-            const activeUrl = scriptUrl || serverWebAppUrl;
-            if (!activeUrl) { updateSyncStatus(false, "Modo Local"); renderAllViews(); if (icon) icon.classList.remove('fa-spin'); return; }
+            if (!scriptUrl) { updateSyncStatus(false, "Modo Local"); renderAllViews(); if (icon) icon.classList.remove('fa-spin'); return; }
             try {
-                const res = await fetch(activeUrl); const json = await res.json();
+                const res = await fetch(scriptUrl); const json = await res.json();
                 if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
                     dataset = json.data; saveDataToLocal(); populateDatalists(); renderAllViews(); updateSyncStatus(true, "Sheets Conectado");
                 }
