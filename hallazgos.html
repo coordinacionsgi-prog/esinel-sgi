@@ -92,6 +92,15 @@ async function fetchAndSend() {
 
 function sendToFrame(data) {
   if (dataSent) return;
+  // Guardar stats para panel index.html
+  try {
+    const abiertos = data.filter(h =>
+      Object.values(h).some(v => typeof v === 'string' && v.toLowerCase().includes('abiert'))
+    ).length;
+    localStorage.setItem('esinel_hallazgos_stats', JSON.stringify({
+      total: data.length, abiertos, ts: Date.now()
+    }));
+  } catch(e) {}
   try {
     frame.contentWindow.postMessage({ type: 'hallazgosData', data: data }, '*');
     dataSent = true;

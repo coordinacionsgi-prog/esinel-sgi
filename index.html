@@ -215,45 +215,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-const HALLAZGOS_URL = 'https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbFv/exec';
-
-// ── Hallazgos (fetch en vivo) ──────────────────────────────────────────────
-(async () => {
-  try {
-    const res = await fetch(HALLAZGOS_URL + '?format=json');
-    const json = await res.json();
-    if (json.status !== 'success' || !json.data) return;
-    const data = json.data;
-    const total = data.length;
-    // Detectar campo de estado (primero que tenga "abierto" como valor)
-    let campoEstado = null;
-    for (const key of Object.keys(data[0] || {})) {
-      const vals = data.map(r => (r[key] || '').toString().toLowerCase());
-      if (vals.some(v => v.includes('abiert') || v.includes('cerrad'))) {
-        campoEstado = key; break;
-      }
-    }
-    const abiertos = campoEstado
-      ? data.filter(r => (r[campoEstado] || '').toString().toLowerCase().includes('abiert')).length
-      : null;
-    document.getElementById('en-abiertos').textContent = abiertos ?? total;
-    document.getElementById('es-total-h').textContent = `de ${total} hallazgos totales`;
-    const card = document.getElementById('ec-hallazgos');
-    card.classList.add((abiertos ?? 0) > 30 ? 'alerta' : 'ok');
-  } catch(e) {
-    document.getElementById('es-total-h').textContent = 'sin conexión';
-  }
-})();
-
-// ── Indicadores (localStorage, poblado al visitar indicadores.html) ─────────
+// ── Todos los stats vienen de localStorage (poblado al visitar cada módulo) ──
 try {
-  const raw = localStorage.getItem('esinel_ind_stats');
-  if (raw) {
-    const s = JSON.parse(raw);
-    document.getElementById('en-desvios').textContent = s.desvios;
-    document.getElementById('es-total-i').textContent = `de ${s.total} indicadores`;
-    const card = document.getElementById('ec-indicadores');
-    card.classList.add(s.desvios > 3 ? 'alerta' : 'ok');
+  const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null');
+  if (h) {
+    document.getElementById('en-abiertos').textContent = h.abiertos ?? h.total;
+    document.getElementById('es-total-h').textContent = `de ${h.total} hallazgos totales`;
+    document.getElementById('ec-hallazgos').classList.add(h.abiertos > 30 ? 'alerta' : 'ok');
+  } else {
+    document.getElementById('es-total-h').textContent = 'visitá Hallazgos para ver datos';
+  }
+} catch(e) {}
+
+try {
+  const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null');
+  if (i) {
+    document.getElementById('en-desvios').textContent = i.desvios;
+    document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
+    document.getElementById('ec-indicadores').classList.add(i.desvios > 3 ? 'alerta' : 'ok');
   } else {
     document.getElementById('es-total-i').textContent = 'visitá Indicadores para ver datos';
   }
