@@ -9,12 +9,6 @@
 :root{--bg:#f8f9fa;--bg2:#fff;--tx:#1a1a2e;--tx2:#666;--bdr:#e0e0e0;--mg:#e91e8c}
 @media(prefers-color-scheme:dark){:root{--bg:#111;--bg2:#1a1a1a;--tx:#f0f0f0;--tx2:#999;--bdr:#2a2a2a}}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh}
-.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.back{font-size:12px;color:var(--tx2);text-decoration:none;display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;transition:background .12s}
-.back:hover{background:var(--bdr)}
-.sep{color:var(--bdr);font-size:14px}
-.hdr-badge{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--mg);background:rgba(233,30,140,.1);padding:3px 8px;border-radius:4px}
-.hdr-title{font-size:14px;font-weight:600;color:var(--tx)}
 iframe{flex:1;border:none;width:100%}
 </style>
 </head>
@@ -38,26 +32,20 @@ iframe{flex:1;border:none;width:100%}
 <div class="esinel-hdr">
   <div class="esinel-hdr-top">
     <a class="esinel-logo" href="index.html">
-      <svg width="46" height="60" viewBox="0 0 47 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Row 1 (top): 2 dots -->
-  <circle cx="17" cy="5"  r="4.5" fill="#9BA4B0"/>
-  <circle cx="30" cy="5"  r="4.5" fill="#1B3A8C"/>
-  <!-- Row 2: 3 dots -->
-  <circle cx="10" cy="18" r="4.5" fill="#1B3A8C"/>
-  <circle cx="23" cy="18" r="4.5" fill="#1B3A8C"/>
-  <circle cx="36" cy="18" r="4.5" fill="#9BA4B0"/>
-  <!-- Row 3 (widest): 4 dots -->
-  <circle cx="4"  cy="31" r="4"   fill="#9BA4B0"/>
-  <circle cx="17" cy="31" r="4.5" fill="#1B3A8C"/>
-  <circle cx="30" cy="31" r="4.5" fill="#1B3A8C"/>
-  <circle cx="43" cy="31" r="4"   fill="#1B3A8C"/>
-  <!-- Row 4: 3 dots -->
-  <circle cx="10" cy="44" r="4.5" fill="#1B3A8C"/>
-  <circle cx="23" cy="44" r="4.5" fill="#9BA4B0"/>
-  <circle cx="36" cy="44" r="4.5" fill="#1B3A8C"/>
-  <!-- Row 5 (bottom): 2 dots -->
-  <circle cx="17" cy="57" r="4"   fill="#1B3A8C"/>
-  <circle cx="30" cy="57" r="4"   fill="#9BA4B0"/>
+      <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
+  <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
+  <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
+  <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+  <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
+  <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+  <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+  <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
+  <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
 </svg>
       <div>
         <div class="esinel-logo-name">ESINEL</div>
@@ -82,8 +70,6 @@ iframe{flex:1;border:none;width:100%}
 </div>
 <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-<div class="hdr-title">Hallazgos</div>
-</div>
 <iframe id="appFrame"
   src="https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbEv/exec"
   allowfullscreen loading="lazy"
