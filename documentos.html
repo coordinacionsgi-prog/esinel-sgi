@@ -445,24 +445,13 @@ initStats();
 render();
 
 // ── Documentos solicitados por hallazgos abiertos (lee de localStorage) ───────
+// Campos del dataset (nombres exactos del Apps Script):
+//   numHallazgo, tipoHallazgo, sectorResponsable, descripcion
+//   accionCorrectiva, accionPreventiva, accionMejora
+//   resultadoEficacia (vacío=abierto, OK=cerrado, NO=cerrado)
+//   requiereActualizar (Col W): "Sí" = solicita actualización de documento
 (function() {
-  const DOC_KW = /procedimiento|instructivo|registro|formato|elaborar|crear|emitir|actualizar|redactar|documento|pg-|in-|re-/i;
   const TIPO_KW = { PG: /procedimiento/i, IN: /instructivo/i, RE: /registro|formato/i };
-
-  function findKey(obj, patterns) {
-    const keys = Object.keys(obj);
-    for (const pat of patterns) {
-      const found = keys.find(k => pat.test(k));
-      if (found) return found;
-    }
-    return null;
-  }
-
-  function inferTipo(text) {
-    for (const [t, re] of Object.entries(TIPO_KW)) if (re.test(text)) return t;
-    return 'DOC';
-  }
-
   const TIPO_STYLE = {
     PG: 'background:#dbeafe;color:#1d4ed8',
     IN: 'background:#dcfce7;color:#15803d',
@@ -470,72 +459,61 @@ render();
     DOC:'background:#f1f5f9;color:#475569',
   };
 
+  function esAbierto(h) {
+    const r = String(h.resultadoEficacia || '').toUpperCase().trim();
+    return r !== 'OK' && r !== 'NO';
+  }
+
+  function inferTipo(text) {
+    for (const [t, re] of Object.entries(TIPO_KW)) if (re.test(text)) return t;
+    return 'DOC';
+  }
+
+  function accionTexto(h) {
+    return [h.accionCorrectiva, h.accionMejora, h.accionPreventiva]
+      .map(v => String(v || '').trim())
+      .find(v => v && v !== '-') || '';
+  }
+
   try {
     const raw = localStorage.getItem('esinel_hallazgos_data');
-    if (!raw) {
-      console.log('[docs-hallazgos] sin datos en localStorage — visitá Hallazgos primero');
-      return;
-    }
+    if (!raw) return; // sin datos aún — el usuario no visitó Hallazgos
+
     const { data } = JSON.parse(raw);
     if (!data?.length) return;
 
-    const sample = data[0];
-    console.log('[docs-hallazgos] claves:', Object.keys(sample));
+    // Filtrar: abiertos Y requiereActualizar === "Sí"
+    const solicitudes = data.filter(h =>
+      esAbierto(h) && String(h.requiereActualizar || '').trim().toLowerCase() === 'sí'
+    );
 
-    const kEstado = findKey(sample, [/estado/i, /status/i]);
-    const kNum    = findKey(sample, [/n[uú]mero|n[oº°]|nro|^id$/i]);
-    const kTipo   = findKey(sample, [/^tipo$/i, /tipo\s*hall/i]);
-    const kDesc   = findKey(sample, [/descrip|hallazgo|detalle/i]);
-    const kArea   = findKey(sample, [/[aá]rea|proceso|sector/i]);
-    const kCorrec = findKey(sample, [/correcti/i]);
-    const kMejora = findKey(sample, [/mejora/i]);
-    const kPrev   = findKey(sample, [/prevent/i]);
-
-    console.log('[docs-hallazgos] columnas detectadas:', { kEstado, kNum, kTipo, kDesc, kArea, kCorrec, kMejora, kPrev });
-
-    const actionKeys = [kCorrec, kMejora, kPrev].filter(Boolean);
-    if (!actionKeys.length) {
-      console.log('[docs-hallazgos] no se detectaron columnas de acción');
-      return;
-    }
-
-    const solicitudes = data.filter(h => {
-      const estado = kEstado ? String(h[kEstado] || '').toLowerCase() : '';
-      const esAbierto = !estado || estado.includes('abiert') || estado.includes('open') || estado.includes('pend');
-      if (!esAbierto) return false;
-      return actionKeys.some(k => DOC_KW.test(String(h[k] || '')));
-    });
-
-    console.log('[docs-hallazgos] solicitudes encontradas:', solicitudes.length);
     if (!solicitudes.length) return;
 
     const panel = document.getElementById('docs-por-hallazgos');
     const list  = document.getElementById('docs-hallazgos-list');
     if (!panel || !list) return;
 
-    list.innerHTML = solicitudes.slice(0, 10).map(h => {
-      const num  = kNum  ? h[kNum]  : '';
-      const tipo = kTipo ? h[kTipo] : '';
-      const desc = kDesc ? h[kDesc] : '';
-      const area = kArea ? h[kArea] : '';
-      let accionTexto = '', docTipo = 'DOC';
-      for (const k of actionKeys) {
-        const v = String(h[k] || '');
-        if (DOC_KW.test(v)) { accionTexto = v; docTipo = inferTipo(v); break; }
-      }
-      const ts = TIPO_STYLE[docTipo] || TIPO_STYLE.DOC;
-      const origin = [num, tipo, area].filter(Boolean).join(' · ') || 'Hallazgo';
-      return `<div style="display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;flex-wrap:wrap">
-        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;${ts}">${docTipo}</span>
+    list.innerHTML = solicitudes.slice(0, 15).map(h => {
+      const accion = accionTexto(h);
+      const docTipo = inferTipo(accion);
+      const ts = TIPO_STYLE[docTipo];
+      const origen = [h.numHallazgo, h.tipoHallazgo, h.sectorResponsable].filter(Boolean).join(' · ');
+      const desc = String(h.descripcion || '').slice(0, 70);
+      return `<div style="display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid #fde68a;border-radius:8px;padding:9px 13px;flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;${ts}">${docTipo}</span>
         <div style="flex:1;min-width:200px">
-          <div style="font-size:12px;font-weight:600;color:#1c1917">${accionTexto.length > 120 ? accionTexto.slice(0,120)+'…' : accionTexto}</div>
-          <div style="font-size:10px;color:#78350f;margin-top:2px">↳ ${origin}${desc ? ' — ' + String(desc).slice(0,60) : ''}</div>
+          <div style="font-size:12px;font-weight:600;color:#1c1917;line-height:1.4">${accion.length > 130 ? accion.slice(0,130)+'…' : (accion || 'Requiere actualizar documentación')}</div>
+          <div style="font-size:10px;color:#78350f;margin-top:3px">↳ <strong>${origen}</strong>${desc ? ' — ' + desc : ''}</div>
         </div>
       </div>`;
     }).join('');
 
+    // Actualizar el título con el conteo
+    const titulo = panel.querySelector('span[style*="uppercase"]');
+    if (titulo) titulo.textContent = `📄 Documentos solicitados por hallazgos abiertos (${solicitudes.length})`;
+
     panel.style.display = 'block';
-  } catch(e) { console.error('[docs-hallazgos] error:', e); }
+  } catch(e) {}
 })();
 </script>
 </body>
