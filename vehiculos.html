@@ -199,6 +199,9 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .esinel-nav-item{display:flex;align-items:center;gap:5px;padding:8px 12px;font-size:12px;font-weight:500;color:#64748b;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s}
 .esinel-nav-item:hover{color:#e2e8f0;border-bottom-color:#334155}
 .esinel-nav-item.esinel-active{color:#60a5fa;border-bottom-color:#3b82f6;font-weight:600}
+.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle}
+.esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
+.esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
 </style>
 <div class="esinel-hdr">
   <div class="esinel-hdr-top">
@@ -239,6 +242,17 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
     <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
   </nav>
 </div>
+<script>(function(){try{
+  var h=JSON.parse(localStorage.getItem('esinel_hallazgos_stats')||'null');
+  var i=JSON.parse(localStorage.getItem('esinel_ind_stats')||'null');
+  document.querySelectorAll('.esinel-nav-item').forEach(function(a){
+    var href=a.getAttribute('href')||'';
+    if(h&&h.abiertos>0&&href.includes('hallazgos'))
+      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-warn">'+h.abiertos+'</span>');
+    if(i&&i.desvios>0&&href.includes('indicadores'))
+      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
+  });
+}catch(e){}})()</script>
 <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 <div class="wrap">
   <div class="title-row">
