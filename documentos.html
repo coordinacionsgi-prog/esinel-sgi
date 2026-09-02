@@ -148,6 +148,20 @@ tbody tr:last-child td{border-bottom:none}
   </div>
   <div class="sub">Esinel S.R.L. &middot; RG-01-01 Rev03 &middot; Sistema de Gesti&oacute;n Integrado ISO 9001 / 14001 / 45001</div>
 
+  <!-- ── Solicitudes de documentos originadas en hallazgos ── -->
+  <div id="sol-docs-panel" style="background:#fefce8;border:1.5px solid #fde68a;border-radius:12px;padding:16px 20px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#92400e">📄 Documentos solicitados por hallazgos</span>
+        <span style="font-size:11px;color:#78350f;margin-left:8px">— acciones en curso que requieren crear o revisar un documento del SGI</span>
+      </div>
+      <a href="hallazgos.html" style="font-size:11px;font-weight:600;color:#b45309;text-decoration:none;white-space:nowrap">Ver hallazgos →</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px" id="sol-docs-list">
+      <!-- Las filas se generan por JS abajo -->
+    </div>
+  </div>
+
   <div class="cards">
     <div class="card c-all" onclick="setStatus('')" style="cursor:pointer">
       <div class="card-label">Total</div>
@@ -434,6 +448,47 @@ function render() {
 
 initStats();
 render();
+
+// ── Solicitudes de documentos por hallazgos ──────────────────────────────────
+(function() {
+  // Cada solicitud: hallazgo de origen, tipo de doc requerido, descripción, estado
+  const SOLICITUDES = [
+    // DNV P2 - Agosto 2026
+    { origen:'H-DNV-01', tipo:'PG', area:'SGI', desc:'Procedimiento para control de contratistas en obra (ISO 45001 §8.1.4)', estado:'pendiente', fuente:'Auditoría P2 DNV' },
+    { origen:'H-DNV-02', tipo:'RE', area:'S&H', desc:'Registro de capacitación en uso de EPP por sector', estado:'en-curso', fuente:'Auditoría P2 DNV' },
+    { origen:'H-DNV-03', tipo:'IN', area:'Obra', desc:'Instructivo de señalización de zonas de riesgo eléctrico', estado:'pendiente', fuente:'Auditoría P2 DNV' },
+    // Desvíos de indicadores
+    { origen:'IND-12', tipo:'RE', area:'Comercial', desc:'Registro de seguimiento de satisfacción de cliente post-entrega', estado:'en-curso', fuente:'Desvío Indicador 12' },
+    { origen:'IND-08', tipo:'PG', area:'RRHH', desc:'Procedimiento de evaluación de competencias operativas', estado:'pendiente', fuente:'Desvío Indicador 8' },
+    // Oportunidades de contexto
+    { origen:'OM-CTX-03', tipo:'IN', area:'Ingeniería', desc:'Instructivo de gestión de cambios en planos aprobados', estado:'pendiente', fuente:'Oportunidad de Mejora · Contexto' },
+  ];
+
+  const TIPO_COLORS = {
+    PG: { bg:'#dbeafe', fg:'#1d4ed8', label:'PG · Procedimiento' },
+    IN: { bg:'#dcfce7', fg:'#15803d', label:'IN · Instructivo' },
+    RE: { bg:'#f3e8ff', fg:'#7e22ce', label:'RE · Registro' },
+  };
+  const ESTADO_COLORS = {
+    'pendiente': { bg:'#fff7ed', fg:'#c2410c', label:'Pendiente' },
+    'en-curso':  { bg:'#fefce8', fg:'#a16207', label:'En curso' },
+    'completo':  { bg:'#f0fdf4', fg:'#15803d', label:'Completo' },
+  };
+
+  const list = document.getElementById('sol-docs-list');
+  if (!list) return;
+
+  list.innerHTML = SOLICITUDES.map(s => {
+    const tc = TIPO_COLORS[s.tipo] || { bg:'#f1f5f9', fg:'#475569', label:s.tipo };
+    const ec = ESTADO_COLORS[s.estado] || { bg:'#f1f5f9', fg:'#475569', label:s.estado };
+    return `<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;flex-wrap:wrap">
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:${tc.bg};color:${tc.fg};white-space:nowrap">${tc.label}</span>
+      <span style="flex:1;font-size:12px;color:#1c1917;min-width:180px">${s.desc}</span>
+      <span style="font-size:10px;color:#78350f;white-space:nowrap">↳ ${s.fuente}</span>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:${ec.bg};color:${ec.fg};white-space:nowrap">${ec.label}</span>
+    </div>`;
+  }).join('');
+})();
 </script>
 </body>
 </html>
