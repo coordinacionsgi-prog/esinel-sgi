@@ -30,6 +30,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card-badge.green{background:#f0fdf4;color:#16a34a}
 .card-badge.gray{background:#f8fafc;color:#64748b}
 .card-arrow{color:#cbd5e1;font-size:16px}
+/* ── Estado del sistema ── */
+.estado-section{margin-bottom:32px}
+.estado-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.estado-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;text-decoration:none;display:flex;flex-direction:column;gap:3px;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s}
+.estado-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#e2e8f0;transition:background .2s}
+.estado-card:hover{box-shadow:0 4px 16px rgba(15,23,42,.1);border-color:#cbd5e1}
+.estado-card.alerta::before{background:#f59e0b}
+.estado-card.alerta .estado-num{color:#d97706}
+.estado-card.ok::before{background:#22c55e}
+.estado-card.ok .estado-num{color:#16a34a}
+.estado-card.info::before{background:#3b82f6}
+.estado-card.info .estado-num{color:#2563eb}
+.estado-num{font-size:34px;font-weight:800;color:#0f172a;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+.estado-label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+.estado-sub{font-size:11px;color:#94a3b8;margin-top:2px}
+.estado-mod{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#cbd5e1;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -93,6 +109,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="main">
   <div class="page-title">Sistema de Gestión Integrado</div>
   <p class="page-sub">Acceso rápido a todos los módulos · ESINEL S.R.L. · Ejercicio fiscal 35</p>
+
+  <!-- ── Estado del Sistema (live) ── -->
+  <div class="estado-section">
+    <p class="section-title">Estado del sistema · Ejercicio 35</p>
+    <div class="estado-grid">
+      <a href="hallazgos.html" class="estado-card" id="ec-hallazgos">
+        <div class="estado-mod">⚠️ Hallazgos</div>
+        <div class="estado-num" id="en-abiertos">—</div>
+        <div class="estado-label">abiertos este ejercicio</div>
+        <div class="estado-sub" id="es-total-h">conectando…</div>
+      </a>
+      <a href="indicadores.html" class="estado-card" id="ec-indicadores">
+        <div class="estado-mod">📈 Indicadores</div>
+        <div class="estado-num" id="en-desvios">—</div>
+        <div class="estado-label">indicadores en desvío</div>
+        <div class="estado-sub" id="es-total-i">de — totales</div>
+      </a>
+      <a href="agenda-auditoria.html" class="estado-card info">
+        <div class="estado-mod">📋 Auditoría</div>
+        <div class="estado-num" style="font-size:20px;margin-top:8px">P2 DNV ✓</div>
+        <div class="estado-label">última auditoría</div>
+        <div class="estado-sub">27–28 Ago 2026 · Finalizada</div>
+      </a>
+      <a href="contexto.html" class="estado-card info">
+        <div class="estado-mod">🌐 Contexto</div>
+        <div class="estado-num" style="font-size:20px;margin-top:8px">Abr 2026</div>
+        <div class="estado-label">última revisión de contexto</div>
+        <div class="estado-sub">Próxima revisión: Oct 2026</div>
+      </a>
+    </div>
+  </div>
 
   <div class="section">
     <p class="section-title">Calidad y Auditoría</p>
@@ -167,5 +214,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<script>
+const HALLAZGOS_URL = 'https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbFv/exec';
+
+// ── Hallazgos (fetch en vivo) ──────────────────────────────────────────────
+(async () => {
+  try {
+    const res = await fetch(HALLAZGOS_URL + '?format=json');
+    const json = await res.json();
+    if (json.status !== 'success' || !json.data) return;
+    const data = json.data;
+    const total = data.length;
+    // Detectar campo de estado (primero que tenga "abierto" como valor)
+    let campoEstado = null;
+    for (const key of Object.keys(data[0] || {})) {
+      const vals = data.map(r => (r[key] || '').toString().toLowerCase());
+      if (vals.some(v => v.includes('abiert') || v.includes('cerrad'))) {
+        campoEstado = key; break;
+      }
+    }
+    const abiertos = campoEstado
+      ? data.filter(r => (r[campoEstado] || '').toString().toLowerCase().includes('abiert')).length
+      : null;
+    document.getElementById('en-abiertos').textContent = abiertos ?? total;
+    document.getElementById('es-total-h').textContent = `de ${total} hallazgos totales`;
+    const card = document.getElementById('ec-hallazgos');
+    card.classList.add((abiertos ?? 0) > 30 ? 'alerta' : 'ok');
+  } catch(e) {
+    document.getElementById('es-total-h').textContent = 'sin conexión';
+  }
+})();
+
+// ── Indicadores (localStorage, poblado al visitar indicadores.html) ─────────
+try {
+  const raw = localStorage.getItem('esinel_ind_stats');
+  if (raw) {
+    const s = JSON.parse(raw);
+    document.getElementById('en-desvios').textContent = s.desvios;
+    document.getElementById('es-total-i').textContent = `de ${s.total} indicadores`;
+    const card = document.getElementById('ec-indicadores');
+    card.classList.add(s.desvios > 3 ? 'alerta' : 'ok');
+  } else {
+    document.getElementById('es-total-i').textContent = 'visitá Indicadores para ver datos';
+  }
+} catch(e) {}
+</script>
 </body>
 </html>

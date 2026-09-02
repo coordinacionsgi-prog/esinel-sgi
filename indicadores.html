@@ -521,6 +521,16 @@ if (INYECTADO) {
     D = FALLBACK_DATA;
 }
 
+// Guardar stats para panel "Estado del Sistema" en index.html
+try {
+  localStorage.setItem('esinel_ind_stats', JSON.stringify({
+    total: D.length,
+    desvios: D.filter(x => x[6] === 0).length,
+    cumplidos: D.filter(x => x[6] === 1).length,
+    ts: Date.now()
+  }));
+} catch(e) {}
+
 // Variables de Estado
 let dark = true;
 let curArea = null;
