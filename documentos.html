@@ -477,6 +477,9 @@ render();
     if (json.status !== 'success' || !json.data?.length) return;
 
     const sample = json.data[0];
+    // DEBUG: ver claves reales del primer hallazgo
+    console.log('[docs-hallazgos] claves detectadas:', Object.keys(sample));
+    console.log('[docs-hallazgos] primer registro:', sample);
     // Auto-detectar columnas por nombre
     const kEstado = findKey(sample, [/estado/i, /status/i]);
     const kNum    = findKey(sample, [/n[uú]mero|n[oº°]|nro|id/i]);
