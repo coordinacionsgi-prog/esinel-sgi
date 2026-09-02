@@ -444,9 +444,8 @@ function render() {
 initStats();
 render();
 
-// ── Documentos solicitados por hallazgos abiertos ─────────────────────────────
-(async function() {
-  const API = 'https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbFv/exec';
+// ── Documentos solicitados por hallazgos abiertos (lee de localStorage) ───────
+(function() {
   const DOC_KW = /procedimiento|instructivo|registro|formato|elaborar|crear|emitir|actualizar|redactar|documento|pg-|in-|re-/i;
   const TIPO_KW = { PG: /procedimiento/i, IN: /instructivo/i, RE: /registro|formato/i };
 
@@ -472,24 +471,19 @@ render();
   };
 
   try {
-    console.log('[docs-hallazgos] iniciando fetch...');
-    const res = await fetch(API + '?format=json');
-    console.log('[docs-hallazgos] status HTTP:', res.status, res.ok);
-    const text = await res.text();
-    console.log('[docs-hallazgos] primeros 200 chars:', text.slice(0,200));
-    const json = JSON.parse(text);
-    if (json.status !== 'success' || !json.data?.length) {
-      console.log('[docs-hallazgos] sin datos:', json.status);
+    const raw = localStorage.getItem('esinel_hallazgos_data');
+    if (!raw) {
+      console.log('[docs-hallazgos] sin datos en localStorage — visitá Hallazgos primero');
       return;
     }
+    const { data } = JSON.parse(raw);
+    if (!data?.length) return;
 
-    const sample = json.data[0];
-    // DEBUG: ver claves reales del primer hallazgo
-    console.log('[docs-hallazgos] claves detectadas:', Object.keys(sample));
-    console.log('[docs-hallazgos] primer registro:', sample);
-    // Auto-detectar columnas por nombre
+    const sample = data[0];
+    console.log('[docs-hallazgos] claves:', Object.keys(sample));
+
     const kEstado = findKey(sample, [/estado/i, /status/i]);
-    const kNum    = findKey(sample, [/n[uú]mero|n[oº°]|nro|id/i]);
+    const kNum    = findKey(sample, [/n[uú]mero|n[oº°]|nro|^id$/i]);
     const kTipo   = findKey(sample, [/^tipo$/i, /tipo\s*hall/i]);
     const kDesc   = findKey(sample, [/descrip|hallazgo|detalle/i]);
     const kArea   = findKey(sample, [/[aá]rea|proceso|sector/i]);
@@ -497,17 +491,22 @@ render();
     const kMejora = findKey(sample, [/mejora/i]);
     const kPrev   = findKey(sample, [/prevent/i]);
 
-    const actionKeys = [kCorrec, kMejora, kPrev].filter(Boolean);
-    if (!actionKeys.length) return; // sin columnas de acción detectadas
+    console.log('[docs-hallazgos] columnas detectadas:', { kEstado, kNum, kTipo, kDesc, kArea, kCorrec, kMejora, kPrev });
 
-    // Filtrar: abiertos Y alguna acción menciona un documento
-    const solicitudes = json.data.filter(h => {
+    const actionKeys = [kCorrec, kMejora, kPrev].filter(Boolean);
+    if (!actionKeys.length) {
+      console.log('[docs-hallazgos] no se detectaron columnas de acción');
+      return;
+    }
+
+    const solicitudes = data.filter(h => {
       const estado = kEstado ? String(h[kEstado] || '').toLowerCase() : '';
-      const esAbierto = estado.includes('abiert') || estado.includes('open') || !estado || estado === '';
+      const esAbierto = !estado || estado.includes('abiert') || estado.includes('open') || estado.includes('pend');
       if (!esAbierto) return false;
       return actionKeys.some(k => DOC_KW.test(String(h[k] || '')));
     });
 
+    console.log('[docs-hallazgos] solicitudes encontradas:', solicitudes.length);
     if (!solicitudes.length) return;
 
     const panel = document.getElementById('docs-por-hallazgos');
@@ -515,13 +514,11 @@ render();
     if (!panel || !list) return;
 
     list.innerHTML = solicitudes.slice(0, 10).map(h => {
-      const num   = kNum  ? h[kNum]  : '';
-      const tipo  = kTipo ? h[kTipo] : '';
-      const desc  = kDesc ? h[kDesc] : '';
-      const area  = kArea ? h[kArea] : '';
-      // Encontrar qué acción pide el documento y de qué tipo
-      let accionTexto = '';
-      let docTipo = 'DOC';
+      const num  = kNum  ? h[kNum]  : '';
+      const tipo = kTipo ? h[kTipo] : '';
+      const desc = kDesc ? h[kDesc] : '';
+      const area = kArea ? h[kArea] : '';
+      let accionTexto = '', docTipo = 'DOC';
       for (const k of actionKeys) {
         const v = String(h[k] || '');
         if (DOC_KW.test(v)) { accionTexto = v; docTipo = inferTipo(v); break; }
