@@ -229,27 +229,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-// ── Todos los stats vienen de localStorage (poblado al visitar cada módulo) ──
+// Valores de referencia (última medición conocida) — se actualizan al visitar cada módulo
+const DEFAULTS = {
+  hallazgos: { total: 638, abiertos: 43 },
+  indicadores: { total: 28, desvios: 5 }
+};
+
 try {
-  const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null');
-  if (h) {
-    document.getElementById('en-abiertos').textContent = h.abiertos ?? h.total;
-    document.getElementById('es-total-h').textContent = `de ${h.total} hallazgos totales`;
-    document.getElementById('ec-hallazgos').classList.add(h.abiertos > 30 ? 'alerta' : 'ok');
-  } else {
-    document.getElementById('es-total-h').textContent = 'visitá Hallazgos para ver datos';
-  }
+  const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
+  document.getElementById('en-abiertos').textContent = h.abiertos ?? '—';
+  document.getElementById('es-total-h').textContent = `de ${h.total} hallazgos totales`;
+  document.getElementById('ec-hallazgos').classList.add(h.abiertos > 30 ? 'alerta' : 'ok');
 } catch(e) {}
 
 try {
-  const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null');
-  if (i) {
-    document.getElementById('en-desvios').textContent = i.desvios;
-    document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
-    document.getElementById('ec-indicadores').classList.add(i.desvios > 3 ? 'alerta' : 'ok');
-  } else {
-    document.getElementById('es-total-i').textContent = 'visitá Indicadores para ver datos';
-  }
+  const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
+  document.getElementById('en-desvios').textContent = i.desvios;
+  document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
+  document.getElementById('ec-indicadores').classList.add(i.desvios > 3 ? 'alerta' : 'ok');
 } catch(e) {}
 </script>
 </body>
