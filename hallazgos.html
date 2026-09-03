@@ -105,16 +105,35 @@ async function fetchMeta() {
   return metaCache;
 }
 
+function ejercicioDeHallazgo(h) {
+  // Ejercicio = año fiscal abril-marzo. Ej35 = abr2025-mar2026, Ej36 = abr2026-mar2027...
+  const BASE_EJ = 35, BASE_AÑO = 2025;
+  const fecha = h.fechaVerificacion || h.fechaLimite || h.fechaRealCierre || '';
+  if (!fecha) return null;
+  const d = new Date(fecha);
+  if (isNaN(d)) return null;
+  const año = d.getFullYear();
+  const mes = d.getMonth(); // 0=ene, 3=abr
+  const añoFiscal = mes >= 3 ? año : año - 1; // abril o posterior = ese año
+  return 'ejercicio' + (BASE_EJ + (añoFiscal - BASE_AÑO));
+}
+
 function mergeWithMeta(data, meta) {
-  const ej = meta['ejercicio35'] || {};
-  const tipos = ej.tipos || {};
-  const docs = ej.documentos || {};
-  return data.map(h => {
+  // Ordenar más reciente primero
+  const sorted = [...data].sort((a, b) => {
+    const fa = a.fechaLimite || a.fechaRealCierre || '';
+    const fb = b.fechaLimite || b.fechaRealCierre || '';
+    return fb.localeCompare(fa);
+  });
+  return sorted.map(h => {
+    const ejKey = ejercicioDeHallazgo(h);
+    const ej = (ejKey && meta[ejKey]) ? meta[ejKey] : {};
     const num = String(h.numHallazgo || '');
     return {
       ...h,
-      _tipo: tipos[num] || null,
-      _docRequerido: docs[num] || null
+      _ejercicio: ejKey,
+      _tipo: (ej.tipos || {})[num] || null,
+      _docRequerido: (ej.documentos || {})[num] || null
     };
   });
 }
