@@ -146,7 +146,7 @@ function mergeWithMeta(data, meta) {
     return {
       ...h,
       _ejercicio: ejKey,
-      _tipo: (ej.tipos || {})[num] || null,
+      _tipo: h.categoriasSGI || (ej.tipos || {})[num] || null,
       _docRequerido: (ej.documentos || {})[num] || null
     };
   });
