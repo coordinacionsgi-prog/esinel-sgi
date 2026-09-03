@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGI - Personal ESINEL</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+
+/* HEADER */
+.esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999}
+.esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
+.esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.esinel-logo-name{font-size:21px;font-weight:800;color:#fff;letter-spacing:2.5px;line-height:1;text-transform:uppercase}
+.esinel-logo-tagline{font-size:8.5px;font-weight:600;color:#475569;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px}
+.esinel-logo-certs{font-size:8px;font-weight:600;letter-spacing:.8px;margin-top:2px}
+.esinel-iso9{color:#94a3b8}.esinel-iso14{color:#4caf72;margin-left:5px}.esinel-iso45{color:#ef5350;margin-left:5px}
+.esinel-badge{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);padding:4px 10px;border-radius:4px;border:1px solid rgba(59,130,246,.2)}
+.esinel-nav{display:flex;align-items:center;border-top:1px solid #1e293b;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.esinel-nav::-webkit-scrollbar{display:none}
+.esinel-nav-item{display:flex;align-items:center;gap:5px;padding:8px 12px;font-size:12px;font-weight:500;color:#64748b;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s}
+.esinel-nav-item:hover{color:#e2e8f0;border-bottom-color:#334155}
+.esinel-nav-item.esinel-active{color:#60a5fa;border-bottom-color:#3b82f6;font-weight:600}
+.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
+.esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
+.esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
+
+/* CONTENT */
+.content{padding:24px 28px;max-width:1400px;margin:0 auto}
+.page-title{font-size:22px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.page-sub{font-size:13px;color:#64748b;margin-bottom:24px}
+
+/* CONTROLS */
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.search-box{position:relative;flex:1;min-width:220px}
+.search-box input{width:100%;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 12px 9px 36px;font-size:13px;color:#e2e8f0;outline:none;transition:border-color .15s}
+.search-box input:focus{border-color:#3b82f6}
+.search-box input::placeholder{color:#475569}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#475569;font-size:14px}
+
+/* AREA FILTERS */
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .15s;letter-spacing:.02em}
+.filter-btn.all{background:#1e293b;color:#94a3b8;border-color:#334155}
+.filter-btn.all.active{background:#334155;color:#e2e8f0}
+.filter-btn[data-area="Obras"]{background:rgba(59,130,246,.12);color:#60a5fa;border-color:rgba(59,130,246,.25)}
+.filter-btn[data-area="Obras"].active{background:#3b82f6;color:#fff}
+.filter-btn[data-area="Ingeniería"]{background:rgba(139,92,246,.12);color:#a78bfa;border-color:rgba(139,92,246,.25)}
+.filter-btn[data-area="Ingeniería"].active{background:#8b5cf6;color:#fff}
+.filter-btn[data-area="Producción"]{background:rgba(245,158,11,.1);color:#fbbf24;border-color:rgba(245,158,11,.25)}
+.filter-btn[data-area="Producción"].active{background:#f59e0b;color:#0f172a}
+.filter-btn[data-area="Administración y RRHH"]{background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.25)}
+.filter-btn[data-area="Administración y RRHH"].active{background:#10b981;color:#fff}
+.filter-btn[data-area="Comercial"]{background:rgba(236,72,153,.1);color:#f472b6;border-color:rgba(236,72,153,.25)}
+.filter-btn[data-area="Comercial"].active{background:#ec4899;color:#fff}
+.filter-btn[data-area="Gerencia"]{background:rgba(100,116,139,.12);color:#94a3b8;border-color:rgba(100,116,139,.25)}
+.filter-btn[data-area="Gerencia"].active{background:#64748b;color:#fff}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.stat-chip{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 14px;font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:8px}
+.stat-chip strong{color:#e2e8f0;font-size:14px}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;display:flex;align-items:flex-start;gap:14px;transition:border-color .15s,transform .1s;cursor:default}
+.card:hover{border-color:#475569;transform:translateY(-1px)}
+.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;letter-spacing:.5px}
+.card-info{flex:1;min-width:0}
+.card-name{font-size:14px;font-weight:600;color:#f1f5f9;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-cargo{font-size:11.5px;color:#94a3b8;margin-bottom:6px;line-height:1.3}
+.card-meta{display:flex;flex-direction:column;gap:3px}
+.card-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;width:fit-content}
+.card-sede{font-size:10.5px;color:#64748b;display:flex;align-items:center;gap:4px;margin-top:2px}
+.card-email{font-size:10.5px;color:#3b82f6;text-decoration:none;display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-email:hover{text-decoration:underline}
+.no-results{text-align:center;padding:60px 20px;color:#475569;font-size:14px}
+
+/* area colors */
+.area-Obras .avatar{background:rgba(59,130,246,.2);color:#60a5fa}
+.area-Obras .card-tag{background:rgba(59,130,246,.15);color:#60a5fa}
+.area-Ingeniería .avatar{background:rgba(139,92,246,.2);color:#a78bfa}
+.area-Ingeniería .card-tag{background:rgba(139,92,246,.15);color:#a78bfa}
+.area-Producción .avatar{background:rgba(245,158,11,.15);color:#fbbf24}
+.area-Producción .card-tag{background:rgba(245,158,11,.12);color:#fbbf24}
+.area-Administración-y-RRHH .avatar{background:rgba(16,185,129,.15);color:#34d399}
+.area-Administración-y-RRHH .card-tag{background:rgba(16,185,129,.12);color:#34d399}
+.area-Comercial .avatar{background:rgba(236,72,153,.15);color:#f472b6}
+.area-Comercial .card-tag{background:rgba(236,72,153,.12);color:#f472b6}
+.area-Gerencia .avatar{background:rgba(100,116,139,.2);color:#cbd5e1}
+.area-Gerencia .card-tag{background:rgba(100,116,139,.15);color:#cbd5e1}
+.area-Ingeniería-Comercial .avatar{background:rgba(139,92,246,.2);color:#a78bfa}
+.area-Ingeniería-Comercial .card-tag{background:rgba(139,92,246,.15);color:#a78bfa}
+</style>
+</head>
+<body>
+
+<!-- ESINEL HEADER -->
+<style>
+.esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
+</style>
+<div class="esinel-hdr">
+  <div class="esinel-hdr-top">
+    <a class="esinel-logo" href="index.html">
+      <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/><circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/><circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/><circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+      </svg>
+      <div>
+        <div class="esinel-logo-name">ESINEL</div>
+        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
+        <div class="esinel-logo-certs">
+          <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
+        </div>
+      </div>
+    </a>
+    <div class="esinel-badge">SGI · Gestión Integrada</div>
+  </div>
+  <nav class="esinel-nav">
+    <a class="esinel-nav-item" href="index.html">🏠 Inicio</a>
+    <a class="esinel-nav-item" href="hallazgos.html">⚠️ Hallazgos</a>
+    <a class="esinel-nav-item" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
+    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
+    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
+    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
+    <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
+    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
+    <a class="esinel-nav-item esinel-active" href="personal.html">👥 Personal</a>
+  </nav>
+</div>
+<script>(function(){try{
+  var h=JSON.parse(localStorage.getItem('esinel_hallazgos_stats')||'null');
+  var i=JSON.parse(localStorage.getItem('esinel_ind_stats')||'null');
+  document.querySelectorAll('.esinel-nav-item').forEach(function(a){
+    var href=a.getAttribute('href')||'';
+    if(h&&h.abiertos>0&&href.includes('hallazgos'))
+      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-warn">'+h.abiertos+'</span>');
+    if(i&&i.desvios>0&&href.includes('indicadores'))
+      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
+  });
+}catch(e){}})()</script>
+
+<div class="content">
+  <div class="page-title">👥 Personal ESINEL</div>
+  <div class="page-sub">Directorio del equipo · Ejercicio 35 · 2026</div>
+
+  <div class="controls">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Buscar por nombre, cargo o sede…">
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter-btn all active" onclick="setFilter('')">Todos</button>
+      <button class="filter-btn" data-area="Obras" onclick="setFilter('Obras')">Obras</button>
+      <button class="filter-btn" data-area="Ingeniería" onclick="setFilter('Ingeniería')">Ingeniería</button>
+      <button class="filter-btn" data-area="Producción" onclick="setFilter('Producción')">Producción</button>
+      <button class="filter-btn" data-area="Administración y RRHH" onclick="setFilter('Administración y RRHH')">Adm & RRHH</button>
+      <button class="filter-btn" data-area="Comercial" onclick="setFilter('Comercial')">Comercial</button>
+      <button class="filter-btn" data-area="Gerencia" onclick="setFilter('Gerencia')">Gerencia</button>
+    </div>
+  </div>
+
+  <div class="stats-row" id="stats-row"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const PERSONAL = [
+  {n:"Diego Alejandro Abella",a:"Obras",c:"Jefe de Obra",s:"Hernán Giacobbe",sede:"Obras / Buenos Aires",e:"dabella@esinel.com.ar"},
+  {n:"Félix Miguel Alborte",a:"Obras",c:"Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"albortemiguel@outlook.com.ar"},
+  {n:"Luan Thiago Baira",a:"Administración y RRHH",c:"Auditor Interno SGI",s:"Clarisa Piccione",sede:"Remedios",e:"coordinacion.sgi@esinel.com.ar"},
+  {n:"Pablo Leonel Barrionuevo",a:"Ingeniería",c:"Proyectista - Computista",s:"Martin Diamanti",sede:"Remedios",e:"pbarrionuevo@esinel.com.ar"},
+  {n:"Francisco Briani",a:"Ingeniería",c:"Proyectista - Computista",s:"Juan Monti",sede:"Santo Tomé",e:"fbriani@esinel.com.ar"},
+  {n:"Erik Bustamante",a:"Obras",c:"Ayudante Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:""},
+  {n:"Daniel Carena",a:"Obras",c:"Jefe de Obra",s:"Hernán Giacobbe",sede:"Santo Tomé",e:"dcarena@esinel.com.ar"},
+  {n:"José Luis Casares",a:"Producción",c:"Responsable de Abastecimiento e Intendencia",s:"Oscar Schmuth",sede:"Remedios",e:"deposito@esinel.com.ar"},
+  {n:"Marisa Angélica Cercos",a:"Administración y RRHH",c:"Auxiliar Administrativo Sr",s:"Andrea Chávez",sede:"Santo Tomé",e:"mcercos@esinel.com.ar"},
+  {n:"Andrea Fabiana Chavez",a:"Administración y RRHH",c:"Responsable de Administración",s:"Marcelo Piccione",sede:"Remedios",e:"achavez@esinel.com.ar"},
+  {n:"Miguel Angel Citta",a:"Ingeniería",c:"Proyectista - Computista",s:"Juan Monti",sede:"Santo Tomé",e:"mcitta@esinel.com.ar"},
+  {n:"Facundo Exequiel Contreras",a:"Obras",c:"Oficial Electricista",s:"Daniel Carena y Ariel Da Silva",sede:"Obras Santa Fé",e:"facundocontreras434@gmail.com"},
+  {n:"Fabiola Cortez Poma",a:"Administración y RRHH",c:"Auxiliar de Maestranza",s:"Patricia Rodriguez y Andrea Chávez",sede:"Remedios",e:"fabiolacortezpoma@hotmail.com"},
+  {n:"Carlos Ariel Da Silva",a:"Obras",c:"Supervisor de Obra",s:"Hernán Giacobbe y Daniel Carena",sede:"Obras Santa Fé",e:"arieldasilva77@gmail.com"},
+  {n:"Carlos A. De Abrantes Correia",a:"Obras",c:"Responsable de Abastecimiento e Intendencia",s:"Emiliano San Martin y Hernán Giacobbe",sede:"Mosconi",e:"cdeabrantes@esinel.com.ar"},
+  {n:"Martín Eduardo Diamanti",a:"Ingeniería",c:"Gerente de Ingeniería",s:"",sede:"Remedios",e:"mdiamanti@esinel.com.ar"},
+  {n:"René Alfredo Diaz",a:"Obras",c:"Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"renealfredodiaz26@gmail.com"},
+  {n:"Juan Francisco Dominguez Catalano",a:"Obras",c:"Sobrestante de Obras",s:"Hernán Giacobbe y Emiliano San Martín",sede:"Obras Mar del Plata",e:"jfcatalano@esinel.com.ar"},
+  {n:"Sergio Eduardo Donda",a:"Producción",c:"Encargado de Taller",s:"Oscar Schmuth",sede:"Remedios",e:"sdonda@esinel.com.ar"},
+  {n:"Diego Amado Fernandez",a:"Administración y RRHH",c:"Analista Administrativo",s:"Andrea Chávez",sede:"Remedios",e:"dfernandez@esinel.com.ar"},
+  {n:"Lisandro Tomás Fissolo",a:"Comercial",c:"Responsable Comercial",s:"Gerencia Comercial",sede:"Santo Tomé",e:"Lfissolo@esinel.com.ar"},
+  {n:"Luis Alberto Garcia",a:"Obras",c:"Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"lag39850@gmail.com"},
+  {n:"Hernán Leonel Giacobbe",a:"Obras",c:"Gerente de Obra",s:"",sede:"Mosconi",e:"giaacobbeh@esinel.com.ar"},
+  {n:"Gonzalo Gigliotti",a:"Ingeniería",c:"Proyectista - Computista",s:"Juan Monti",sede:"Santo Tomé",e:"ggigliotti@esinel.com.ar"},
+  {n:"Hernán Giorgetti",a:"Producción",c:"Lider de Producción",s:"Oscar Schmuth",sede:"Santo Tomé",e:"hgiorgetti@esinel.com.ar"},
+  {n:"Miguel Angel Glibota",a:"Obras",c:"Oficial Electricista Especializado",s:"Daniel Carena",sede:"Obras Santa Fé",e:"miguel_glibota_37@hotmail.com"},
+  {n:"Leandro Gomes",a:"Obras",c:"Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"leandrogomez1824@gmail.com"},
+  {n:"Anahi Gonzalez",a:"Administración y RRHH",c:"Asistente de Imagen",s:"Patricia y Mercedes",sede:"Remedios",e:"imagen@esinel.com.ar"},
+  {n:"Luciano Germán Gorosito",a:"Obras",c:"Oficial Electricista",s:"Daniel Carena",sede:"Obras Santa Fé",e:"lucianogorosito46@gmail.com"},
+  {n:"Facundo Guerrero",a:"Ingeniería",c:"Proyectista - Computista",s:"Juan Monti",sede:"Remedios",e:"fguerrero@esinel.com.ar"},
+  {n:"Ariel Marcelo Heredia",a:"Obras",c:"Medio Oficial Electricista",s:"Daniel Carena",sede:"Obras Santa Fé",e:"herediaariel103@gmail.com"},
+  {n:"Esteban Nahuel Heredia",a:"Comercial",c:"Auxiliar Técnico Comercial",s:"Lisandro Fissolo",sede:"Oficina Mar del Plata",e:"nheredia@esinel.com.ar"},
+  {n:"Alejandro Ibañez",a:"Obras",c:"Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"alejandroibanez781@gmail.com"},
+  {n:"Bautista Iestra",a:"Administración y RRHH",c:"Asistente Interno en HyS",s:"Patricia y Mercedes",sede:"Oficina Mar del Plata",e:"Saludyseguridad@esinel.com.ar"},
+  {n:"Fabio Marcel Insfran Coronel",a:"Obras",c:"Medio Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"fabiocoronel695@gmail.com"},
+  {n:"Julio Ruben Ledezma",a:"Obras",c:"Oficial Electricista Especializado",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"ledezmajulio545@gmail.com"},
+  {n:"Daniel A. Lertora",a:"Comercial",c:"Responsable de Compras",s:"Oscar Schmuth y Hernán Giacobbe",sede:"Remedios",e:"compras@esinel.com.ar"},
+  {n:"Camila Belen López Fernandez",a:"Producción",c:"Ayudante Tablerista",s:"Oscar Schmuth",sede:"Remedios",e:"camila.lopezfernandez2004@gmail.com"},
+  {n:"José Ramón Matto",a:"Obras",c:"Medio Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"joseramonmatto2025@gmail.com"},
+  {n:"Rubén Matto",a:"Obras",c:"Oficial Electricista",s:"Romina Nievas",sede:"Obras Bs. As.",e:"Rubenmatto36@gmail.com"},
+  {n:"Juan Francisco Monti",a:"Ingeniería",c:"Líder de Ingeniería",s:"Martín Diamanti",sede:"Santo Tomé",e:"jmonti@esinel.com.ar"},
+  {n:"Matias Montiel",a:"Obras",c:"Medio Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"mati40018@gmail.com"},
+  {n:"María de las Mercedes Nahas",a:"Administración y RRHH",c:"Responsable de Comunicación Interna y Cultura",s:"Clarisa Piccione",sede:"Remedios",e:"mnahas@esinel.com.ar"},
+  {n:"Romina Lorena Nievas Jara",a:"Obras",c:"Jefa de Obra",s:"Hernán Giacobbe",sede:"Obras Buenos Aires",e:"rnievas@esinel.com.ar"},
+  {n:"Tomás Noblia",a:"Comercial",c:"Asistente de Compras",s:"Daniel Lértora",sede:"Remedios",e:"tnobllia@esinel.com.ar"},
+  {n:"Cristian Nahuel Ortega",a:"Obras",c:"Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"criskpo77026@gmail.com"},
+  {n:"Javier Otero",a:"Producción",c:"Proyectista - Computista",s:"Juan Monti",sede:"Remedios",e:"jotero@esinel.com.ar"},
+  {n:"Florencia Oyuela",a:"Administración y RRHH",c:"Auxiliar de RRHH",s:"Patricia y Mercedes",sede:"Remedios",e:"foyuela@esinel.com.ar"},
+  {n:"Clarisa Piccione",a:"Administración y RRHH",c:"Líder de Administración y RRHH",s:"Gerencia",sede:"Remedios",e:"cpiccione@esinel.com.ar"},
+  {n:"Marcelo Nicolás Piccione",a:"Gerencia",c:"Gerente de Administración",s:"",sede:"Remedios",e:"mnpiccione@esinel.com.ar"},
+  {n:"Enrique Fabián Riveros",a:"Obras",c:"Medio Oficial Electricista",s:"Carlos De Abrantes",sede:"Mosconi",e:"enriqueriveros9999@gmail.com"},
+  {n:"Patricia C. Rodriguez",a:"Administración y RRHH",c:"Responsable de RRHH",s:"Clarisa Piccione",sede:"Remedios",e:"prodriguez@esinel.com.ar"},
+  {n:"Nicolás Mauricio Rojas",a:"Obras",c:"Medio Oficial Electricista",s:"Daniel Carena",sede:"Obras Santa Fé",e:""},
+  {n:"Claudio Daniel Salazar",a:"Producción",c:"Oficial Tablerista Especializado",s:"Oscar Schmuth y Sergio Donda",sede:"Remedios",e:"claudiosalazar87@gmail.com"},
+  {n:"Víctor Salazar",a:"Obras",c:"Supervisor de Obra",s:"Hernán Giacobbe y Emiliano San Martín",sede:"Obras Bs. As.",e:"salazarvictor270@gmail.com"},
+  {n:"Emiliano Nahuel San Martin",a:"Obras",c:"Líder de Obras",s:"Hernán Giacobbe",sede:"Obras Bs. As.",e:"esanmartin@esinel.com.ar"},
+  {n:"Marcos Adrian Santa Cruz Gimenez",a:"Obras",c:"Ayudante Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"adriangimenez250401@gmail.com"},
+  {n:"Oscar Emilio Schmuth",a:"Producción",c:"Gerente de Producción",s:"",sede:"Remedios",e:"oschmuth@esinel.com.ar"},
+  {n:"Juan Fernando Sepúlveda Valencia",a:"Obras",c:"Supervisor de Obra",s:"Hernán Giacobbe y Romina Nievas",sede:"Obras Bs. As.",e:"sepulveda-juan@hotmail.com"},
+  {n:"José Luis Soliz Coronado",a:"Obras",c:"Supervisor de Obra",s:"Hernán Giacobbe",sede:"Obras Bs. As.",e:"jsoliz@esinel.com.ar"},
+  {n:"Luis Sosa",a:"Obras",c:"Ayudante Electricista",s:"Emiliano San Martín",sede:"Obras Bs. As.",e:"sosaluis636@gmail.com"},
+  {n:"Martín Abel Villaverde",a:"Obras",c:"Oficial Electricista Especializado",s:"Daniel Carena",sede:"Obras Santa Fé",e:"mvillaverde@esinel.com.ar"},
+  {n:"Uriel Agustín Zito Palacios",a:"Obras",c:"Medio Oficial Electricista",s:"Emiliano San Martín",sede:"Obras Mar del Plata",e:"urielzito39@gmail.com"}
+];
+
+let currentFilter = '';
+let currentSearch = '';
+
+function initials(name) {
+  return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+
+function areaClass(area) {
+  return 'area-' + area.replace(/\s+/g,'-').replace(/[&]/g,'');
+}
+
+function areaLabel(area) {
+  const map = {'Administración y RRHH':'Adm & RRHH','Ingeniería - Comercial':'Ing. Comercial'};
+  return map[area] || area;
+}
+
+function render() {
+  const q = currentSearch.toLowerCase();
+  const filtered = PERSONAL.filter(p => {
+    const matchArea = !currentFilter || p.a === currentFilter;
+    const matchSearch = !q || p.n.toLowerCase().includes(q) || p.c.toLowerCase().includes(q) || p.sede.toLowerCase().includes(q);
+    return matchArea && matchSearch;
+  });
+
+  // Stats
+  const areas = {};
+  filtered.forEach(p => { areas[p.a] = (areas[p.a]||0)+1; });
+  const statsEl = document.getElementById('stats-row');
+  statsEl.innerHTML = `<div class="stat-chip"><strong>${filtered.length}</strong> personas${currentFilter?' en '+areaLabel(currentFilter):''}</div>` +
+    (currentFilter ? '' : Object.entries(areas).map(([a,c])=>`<div class="stat-chip"><strong>${c}</strong> ${areaLabel(a)}</div>`).join(''));
+
+  // Grid
+  const grid = document.getElementById('grid');
+  if (!filtered.length) { grid.innerHTML = '<div class="no-results">No se encontraron resultados</div>'; return; }
+  grid.innerHTML = filtered.map(p => `
+    <div class="card ${areaClass(p.a)}">
+      <div class="avatar">${initials(p.n)}</div>
+      <div class="card-info">
+        <div class="card-name" title="${p.n}">${p.n}</div>
+        <div class="card-cargo">${p.c}</div>
+        <div class="card-meta">
+          <span class="card-tag">${areaLabel(p.a)}</span>
+          <span class="card-sede">📍 ${p.sede}</span>
+          ${p.e ? `<a class="card-email" href="mailto:${p.e}">${p.e}</a>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function setFilter(area) {
+  currentFilter = area;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    const ba = b.dataset.area || '';
+    b.classList.toggle('active', ba === area || (!area && b.classList.contains('all')));
+  });
+  render();
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
