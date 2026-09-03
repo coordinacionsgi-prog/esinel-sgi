@@ -93,8 +93,8 @@ iframe{flex:1;border:none;width:100%}
 (function(){
   const tipo = new URLSearchParams(location.search).get('tipo');
   if (tipo) {
-    const labels = {contexto:'Contexto y Partes Interesadas',indicadores:'Indicadores (OM)',procedimental:'Procedimiento',general:'General','partes-interesadas':'Partes Interesadas'};
-    document.getElementById('filtro-label').textContent = labels[tipo] || tipo;
+    const labels = {contexto:'Contexto y Partes Interesadas',indicadores:'Indicadores',procedimental:'Procedimental',general:'General','analisis contexto y pi':'Análisis Contexto y PI'};
+    document.getElementById('filtro-label').textContent = labels[tipo.toLowerCase()] || tipo;
     document.getElementById('filtro-banner').style.display = 'flex';
   }
 })();
@@ -182,7 +182,7 @@ function sendToFrame(data) {
   try {
     // Filtrar por ?tipo= si viene en la URL
     const tipoParam = new URLSearchParams(location.search).get('tipo');
-    const payload = tipoParam ? data.filter(h => h._tipo === tipoParam) : data;
+    const payload = tipoParam ? data.filter(h => (h._tipo || '').toLowerCase() === tipoParam.toLowerCase()) : data;
     frame.contentWindow.postMessage({ type: 'hallazgosData', data: payload }, '*');
     dataSent = true;
   } catch(e) {}
