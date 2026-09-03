@@ -135,8 +135,8 @@ function ejercicioDeHallazgo(h) {
 function mergeWithMeta(data, meta) {
   // Ordenar más reciente primero
   const sorted = [...data].sort((a, b) => {
-    const fa = a.fechaLimite || a.fechaRealCierre || '';
-    const fb = b.fechaLimite || b.fechaRealCierre || '';
+    const fa = a.fechaDetection || '';
+    const fb = b.fechaDetection || '';
     return fb.localeCompare(fa);
   });
   return sorted.map(h => {
