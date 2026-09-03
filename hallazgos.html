@@ -105,7 +105,7 @@ iframe{flex:1;border:none;width:100%}
   title="Hallazgos SGI"></iframe>
 
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbFv/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeP51I_uK6BpgTSDqFRrNa-sl527tn2BHqPOh4XH8VIPMvMvx4-3hrQeHaczKbFv/exec';
 const frame = document.getElementById('appFrame');
 let dataSent = false;
 let metaCache = null;
@@ -190,6 +190,16 @@ function sendToFrame(data) {
 
 frame.addEventListener('load', function() {
   setTimeout(fetchAndSend, 1500);
+});
+
+// El iframe fetchea sus propios datos del spreadsheet y nos los envía de vuelta
+window.addEventListener('message', function(e) {
+  if (dataSent) return;
+  if (e.data && e.data.type === 'hallazgosReady' && Array.isArray(e.data.data)) {
+    fetchMeta().then(function(meta) {
+      sendToFrame(mergeWithMeta(e.data.data, meta));
+    });
+  }
 });
 </script>
 </body>
