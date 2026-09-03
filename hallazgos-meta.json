@@ -1,0 +1,11 @@
+{
+  "ejercicio35": {
+    "_info": "Mapeo manual de hallazgos del Ej. 35. Tipos: indicadores | contexto | partes-interesadas | procedimental | general",
+    "tipos": {
+      "1": "general",
+      "2": "general"
+    },
+    "documentos": {
+    }
+  }
+}

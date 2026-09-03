@@ -94,27 +94,56 @@ iframe{flex:1;border:none;width:100%}
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbFv/exec';
 const frame = document.getElementById('appFrame');
 let dataSent = false;
+let metaCache = null;
+
+async function fetchMeta() {
+  if (metaCache) return metaCache;
+  try {
+    const res = await fetch('hallazgos-meta.json?_=' + Date.now());
+    metaCache = await res.json();
+  } catch(e) { metaCache = {}; }
+  return metaCache;
+}
+
+function mergeWithMeta(data, meta) {
+  const ej = meta['ejercicio35'] || {};
+  const tipos = ej.tipos || {};
+  const docs = ej.documentos || {};
+  return data.map(h => {
+    const num = String(h.numHallazgo || '');
+    return {
+      ...h,
+      _tipo: tipos[num] || null,
+      _docRequerido: docs[num] || null
+    };
+  });
+}
 
 async function fetchAndSend() {
   try {
-    const res = await fetch(APPS_SCRIPT_URL + '?format=json');
+    const [res, meta] = await Promise.all([
+      fetch(APPS_SCRIPT_URL + '?format=json'),
+      fetchMeta()
+    ]);
     const json = await res.json();
     if (json.status === 'success' && json.data) {
-      sendToFrame(json.data);
+      sendToFrame(mergeWithMeta(json.data, meta));
     }
   } catch(e) {}
+}
+
+function isFindingOpen(h) {
+  const efic = (h.resultadoEficacia || '').trim();
+  return efic !== 'OK' && efic !== 'NO';
 }
 
 function sendToFrame(data) {
   if (dataSent) return;
   try {
-    const abiertos = data.filter(h =>
-      Object.values(h).some(v => typeof v === 'string' && v.toLowerCase().includes('abiert'))
-    ).length;
+    const abiertos = data.filter(isFindingOpen).length;
     localStorage.setItem('esinel_hallazgos_stats', JSON.stringify({
       total: data.length, abiertos, ts: Date.now()
     }));
-    // Guardar datos completos para que documentos.html los lea sin fetch propio
     localStorage.setItem('esinel_hallazgos_data', JSON.stringify({ data, ts: Date.now() }));
   } catch(e) {}
   try {
