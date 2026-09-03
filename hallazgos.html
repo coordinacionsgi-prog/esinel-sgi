@@ -85,6 +85,20 @@ iframe{flex:1;border:none;width:100%}
 }catch(e){}})()</script>
 <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
+<div id="filtro-banner" style="display:none;background:#1e3a5f;border-bottom:1px solid #2563eb60;padding:6px 20px;font-size:12px;color:#93c5fd;display:flex;align-items:center;gap:10px">
+  <span>Filtro activo: <strong id="filtro-label"></strong></span>
+  <a href="hallazgos.html" style="color:#60a5fa;text-decoration:none;margin-left:auto">✕ Ver todos</a>
+</div>
+<script>
+(function(){
+  const tipo = new URLSearchParams(location.search).get('tipo');
+  if (tipo) {
+    const labels = {contexto:'Contexto y Partes Interesadas',indicadores:'Indicadores (OM)',procedimental:'Procedimiento',general:'General','partes-interesadas':'Partes Interesadas'};
+    document.getElementById('filtro-label').textContent = labels[tipo] || tipo;
+    document.getElementById('filtro-banner').style.display = 'flex';
+  }
+})();
+</script>
 <iframe id="appFrame"
   src="https://script.google.com/macros/s/AKfycbzeP51JLuK6BpgTS0qfRXrNa-sI627ztn2BHqPOh4Xh8VIPmvMvx4-3hrQeHaczKbEv/exec"
   allowfullscreen loading="lazy"
@@ -166,7 +180,10 @@ function sendToFrame(data) {
     localStorage.setItem('esinel_hallazgos_data', JSON.stringify({ data, ts: Date.now() }));
   } catch(e) {}
   try {
-    frame.contentWindow.postMessage({ type: 'hallazgosData', data: data }, '*');
+    // Filtrar por ?tipo= si viene en la URL
+    const tipoParam = new URLSearchParams(location.search).get('tipo');
+    const payload = tipoParam ? data.filter(h => h._tipo === tipoParam) : data;
+    frame.contentWindow.postMessage({ type: 'hallazgosData', data: payload }, '*');
     dataSent = true;
   } catch(e) {}
 }

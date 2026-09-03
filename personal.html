@@ -233,18 +233,39 @@ function render(){
 
   const grid = document.getElementById('grid');
   if(!filtered.length){grid.innerHTML='<div class="no-results">Sin resultados</div>';return;}
-  grid.innerHTML = filtered.map(p=>`
+  grid.innerHTML = filtered.map(p=>{
+    const cnt = hallazgosAbiertos[p.n] || 0;
+    const badge = cnt > 0 ? `<span title="${cnt} hallazgo(s) abierto(s)" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(245,158,11,.18);color:#f59e0b;margin-left:6px">${cnt}</span>` : '';
+    return `
     <div class="card ac-${p.a}">
       <div class="avatar">${initials(p.n)}</div>
       <div class="card-info">
-        <div class="card-name">${p.n}</div>
+        <div class="card-name">${p.n}${badge}</div>
         <div class="card-cargo">${p.c}</div>
         <span class="card-tag">${AREAS[p.a]}</span>
         <div class="card-sede">&#128205; ${p.sede}</div>
         <a class="card-email" href="mailto:${p.e}">${p.e}</a>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
+
+// Cargar datos de hallazgos desde localStorage
+let hallazgosAbiertos = {};
+try {
+  const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data') || 'null');
+  if (stored && stored.data) {
+    stored.data.forEach(h => {
+      const efic = (h.resultadoEficacia || '').trim();
+      if (efic === 'OK' || efic === 'NO') return;
+      [h.responsableAccion, h.responsableVerificacion].forEach(nombre => {
+        if (!nombre) return;
+        const n = nombre.trim();
+        hallazgosAbiertos[n] = (hallazgosAbiertos[n] || 0) + 1;
+      });
+    });
+  }
+} catch(e) {}
 
 function setFilter(area){
   currentFilter = area;
