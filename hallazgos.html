@@ -107,7 +107,7 @@ async function fetchMeta() {
 
 function ejercicioDeHallazgo(h) {
   // Ejercicio = año fiscal abril-marzo. Ej35 = abr2025-mar2026, Ej36 = abr2026-mar2027...
-  const BASE_EJ = 35, BASE_AÑO = 2025;
+  const BASE_EJ = 35, BASE_AÑO = 2026;
   const fecha = h.fechaVerificacion || h.fechaLimite || h.fechaRealCierre || '';
   if (!fecha) return null;
   const d = new Date(fecha);
