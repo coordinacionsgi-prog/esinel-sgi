@@ -14,7 +14,7 @@
       --g-font-display: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --g-font-body: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       
-      /* Google Workspace Clean Palette */
+      /* Looker / Google Workspace Palette */
       --g-blue: #1a73e8;
       --g-blue-hover: #1557b0;
       --g-blue-bg: #e8f0fe;
@@ -66,7 +66,7 @@
       padding: 24px 24px 64px;
     }
 
-    /* Breadcrumbs & Top Bar */
+    /* Top Bar & Titulares */
     .g-top-bar {
       display: flex;
       align-items: center;
@@ -114,6 +114,7 @@
       color: var(--text-main);
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .g-btn:hover {
@@ -133,7 +134,7 @@
       color: #fff;
     }
 
-    /* Google Metric Cards (Looker style) */
+    /* KPI Banner / Looker Studio Stat Boxes */
     .g-stats-banner {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -198,7 +199,7 @@
       gap: 4px;
     }
 
-    /* Progress Distribution Bar */
+    /* Barra de Distribución por Departamento */
     .g-dist-bar-card {
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
@@ -234,7 +235,7 @@
       transition: width 0.3s ease;
     }
 
-    /* Google Workspace Search & Control Panel */
+    /* Control Deck (Buscador + Filtros) */
     .g-control-deck {
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
@@ -309,28 +310,21 @@
       background: #e8eaed;
     }
 
-    .g-toggle-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
+    .g-select-pill {
+      height: 34px;
       border-radius: var(--radius-pill);
+      padding: 0 12px;
       font-size: 12px;
       font-family: var(--g-font-display);
-      font-weight: 500;
       border: 1px solid var(--border-subtle);
-      background: #fff;
+      background: var(--card-bg);
       color: var(--text-muted);
+      outline: none;
       cursor: pointer;
-      user-select: none;
-      transition: all 0.15s;
     }
 
-    .g-toggle-pill.active {
-      background: var(--g-blue-bg);
-      border-color: #aecbfa;
-      color: var(--g-blue);
-      font-weight: 600;
+    .g-select-pill:hover {
+      border-color: #bdc1c6;
     }
 
     .g-view-toggles {
@@ -426,23 +420,7 @@
       color: var(--g-blue);
     }
 
-    .g-select-pill {
-      height: 34px;
-      border-radius: var(--radius-pill);
-      padding: 0 12px;
-      font-size: 12px;
-      font-family: var(--g-font-display);
-      border: 1px solid var(--border-subtle);
-      background: var(--card-bg);
-      color: var(--text-muted);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .g-select-pill:hover {
-      border-color: #bdc1c6;
-    }
-
+    /* Mosaico de Tarjetas de Contacto */
     .g-cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -567,12 +545,6 @@
       text-decoration: underline;
     }
 
-    .g-no-email {
-      color: #94a3b8;
-      font-style: italic;
-      font-size: 11.5px;
-    }
-
     .g-hallazgo-pill {
       font-size: 10px;
       font-weight: 700;
@@ -587,31 +559,12 @@
       animation: pulseAlert 2.5s infinite;
     }
 
-    .g-email-badge {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: #e8f0fe;
-      color: #1967d2;
-      border: 1px solid #c2e7ff;
-    }
-
-    .g-op-badge {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: #f1f5f9;
-      color: #475569;
-    }
-
     @keyframes pulseAlert {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.75; }
     }
 
-    /* Area Custom Google-ish Palettes */
+    /* Temas por Departamento */
     .theme-Gerencia .g-avatar { background: #e8eaed; color: #3c4043; }
     .theme-Gerencia .g-area-tag { background: #f1f3f4; color: #3c4043; }
     .theme-Gerencia { border-top: 3px solid #5f6368; }
@@ -636,6 +589,7 @@
     .theme-Comercial .g-area-tag { background: #fce8e6; color: #c5221f; }
     .theme-Comercial { border-top: 3px solid #ea4335; }
 
+    /* Tabla Corporativa */
     .g-table-wrap {
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
@@ -680,7 +634,7 @@
       background-color: #f8fafd;
     }
 
-    /* Modal / Drawer de Perfil (Google Contact Card) */
+    /* Modal / Drawer de Perfil */
     .g-drawer-overlay {
       position: fixed;
       inset: 0;
@@ -795,7 +749,7 @@
       gap: 10px;
     }
 
-    /* Google Toast notification */
+    /* Google Toast */
     .g-toast {
       position: fixed;
       bottom: 24px;
@@ -904,52 +858,43 @@
 
 <main class="g-dashboard-wrap">
 
-  <!-- Top Title & Actions -->
+  <!-- Encabezado y Acciones -->
   <header class="g-top-bar">
     <div class="g-title-group">
       <h1><i class="ti ti-users-group" style="color:var(--g-blue)"></i> Directorio de Personal ESINEL</h1>
-      <p>Panel corporativo de recursos humanos, nómina operativa y asignaciones SGI · Ejercicio 35</p>
+      <p>Directorio corporativo de cuentas y responsabilidades SGI · Ejercicio 35 · 2026</p>
     </div>
     <div class="g-quick-actions">
       <button class="g-btn" onclick="exportDirectoryCSV()"><i class="ti ti-download"></i> Exportar CSV</button>
-      <button class="g-btn g-btn-primary" onclick="copyAllEmails()"><i class="ti ti-mail-fast"></i> Copiar Correos (35)</button>
+      <button class="g-btn g-btn-primary" onclick="copyAllEmails()"><i class="ti ti-mail-fast"></i> Copiar Correos</button>
     </div>
   </header>
 
-  <!-- Google Stats Row (KPIs) -->
-  <section class="g-stats-banner" id="stats-banner">
-    <!-- Populated dynamically via JS -->
-  </section>
+  <!-- Métricas Generales (Looker Studio) -->
+  <section class="g-stats-banner" id="stats-banner"></section>
 
-  <!-- Distribution Bar by Department -->
+  <!-- Barra de Distribución por Departamento -->
   <div class="g-dist-bar-card">
     <div class="g-dist-header">
-      <span>Distribución de la Nómina por Áreas</span>
+      <span>Distribución por Áreas Organizacionales</span>
       <span id="dist-summary-text">Cargando...</span>
     </div>
     <div class="g-dist-track" id="dist-track"></div>
   </div>
 
-  <!-- Google Control Deck (Search + Filters + Layout Switcher) -->
+  <!-- Barra de Búsqueda y Filtros -->
   <section class="g-control-deck">
     <div class="g-search-row">
       <div class="g-search-box">
         <i class="ti ti-search search-icon"></i>
-        <input type="text" id="searchInput" class="g-search-input" placeholder="Buscar colaborador por nombre, cargo, sede o correo corporativo..." autocomplete="off">
+        <input type="text" id="searchInput" class="g-search-input" placeholder="Buscar por nombre, cargo, sede o correo..." autocomplete="off">
         <button id="clearSearchBtn" class="g-search-clear" onclick="clearSearch()" title="Limpiar"><i class="ti ti-x"></i></button>
       </div>
 
-      <!-- Sede Filter Dropdown -->
       <select id="sedeFilter" class="g-select-pill" onchange="renderDirectory()">
         <option value="">Todas las sedes</option>
       </select>
 
-      <!-- Toggle filtro correo corporativo @esinel.com.ar -->
-      <button class="g-toggle-pill" id="btnOnlyCorporate" onclick="toggleOnlyCorporate()">
-        <i class="ti ti-at"></i> Solo @esinel.com.ar (35)
-      </button>
-
-      <!-- View Switcher -->
       <div class="g-view-toggles">
         <button class="g-view-btn active" id="btnViewGrid" onclick="setViewMode('grid')">
           <i class="ti ti-layout-grid"></i> Mosaico
@@ -960,16 +905,13 @@
       </div>
     </div>
 
-    <!-- Area Filter Chips -->
-    <div class="g-chips-row" id="areaChipsRow">
-      <!-- Populated via JS -->
-    </div>
+    <div class="g-chips-row" id="areaChipsRow"></div>
   </section>
 
-  <!-- Grid View Container -->
+  <!-- Vista Mosaico -->
   <div class="g-cards-grid" id="cardsGrid"></div>
 
-  <!-- Table View Container -->
+  <!-- Vista Tabla -->
   <div class="g-table-wrap" id="tableWrap">
     <table class="g-table">
       <thead>
@@ -988,7 +930,7 @@
   </div>
 </main>
 
-<!-- Drawer Modal de Detalle -->
+<!-- Modal de Ficha de Colaborador -->
 <div class="g-drawer-overlay" id="drawerOverlay" onclick="closeDrawer(event)">
   <div class="g-drawer-card" onclick="event.stopPropagation()">
     <div class="g-drawer-hero" id="drawerHero">
@@ -1041,7 +983,7 @@
   </div>
 </div>
 
-<!-- Google Toast Banner -->
+<!-- Toast -->
 <div class="g-toast" id="toastMessage">
   <i class="ti ti-check"></i> <span id="toastText">Acción completada</span>
 </div>
@@ -1090,7 +1032,6 @@
 </script>
 
 <script>
-  // Paletas y Áreas Corporativas
   const AREAS = {
     Gerencia: { label: 'Gerencia', color: '#5f6368', bg: '#f1f3f4', icon: 'ti-crown' },
     Obras: { label: 'Obras', color: '#1a73e8', bg: '#e8f0fe', icon: 'ti-tool' },
@@ -1100,15 +1041,15 @@
     Comercial: { label: 'Comercial', color: '#ea4335', bg: '#fce8e6', icon: 'ti-building-store' }
   };
 
-  // Base completa de personal: 35 colaboradores con @esinel.com.ar + nómina operativa de obra y planta
-  const ALL_PERSONNEL = [
-    // ── GERENCIA (4) ──
+  // Plantel oficial y exclusivo de ESINEL (35 colaboradores)
+  const DATA = [
+    // Gerencia (4)
     { a: 'Gerencia', n: 'Marcelo Nicolas Piccione', c: 'Gerente de Administración', sede: 'Remedios', e: 'mnpiccione@esinel.com.ar' },
     { a: 'Gerencia', n: 'Hernan Leonel Giacobbe', c: 'Gerente de Obra', sede: 'Mosconi', e: 'giaacobbeh@esinel.com.ar' },
     { a: 'Gerencia', n: 'Martin Eduardo Diamanti', c: 'Gerente de Ingeniería', sede: 'Remedios', e: 'mdiamanti@esinel.com.ar' },
     { a: 'Gerencia', n: 'Oscar Emilio Schmuth', c: 'Gerente de Producción', sede: 'Remedios', e: 'oschmuth@esinel.com.ar' },
-    
-    // ── LÍDERES Y RESPONSABLES CON CUENTA (9) ──
+
+    // Líderes y Responsables (9)
     { a: 'AdmRRHH', n: 'Clarisa Piccione', c: 'Lider de Administración y RRHH', sede: 'Remedios', e: 'cpiccione@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Juan Francisco Monti', c: 'Lider de Ingeniería', sede: 'Santo Tomé', e: 'jmonti@esinel.com.ar' },
     { a: 'Obras', n: 'Emiliano Nahuel San Martin', c: 'Lider de Obras', sede: 'Obras Bs. As.', e: 'esanmartin@esinel.com.ar' },
@@ -1118,61 +1059,42 @@
     { a: 'AdmRRHH', n: 'Maria de las Mercedes Nahas', c: 'Responsable de Comunicación Interna y Cultura', sede: 'Remedios', e: 'mnahas@esinel.com.ar' },
     { a: 'Comercial', n: 'Lisandro Tomas Fissolo', c: 'Responsable Comercial', sede: 'Santo Tomé', e: 'Lfissolo@esinel.com.ar' },
     { a: 'Comercial', n: 'Daniel A. Lertora', c: 'Responsable de Compras', sede: 'Remedios', e: 'compras@esinel.com.ar' },
-    
-    // ── OBRAS CON CUENTA (6) ──
-    { a: 'Obras', n: 'Diego Alejandro Abella', c: 'Jefe de Obra', sede: 'Obras Bs. As.', e: 'dabella@esinel.com.ar' },
+
+    // Obras (6)
+    { a: 'Obras', n: 'Diego Alejandro Abella', c: 'Jefe de Obra', sede: 'Obras / Buenos Aires', e: 'dabella@esinel.com.ar' },
     { a: 'Obras', n: 'Daniel Carena', c: 'Jefe de Obra', sede: 'Santo Tomé', e: 'dcarena@esinel.com.ar' },
-    { a: 'Obras', n: 'Romina Lorena Nievas Jara', c: 'Jefa de Obra', sede: 'Obras Bs. As.', e: 'rnievas@esinel.com.ar' },
+    { a: 'Obras', n: 'Romina Lorena Nievas Jara', c: 'Jefa de Obra', sede: 'Obras Buenos Aires', e: 'rnievas@esinel.com.ar' },
     { a: 'Obras', n: 'Jose Luis Soliz Coronado', c: 'Supervisor de Obra', sede: 'Obras Bs. As.', e: 'jsoliz@esinel.com.ar' },
     { a: 'Obras', n: 'Carlos A. De Abrantes Correia', c: 'Responsable de Abastecimiento e Intendencia', sede: 'Mosconi', e: 'cdeabrantes@esinel.com.ar' },
     { a: 'Obras', n: 'Juan Francisco Dominguez Catalano', c: 'Sobrestante de Obras', sede: 'Obras Mar del Plata', e: 'jfcatalano@esinel.com.ar' },
-    
-    // ── INGENIERÍA CON CUENTA (5) ──
+
+    // Ingeniería (5)
     { a: 'Ingenieria', n: 'Pablo Leonel Barrionuevo', c: 'Proyectista - Computista', sede: 'Remedios', e: 'pbarrionuevo@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Francisco Briani', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'fbriani@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Miguel Angel Citta', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'mcitta@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Gonzalo Gigliotti', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'ggigliotti@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Facundo Guerrero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'fguerrero@esinel.com.ar' },
-    
-    // ── PRODUCCIÓN CON CUENTA (3) ──
+
+    // Producción (3)
     { a: 'Produccion', n: 'Jose Luis Casares', c: 'Responsable de Abastecimiento e Intendencia', sede: 'Remedios', e: 'deposito@esinel.com.ar' },
     { a: 'Produccion', n: 'Sergio Eduardo Donda', c: 'Encargado de Taller', sede: 'Remedios', e: 'sdonda@esinel.com.ar' },
     { a: 'Produccion', n: 'Javier Otero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'jotero@esinel.com.ar' },
-    
-    // ── ADM & RRHH CON CUENTA (6) ──
+
+    // Adm & RRHH (6)
     { a: 'AdmRRHH', n: 'Luan Thiago Baira', c: 'Auditor Interno SGI', sede: 'Remedios', e: 'coordinacion.sgi@esinel.com.ar' },
     { a: 'AdmRRHH', n: 'Marisa Angelica Cercos', c: 'Auxiliar Administrativo Sr', sede: 'Santo Tomé', e: 'mcercos@esinel.com.ar' },
     { a: 'AdmRRHH', n: 'Diego Amado Fernandez', c: 'Analista Administrativo', sede: 'Remedios', e: 'dfernandez@esinel.com.ar' },
     { a: 'AdmRRHH', n: 'Anahi Gonzalez', c: 'Asistente de Imagen', sede: 'Remedios', e: 'imagen@esinel.com.ar' },
     { a: 'AdmRRHH', n: 'Florencia Oyuela', c: 'Auxiliar de RRHH', sede: 'Remedios', e: 'foyuela@esinel.com.ar' },
     { a: 'AdmRRHH', n: 'Bautista Iestra', c: 'Asistente Interno en HyS', sede: 'Oficina Mar del Plata', e: 'Saludyseguridad@esinel.com.ar' },
-    
-    // ── COMERCIAL CON CUENTA (2) ──
-    { a: 'Comercial', n: 'Esteban Nahuel Heredia', c: 'Auxiliar Técnico Comercial', sede: 'Oficina Mar del Plata', e: 'nheredia@esinel.com.ar' },
-    { a: 'Comercial', n: 'Tomas Noblia', c: 'Asistente de Compras', sede: 'Remedios', e: 'tnobllia@esinel.com.ar' },
 
-    // ── PERSONAL OPERATIVO DE OBRA Y PLANTA (NÓMINA EXTENDIDA SIN CASILLA INDIVIDUAL) ──
-    { a: 'Obras', n: 'Claudio Marcelo Vega', c: 'Capataz General de Montaje Eléctrico', sede: 'Obras Bs. As.', e: '' },
-    { a: 'Obras', n: 'Lucas Damian Benitez', c: 'Oficial Electricista Especialista', sede: 'Obras Bs. As.', e: '' },
-    { a: 'Obras', n: 'Gustavo Adolfo Riquelme', c: 'Oficial Montador Electromecánico', sede: 'Mosconi', e: '' },
-    { a: 'Obras', n: 'Jonathan Ezequiel Silva', c: 'Medio Oficial Electricista', sede: 'Obras Bs. As.', e: '' },
-    { a: 'Obras', n: 'Walter Fabian Morales', c: 'Chofer de Cuadrilla y Logística', sede: 'Obras Bs. As.', e: '' },
-    { a: 'Obras', n: 'Mario Alberto Peralta', c: 'Oficial Montador de Líneas', sede: 'Obras Mar del Plata', e: '' },
-    { a: 'Obras', n: 'Rodrigo Sebastian Gomez', c: 'Ayudante Técnico de Obra', sede: 'Obras Mar del Plata', e: '' },
-    { a: 'Obras', n: 'Hector Daniel Gimenez', c: 'Oficial Electricista Tablerista', sede: 'Mosconi', e: '' },
-    { a: 'Produccion', n: 'Ruben Dario Coronel', c: 'Oficial Tablerista de Taller', sede: 'Santo Tomé', e: '' },
-    { a: 'Produccion', n: 'Nestor Hugo Cabrera', c: 'Armador electromecánico', sede: 'Remedios', e: '' },
-    { a: 'Produccion', n: 'Federico Luis Mansilla', c: 'Operario de Pintura y Terminaciones', sede: 'Remedios', e: '' },
-    { a: 'Produccion', n: 'Cristian Gabriel Ortiz', c: 'Pañolero y Despacho de Materiales', sede: 'Santo Tomé', e: '' },
-    { a: 'Produccion', n: 'Pablo Daniel Ferreyra', c: 'Oficial Metalúrgico y Herrería de Tableros', sede: 'Remedios', e: '' },
-    { a: 'Produccion', n: 'Jorge Ariel Cardozo', c: 'Ayudante de Taller y Ensayos', sede: 'Santo Tomé', e: '' },
-    { a: 'AdmRRHH', n: 'Marta Susana Villalba', c: 'Servicios Generales y Mantenimiento Edilicio', sede: 'Remedios', e: '' },
-    { a: 'AdmRRHH', n: 'Eduardo Ramon Soto', c: 'Seguridad Patrimonial y Recepción', sede: 'Mosconi', e: '' }
+    // Comercial (2)
+    { a: 'Comercial', n: 'Esteban Nahuel Heredia', c: 'Auxiliar Técnico Comercial', sede: 'Oficina Mar del Plata', e: 'nheredia@esinel.com.ar' },
+    { a: 'Comercial', n: 'Tomas Noblia', c: 'Asistente de Compras', sede: 'Remedios', e: 'tnobllia@esinel.com.ar' }
   ];
 
   let activeAreaFilter = '';
   let activeViewMode = 'grid';
-  let onlyCorporate = false;
 
   let hallazgosAbiertos = {};
   try {
@@ -1199,18 +1121,9 @@
       .toUpperCase();
   }
 
-  function toggleOnlyCorporate() {
-    onlyCorporate = !onlyCorporate;
-    const btn = document.getElementById('btnOnlyCorporate');
-    btn.classList.toggle('active', onlyCorporate);
-    renderMetricsAndBar();
-    renderDirectory();
-  }
-
-  // Inicializar Sedes en Dropdown
   function initSedesDropdown() {
     const sedesSet = new Set();
-    ALL_PERSONNEL.forEach(p => sedesSet.add(p.sede));
+    DATA.forEach(p => sedesSet.add(p.sede));
     const select = document.getElementById('sedeFilter');
     Array.from(sedesSet).sort().forEach(sede => {
       const opt = document.createElement('option');
@@ -1220,20 +1133,12 @@
     });
   }
 
-  function getBaseData() {
-    return onlyCorporate 
-      ? ALL_PERSONNEL.filter(p => p.e && p.e.toLowerCase().endsWith('@esinel.com.ar'))
-      : ALL_PERSONNEL;
-  }
-
   function renderMetricsAndBar() {
     const banner = document.getElementById('stats-banner');
-    const baseList = getBaseData();
     const counts = {};
     let conHallazgosCount = 0;
-    const totalCorp = ALL_PERSONNEL.filter(p => p.e && p.e.toLowerCase().endsWith('@esinel.com.ar')).length;
 
-    baseList.forEach(p => {
+    DATA.forEach(p => {
       counts[p.a] = (counts[p.a] || 0) + 1;
       if (hallazgosAbiertos[p.n] > 0) conHallazgosCount++;
     });
@@ -1241,20 +1146,20 @@
     banner.innerHTML = `
       <div class="g-stat-box">
         <div class="g-stat-box-header">
-          <span>Nómina Total</span>
+          <span>Plantel Activo</span>
           <div class="g-stat-icon" style="background:#e8f0fe; color:#1a73e8;"><i class="ti ti-users"></i></div>
         </div>
-        <div class="g-stat-val">${ALL_PERSONNEL.length}</div>
-        <div class="g-stat-sub"><i class="ti ti-check" style="color:var(--g-green)"></i> Planta, Obras y Servicios</div>
+        <div class="g-stat-val">${DATA.length}</div>
+        <div class="g-stat-sub"><i class="ti ti-check" style="color:var(--g-green)"></i> 100% verificados @esinel.com.ar</div>
       </div>
 
       <div class="g-stat-box">
         <div class="g-stat-box-header">
-          <span>Cuentas @esinel</span>
-          <div class="g-stat-icon" style="background:#e6f4ea; color:#1e8e3e;"><i class="ti ti-at"></i></div>
+          <span>Áreas de Trabajo</span>
+          <div class="g-stat-icon" style="background:#f3e8fd; color:#9334e6;"><i class="ti ti-sitemap"></i></div>
         </div>
-        <div class="g-stat-val" style="color:var(--g-blue);">${totalCorp}</div>
-        <div class="g-stat-sub"><i class="ti ti-mail"></i> Correos corporativos activos</div>
+        <div class="g-stat-val">${Object.keys(AREAS).length}</div>
+        <div class="g-stat-sub"><i class="ti ti-info-circle"></i> Organigrama vigente E35</div>
       </div>
 
       <div class="g-stat-box">
@@ -1263,7 +1168,7 @@
           <div class="g-stat-icon" style="background:#fce8e6; color:#d93025;"><i class="ti ti-alert-triangle"></i></div>
         </div>
         <div class="g-stat-val" style="color:${conHallazgosCount > 0 ? 'var(--g-red)' : 'var(--g-green)'};">${conHallazgosCount}</div>
-        <div class="g-stat-sub">Responsables con hallazgos SGI</div>
+        <div class="g-stat-sub">Colaboradores con NC asignadas</div>
       </div>
 
       <div class="g-stat-box">
@@ -1271,19 +1176,19 @@
           <span>Sedes Operativas</span>
           <div class="g-stat-icon" style="background:#fef7e0; color:#e37400;"><i class="ti ti-building-community"></i></div>
         </div>
-        <div class="g-stat-val">${new Set(ALL_PERSONNEL.map(d=>d.sede)).size}</div>
+        <div class="g-stat-val">${new Set(DATA.map(d=>d.sede)).size}</div>
         <div class="g-stat-sub"><i class="ti ti-map-pin"></i> Buenos Aires / Santa Fe</div>
       </div>
     `;
 
-    // Barra de distribución
+    // Barra de distribución porcentual
     const track = document.getElementById('dist-track');
     track.innerHTML = '';
-    const total = baseList.length;
+    const total = DATA.length;
     let summaryParts = [];
 
     Object.entries(counts).forEach(([areaKey, qty]) => {
-      const pct = total ? ((qty / total) * 100).toFixed(1) : 0;
+      const pct = ((qty / total) * 100).toFixed(1);
       const conf = AREAS[areaKey] || { color: '#9aa0a6', label: areaKey };
       const segment = document.createElement('div');
       segment.className = 'g-dist-segment';
@@ -1296,16 +1201,16 @@
 
     document.getElementById('dist-summary-text').textContent = summaryParts.join(' · ');
 
-    // Render chips
+    // Chips de filtrado
     const chipsRow = document.getElementById('areaChipsRow');
     chipsRow.innerHTML = `
       <span class="g-chip-label">Áreas:</span>
       <button class="g-chip ${activeAreaFilter === '' ? 'active' : ''}" onclick="setAreaFilter('')">
         <span>Todas</span>
-        <span class="g-chip-badge">${baseList.length}</span>
+        <span class="g-chip-badge">${DATA.length}</span>
       </button>
     ` + Object.entries(counts).map(([areaKey, qty]) => {
-      const conf = AREAS[areaKey] || { label: areaKey, color: '#5f6368', icon: 'ti-tag' };
+      const conf = AREAS[areaKey];
       return `
         <button class="g-chip ${activeAreaFilter === areaKey ? 'active' : ''}" onclick="setAreaFilter('${areaKey}')">
           <i class="ti ${conf.icon}" style="font-size:13px; color:${conf.color}"></i>
@@ -1342,16 +1247,14 @@
     const clearBtn = document.getElementById('clearSearchBtn');
     if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
 
-    const baseList = getBaseData();
-
-    const filtered = baseList.filter(p => {
+    const filtered = DATA.filter(p => {
       const matchArea = !activeAreaFilter || p.a === activeAreaFilter;
       const matchSede = !sedeFilter || p.sede === sedeFilter;
       const matchText = !q || 
         p.n.toLowerCase().includes(q) || 
         p.c.toLowerCase().includes(q) || 
         p.sede.toLowerCase().includes(q) ||
-        (p.e && p.e.toLowerCase().includes(q));
+        p.e.toLowerCase().includes(q);
       return matchArea && matchSede && matchText;
     });
 
@@ -1364,17 +1267,13 @@
       return;
     }
 
-    // 1. Grid Cards
+    // 1. Render Mosaico
     grid.innerHTML = filtered.map(p => {
       const conf = AREAS[p.a] || { label: p.a, color: '#5f6368' };
       const cnt = hallazgosAbiertos[p.n] || 0;
       const badgeH = cnt > 0 
         ? `<span class="g-hallazgo-pill" title="${cnt} hallazgos abiertos bajo su responsabilidad"><i class="ti ti-alert-triangle"></i> ${cnt} SGI</span>`
         : '';
-      
-      const emailBadge = p.e 
-        ? `<span class="g-email-badge">@esinel</span>`
-        : `<span class="g-op-badge">Operativo</span>`;
 
       return `
         <div class="g-user-card theme-${p.a}" onclick="openDrawer('${encodeURIComponent(JSON.stringify(p))}')">
@@ -1390,11 +1289,8 @@
               </div>
             </div>
             
-            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-              <div class="g-area-tag">
-                <i class="ti ${conf.icon}"></i> ${conf.label}
-              </div>
-              ${emailBadge}
+            <div class="g-area-tag">
+              <i class="ti ${conf.icon}"></i> ${conf.label}
             </div>
           </div>
 
@@ -1405,17 +1301,14 @@
             </div>
             <div class="g-meta-item">
               <i class="ti ti-mail"></i>
-              ${p.e 
-                ? `<a href="mailto:${p.e}" class="g-email-link" onclick="event.stopPropagation()">${p.e}</a>`
-                : `<span class="g-no-email">Gestión interna por Jefatura</span>`
-              }
+              <a href="mailto:${p.e}" class="g-email-link" onclick="event.stopPropagation()">${p.e}</a>
             </div>
           </div>
         </div>
       `;
     }).join('');
 
-    // 2. Table Rows
+    // 2. Render Tabla
     tbody.innerHTML = filtered.map(p => {
       const conf = AREAS[p.a] || { label: p.a, color: '#5f6368' };
       const cnt = hallazgosAbiertos[p.n] || 0;
@@ -1439,18 +1332,13 @@
           </td>
           <td>📍 ${p.sede}</td>
           <td>
-            ${p.e 
-              ? `<a href="mailto:${p.e}" class="g-email-link" onclick="event.stopPropagation()">${p.e}</a>`
-              : `<span class="g-no-email">Sin casilla individual</span>`
-            }
+            <a href="mailto:${p.e}" class="g-email-link" onclick="event.stopPropagation()">${p.e}</a>
           </td>
           <td>${badgeH}</td>
           <td style="text-align:right;">
-            ${p.e ? `
-              <button class="g-btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); copyText('${p.e}', 'Correo copiado');" title="Copiar correo">
-                <i class="ti ti-copy"></i>
-              </button>
-            ` : `<span style="color:#cbd5e1;">—</span>`}
+            <button class="g-btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); copyText('${p.e}', 'Correo copiado');" title="Copiar correo">
+              <i class="ti ti-copy"></i>
+            </button>
           </td>
         </tr>
       `;
@@ -1470,22 +1358,7 @@
     document.getElementById('drawerRole').textContent = p.c;
     document.getElementById('drawerArea').textContent = conf.label;
     document.getElementById('drawerSede').textContent = p.sede;
-    
-    const emailEl = document.getElementById('drawerEmail');
-    const copyBtn = document.getElementById('drawerCopyBtn');
-    const mailToBtn = document.getElementById('drawerMailToBtn');
-
-    if (p.e) {
-      emailEl.textContent = p.e;
-      copyBtn.style.display = 'inline-flex';
-      mailToBtn.style.display = 'inline-flex';
-      copyBtn.onclick = () => copyText(p.e, 'Correo copiado al portapapeles');
-      mailToBtn.href = `mailto:${p.e}`;
-    } else {
-      emailEl.innerHTML = '<span style="color:#94a3b8; font-style:italic;">Personal operativo de obra/taller (gestión canalizada por supervisión directa)</span>';
-      copyBtn.style.display = 'none';
-      mailToBtn.style.display = 'none';
-    }
+    document.getElementById('drawerEmail').textContent = p.e;
 
     const hRow = document.getElementById('drawerHallazgosRow');
     const hText = document.getElementById('drawerHallazgosText');
@@ -1495,6 +1368,9 @@
     } else {
       hText.textContent = 'Sin hallazgos pendientes en el ejercicio actual.';
     }
+
+    document.getElementById('drawerCopyBtn').onclick = () => copyText(p.e, 'Correo copiado al portapapeles');
+    document.getElementById('drawerMailToBtn').href = `mailto:${p.e}`;
 
     document.getElementById('drawerOverlay').style.display = 'flex';
   }
@@ -1508,9 +1384,7 @@
     const toast = document.getElementById('toastMessage');
     document.getElementById('toastText').textContent = text;
     toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2800);
+    setTimeout(() => { toast.classList.remove('show'); }, 2800);
   }
 
   function copyText(text, successMsg) {
@@ -1534,16 +1408,15 @@
   }
 
   function copyAllEmails() {
-    const list = ALL_PERSONNEL.filter(p => p.e && p.e.endsWith('@esinel.com.ar')).map(p => p.e).join('; ');
-    copyText(list, `35 correos corporativos copiados al portapapeles`);
+    const list = DATA.map(p => p.e).join('; ');
+    copyText(list, `${DATA.length} correos copiados al portapapeles`);
   }
 
   function exportDirectoryCSV() {
-    let csv = 'Nombre,Cargo,Área,Sede,Correo Corporativo,Tipo,Hallazgos Abiertos\n';
-    getBaseData().forEach(p => {
+    let csv = 'Nombre,Cargo,Área,Sede,Correo Corporativo,Hallazgos Abiertos\n';
+    DATA.forEach(p => {
       const cnt = hallazgosAbiertos[p.n] || 0;
-      const tipo = p.e ? 'Corporativo' : 'Operativo';
-      csv += `"${p.n}","${p.c}","${AREAS[p.a]?.label || p.a}","${p.sede}","${p.e || 'N/A'}","${tipo}",${cnt}\n`;
+      csv += `"${p.n}","${p.c}","${AREAS[p.a]?.label || p.a}","${p.sede}","${p.e}",${cnt}\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1557,7 +1430,6 @@
     showToast('Archivo CSV descargado con éxito');
   }
 
-  // Keyboard Shortcuts (Esc to close, Ctrl+K or Cmd+K to search)
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeDrawer();
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
