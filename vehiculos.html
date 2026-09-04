@@ -1,66 +1,70 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SGI - Gestión de Vehículos</title>
+<title>SGI - GestiÃ³n de VehÃ­culos</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
+:root{--bg:#f1f5f9;--bg2:#fff;--tx:#0f172a;--tx2:#64748b;--bdr:#e2e8f0}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--tx2:#94a3b8;--bdr:#1e293b}}
+@media(prefers-color-scheme:dark){body{background:var(--bg);color:var(--tx)}.analysis,.modal,.ov .modal{background:var(--bg2)!important;border-color:var(--bdr)!important}.card,.stat{background:var(--bg2)!important;border-color:var(--bdr)!important}.toolbar input{background:var(--bg2)!important;border-color:var(--bdr)!important;color:var(--tx)!important}.an-kpi{background:var(--bg)!important}.c-dom,.c-marca,.card-name,.an-kpi-val,.stat-val{color:var(--tx)!important}.sub,.c-cond,.stat-lbl,.c-mid,.chart-title,.cb-label{color:var(--tx2)!important}}
+
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
 .wrap{max-width:1320px;margin:0 auto;padding:24px}
 h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .sub{color:#64748b;font-size:13px;margin-bottom:20px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px}
+.stat{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:14px 16px}
 .stat-lbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .stat-val{font-size:26px;font-weight:700}
 .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.toolbar input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;flex:1;min-width:220px}
+.toolbar input{padding:8px 12px;border:1px solid var(--bdr);border-radius:8px;font-size:13px;background:#fff;outline:none;flex:1;min-width:220px}
 .toolbar input:focus{border-color:#6366f1;box-shadow:0 0 0 3px #6366f120}
 .fbtn{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#475569}
 .fbtn:hover{border-color:#cbd5e1}
 .fbtn.act{border-color:#6366f1;background:#eef2ff;color:#4338ca}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;border-left:4px solid #cbd5e1;cursor:pointer;transition:box-shadow .15s,transform .1s;overflow:hidden}
+.card{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:16px;border-left:4px solid #cbd5e1;cursor:pointer;transition:box-shadow .15s,transform .1s;overflow:hidden}
 .card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);transform:translateY(-1px)}
 .c-photo{width:calc(100% + 32px);margin:-16px -16px 12px;height:160px;object-fit:contain;display:block;background:#f8fafc}
 .modal-photo{width:100%;height:220px;object-fit:contain;border-radius:10px;margin-bottom:14px;display:block;background:#f8fafc}
 .c-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:6px}
-.c-dom{font-family:'SF Mono',Consolas,monospace;font-size:13px;font-weight:700;color:#0f172a}
+.c-dom{font-family:'SF Mono',Consolas,monospace;font-size:13px;font-weight:700;color:var(--tx)}
 .c-marca{font-size:12.5px;color:#475569;margin-top:1px}
 .c-cond{font-size:11.5px;color:#94a3b8;margin-top:1px}
 .pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap}
 .c-mid{display:flex;gap:14px;margin:10px 0;font-size:12px;color:#475569}
-.c-mid b{display:block;font-size:15px;color:#0f172a;font-weight:700}
+.c-mid b{display:block;font-size:15px;color:var(--tx);font-weight:700}
 .alerts{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .alert-chip{font-size:10.5px;font-weight:600;padding:3px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px}
 .cost-row{display:flex;justify-content:space-between;font-size:11.5px;color:#64748b;border-top:1px solid #f1f5f9;padding-top:8px;margin-top:8px}
-.cost-row b{color:#0f172a;font-weight:700}
+.cost-row b{color:var(--tx);font-weight:700}
 .empty{text-align:center;padding:48px;color:#94a3b8;font-size:14px}
-.analysis{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.analysis{background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:20px 22px;margin-bottom:22px}
 .analysis-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;flex-wrap:wrap;gap:8px}
 .analysis-hd h2{font-size:16px;font-weight:700}
-.analysis-hd .per{font-size:12px;color:#94a3b8;background:#f1f5f9;padding:3px 10px;border-radius:10px}
+.analysis-hd .per{font-size:12px;color:#94a3b8;background:var(--bg);padding:3px 10px;border-radius:10px}
 .an-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 18px}
 .an-kpi{background:#f8fafc;border-radius:10px;padding:10px 12px}
 .an-kpi-lbl{font-size:10.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.an-kpi-val{font-size:17px;font-weight:700;color:#0f172a}
+.an-kpi-val{font-size:17px;font-weight:700;color:var(--tx)}
 .an-kpi-sub{font-size:11px;color:#64748b;margin-top:1px}
 .charts-row{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
 .chart-box{position:relative;height:340px}
 .chart-title{font-size:12px;font-weight:700;color:#475569;margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
 .metric-tabs{display:flex;gap:4px;flex-wrap:wrap}
-.mtab{font-size:10px;font-weight:700;text-transform:none;letter-spacing:0;padding:3px 8px;border-radius:10px;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#64748b}
+.mtab{font-size:10px;font-weight:700;text-transform:none;letter-spacing:0;padding:3px 8px;border-radius:10px;cursor:pointer;border:1px solid var(--bdr);background:#fff;color:#64748b}
 .mtab:hover{border-color:#cbd5e1}
 .mtab.act{border-color:#6366f1;background:#eef2ff;color:#4338ca}
 .mo-chart-box{position:relative;height:220px;margin-top:10px}
 .cost-breakdown{margin-top:4px}
 .cb-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px}
 .cb-label{width:130px;color:#475569;flex-shrink:0}
-.cb-bar-wrap{flex:1;background:#f1f5f9;border-radius:4px;height:12px;overflow:hidden}
+.cb-bar-wrap{flex:1;background:var(--bg);border-radius:4px;height:12px;overflow:hidden}
 .cb-bar{height:100%;border-radius:4px;transition:width .4s}
-.cb-vals{width:170px;flex-shrink:0;display:flex;justify-content:space-between;color:#0f172a;font-weight:600}
+.cb-vals{width:170px;flex-shrink:0;display:flex;justify-content:space-between;color:var(--tx);font-weight:600}
 .cb-vals span{color:#64748b;font-weight:400;font-size:11px}
 @media (max-width:900px){.charts-row{grid-template-columns:1fr}.an-kpis{grid-template-columns:repeat(2,1fr)}}
 .ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -76,12 +80,12 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
 .kv{background:#f8fafc;border-radius:8px;padding:8px 10px}
 .kv-lbl{font-size:10.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
-.kv-val{font-size:13px;color:#0f172a;font-weight:600}
+.kv-val{font-size:13px;color:var(--tx);font-weight:600}
 .kv.warn{background:#fef9c3}
 .kv.bad{background:#fee2e2}
 .kv.ok{background:#dcfce7}
 .rankings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
-.rank-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px}
+.rank-card{background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:16px 18px}
 .rank-hd{font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px}
 .rank-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f8fafc}
 .rank-row:last-child{border-bottom:none}
@@ -90,13 +94,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .rank-info{flex:1;min-width:0}
 .rank-dom{font-size:12.5px;font-weight:700;font-family:'SF Mono',Consolas,monospace}
 .rank-sub{font-size:11px;color:#94a3b8}
-.rank-val{font-size:12.5px;font-weight:700;color:#0f172a;white-space:nowrap}
+.rank-val{font-size:12.5px;font-weight:700;color:var(--tx);white-space:nowrap}
 @media (max-width:900px){.rankings{grid-template-columns:1fr}}
-.notas{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:22px}
-.comp{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.notas{background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.comp{background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:20px 22px;margin-bottom:22px}
 .comp-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
 .comp-hd h2{font-size:16px;font-weight:700}
-.comp-vs{font-size:12px;color:#94a3b8;background:#f1f5f9;padding:3px 10px;border-radius:10px}
+.comp-vs{font-size:12px;color:#94a3b8;background:var(--bg);padding:3px 10px;border-radius:10px}
 .comp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .ckpi{background:#f8fafc;border-radius:10px;padding:12px 14px}
 .ckpi-lbl{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
@@ -138,7 +142,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .aa-row:last-child{border-bottom:none}
 .aa-row .rv{font-weight:700;font-family:'SF Mono',Consolas,monospace;font-size:10.5px;color:#6366f1;flex-shrink:0}
 .aa-row .rn{color:#334155;flex:1}
-.aa-row .rm{font-weight:600;color:#0f172a;flex-shrink:0;white-space:nowrap}
+.aa-row .rm{font-weight:600;color:var(--tx);flex-shrink:0;white-space:nowrap}
 .aa-row .rd{font-size:10px;margin-left:2px}
 .aa-row .rd.up{color:#dc2626}.aa-row .rd.dn{color:#16a34a}
 .aa-note{font-size:11px;color:#64748b;margin-top:10px;font-style:italic}
@@ -159,13 +163,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 .informe-ov.open{display:block}
 .informe-doc{background:#fff;max-width:880px;margin:0 auto;border-radius:14px;padding:36px 40px;position:relative}
 .informe-toolbar{position:sticky;top:0;display:flex;justify-content:flex-end;gap:8px;margin-bottom:-8px}
-.informe-toolbar button{border-radius:8px;border:1px solid #e2e8f0;background:#fff;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;color:#475569}
-.informe-toolbar button.primary{background:#0f172a;color:#fff;border-color:#0f172a}
+.informe-toolbar button{border-radius:8px;border:1px solid var(--bdr);background:#fff;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;color:#475569}
+.informe-toolbar button.primary{background:#0f172a;color:#fff;border-color:var(--tx)}
 .inf-hd{text-align:center;margin-bottom:26px;padding-bottom:18px;border-bottom:2px solid #0f172a}
 .inf-hd h1{font-size:22px}
 .inf-hd .inf-sub{color:#64748b;font-size:13px;margin-top:4px}
 .inf-sec{margin-bottom:24px}
-.inf-sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#0f172a;border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:12px}
+.inf-sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--tx);border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:12px}
 .inf-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .inf-kpi{background:#f8fafc;border-radius:10px;padding:10px 12px;text-align:center}
 .inf-kpi-lbl{font-size:10px;color:#94a3b8;text-transform:uppercase}
@@ -184,8 +188,12 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 </style>
 </head>
 <body>
-<!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
+<!-- â–¼â–¼â–¼ ESINEL GLOBAL HEADER â€” do not remove â–¼â–¼â–¼ -->
 <style>
+:root{--bg:#f1f5f9;--bg2:#fff;--tx:#0f172a;--tx2:#64748b;--bdr:#e2e8f0}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--tx2:#94a3b8;--bdr:#1e293b}}
+@media(prefers-color-scheme:dark){body{background:var(--bg);color:var(--tx)}.analysis,.modal,.ov .modal{background:var(--bg2)!important;border-color:var(--bdr)!important}.card,.stat{background:var(--bg2)!important;border-color:var(--bdr)!important}.toolbar input{background:var(--bg2)!important;border-color:var(--bdr)!important;color:var(--tx)!important}.an-kpi{background:var(--bg)!important}.c-dom,.c-marca,.card-name,.an-kpi-val,.stat-val{color:var(--tx)!important}.sub,.c-cond,.stat-lbl,.c-mid,.chart-title,.cb-label{color:var(--tx2)!important}}
+
 .esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
 .esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
 .esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
@@ -223,24 +231,24 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 </svg>
       <div>
         <div class="esinel-logo-name">ESINEL</div>
-        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
+        <div class="esinel-logo-tagline">Obras ElÃ©ctricas Â· IngenierÃ­a Â· Tableros</div>
         <div class="esinel-logo-certs">
           <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
         </div>
       </div>
     </a>
-    <div class="esinel-badge">SGI · Gestión Integrada</div>
+    <div class="esinel-badge">SGI Â· GestiÃ³n Integrada</div>
   </div>
   <nav class="esinel-nav">
-    <a class="esinel-nav-item" href="index.html">🏠 Inicio</a>
-    <a class="esinel-nav-item" href="hallazgos.html">⚠️ Hallazgos</a>
-    <a class="esinel-nav-item" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
-    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
-    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
-    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
-    <a class="esinel-nav-item esinel-active" href="vehiculos.html">🚗 Vehículos</a>
-    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
-      <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+    <a class="esinel-nav-item" href="index.html">ðŸ  Inicio</a>
+    <a class="esinel-nav-item" href="hallazgos.html">âš ï¸ Hallazgos</a>
+    <a class="esinel-nav-item" href="agenda-auditoria.html">ðŸ“‹ Agenda AuditorÃ­a</a>
+    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">ðŸ“Š Informe</a>
+    <a class="esinel-nav-item" href="contexto.html">ðŸŒ Contexto</a>
+    <a class="esinel-nav-item" href="indicadores.html">ðŸ“ˆ Indicadores</a>
+    <a class="esinel-nav-item esinel-active" href="vehiculos.html">ðŸš— VehÃ­culos</a>
+    <a class="esinel-nav-item" href="documentos.html">ðŸ“„ Documentos</a>
+      <a class="esinel-nav-item" href="personal.html">ðŸ‘¥ Personal</a>
   </nav>
 </div>
 <script>(function(){try{
@@ -254,17 +262,17 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
       a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
   });
 }catch(e){}})()</script>
-<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
+<!-- â–²â–²â–² /ESINEL GLOBAL HEADER â–²â–²â–² -->
 <div class="wrap">
   <div class="title-row">
-    <div><h1>Gestión de Vehículos</h1>
-    <div class="sub">Esinel S.R.L. &middot; RO-12-04 &middot; mantenimiento, documentación y costos por vehículo</div></div>
-    <button class="informe-btn no-print" onclick="openInforme()">📄 Ver informe semestral</button>
+    <div><h1>GestiÃ³n de VehÃ­culos</h1>
+    <div class="sub">Esinel S.R.L. &middot; RO-12-04 &middot; mantenimiento, documentaciÃ³n y costos por vehÃ­culo</div></div>
+    <button class="informe-btn no-print" onclick="openInforme()">ðŸ“„ Ver informe semestral</button>
     <div class="no-print" style="position:relative;display:inline-block">
-      <button class="informe-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'" style="background:#f97316">🕓 Historial</button>
-      <div id="historial-menu" style="display:none;position:absolute;right:0;top:110%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 4px 16px #0002;min-width:220px;z-index:100;padding:6px 0">
-        <a href="vehiculos-1-2026.html" style="display:block;padding:10px 16px;font-size:13px;color:#0f172a;text-decoration:none;border-top:1px solid #f1f5f9" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">📋 1° Semestre 2026</a>
-        <a href="vehiculos-2-2025.html" style="display:block;padding:10px 16px;font-size:13px;color:#0f172a;text-decoration:none;border-top:1px solid #f1f5f9" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">📋 2° Semestre 2025</a>
+      <button class="informe-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'" style="background:#f97316">ðŸ•“ Historial</button>
+      <div id="historial-menu" style="display:none;position:absolute;right:0;top:110%;background:#fff;border:1px solid var(--bdr);border-radius:10px;box-shadow:0 4px 16px #0002;min-width:220px;z-index:100;padding:6px 0">
+        <a href="vehiculos-1-2026.html" style="display:block;padding:10px 16px;font-size:13px;color:var(--tx);text-decoration:none;border-top:1px solid #f1f5f9" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">ðŸ“‹ 1Â° Semestre 2026</a>
+        <a href="vehiculos-2-2025.html" style="display:block;padding:10px 16px;font-size:13px;color:var(--tx);text-decoration:none;border-top:1px solid #f1f5f9" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">ðŸ“‹ 2Â° Semestre 2025</a>
       </div>
     </div>
   </div>
@@ -308,30 +316,30 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
     <div class="comp-hd">
       <div class="comp-hd-wrap">
         <h2>Comparativa semestral</h2>
-        <button class="ti-btn" onclick="tiTog(this,'ti-comp')" aria-label="Información sobre esta sección">i</button>
+        <button class="ti-btn" onclick="tiTog(this,'ti-comp')" aria-label="InformaciÃ³n sobre esta secciÃ³n">i</button>
       </div>
       <span class="comp-vs" id="comp-vs">&mdash;</span>
     </div>
     <div class="ti-panel" id="ti-comp">
       <div class="ti-inner">
-        <div><div class="ti-lbl">Qué mide</div><div class="ti-txt">Tabla lado a lado del costo total, km y costo/km de cada vehículo en el período actual vs el anterior. Solo incluye vehículos presentes en ambos períodos.</div></div>
-        <div><div class="ti-lbl">Cómo interpretar</div><div class="ti-txt">Δ Costo muestra la variación en pesos. Rojo = aumentó. Verde = bajó. Vehículos nuevos o dados de baja en el período no aparecen aquí.</div></div>
+        <div><div class="ti-lbl">QuÃ© mide</div><div class="ti-txt">Tabla lado a lado del costo total, km y costo/km de cada vehÃ­culo en el perÃ­odo actual vs el anterior. Solo incluye vehÃ­culos presentes en ambos perÃ­odos.</div></div>
+        <div><div class="ti-lbl">CÃ³mo interpretar</div><div class="ti-txt">Î” Costo muestra la variaciÃ³n en pesos. Rojo = aumentÃ³. Verde = bajÃ³. VehÃ­culos nuevos o dados de baja en el perÃ­odo no aparecen aquÃ­.</div></div>
       </div>
     </div>
     <div class="comp-kpis" id="comp-kpis"></div>
-    <div style="font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px;display:flex;align-items:center;gap:8px">Por vehículo <button class="ti-btn" onclick="tiTog(this,'ti-veh')" aria-label="Información sobre esta sección">i</button></div>
+    <div style="font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px;display:flex;align-items:center;gap:8px">Por vehÃ­culo <button class="ti-btn" onclick="tiTog(this,'ti-veh')" aria-label="InformaciÃ³n sobre esta secciÃ³n">i</button></div>
     <div class="ti-panel" id="ti-veh">
       <div class="ti-inner" style="margin-bottom:10px">
-        <div><div class="ti-lbl">Qué mide</div><div class="ti-txt">Desglose individual de combustible, telepeaje, mantenimiento y costo fijo. El costo de oportunidad (valor de mercado × 20% anual ÷ 2) se muestra como referencia, no integra el costo operativo.</div></div>
-        <div><div class="ti-lbl">Cómo interpretar</div><div class="ti-txt">El costo/km es el indicador clave de eficiencia. Un costo total bajo con pocos km puede esconder un costo/km alto — señal de subutilización del vehículo.</div></div>
+        <div><div class="ti-lbl">QuÃ© mide</div><div class="ti-txt">Desglose individual de combustible, telepeaje, mantenimiento y costo fijo. El costo de oportunidad (valor de mercado Ã— 20% anual Ã· 2) se muestra como referencia, no integra el costo operativo.</div></div>
+        <div><div class="ti-lbl">CÃ³mo interpretar</div><div class="ti-txt">El costo/km es el indicador clave de eficiencia. Un costo total bajo con pocos km puede esconder un costo/km alto â€” seÃ±al de subutilizaciÃ³n del vehÃ­culo.</div></div>
       </div>
     </div>
     <div style="overflow-x:auto"><table class="comp-table" id="comp-table">
       <thead><tr>
-        <th>Vehículo</th>
-        <th>Costo total prev</th><th>Costo total act</th><th>Δ Costo</th>
-        <th>Km prev</th><th>Km act</th><th>Δ Km</th>
-        <th>$/km prev</th><th>$/km act</th><th>Δ $/km</th>
+        <th>VehÃ­culo</th>
+        <th>Costo total prev</th><th>Costo total act</th><th>Î” Costo</th>
+        <th>Km prev</th><th>Km act</th><th>Î” Km</th>
+        <th>$/km prev</th><th>$/km act</th><th>Î” $/km</th>
       </tr></thead>
       <tbody id="comp-tbody"></tbody>
     </table></div>
@@ -362,7 +370,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 <div class="informe-ov" id="informe-ov">
   <div class="informe-doc">
     <div class="informe-toolbar no-print">
-      <button onclick="window.print()" class="primary">🖨️ Imprimir / Exportar PDF</button>
+      <button onclick="window.print()" class="primary">ðŸ–¨ï¸ Imprimir / Exportar PDF</button>
       <button onclick="closeInforme()">Cerrar</button>
     </div>
     <div id="informe-content"></div>
@@ -370,17 +378,17 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
 </div>
 
 <script>
-const COSTOS_PREV = {"Vehiculo":{"periodo":"2° Semestre 2025","total":null,"km":null,"costoKm":null,"combustible":null,"combustibleKm":null,"telepeaje":null,"telepeajeKm":null,"mantenimiento":null,"mantenimientoKm":null,"costoFijo":null,"costoFijoKm":null},"AE588IY":{"periodo":"2° Semestre 2025","total":1188687.7300000002,"km":2656,"costoKm":447.5480911144579,"combustible":142880,"combustibleKm":53.795180722891565,"telepeaje":78223.74,"telepeajeKm":29.4517093373494,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":967583.99,"costoFijoKm":364.30120105421685},"IPI344":{"periodo":"2° Semestre 2025","total":2739278.09,"km":7644,"costoKm":358.3566313448456,"combustible":819947.35,"combustibleKm":107.26679094714808,"telepeaje":208924.15,"telepeajeKm":27.331783097854526,"mantenimiento":934000,"mantenimientoKm":122.18733647305076,"costoFijo":776406.59,"costoFijoKm":101.57072082679225},"MIW828":{"periodo":"2° Semestre 2025","total":2733082.69,"km":7334,"costoKm":372.6592159803654,"combustible":944199.4299999999,"combustibleKm":128.74276383965093,"telepeaje":261254.58000000002,"telepeajeKm":35.622386146713936,"mantenimiento":844393.99,"mantenimientoKm":115.13416825743114,"costoFijo":683234.6900000001,"costoFijoKm":93.1598977365694},"AE588IZ":{"periodo":"2° Semestre 2025","total":2295716.36,"km":9477,"costoKm":242.2408314867574,"combustible":702388.0700000001,"combustibleKm":74.11502268650418,"telepeaje":489097.9,"telepeajeKm":51.60893742745595,"mantenimiento":229500,"mantenimientoKm":24.216524216524217,"costoFijo":874730.39,"costoFijoKm":92.30034715627308},"OEO221":{"periodo":"2° Semestre 2025","total":2892900.33,"km":8279,"costoKm":349.42629906993596,"combustible":1288559.68,"combustibleKm":155.64194709505978,"telepeaje":411448.8,"telepeajeKm":49.69788621814229,"mantenimiento":484000.02,"mantenimientoKm":58.46116922333616,"costoFijo":708891.83,"costoFijoKm":85.62529653339774},"KCY799":{"periodo":"2° Semestre 2025","total":2495974.7,"km":8860,"costoKm":281.7127200902935,"combustible":1034357.24,"combustibleKm":116.74460948081264,"telepeaje":170731.04,"telepeajeKm":19.2698690744921,"mantenimiento":578307,"mantenimientoKm":65.2716704288939,"costoFijo":712579.42,"costoFijoKm":80.42657110609481},"PJQ411":{"periodo":"2° Semestre 2025","total":2799862.9800000004,"km":13210,"costoKm":211.95026343679035,"combustible":1061894,"combustibleKm":80.38561695685087,"telepeaje":633647.9,"telepeajeKm":47.9672899318698,"mantenimiento":229399.99,"mantenimientoKm":17.36563133989402,"costoFijo":874921.09,"costoFijoKm":66.23172520817562},"MXM871":{"periodo":"2° Semestre 2025","total":4024833.0100000007,"km":14561,"costoKm":276.41185426825086,"combustible":2126292.93,"combustibleKm":146.02657303756612,"telepeaje":774769.02,"telepeajeKm":53.208503536845,"mantenimiento":245000,"mantenimientoKm":16.82576746102603,"costoFijo":878771.06,"costoFijoKm":60.351010232813685},"AB755RD":{"periodo":"2° Semestre 2025","total":5146014.07,"km":15550,"costoKm":330.93338070739554,"combustible":2121435.93,"combustibleKm":136.42674790996784,"telepeaje":795015.7,"telepeajeKm":51.1264115755627,"mantenimiento":1377499.99,"mantenimientoKm":88.58520836012862,"costoFijo":852062.4500000001,"costoFijoKm":54.79501286173634},"AD076LH":{"periodo":"2° Semestre 2025","total":2879810.12,"km":15570,"costoKm":184.95890301862556,"combustible":984708.3200000001,"combustibleKm":63.24395118818241,"telepeaje":729738.35,"telepeajeKm":46.868230571612074,"mantenimiento":376499.99,"mantenimientoKm":24.181116891457933,"costoFijo":788863.4600000001,"costoFijoKm":50.665604367373156},"AB124BW":{"periodo":"2° Semestre 2025","total":5243685.06,"km":20057,"costoKm":261.43915141845736,"combustible":2970014.71,"combustibleKm":148.0787111731565,"telepeaje":872342.8999999999,"telepeajeKm":43.49318941018098,"mantenimiento":616555,"mantenimientoKm":30.74014059929202,"costoFijo":784772.4500000001,"costoFijoKm":39.12711023582789},"AB333LK":{"periodo":"2° Semestre 2025","total":5437899.05,"km":21155,"costoKm":257.0502978019381,"combustible":3239379.0300000003,"combustibleKm":153.12592909477667,"telepeaje":1106740,"telepeajeKm":52.315764594658475,"mantenimiento":269999.99,"mantenimientoKm":12.76293973056015,"costoFijo":821780.03,"costoFijoKm":38.845664381942804},"AD852CL":{"periodo":"2° Semestre 2025","total":4148430.02,"km":31235,"costoKm":132.81351112534017,"combustible":2248339.19,"combustibleKm":71.98140515447415,"telepeaje":614801.4,"telepeajeKm":19.683092684488557,"mantenimiento":406234,"mantenimientoKm":13.005730750760366,"costoFijo":879055.43,"costoFijoKm":28.143282535617097}};
-const PERIODO_PREV = '2° Semestre 2025';
-const VEHICULOS = [{"dominio":"IPI344","marca":"Fiat Van Fire MPI","anio":"2010","conductor":"Sepulveda, Juan","km":406475,"kmFecha":"28/07/2026","valorMercado":9000000,"estetica":{"ext":"Muy bien","int":"Bien"},"agua":{"ultima":"04/05/2026","frec":381371,"prox":421371},"aceite":{"ultima":"16/12/2025","frec":398194,"prox":408194},"correa":{"ultima":"16/09/2022","frec":"321830","prox":410000},"vtv":{"ultima":"25/08/2026","proxima":{"iso":"2027-08-25","text":"25/08/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"04/12/2023","compraProxima":"4 Nuevas","rotacionUltima":"","rotacionProxima":"405000"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"21/06/2022","nombre":"Candia","descripcion":"Frenos"},"matafuego":{"ultima":"14/08/2026","proxima":{"iso":"2027-08-14","text":"14/08/2027"}},"observaciones":{"fecha":"13/05/2021","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":600304.41,"km":0,"costoKm":null,"combustible":296940.09,"combustibleKm":null,"telepeaje":82426.79,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":220937.52999999997,"costoFijoKm":null,"costoOportunidad":1575000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"KCY799","marca":"Renault Fluence 1.6","anio":"2011","conductor":"Lisandro Fissolo","km":191409,"kmFecha":"28/08/2026","valorMercado":13500000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"18/05/2026","frec":180100,"prox":220100},"aceite":{"ultima":"15/04/2026","frec":187355,"prox":197355},"correa":{"ultima":"11/02/2025","frec":"50000","prox":205000},"vtv":{"ultima":"07/11/2025","proxima":{"iso":"2026-11-07","text":"07/11/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"12/05/2026","compraProxima":"4 Nuevas","rotacionUltima":"","rotacionProxima":"197000"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"29/08/2025","nombre":"Gigliotti","descripcion":"Embrague + bocina + carga de A/C"},"matafuego":{"ultima":"05/05/2026","proxima":{"iso":"2027-05-05","text":"05/05/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":473746.53,"km":0,"costoKm":null,"combustible":128694.48,"combustibleKm":null,"telepeaje":12559.34,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":332492.71,"costoFijoKm":null,"costoOportunidad":2362500,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"PJQ411","marca":"Toyota Etios","anio":"2015","conductor":"Remedios","km":98225,"kmFecha":"28/08/2026","valorMercado":14900000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/05/2026","frec":80000,"prox":120000},"aceite":{"ultima":"06/07/2026","frec":96000,"prox":106000},"correa":{"ultima":"No se realizo","frec":"60.000 a 100.000","prox":100000},"vtv":{"ultima":"25/11/2025","proxima":{"iso":"2026-11-25","text":"25/11/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"ACTUALIZAR","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"05/02/2026","nombre":"Gigliotti","descripcion":"2 Amortiguadores delanteros"},"matafuego":{"ultima":"12/08/2026","proxima":{"iso":"2027-08-12","text":"12/08/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":434331.56999999995,"km":0,"costoKm":null,"combustible":0,"combustibleKm":null,"telepeaje":11599.34,"telepeajeKm":null,"mantenimiento":14000,"mantenimientoKm":null,"costoFijo":408732.23000000004,"costoFijoKm":null,"costoOportunidad":2607500,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"MIW828","marca":"Fiat Fiorino Fire","anio":"2013","conductor":"De Abrantes","km":325206,"kmFecha":"28/08/2026","valorMercado":10000000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"20/05/2026","frec":300100,"prox":340100},"aceite":{"ultima":"15/04/2026","frec":320733,"prox":330733},"correa":{"ultima":"06/12/2023","frec":"288555","prox":328555},"vtv":{"ultima":"14/05/2026","proxima":{"iso":"2027-05-14","text":"14/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"08/07/2026","compraProxima":"Tue Nov 10 2026 05:00:00 GMT-0300 (hora estándar de Argentina)","rotacionUltima":"08/07/2026","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"19/02/2022","nombre":"Auto Candia","descripcion":"Distribución"},"matafuego":{"ultima":"06/07/2026","proxima":{"iso":"2027-07-06","text":"06/07/2027"}},"observaciones":{"fecha":"15/02/2022","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":816014.64,"km":0,"costoKm":null,"combustible":127396.5,"combustibleKm":null,"telepeaje":0,"telepeajeKm":null,"mantenimiento":270874.01,"mantenimientoKm":null,"costoFijo":417744.13,"costoFijoKm":null,"costoOportunidad":1750000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"OEO221","marca":"Fiat Doblo","anio":"2014","conductor":"Uriel Zito","km":183070,"kmFecha":"28/08/2026","valorMercado":12600000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/01/2026","frec":150000,"prox":190000},"aceite":{"ultima":"28/01/2026","frec":178327,"prox":188327},"correa":{"ultima":"03/01/2024","frec":"178327","prox":238327},"vtv":{"ultima":"29/11/2025","proxima":{"iso":"2026-11-29","text":"29/11/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"28/01/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"18/03/2026","nombre":"CAMBER","descripcion":"Bobina - Bujias"},"matafuego":{"ultima":"06/07/2026","proxima":{"iso":"2027-07-06","text":"06/07/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":2975740.58,"km":0,"costoKm":null,"combustible":331206.14,"combustibleKm":null,"telepeaje":51032.93,"telepeajeKm":null,"mantenimiento":2250000,"mantenimientoKm":null,"costoFijo":343501.51,"costoFijoKm":null,"costoOportunidad":2205000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"MXM871","marca":"Ford Ranger","anio":"2013","conductor":"BAJA","km":393463,"kmFecha":"28/08/2026","valorMercado":20000000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"23/05/2026","frec":380000,"prox":420000},"aceite":{"ultima":"04/02/2026","frec":386583,"prox":396583},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"250.000/ 280.000","prox":550000},"vtv":{"ultima":"21/08/2026","proxima":{"iso":"2027-08-21","text":"21/08/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"14/04/2026","compraProxima":"2 Cubiertas","rotacionUltima":"ACTUALIZAR","rotacionProxima":"A 288.000 KM"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"01/12/2025","nombre":"CAMBER","descripcion":"Embrague"},"matafuego":{"ultima":"06/08/2026","proxima":{"iso":"2027-08-06","text":"06/08/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":1209085.6800000002,"km":0,"costoKm":null,"combustible":261688.19,"combustibleKm":null,"telepeaje":54338.47,"telepeajeKm":null,"mantenimiento":639000,"mantenimientoKm":null,"costoFijo":254059.02000000002,"costoFijoKm":null,"costoOportunidad":3500000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AB124BW","marca":"Kangoo Confort","anio":"2017","conductor":"Mosconi","km":239977,"kmFecha":"28/08/2026","valorMercado":15866000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"02/06/2026","frec":235000,"prox":275000},"aceite":{"ultima":"20/07/2026","frec":237418,"prox":247418},"correa":{"ultima":"03/07/2023","frec":"227752","prox":287000},"vtv":{"ultima":"20/04/2026","proxima":{"iso":"2027-04-20","text":"20/04/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"06/01/2026","compraProxima":"Thu Jan 06 2028 05:00:00 GMT-0300 (hora estándar de Argentina)","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"18/11/2021","nombre":"Gigliotti","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"05/09/2025","proxima":{"iso":"2026-09-05","text":"05/09/2026"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":650457.79,"km":0,"costoKm":null,"combustible":203252.31,"combustibleKm":null,"telepeaje":8479.34,"telepeajeKm":null,"mantenimiento":174999.99,"mantenimientoKm":null,"costoFijo":263726.15,"costoFijoKm":null,"costoOportunidad":2776550,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AB333LK","marca":"Ford Ranger","anio":"2017","conductor":"Ariel Da silva","km":305011,"kmFecha":"28/08/2026","valorMercado":23000000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"16/05/2026","frec":370450,"prox":410450},"aceite":{"ultima":"02/06/2026","frec":302053,"prox":312053},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"300000","prox":550000},"vtv":{"ultima":"05/06/2026","proxima":{"iso":"2027-06-05","text":"05/06/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"02/06/2023","compraProxima":"2 Cubiertas","rotacionUltima":"05/02/2026","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"26/05/2025","nombre":"Gigliotti","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"10/03/2026","proxima":{"iso":"2027-03-10","text":"10/03/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":536065.38,"km":0,"costoKm":null,"combustible":260003.37,"combustibleKm":null,"telepeaje":0,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":276062.01,"costoFijoKm":null,"costoOportunidad":4025000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AB755RD","marca":"Fiat Doblo","anio":"2017","conductor":"Victor Salazar","km":174695,"kmFecha":"28/08/2026","valorMercado":16000000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"14/05/2026","frec":173000,"prox":213000},"aceite":{"ultima":"17/04/2026","frec":167328,"prox":177328},"correa":{"ultima":"07/01/2026","frec":"154000","prox":194000},"vtv":{"ultima":"04/09/2025","proxima":{"iso":"2026-09-04","text":"04/09/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"21/04/2022","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"04/02/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"06/072026","proxima":{"iso":"2027-07-06","text":"06/07/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":726271.26,"km":0,"costoKm":null,"combustible":423125.7,"combustibleKm":null,"telepeaje":56989.41,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":246156.15000000002,"costoFijoKm":null,"costoOportunidad":2800000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AD076LH","marca":"Peugeot Partner Confort 1.6","anio":"2018","conductor":"Ledezma Julio","km":246193,"kmFecha":"28/08/2026","valorMercado":17200000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/05/2026","frec":220600,"prox":260600},"aceite":{"ultima":"12/05/2026","frec":238093,"prox":248093},"correa":{"ultima":"13/03/2026","frec":"231648","prox":271648},"vtv":{"ultima":"14/05/2026","proxima":{"iso":"2027-05-14","text":"14/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"Originales","compraProxima":"No","rotacionUltima":"Nunca","rotacionProxima":"A Determinar"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"11/03/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"04/08/2026","proxima":{"iso":"2027-08-04","text":"04/08/2027"}},"observaciones":{"fecha":"","descripcion":"Ver archivo RO-12-03","productosExtra":"Fundas para los asientos"},"costo":{"periodo":"2° Semestre 2026","total":1027676.3200000001,"km":0,"costoKm":null,"combustible":363935.72,"combustibleKm":null,"telepeaje":193602.8,"telepeajeKm":null,"mantenimiento":260000,"mantenimientoKm":null,"costoFijo":210137.8,"costoFijoKm":null,"costoOportunidad":3010000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AD852CL","marca":"Ford Ranger","anio":"2019","conductor":"Hernan Giacobbe","km":147830,"kmFecha":"28/08/2026","valorMercado":25000000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/01/2026","frec":140000,"prox":180000},"aceite":{"ultima":"25/02/2026","frec":138493,"prox":148493},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"250.000/ 280.000","prox":500000},"vtv":{"ultima":"21/05/2026","proxima":{"iso":"2027-05-21","text":"21/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"ACTUALIZAR","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"03/01/2025","nombre":"CAMBER","descripcion":"ACTUALIZAR"},"matafuego":{"ultima":"05/05/2026","proxima":{"iso":"2027-05-10","text":"10/05/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":503034.61,"km":1256,"costoKm":400.5052627388535,"combustible":80939.52,"combustibleKm":64.44229299363057,"telepeaje":21872.38,"telepeajeKm":17.414315286624205,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":400222.71,"costoFijoKm":318.64865445859874,"costoOportunidad":4375000,"costoOportunidadKm":3483.28,"tasaBCRA":35},"mensual":[]},{"dominio":"AI328PX","marca":"Renault - Kangoo","anio":"2026","conductor":"Soliz Coronado José","km":2308,"kmFecha":"28/08/2026","valorMercado":32640800,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"25/06/2026","frec":0,"prox":40000},"aceite":{"ultima":"25/06/2026","frec":0,"prox":10000},"correa":{"ultima":"25/06/2026","frec":"0","prox":40000},"vtv":{"ultima":"25/06/2026","proxima":{"iso":"2027-06-25","text":"25/06/2027"}},"botiquin":{"ultima":"18/06/2026","proxima":{"iso":"2027-06-18","text":"18/06/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"18/06/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"","nombre":"","descripcion":""},"matafuego":{"ultima":"23/06/2026","proxima":{"iso":"2027-06-23","text":"23/06/2027"}},"observaciones":{"fecha":"","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":108360.49,"km":1271,"costoKm":85.256089693155,"combustible":95132.77,"combustibleKm":74.84875688434305,"telepeaje":13227.72,"telepeajeKm":10.407332808811958,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":0,"costoFijoKm":null,"costoOportunidad":5712140,"costoOportunidadKm":4494.21,"tasaBCRA":35},"mensual":[]},{"dominio":"AI328PW","marca":"Renault Kwid","anio":"2026","conductor":"Emiliano San martin","km":1002,"kmFecha":"28/08/2026","valorMercado":20516000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"25/06/2026","frec":40000,"prox":80000},"aceite":{"ultima":"25/06/2026","frec":0,"prox":10000},"correa":{"ultima":"25/06/2026","frec":"0","prox":40000},"vtv":{"ultima":"25/06/2026","proxima":{"iso":"2027-06-25","text":"25/06/2027"}},"botiquin":{"ultima":"18/06/2026","proxima":{"iso":"2027-06-18","text":"18/06/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"18/06/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"","nombre":"","descripcion":""},"matafuego":{"ultima":"23/06/2026","proxima":{"iso":"2027-06-23","text":"23/06/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":63745.81,"km":659,"costoKm":96.7311229135053,"combustible":61773.93,"combustibleKm":93.73889226100152,"telepeaje":1971.88,"telepeajeKm":2.992230652503794,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":0,"costoFijoKm":null,"costoOportunidad":3590300,"costoOportunidadKm":5448.1,"tasaBCRA":35},"mensual":[]},{"dominio":"AI328PT","marca":"Renault Kwid","anio":"2026","conductor":"Daniel Carena","km":2308,"kmFecha":"28/08/2026","valorMercado":20516000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"25/06/2026","frec":0,"prox":40000},"aceite":{"ultima":"25/06/2026","frec":0,"prox":10000},"correa":{"ultima":"25/06/2026","frec":"0","prox":40000},"vtv":{"ultima":"25/06/2026","proxima":{"iso":"2027-06-25","text":"25/06/2027"}},"botiquin":{"ultima":"18/06/2026","proxima":{"iso":"2027-06-18","text":"18/06/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"18/06/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"","nombre":"","descripcion":""},"matafuego":{"ultima":"23/06/2026","proxima":{"iso":"2027-06-23","text":"23/06/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":219742.94,"km":605,"costoKm":363.21147107438014,"combustible":173057.55,"combustibleKm":286.0455371900826,"telepeaje":46685.39,"telepeajeKm":77.16593388429752,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":0,"costoFijoKm":null,"costoOportunidad":3590300,"costoOportunidadKm":5934.38,"tasaBCRA":35},"mensual":[]},{"dominio":"AE588IZ","marca":"Kangoo Confort","anio":"2021","conductor":"Gorosito","km":136357,"kmFecha":"28/08/2026","valorMercado":21300000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"30/05/2026","frec":135000,"prox":175000},"aceite":{"ultima":"06/07/2026","frec":132800,"prox":142800},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"250.000/ 280.000","prox":250000},"vtv":{"ultima":"21/05/2026","proxima":{"iso":"2027-05-21","text":"21/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"22/05/2026","compraProxima":"Mon May 22 2028 04:00:00 GMT-0300 (hora estándar de Argentina)","rotacionUltima":"22/05/2026","rotacionProxima":"A Determinar"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"20/02/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"13/08/2026","proxima":{"iso":"2027-08-13","text":"13/08/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":940236.6900000001,"km":0,"costoKm":null,"combustible":387482.34,"combustibleKm":null,"telepeaje":153973.32,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":398781.03,"costoFijoKm":null,"costoOportunidad":3727500,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AE588IY","marca":"Renault Kwid","anio":"2021","conductor":"Abella, Diego","km":50902,"kmFecha":"28/08/2026","valorMercado":15000000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"31/12/2021","frec":40000,"prox":80000},"aceite":{"ultima":"22/01/2026","frec":43480,"prox":53480},"correa":{"ultima":"0 KM","frec":"60000","prox":100000},"vtv":{"ultima":"01/07/2025","proxima":{"iso":"2027-07-01","text":"01/07/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"0 km","compraProxima":"Wed May 05 2027 04:00:00 GMT-0300 (hora estándar de Argentina)","rotacionUltima":"No tiene","rotacionProxima":"A los 50.000"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"15/04/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"01/05/2026","proxima":{"iso":"2027-05-01","text":"01/05/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2° Semestre 2026","total":524588.72,"km":0,"costoKm":null,"combustible":65742.79,"combustibleKm":null,"telepeaje":10113.7,"telepeajeKm":null,"mantenimiento":40000,"mantenimientoKm":null,"costoFijo":408732.23000000004,"costoFijoKm":null,"costoOportunidad":2625000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]}];
+const COSTOS_PREV = {"Vehiculo":{"periodo":"2Â° Semestre 2025","total":null,"km":null,"costoKm":null,"combustible":null,"combustibleKm":null,"telepeaje":null,"telepeajeKm":null,"mantenimiento":null,"mantenimientoKm":null,"costoFijo":null,"costoFijoKm":null},"AE588IY":{"periodo":"2Â° Semestre 2025","total":1188687.7300000002,"km":2656,"costoKm":447.5480911144579,"combustible":142880,"combustibleKm":53.795180722891565,"telepeaje":78223.74,"telepeajeKm":29.4517093373494,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":967583.99,"costoFijoKm":364.30120105421685},"IPI344":{"periodo":"2Â° Semestre 2025","total":2739278.09,"km":7644,"costoKm":358.3566313448456,"combustible":819947.35,"combustibleKm":107.26679094714808,"telepeaje":208924.15,"telepeajeKm":27.331783097854526,"mantenimiento":934000,"mantenimientoKm":122.18733647305076,"costoFijo":776406.59,"costoFijoKm":101.57072082679225},"MIW828":{"periodo":"2Â° Semestre 2025","total":2733082.69,"km":7334,"costoKm":372.6592159803654,"combustible":944199.4299999999,"combustibleKm":128.74276383965093,"telepeaje":261254.58000000002,"telepeajeKm":35.622386146713936,"mantenimiento":844393.99,"mantenimientoKm":115.13416825743114,"costoFijo":683234.6900000001,"costoFijoKm":93.1598977365694},"AE588IZ":{"periodo":"2Â° Semestre 2025","total":2295716.36,"km":9477,"costoKm":242.2408314867574,"combustible":702388.0700000001,"combustibleKm":74.11502268650418,"telepeaje":489097.9,"telepeajeKm":51.60893742745595,"mantenimiento":229500,"mantenimientoKm":24.216524216524217,"costoFijo":874730.39,"costoFijoKm":92.30034715627308},"OEO221":{"periodo":"2Â° Semestre 2025","total":2892900.33,"km":8279,"costoKm":349.42629906993596,"combustible":1288559.68,"combustibleKm":155.64194709505978,"telepeaje":411448.8,"telepeajeKm":49.69788621814229,"mantenimiento":484000.02,"mantenimientoKm":58.46116922333616,"costoFijo":708891.83,"costoFijoKm":85.62529653339774},"KCY799":{"periodo":"2Â° Semestre 2025","total":2495974.7,"km":8860,"costoKm":281.7127200902935,"combustible":1034357.24,"combustibleKm":116.74460948081264,"telepeaje":170731.04,"telepeajeKm":19.2698690744921,"mantenimiento":578307,"mantenimientoKm":65.2716704288939,"costoFijo":712579.42,"costoFijoKm":80.42657110609481},"PJQ411":{"periodo":"2Â° Semestre 2025","total":2799862.9800000004,"km":13210,"costoKm":211.95026343679035,"combustible":1061894,"combustibleKm":80.38561695685087,"telepeaje":633647.9,"telepeajeKm":47.9672899318698,"mantenimiento":229399.99,"mantenimientoKm":17.36563133989402,"costoFijo":874921.09,"costoFijoKm":66.23172520817562},"MXM871":{"periodo":"2Â° Semestre 2025","total":4024833.0100000007,"km":14561,"costoKm":276.41185426825086,"combustible":2126292.93,"combustibleKm":146.02657303756612,"telepeaje":774769.02,"telepeajeKm":53.208503536845,"mantenimiento":245000,"mantenimientoKm":16.82576746102603,"costoFijo":878771.06,"costoFijoKm":60.351010232813685},"AB755RD":{"periodo":"2Â° Semestre 2025","total":5146014.07,"km":15550,"costoKm":330.93338070739554,"combustible":2121435.93,"combustibleKm":136.42674790996784,"telepeaje":795015.7,"telepeajeKm":51.1264115755627,"mantenimiento":1377499.99,"mantenimientoKm":88.58520836012862,"costoFijo":852062.4500000001,"costoFijoKm":54.79501286173634},"AD076LH":{"periodo":"2Â° Semestre 2025","total":2879810.12,"km":15570,"costoKm":184.95890301862556,"combustible":984708.3200000001,"combustibleKm":63.24395118818241,"telepeaje":729738.35,"telepeajeKm":46.868230571612074,"mantenimiento":376499.99,"mantenimientoKm":24.181116891457933,"costoFijo":788863.4600000001,"costoFijoKm":50.665604367373156},"AB124BW":{"periodo":"2Â° Semestre 2025","total":5243685.06,"km":20057,"costoKm":261.43915141845736,"combustible":2970014.71,"combustibleKm":148.0787111731565,"telepeaje":872342.8999999999,"telepeajeKm":43.49318941018098,"mantenimiento":616555,"mantenimientoKm":30.74014059929202,"costoFijo":784772.4500000001,"costoFijoKm":39.12711023582789},"AB333LK":{"periodo":"2Â° Semestre 2025","total":5437899.05,"km":21155,"costoKm":257.0502978019381,"combustible":3239379.0300000003,"combustibleKm":153.12592909477667,"telepeaje":1106740,"telepeajeKm":52.315764594658475,"mantenimiento":269999.99,"mantenimientoKm":12.76293973056015,"costoFijo":821780.03,"costoFijoKm":38.845664381942804},"AD852CL":{"periodo":"2Â° Semestre 2025","total":4148430.02,"km":31235,"costoKm":132.81351112534017,"combustible":2248339.19,"combustibleKm":71.98140515447415,"telepeaje":614801.4,"telepeajeKm":19.683092684488557,"mantenimiento":406234,"mantenimientoKm":13.005730750760366,"costoFijo":879055.43,"costoFijoKm":28.143282535617097}};
+const PERIODO_PREV = '2Â° Semestre 2025';
+const VEHICULOS = [{"dominio":"IPI344","marca":"Fiat Van Fire MPI","anio":"2010","conductor":"Sepulveda, Juan","km":406475,"kmFecha":"28/07/2026","valorMercado":9000000,"estetica":{"ext":"Muy bien","int":"Bien"},"agua":{"ultima":"04/05/2026","frec":381371,"prox":421371},"aceite":{"ultima":"16/12/2025","frec":398194,"prox":408194},"correa":{"ultima":"16/09/2022","frec":"321830","prox":410000},"vtv":{"ultima":"25/08/2026","proxima":{"iso":"2027-08-25","text":"25/08/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"04/12/2023","compraProxima":"4 Nuevas","rotacionUltima":"","rotacionProxima":"405000"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"21/06/2022","nombre":"Candia","descripcion":"Frenos"},"matafuego":{"ultima":"14/08/2026","proxima":{"iso":"2027-08-14","text":"14/08/2027"}},"observaciones":{"fecha":"13/05/2021","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":600304.41,"km":0,"costoKm":null,"combustible":296940.09,"combustibleKm":null,"telepeaje":82426.79,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":220937.52999999997,"costoFijoKm":null,"costoOportunidad":1575000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"KCY799","marca":"Renault Fluence 1.6","anio":"2011","conductor":"Lisandro Fissolo","km":191409,"kmFecha":"28/08/2026","valorMercado":13500000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"18/05/2026","frec":180100,"prox":220100},"aceite":{"ultima":"15/04/2026","frec":187355,"prox":197355},"correa":{"ultima":"11/02/2025","frec":"50000","prox":205000},"vtv":{"ultima":"07/11/2025","proxima":{"iso":"2026-11-07","text":"07/11/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"12/05/2026","compraProxima":"4 Nuevas","rotacionUltima":"","rotacionProxima":"197000"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"29/08/2025","nombre":"Gigliotti","descripcion":"Embrague + bocina + carga de A/C"},"matafuego":{"ultima":"05/05/2026","proxima":{"iso":"2027-05-05","text":"05/05/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":473746.53,"km":0,"costoKm":null,"combustible":128694.48,"combustibleKm":null,"telepeaje":12559.34,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":332492.71,"costoFijoKm":null,"costoOportunidad":2362500,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"PJQ411","marca":"Toyota Etios","anio":"2015","conductor":"Remedios","km":98225,"kmFecha":"28/08/2026","valorMercado":14900000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/05/2026","frec":80000,"prox":120000},"aceite":{"ultima":"06/07/2026","frec":96000,"prox":106000},"correa":{"ultima":"No se realizo","frec":"60.000 a 100.000","prox":100000},"vtv":{"ultima":"25/11/2025","proxima":{"iso":"2026-11-25","text":"25/11/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"ACTUALIZAR","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"05/02/2026","nombre":"Gigliotti","descripcion":"2 Amortiguadores delanteros"},"matafuego":{"ultima":"12/08/2026","proxima":{"iso":"2027-08-12","text":"12/08/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":434331.56999999995,"km":0,"costoKm":null,"combustible":0,"combustibleKm":null,"telepeaje":11599.34,"telepeajeKm":null,"mantenimiento":14000,"mantenimientoKm":null,"costoFijo":408732.23000000004,"costoFijoKm":null,"costoOportunidad":2607500,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"MIW828","marca":"Fiat Fiorino Fire","anio":"2013","conductor":"De Abrantes","km":325206,"kmFecha":"28/08/2026","valorMercado":10000000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"20/05/2026","frec":300100,"prox":340100},"aceite":{"ultima":"15/04/2026","frec":320733,"prox":330733},"correa":{"ultima":"06/12/2023","frec":"288555","prox":328555},"vtv":{"ultima":"14/05/2026","proxima":{"iso":"2027-05-14","text":"14/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"08/07/2026","compraProxima":"Tue Nov 10 2026 05:00:00 GMT-0300 (hora estÃ¡ndar de Argentina)","rotacionUltima":"08/07/2026","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"19/02/2022","nombre":"Auto Candia","descripcion":"DistribuciÃ³n"},"matafuego":{"ultima":"06/07/2026","proxima":{"iso":"2027-07-06","text":"06/07/2027"}},"observaciones":{"fecha":"15/02/2022","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":816014.64,"km":0,"costoKm":null,"combustible":127396.5,"combustibleKm":null,"telepeaje":0,"telepeajeKm":null,"mantenimiento":270874.01,"mantenimientoKm":null,"costoFijo":417744.13,"costoFijoKm":null,"costoOportunidad":1750000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"OEO221","marca":"Fiat Doblo","anio":"2014","conductor":"Uriel Zito","km":183070,"kmFecha":"28/08/2026","valorMercado":12600000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/01/2026","frec":150000,"prox":190000},"aceite":{"ultima":"28/01/2026","frec":178327,"prox":188327},"correa":{"ultima":"03/01/2024","frec":"178327","prox":238327},"vtv":{"ultima":"29/11/2025","proxima":{"iso":"2026-11-29","text":"29/11/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"28/01/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"18/03/2026","nombre":"CAMBER","descripcion":"Bobina - Bujias"},"matafuego":{"ultima":"06/07/2026","proxima":{"iso":"2027-07-06","text":"06/07/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":2975740.58,"km":0,"costoKm":null,"combustible":331206.14,"combustibleKm":null,"telepeaje":51032.93,"telepeajeKm":null,"mantenimiento":2250000,"mantenimientoKm":null,"costoFijo":343501.51,"costoFijoKm":null,"costoOportunidad":2205000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"MXM871","marca":"Ford Ranger","anio":"2013","conductor":"BAJA","km":393463,"kmFecha":"28/08/2026","valorMercado":20000000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"23/05/2026","frec":380000,"prox":420000},"aceite":{"ultima":"04/02/2026","frec":386583,"prox":396583},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"250.000/ 280.000","prox":550000},"vtv":{"ultima":"21/08/2026","proxima":{"iso":"2027-08-21","text":"21/08/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"14/04/2026","compraProxima":"2 Cubiertas","rotacionUltima":"ACTUALIZAR","rotacionProxima":"A 288.000 KM"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"01/12/2025","nombre":"CAMBER","descripcion":"Embrague"},"matafuego":{"ultima":"06/08/2026","proxima":{"iso":"2027-08-06","text":"06/08/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":1209085.6800000002,"km":0,"costoKm":null,"combustible":261688.19,"combustibleKm":null,"telepeaje":54338.47,"telepeajeKm":null,"mantenimiento":639000,"mantenimientoKm":null,"costoFijo":254059.02000000002,"costoFijoKm":null,"costoOportunidad":3500000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AB124BW","marca":"Kangoo Confort","anio":"2017","conductor":"Mosconi","km":239977,"kmFecha":"28/08/2026","valorMercado":15866000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"02/06/2026","frec":235000,"prox":275000},"aceite":{"ultima":"20/07/2026","frec":237418,"prox":247418},"correa":{"ultima":"03/07/2023","frec":"227752","prox":287000},"vtv":{"ultima":"20/04/2026","proxima":{"iso":"2027-04-20","text":"20/04/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"06/01/2026","compraProxima":"Thu Jan 06 2028 05:00:00 GMT-0300 (hora estÃ¡ndar de Argentina)","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"18/11/2021","nombre":"Gigliotti","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"05/09/2025","proxima":{"iso":"2026-09-05","text":"05/09/2026"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":650457.79,"km":0,"costoKm":null,"combustible":203252.31,"combustibleKm":null,"telepeaje":8479.34,"telepeajeKm":null,"mantenimiento":174999.99,"mantenimientoKm":null,"costoFijo":263726.15,"costoFijoKm":null,"costoOportunidad":2776550,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AB333LK","marca":"Ford Ranger","anio":"2017","conductor":"Ariel Da silva","km":305011,"kmFecha":"28/08/2026","valorMercado":23000000,"estetica":{"ext":"Bien","int":"Bien"},"agua":{"ultima":"16/05/2026","frec":370450,"prox":410450},"aceite":{"ultima":"02/06/2026","frec":302053,"prox":312053},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"300000","prox":550000},"vtv":{"ultima":"05/06/2026","proxima":{"iso":"2027-06-05","text":"05/06/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"02/06/2023","compraProxima":"2 Cubiertas","rotacionUltima":"05/02/2026","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"26/05/2025","nombre":"Gigliotti","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"10/03/2026","proxima":{"iso":"2027-03-10","text":"10/03/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":536065.38,"km":0,"costoKm":null,"combustible":260003.37,"combustibleKm":null,"telepeaje":0,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":276062.01,"costoFijoKm":null,"costoOportunidad":4025000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AB755RD","marca":"Fiat Doblo","anio":"2017","conductor":"Victor Salazar","km":174695,"kmFecha":"28/08/2026","valorMercado":16000000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"14/05/2026","frec":173000,"prox":213000},"aceite":{"ultima":"17/04/2026","frec":167328,"prox":177328},"correa":{"ultima":"07/01/2026","frec":"154000","prox":194000},"vtv":{"ultima":"04/09/2025","proxima":{"iso":"2026-09-04","text":"04/09/2026"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"21/04/2022","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"04/02/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"06/072026","proxima":{"iso":"2027-07-06","text":"06/07/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":726271.26,"km":0,"costoKm":null,"combustible":423125.7,"combustibleKm":null,"telepeaje":56989.41,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":246156.15000000002,"costoFijoKm":null,"costoOportunidad":2800000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AD076LH","marca":"Peugeot Partner Confort 1.6","anio":"2018","conductor":"Ledezma Julio","km":246193,"kmFecha":"28/08/2026","valorMercado":17200000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/05/2026","frec":220600,"prox":260600},"aceite":{"ultima":"12/05/2026","frec":238093,"prox":248093},"correa":{"ultima":"13/03/2026","frec":"231648","prox":271648},"vtv":{"ultima":"14/05/2026","proxima":{"iso":"2027-05-14","text":"14/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"Originales","compraProxima":"No","rotacionUltima":"Nunca","rotacionProxima":"A Determinar"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"11/03/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"04/08/2026","proxima":{"iso":"2027-08-04","text":"04/08/2027"}},"observaciones":{"fecha":"","descripcion":"Ver archivo RO-12-03","productosExtra":"Fundas para los asientos"},"costo":{"periodo":"2Â° Semestre 2026","total":1027676.3200000001,"km":0,"costoKm":null,"combustible":363935.72,"combustibleKm":null,"telepeaje":193602.8,"telepeajeKm":null,"mantenimiento":260000,"mantenimientoKm":null,"costoFijo":210137.8,"costoFijoKm":null,"costoOportunidad":3010000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AD852CL","marca":"Ford Ranger","anio":"2019","conductor":"Hernan Giacobbe","km":147830,"kmFecha":"28/08/2026","valorMercado":25000000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"03/01/2026","frec":140000,"prox":180000},"aceite":{"ultima":"25/02/2026","frec":138493,"prox":148493},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"250.000/ 280.000","prox":500000},"vtv":{"ultima":"21/05/2026","proxima":{"iso":"2027-05-21","text":"21/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"ACTUALIZAR","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"03/01/2025","nombre":"CAMBER","descripcion":"ACTUALIZAR"},"matafuego":{"ultima":"05/05/2026","proxima":{"iso":"2027-05-10","text":"10/05/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":503034.61,"km":1256,"costoKm":400.5052627388535,"combustible":80939.52,"combustibleKm":64.44229299363057,"telepeaje":21872.38,"telepeajeKm":17.414315286624205,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":400222.71,"costoFijoKm":318.64865445859874,"costoOportunidad":4375000,"costoOportunidadKm":3483.28,"tasaBCRA":35},"mensual":[]},{"dominio":"AI328PX","marca":"Renault - Kangoo","anio":"2026","conductor":"Soliz Coronado JosÃ©","km":2308,"kmFecha":"28/08/2026","valorMercado":32640800,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"25/06/2026","frec":0,"prox":40000},"aceite":{"ultima":"25/06/2026","frec":0,"prox":10000},"correa":{"ultima":"25/06/2026","frec":"0","prox":40000},"vtv":{"ultima":"25/06/2026","proxima":{"iso":"2027-06-25","text":"25/06/2027"}},"botiquin":{"ultima":"18/06/2026","proxima":{"iso":"2027-06-18","text":"18/06/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"18/06/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"","nombre":"","descripcion":""},"matafuego":{"ultima":"23/06/2026","proxima":{"iso":"2027-06-23","text":"23/06/2027"}},"observaciones":{"fecha":"","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":108360.49,"km":1271,"costoKm":85.256089693155,"combustible":95132.77,"combustibleKm":74.84875688434305,"telepeaje":13227.72,"telepeajeKm":10.407332808811958,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":0,"costoFijoKm":null,"costoOportunidad":5712140,"costoOportunidadKm":4494.21,"tasaBCRA":35},"mensual":[]},{"dominio":"AI328PW","marca":"Renault Kwid","anio":"2026","conductor":"Emiliano San martin","km":1002,"kmFecha":"28/08/2026","valorMercado":20516000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"25/06/2026","frec":40000,"prox":80000},"aceite":{"ultima":"25/06/2026","frec":0,"prox":10000},"correa":{"ultima":"25/06/2026","frec":"0","prox":40000},"vtv":{"ultima":"25/06/2026","proxima":{"iso":"2027-06-25","text":"25/06/2027"}},"botiquin":{"ultima":"18/06/2026","proxima":{"iso":"2027-06-18","text":"18/06/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"18/06/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"","nombre":"","descripcion":""},"matafuego":{"ultima":"23/06/2026","proxima":{"iso":"2027-06-23","text":"23/06/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":63745.81,"km":659,"costoKm":96.7311229135053,"combustible":61773.93,"combustibleKm":93.73889226100152,"telepeaje":1971.88,"telepeajeKm":2.992230652503794,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":0,"costoFijoKm":null,"costoOportunidad":3590300,"costoOportunidadKm":5448.1,"tasaBCRA":35},"mensual":[]},{"dominio":"AI328PT","marca":"Renault Kwid","anio":"2026","conductor":"Daniel Carena","km":2308,"kmFecha":"28/08/2026","valorMercado":20516000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"25/06/2026","frec":0,"prox":40000},"aceite":{"ultima":"25/06/2026","frec":0,"prox":10000},"correa":{"ultima":"25/06/2026","frec":"0","prox":40000},"vtv":{"ultima":"25/06/2026","proxima":{"iso":"2027-06-25","text":"25/06/2027"}},"botiquin":{"ultima":"18/06/2026","proxima":{"iso":"2027-06-18","text":"18/06/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"18/06/2026","compraProxima":"ACTUALIZAR","rotacionUltima":"ACTUALIZAR","rotacionProxima":"ACTUALIZAR"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"","nombre":"","descripcion":""},"matafuego":{"ultima":"23/06/2026","proxima":{"iso":"2027-06-23","text":"23/06/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":219742.94,"km":605,"costoKm":363.21147107438014,"combustible":173057.55,"combustibleKm":286.0455371900826,"telepeaje":46685.39,"telepeajeKm":77.16593388429752,"mantenimiento":0,"mantenimientoKm":0,"costoFijo":0,"costoFijoKm":null,"costoOportunidad":3590300,"costoOportunidadKm":5934.38,"tasaBCRA":35},"mensual":[]},{"dominio":"AE588IZ","marca":"Kangoo Confort","anio":"2021","conductor":"Gorosito","km":136357,"kmFecha":"28/08/2026","valorMercado":21300000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"30/05/2026","frec":135000,"prox":175000},"aceite":{"ultima":"06/07/2026","frec":132800,"prox":142800},"correa":{"ultima":"Salen de fabrica ( son cadenas )","frec":"250.000/ 280.000","prox":250000},"vtv":{"ultima":"21/05/2026","proxima":{"iso":"2027-05-21","text":"21/05/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"22/05/2026","compraProxima":"Mon May 22 2028 04:00:00 GMT-0300 (hora estÃ¡ndar de Argentina)","rotacionUltima":"22/05/2026","rotacionProxima":"A Determinar"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"20/02/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"13/08/2026","proxima":{"iso":"2027-08-13","text":"13/08/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":940236.6900000001,"km":0,"costoKm":null,"combustible":387482.34,"combustibleKm":null,"telepeaje":153973.32,"telepeajeKm":null,"mantenimiento":0,"mantenimientoKm":null,"costoFijo":398781.03,"costoFijoKm":null,"costoOportunidad":3727500,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]},{"dominio":"AE588IY","marca":"Renault Kwid","anio":"2021","conductor":"Abella, Diego","km":50902,"kmFecha":"28/08/2026","valorMercado":15000000,"estetica":{"ext":"Muy bien","int":"Muy bien"},"agua":{"ultima":"31/12/2021","frec":40000,"prox":80000},"aceite":{"ultima":"22/01/2026","frec":43480,"prox":53480},"correa":{"ultima":"0 KM","frec":"60000","prox":100000},"vtv":{"ultima":"01/07/2025","proxima":{"iso":"2027-07-01","text":"01/07/2027"}},"botiquin":{"ultima":"26/03/2026","proxima":{"iso":"2027-03-26","text":"26/03/2027"},"productos":"Nuevos"},"cubiertas":{"compraUltima":"0 km","compraProxima":"Wed May 05 2027 04:00:00 GMT-0300 (hora estÃ¡ndar de Argentina)","rotacionUltima":"No tiene","rotacionProxima":"A los 50.000"},"patente":{"ultimoPago":"Automatico","frecuencia":"Bimestral","proxVenc":"Automatico"},"seguro":{"ultimoPago":"Automatico","proxVenc":"Automatico","proxComprobante":"Anual"},"taller":{"fecha":"15/04/2026","nombre":"CAMBER","descripcion":"VER SOPALA COMENTARIOS"},"matafuego":{"ultima":"01/05/2026","proxima":{"iso":"2027-05-01","text":"01/05/2027"}},"observaciones":{"fecha":"-","descripcion":"-","productosExtra":"-"},"costo":{"periodo":"2Â° Semestre 2026","total":524588.72,"km":0,"costoKm":null,"combustible":65742.79,"combustibleKm":null,"telepeaje":10113.7,"telepeajeKm":null,"mantenimiento":40000,"mantenimientoKm":null,"costoFijo":408732.23000000004,"costoFijoKm":null,"costoOportunidad":2625000,"costoOportunidadKm":0,"tasaBCRA":35},"mensual":[]}];
 
 const NOTAS = [];
 
 const GREEN = '#16a34a', AMBER = '#d97706', RED = '#dc2626', GRAY = '#94a3b8';
 let activeFilter = '';
 
-function fmt$(n) { return n === null || n === undefined ? '—' : '$' + Math.round(n).toLocaleString('es-AR'); }
-function fmtKm(n) { return n === null || n === undefined ? '—' : Math.round(n).toLocaleString('es-AR') + ' km'; }
+function fmt$(n) { return n === null || n === undefined ? 'â€”' : '$' + Math.round(n).toLocaleString('es-AR'); }
+function fmtKm(n) { return n === null || n === undefined ? 'â€”' : Math.round(n).toLocaleString('es-AR') + ' km'; }
 
 function toNumLoose(v) {
   if (v === null || v === undefined || v === '') return null;
@@ -438,7 +446,7 @@ function worstStatus(items) {
   return 'ok';
 }
 const ST_COLOR = { vencido: RED, proximo: AMBER, ok: GREEN, sin: GRAY };
-const ST_LABEL = { vencido: 'Vencido', proximo: 'Atención', ok: 'Al día', sin: 'Sin dato' };
+const ST_LABEL = { vencido: 'Vencido', proximo: 'AtenciÃ³n', ok: 'Al dÃ­a', sin: 'Sin dato' };
 const ST_BG = { vencido: '#fee2e2', proximo: '#fef9c3', ok: '#dcfce7', sin: '#f1f5f9' };
 
 function setFilter(f) {
@@ -472,7 +480,7 @@ function cardHtml(v, idx) {
     '<img class="c-photo" src="fotos/' + v.dominio + '.jpg" onerror="this.remove()">' +
     '<div class="c-top"><div><div class="c-dom">' + v.dominio + '</div><div class="c-marca">' + v.marca + '</div><div class="c-cond">' + (v.conductor || 'Sin asignar') + '</div></div>' +
     '<span class="pill" style="background:' + ST_BG[w] + ';color:' + ST_COLOR[w] + '">' + ST_LABEL[w] + '</span></div>' +
-    '<div class="c-mid"><div><b>' + (v.anio || '—') + '</b>A&ntilde;o</div><div><b>' + fmtKm(v.km) + '</b>Kilometraje</div><div><b>' + fmt$(v.valorMercado) + '</b>Valor mercado</div></div>' +
+    '<div class="c-mid"><div><b>' + (v.anio || 'â€”') + '</b>A&ntilde;o</div><div><b>' + fmtKm(v.km) + '</b>Kilometraje</div><div><b>' + fmt$(v.valorMercado) + '</b>Valor mercado</div></div>' +
     '<div class="alerts">' + chips + '</div>' +
     (c ? '<div class="cost-row"><span>Costo ' + c.periodo + '</span><b>' + fmt$(c.total) + ' &middot; ' + fmt$(c.costoKm) + '/km</b></div>' : '') +
     '</div>';
@@ -494,7 +502,7 @@ function render() {
 
 function kvCell(label, val, status) {
   const cls = status === 'vencido' ? 'bad' : status === 'proximo' ? 'warn' : status === 'ok' ? 'ok' : '';
-  return '<div class="kv ' + cls + '"><div class="kv-lbl">' + label + '</div><div class="kv-val">' + (val || '—') + '</div></div>';
+  return '<div class="kv ' + cls + '"><div class="kv-lbl">' + label + '</div><div class="kv-val">' + (val || 'â€”') + '</div></div>';
 }
 
 function costBreakdownHTML(c) {
@@ -522,7 +530,7 @@ function costBreakdownHTML(c) {
     '</div>';
   }).join('');
   return '<div class="sec"><div class="sec-hd" style="display:flex;justify-content:space-between"><span>Costos &middot; ' + c.periodo + '</span>' +
-    '<span style="font-size:12px;font-weight:700;color:#0f172a">' + fmt$(c.total) + (c.costoKm ? ' &middot; ' + fmt$(c.costoKm) + '/km' : '') + (c.km ? ' &middot; ' + fmtKm(c.km) : '') + '</span></div>' +
+    '<span style="font-size:12px;font-weight:700;color:var(--tx)">' + fmt$(c.total) + (c.costoKm ? ' &middot; ' + fmt$(c.costoKm) + '/km' : '') + (c.km ? ' &middot; ' + fmtKm(c.km) : '') + '</span></div>' +
     '<div class="cost-breakdown">' + rows + '</div></div>';
 }
 
@@ -548,7 +556,7 @@ function openModal(idx) {
       kvCell('Seguro &middot; &uacute;ltimo pago', v.seguro.ultimoPago) + kvCell('Seguro &middot; vencimiento', v.seguro.proxVenc) +
       kvCell('Licencia de conducir', items[6].txt, items[6].st) +
     '</div>' +
-    '<div style="margin-top:10px"><img src="licencias/' + v.dominio + '.jpg" onerror="this.style.display=\'none\'" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:8px;border:1px solid #e2e8f0;display:block;background:#f8fafc"></div>' +
+    '<div style="margin-top:10px"><img src="licencias/' + v.dominio + '.jpg" onerror="this.style.display=\'none\'" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:8px;border:1px solid var(--bdr);display:block;background:#f8fafc"></div>' +
     '</div>' +
     '<div class="sec"><div class="sec-hd">Taller / observaciones</div><div class="kv-grid">' +
       kvCell('&Uacute;ltimo paso por taller', v.taller.fecha) + kvCell('Taller', v.taller.nombre) + kvCell('Tareas realizadas', v.taller.descripcion) +
@@ -595,12 +603,12 @@ let chartTotalInst = null, chartCompInst = null;
 
 const METRICS = [
   { key: 'total', label: 'Costo total', get: c => c.total, fmt: fmt$, desc: 'Combustible + mantenimiento + telepeaje + costo fijo' },
-  { key: 'km', label: 'Km totales', get: c => c.km, fmt: fmtKm, desc: 'Kilómetros recorridos en el período' },
+  { key: 'km', label: 'Km totales', get: c => c.km, fmt: fmtKm, desc: 'KilÃ³metros recorridos en el perÃ­odo' },
   { key: 'costoKm', label: 'Costo/km', get: c => c.costoKm, fmt: v => fmt$(v) + '/km', desc: 'Costo total dividido km recorridos (combustible + mantenimiento + telepeaje + costo fijo)' },
   { key: 'combustibleKm', label: 'Combustible/km', get: c => c.combustibleKm, fmt: v => fmt$(v) + '/km', desc: 'Cargas de combustible (nafta / gasoil)' },
-  { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumáticos, reparaciones mecánicas y service' },
-  { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vía tag / telepeaje)' },
-  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquín, matafuego y otros gastos fijos (independientes del uso)' },
+  { key: 'mantenimientoKm', label: 'Mantenimiento/km', get: c => c.mantenimientoKm, fmt: v => fmt$(v) + '/km', desc: 'Aceite, filtros, neumÃ¡ticos, reparaciones mecÃ¡nicas y service' },
+  { key: 'telepeajeKm', label: 'Telepeaje/km', get: c => c.telepeajeKm, fmt: v => fmt$(v) + '/km', desc: 'Peajes (vÃ­a tag / telepeaje)' },
+  { key: 'costoFijoKm', label: 'Costo fijo/km', get: c => c.costoFijoKm, fmt: v => fmt$(v) + '/km', desc: 'Seguro, patente, VTV, botiquÃ­n, matafuego y otros gastos fijos (independientes del uso)' },
   { key: 'costoOportunidad', label: 'Costo oportunidad', get: c => c.costoOportunidad, fmt: fmt$, desc: 'Capital inmovilizado: lo que hubiera ganado en plazo fijo al 21% anual por semestre' }
 ];
 let activeMetric = 'total';
@@ -609,13 +617,13 @@ function setMetric(key) {
   activeMetric = key;
   document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('act', b.dataset.k === key));
   const m = METRICS.find(m => m.key === key);
-  document.getElementById('metric-desc').textContent = m ? '✦ Incluye: ' + m.desc : '';
+  document.getElementById('metric-desc').textContent = m ? 'âœ¦ Incluye: ' + m.desc : '';
   drawTotalChart();
 }
 
 function drawTotalChart() {
   const metric = METRICS.find(m => m.key === activeMetric);
-  document.getElementById('chartTotal-title').textContent = metric.label + ' por vehículo';
+  document.getElementById('chartTotal-title').textContent = metric.label + ' por vehÃ­culo';
   const isKmBased = metric.key !== 'total' && metric.key !== 'km';
   let pool = VEHICULOS.filter(v => v.costo && metric.get(v.costo) !== null && metric.get(v.costo) !== undefined);
   if (isKmBased) pool = pool.filter(v => v.costo.km && v.costo.km > 0);
@@ -685,29 +693,29 @@ function renderAnalysis() {
   const maxKmV = withKm.slice().sort((a, b) => (b.costo.km || 0) - (a.costo.km || 0))[0];
   const maxTotalV = withCost.slice().sort((a, b) => b.costo.total - a.costo.total)[0];
 
-  document.getElementById('an-total').textContent = promValor !== null ? fmt$(promValor) : '—';
-  document.getElementById('an-promveh').textContent = promVeh !== null ? fmt$(promVeh) : '—';
-  document.getElementById('an-promkm').textContent = promKm !== null ? fmt$(promKm) + '/km' : '—';
-  document.getElementById('an-max').textContent = maxV ? maxV.dominio : '—';
+  document.getElementById('an-total').textContent = promValor !== null ? fmt$(promValor) : 'â€”';
+  document.getElementById('an-promveh').textContent = promVeh !== null ? fmt$(promVeh) : 'â€”';
+  document.getElementById('an-promkm').textContent = promKm !== null ? fmt$(promKm) + '/km' : 'â€”';
+  document.getElementById('an-max').textContent = maxV ? maxV.dominio : 'â€”';
   document.getElementById('an-max-sub').textContent = maxV ? fmt$(maxV.costo.costoKm) + '/km' : '';
-  document.getElementById('an-edad').textContent = edadProm !== null ? edadProm + ' años' : '—';
-  document.getElementById('an-maxfijo').textContent = maxFijoKm ? maxFijoKm.dominio : '—';
+  document.getElementById('an-edad').textContent = edadProm !== null ? edadProm + ' aÃ±os' : 'â€”';
+  document.getElementById('an-maxfijo').textContent = maxFijoKm ? maxFijoKm.dominio : 'â€”';
   document.getElementById('an-maxfijo-sub').textContent = maxFijoKm ? fmt$(maxFijoKm.costo.costoFijoKm) + '/km' : '';
-  document.getElementById('an-maxkm').textContent = maxKmV ? maxKmV.dominio : '—';
+  document.getElementById('an-maxkm').textContent = maxKmV ? maxKmV.dominio : 'â€”';
   document.getElementById('an-maxkm-sub').textContent = maxKmV ? fmtKm(maxKmV.costo.km) : '';
-  document.getElementById('an-maxtotal').textContent = maxTotalV ? maxTotalV.dominio : '—';
+  document.getElementById('an-maxtotal').textContent = maxTotalV ? maxTotalV.dominio : 'â€”';
   document.getElementById('an-maxtotal-sub').textContent = maxTotalV ? fmt$(maxTotalV.costo.total) : '';
   const withOpor = withCost.filter(v => v.costo.costoOportunidad);
   const totalOpor = withOpor.reduce((s, v) => s + v.costo.costoOportunidad, 0);
   const tasa = withOpor.length ? withOpor[0].costo.tasaBCRA : null;
-  document.getElementById('an-opor').textContent = withOpor.length ? fmt$(totalOpor) : '—';
-  document.getElementById('an-opor-sub').textContent = tasa ? 'Lo que hubiera ganado en plazo fijo · ' + tasa.toFixed(0) + '% anual' : 'Sincronizá para calcular';
+  document.getElementById('an-opor').textContent = withOpor.length ? fmt$(totalOpor) : 'â€”';
+  document.getElementById('an-opor-sub').textContent = tasa ? 'Lo que hubiera ganado en plazo fijo Â· ' + tasa.toFixed(0) + '% anual' : 'SincronizÃ¡ para calcular';
 
   document.getElementById('metric-tabs').innerHTML = METRICS.map(m =>
     '<span class="mtab' + (m.key === activeMetric ? ' act' : '') + '" data-k="' + m.key + '" onclick="setMetric(\'' + m.key + '\')">' + m.label + '</span>'
   ).join('');
   const activeMeta = METRICS.find(m => m.key === activeMetric);
-  document.getElementById('metric-desc').textContent = activeMeta ? '✦ Incluye: ' + activeMeta.desc : '';
+  document.getElementById('metric-desc').textContent = activeMeta ? 'âœ¦ Incluye: ' + activeMeta.desc : '';
   drawTotalChart();
 
   const sorted = withCost.slice().sort((a, b) => b.costo.total - a.costo.total);
@@ -796,7 +804,7 @@ function renderNotas() {
 
 function buildInformeHtml() {
   const withCost = VEHICULOS.filter(v => v.costo && v.costo.total !== null);
-  const periodo = withCost.length ? withCost[0].costo.periodo : '—';
+  const periodo = withCost.length ? withCost[0].costo.periodo : 'â€”';
   const totalFlota = withCost.reduce((s, v) => s + (v.costo.total || 0), 0);
   const withKm = withCost.filter(v => v.costo.km && v.costo.km > 0);
   const promKm = withKm.length ? withKm.reduce((s, v) => s + v.costo.costoKm, 0) / withKm.length : null;
@@ -821,35 +829,35 @@ function buildInformeHtml() {
   const tableRows = (arr, cols) => arr.map(r => '<tr>' + cols.map(c => '<td>' + c(r) + '</td>').join('') + '</tr>').join('') || '<tr><td class="inf-empty" colspan="' + cols.length + '">Sin datos</td></tr>';
 
   return '' +
-    '<div class="inf-hd"><h1>Informe de Gestión de Vehículos</h1><div class="inf-sub">Esinel S.R.L. &middot; RO-12-04 &middot; Período: ' + periodo + ' &middot; Generado el ' + new Date().toLocaleDateString('es-AR') + '</div></div>' +
+    '<div class="inf-hd"><h1>Informe de GestiÃ³n de VehÃ­culos</h1><div class="inf-sub">Esinel S.R.L. &middot; RO-12-04 &middot; PerÃ­odo: ' + periodo + ' &middot; Generado el ' + new Date().toLocaleDateString('es-AR') + '</div></div>' +
 
     '<div class="inf-sec"><div class="inf-sec-title">Resumen de costos</div><div class="inf-kpis">' +
       '<div class="inf-kpi"><div class="inf-kpi-lbl">Costo total flota</div><div class="inf-kpi-val">' + fmt$(totalFlota) + '</div></div>' +
-      '<div class="inf-kpi"><div class="inf-kpi-lbl">Promedio costo/km</div><div class="inf-kpi-val">' + (promKm !== null ? fmt$(promKm) + '/km' : '—') + '</div></div>' +
-      '<div class="inf-kpi"><div class="inf-kpi-lbl">Más costoso</div><div class="inf-kpi-val">' + (maxV ? maxV.dominio : '—') + '</div></div>' +
-      '<div class="inf-kpi"><div class="inf-kpi-lbl">Mejor costo/km</div><div class="inf-kpi-val">' + (minV ? minV.dominio : '—') + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Promedio costo/km</div><div class="inf-kpi-val">' + (promKm !== null ? fmt$(promKm) + '/km' : 'â€”') + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">MÃ¡s costoso</div><div class="inf-kpi-val">' + (maxV ? maxV.dominio : 'â€”') + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Mejor costo/km</div><div class="inf-kpi-val">' + (minV ? minV.dominio : 'â€”') + '</div></div>' +
     '</div></div>' +
 
     '<div class="inf-sec"><div class="inf-sec-title">Estado de la flota</div><div class="inf-kpis">' +
-      '<div class="inf-kpi"><div class="inf-kpi-lbl">Total vehículos</div><div class="inf-kpi-val">' + VEHICULOS.length + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Total vehÃ­culos</div><div class="inf-kpi-val">' + VEHICULOS.length + '</div></div>' +
       '<div class="inf-kpi"><div class="inf-kpi-lbl">Vencidos</div><div class="inf-kpi-val" style="color:#dc2626">' + venc + '</div></div>' +
-      '<div class="inf-kpi"><div class="inf-kpi-lbl">Atención próxima</div><div class="inf-kpi-val" style="color:#d97706">' + atn + '</div></div>' +
-      '<div class="inf-kpi"><div class="inf-kpi-lbl">Al día</div><div class="inf-kpi-val" style="color:#16a34a">' + ok + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">AtenciÃ³n prÃ³xima</div><div class="inf-kpi-val" style="color:#d97706">' + atn + '</div></div>' +
+      '<div class="inf-kpi"><div class="inf-kpi-lbl">Al dÃ­a</div><div class="inf-kpi-val" style="color:#16a34a">' + ok + '</div></div>' +
     '</div></div>' +
 
-    '<div class="inf-sec"><div class="inf-sec-title">Vehículos que requieren atención</div><table class="inf-table"><tr><th>Dominio</th><th>Marca</th><th>Pendientes</th></tr>' +
+    '<div class="inf-sec"><div class="inf-sec-title">VehÃ­culos que requieren atenciÃ³n</div><table class="inf-table"><tr><th>Dominio</th><th>Marca</th><th>Pendientes</th></tr>' +
       tableRows(atencion, [a => a.v.dominio, a => a.v.marca, a => a.pend.map(p => p.label + ' (' + p.txt + ')').join(', ')]) +
     '</table></div>' +
 
-    '<div class="inf-sec"><div class="inf-sec-title">Top 5 · Más antiguos</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Año</th></tr>' +
+    '<div class="inf-sec"><div class="inf-sec-title">Top 5 Â· MÃ¡s antiguos</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>AÃ±o</th></tr>' +
       tableRows(topAntiguos, [(v,i)=>topAntiguos.indexOf(v)+1, v => v.dominio, v => v.marca, v => v.anio]) +
     '</table></div>' +
 
-    '<div class="inf-sec"><div class="inf-sec-title">Top 5 · Mayor kilometraje</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Km</th></tr>' +
+    '<div class="inf-sec"><div class="inf-sec-title">Top 5 Â· Mayor kilometraje</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Km</th></tr>' +
       tableRows(topKm, [v=>topKm.indexOf(v)+1, v => v.dominio, v => v.marca, v => fmtKm(v.km)]) +
     '</table></div>' +
 
-    '<div class="inf-sec"><div class="inf-sec-title">Top 5 · Mayor valor de mercado</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Valor</th></tr>' +
+    '<div class="inf-sec"><div class="inf-sec-title">Top 5 Â· Mayor valor de mercado</div><table class="inf-table"><tr><th>#</th><th>Dominio</th><th>Marca</th><th>Valor</th></tr>' +
       tableRows(topValor, [v=>topValor.indexOf(v)+1, v => v.dominio, v => v.marca, v => fmt$(v.valorMercado)]) +
     '</table></div>' +
 
@@ -905,7 +913,7 @@ function renderAutoAnalisis() {
   const totalKmPrev = prevVehs.reduce((s, [, p]) => s + (p.km || 0), 0);
   const totalMantPrev = prevVehs.reduce((s, [, p]) => s + (p.mantenimiento || 0), 0);
 
-  // ¿Semestre en curso o cerrado? — si más de la mitad de los vehículos tienen km=0 → en curso
+  // Â¿Semestre en curso o cerrado? â€” si mÃ¡s de la mitad de los vehÃ­culos tienen km=0 â†’ en curso
   const conKm = veh.filter(v => v.costo.km > 0).length;
   const enCurso = conKm < veh.length / 2;
 
@@ -919,8 +927,8 @@ function renderAutoAnalisis() {
     const sign = p > 0 ? '+' : '';
     return `<span class="rd ${up ? 'up' : 'dn'}">${sign}${p.toFixed(1)}% vs sem. ant.</span>`;
   }
-  function fmt$(n) { return n == null ? '—' : '$' + Math.round(n).toLocaleString('es-AR'); }
-  function fmtKm(n) { return n == null || n === 0 ? '—' : n.toLocaleString('es-AR') + ' km'; }
+  function fmt$(n) { return n == null ? 'â€”' : '$' + Math.round(n).toLocaleString('es-AR'); }
+  function fmtKm(n) { return n == null || n === 0 ? 'â€”' : n.toLocaleString('es-AR') + ' km'; }
 
   // Top 3 por costo total
   const byTotal = [...veh].sort((a, b) => (b.costo.total || 0) - (a.costo.total || 0)).slice(0, 5);
@@ -928,7 +936,7 @@ function renderAutoAnalisis() {
   // Top 3 por km (solo los que tienen km)
   const byKm = [...veh].filter(v => v.costo.km > 0).sort((a, b) => b.costo.km - a.costo.km).slice(0, 5);
 
-  // Mayor variación de costo vs semestre anterior
+  // Mayor variaciÃ³n de costo vs semestre anterior
   const variaciones = veh.map(v => {
     const p = hasPrev ? COSTOS_PREV[v.dominio] : null;
     if (!p || !p.total || !v.costo.total) return null;
@@ -946,7 +954,7 @@ function renderAutoAnalisis() {
   const promKmPrev = totalKmPrev > 0 ? totalPrev / totalKmPrev : null;
   const deltaPromKm = pct(promKm, promKmPrev);
 
-  const periodoLabel = veh[0]?.costo?.periodo || PERIODO_PREV.replace('2°','2°').replace('1°','1°');
+  const periodoLabel = veh[0]?.costo?.periodo || PERIODO_PREV.replace('2Â°','2Â°').replace('1Â°','1Â°');
   const badge = enCurso
     ? '<span class="aa-badge">En curso</span>'
     : '<span class="aa-badge cerrado">Semestre cerrado</span>';
@@ -956,22 +964,22 @@ function renderAutoAnalisis() {
       <div class="aa-kpi">
         <div class="aa-kpi-val">${fmt$(totalCurr)}</div>
         <div class="aa-kpi-lbl">Costo total flota${enCurso ? ' (acumulado)' : ''}</div>
-        ${hasPrev && deltaTotalPct !== null ? `<div class="aa-kpi-delta ${deltaTotalPct > 0 ? 'up' : 'dn'}">${deltaTotalPct > 0 ? '▲' : '▼'} ${Math.abs(deltaTotalPct).toFixed(1)}% vs sem. ant.</div>` : ''}
+        ${hasPrev && deltaTotalPct !== null ? `<div class="aa-kpi-delta ${deltaTotalPct > 0 ? 'up' : 'dn'}">${deltaTotalPct > 0 ? 'â–²' : 'â–¼'} ${Math.abs(deltaTotalPct).toFixed(1)}% vs sem. ant.</div>` : ''}
       </div>
       <div class="aa-kpi">
-        <div class="aa-kpi-val">${totalKmCurr > 0 ? totalKmCurr.toLocaleString('es-AR') + ' km' : enCurso ? 'Cargando…' : '—'}</div>
-        <div class="aa-kpi-lbl">Kilómetros totales flota</div>
-        ${hasPrev && deltaKmPct !== null ? `<div class="aa-kpi-delta ${deltaKmPct > 0 ? 'up' : 'dn'}">${deltaKmPct > 0 ? '▲' : '▼'} ${Math.abs(deltaKmPct).toFixed(1)}% vs sem. ant.</div>` : ''}
+        <div class="aa-kpi-val">${totalKmCurr > 0 ? totalKmCurr.toLocaleString('es-AR') + ' km' : enCurso ? 'Cargandoâ€¦' : 'â€”'}</div>
+        <div class="aa-kpi-lbl">KilÃ³metros totales flota</div>
+        ${hasPrev && deltaKmPct !== null ? `<div class="aa-kpi-delta ${deltaKmPct > 0 ? 'up' : 'dn'}">${deltaKmPct > 0 ? 'â–²' : 'â–¼'} ${Math.abs(deltaKmPct).toFixed(1)}% vs sem. ant.</div>` : ''}
       </div>
       <div class="aa-kpi">
-        <div class="aa-kpi-val">${promKm ? '$' + Math.round(promKm).toLocaleString('es-AR') + '/km' : '—'}</div>
+        <div class="aa-kpi-val">${promKm ? '$' + Math.round(promKm).toLocaleString('es-AR') + '/km' : 'â€”'}</div>
         <div class="aa-kpi-lbl">Costo promedio flota por km</div>
-        ${hasPrev && deltaPromKm !== null ? `<div class="aa-kpi-delta ${deltaPromKm > 0 ? 'up' : 'dn'}">${deltaPromKm > 0 ? '▲' : '▼'} ${Math.abs(deltaPromKm).toFixed(1)}% vs sem. ant.</div>` : ''}
+        ${hasPrev && deltaPromKm !== null ? `<div class="aa-kpi-delta ${deltaPromKm > 0 ? 'up' : 'dn'}">${deltaPromKm > 0 ? 'â–²' : 'â–¼'} ${Math.abs(deltaPromKm).toFixed(1)}% vs sem. ant.</div>` : ''}
       </div>
       <div class="aa-kpi">
         <div class="aa-kpi-val">${fmt$(totalMantCurr)}</div>
         <div class="aa-kpi-lbl">Total mantenimiento${enCurso ? ' (acumulado)' : ''}</div>
-        ${hasPrev && totalMantPrev > 0 ? `<div class="aa-kpi-delta ${totalMantCurr > totalMantPrev ? 'up' : 'dn'}">${totalMantCurr > totalMantPrev ? '▲' : '▼'} ${Math.abs(pct(totalMantCurr, totalMantPrev)).toFixed(1)}% vs sem. ant.</div>` : ''}
+        ${hasPrev && totalMantPrev > 0 ? `<div class="aa-kpi-delta ${totalMantCurr > totalMantPrev ? 'up' : 'dn'}">${totalMantCurr > totalMantPrev ? 'â–²' : 'â–¼'} ${Math.abs(pct(totalMantCurr, totalMantPrev)).toFixed(1)}% vs sem. ant.</div>` : ''}
       </div>
     </div>`;
 
@@ -1003,15 +1011,15 @@ function renderAutoAnalisis() {
     }) : [`<div class="aa-row"><span class="rn" style="color:#94a3b8">Sin mantenimiento registrado</span></div>`]
   );
 
-  // Nota de pie de página
+  // Nota de pie de pÃ¡gina
   const nota = enCurso
-    ? `<div class="aa-note">⚡ Datos en curso — los km/costo/km se actualizan con cada carga semanal. Comparativas vs ${PERIODO_PREV} disponibles solo para vehículos comunes.</div>`
-    : `<div class="aa-note">✅ Análisis sobre datos definitivos del semestre. Comparativas vs ${PERIODO_PREV}.</div>`;
+    ? `<div class="aa-note">âš¡ Datos en curso â€” los km/costo/km se actualizan con cada carga semanal. Comparativas vs ${PERIODO_PREV} disponibles solo para vehÃ­culos comunes.</div>`
+    : `<div class="aa-note">âœ… AnÃ¡lisis sobre datos definitivos del semestre. Comparativas vs ${PERIODO_PREV}.</div>`;
 
   container.innerHTML = `
     <div class="aa-wrap">
-      <div class="aa-hd"><h2>Análisis automático · flota <button class="ti-btn" onclick="tiTog(this,'ti-aa')" aria-label="Información sobre esta sección" style="border-color:#7dd3fc;color:#0369a1">i</button></h2>${badge}</div>
-      <div class="ti-panel" id="ti-aa"><div class="ti-inner" style="margin-bottom:12px"><div><div class="ti-lbl">Qué mide</div><div class="ti-txt">Resumen calculado automáticamente desde los datos de cada vehículo: costo total, km, promedio por km y mantenimiento acumulados en el semestre actual.</div></div><div><div class="ti-lbl">Cómo interpretar</div><div class="ti-txt">▲ rojo = subió vs semestre anterior. ▼ verde = bajó. Con semestre en curso los km se actualizan semanalmente — el costo/km aparece cuando estén completos.</div></div></div></div>
+      <div class="aa-hd"><h2>AnÃ¡lisis automÃ¡tico Â· flota <button class="ti-btn" onclick="tiTog(this,'ti-aa')" aria-label="InformaciÃ³n sobre esta secciÃ³n" style="border-color:#7dd3fc;color:#0369a1">i</button></h2>${badge}</div>
+      <div class="ti-panel" id="ti-aa"><div class="ti-inner" style="margin-bottom:12px"><div><div class="ti-lbl">QuÃ© mide</div><div class="ti-txt">Resumen calculado automÃ¡ticamente desde los datos de cada vehÃ­culo: costo total, km, promedio por km y mantenimiento acumulados en el semestre actual.</div></div><div><div class="ti-lbl">CÃ³mo interpretar</div><div class="ti-txt">â–² rojo = subiÃ³ vs semestre anterior. â–¼ verde = bajÃ³. Con semestre en curso los km se actualizan semanalmente â€” el costo/km aparece cuando estÃ©n completos.</div></div></div></div>
       ${kpisHTML}
       <div class="aa-cols">${colMayorCosto}${colKm}${colMant}</div>
       ${nota}
@@ -1023,10 +1031,10 @@ function renderComparativa() {
   document.getElementById('comp-section').style.display = '';
 
   const curr = VEHICULOS.filter(v => v.costo && v.costo.total);
-  const periodoAct = curr.length ? curr[0].costo.periodo : '—';
-  document.getElementById('comp-vs').textContent = (PERIODO_PREV || '—') + ' → ' + periodoAct;
+  const periodoAct = curr.length ? curr[0].costo.periodo : 'â€”';
+  document.getElementById('comp-vs').textContent = (PERIODO_PREV || 'â€”') + ' â†’ ' + periodoAct;
 
-  // ── Fleet totals ──
+  // â”€â”€ Fleet totals â”€â”€
   const sum = (arr, fn) => arr.reduce((s, v) => s + (fn(v) || 0), 0);
   const avg = (arr, fn) => arr.length ? sum(arr, fn) / arr.length : 0;
   const withKm = v => v.costo && v.costo.km > 0;
@@ -1039,7 +1047,7 @@ function renderComparativa() {
     const pct = ((cVal - pVal) / Math.abs(pVal)) * 100;
     const up = cVal > pVal;
     const cls = isCost ? (up ? 'delta-up' : 'delta-dn') : (up ? 'delta-dn' : 'delta-up');
-    const arrow = up ? '▲' : '▼';
+    const arrow = up ? 'â–²' : 'â–¼';
     const fmtVal = v => v >= 1000000 ? '$' + (v/1000000).toFixed(2) + 'M' : v >= 1000 ? '$' + Math.round(v/1000) + 'k' : Math.round(v).toLocaleString('es-AR');
     return `<div class="ckpi">
       <div class="ckpi-lbl">${label}</div>
@@ -1077,13 +1085,13 @@ function renderComparativa() {
       <div class="ckpi-lbl">${label}</div>
       <div class="ckpi-val">${fmtKm2(cVal)}</div>
       <div class="ckpi-prev">Anterior: ${fmtKm2(pVal)}</div>
-      <div class="ckpi-delta ${up ? 'delta-dn' : 'delta-up'}">${up ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}%</div>
+      <div class="ckpi-delta ${up ? 'delta-dn' : 'delta-up'}">${up ? 'â–²' : 'â–¼'} ${Math.abs(pct).toFixed(1)}%</div>
     </div>`;
   }
 
   document.getElementById('comp-kpis').innerHTML =
     fleetKpi('Costo total flota', pTotal, cTotal, true) +
-    fleetKpi('Promedio costo/vehículo', pPromVeh, cPromVeh, true) +
+    fleetKpi('Promedio costo/vehÃ­culo', pPromVeh, cPromVeh, true) +
     fleetKpi('Promedio costo/km', pPromKm, cPromKm, true) +
     kpiKm('Total km recorridos', pKm, cKm) +
     fleetKpi('Combustible total', pComb, cComb, true) +
@@ -1091,15 +1099,15 @@ function renderComparativa() {
     fleetKpi('Telepeaje total', pTele, cTele, true) +
     fleetKpi('Costo fijo total', pFijo, cFijo, true);
 
-  // ── Per-vehicle table ──
+  // â”€â”€ Per-vehicle table â”€â”€
   const fmt2 = v => v >= 1000000 ? '$' + (v/1000000).toFixed(2) + 'M' : '$' + Math.round(v).toLocaleString('es-AR');
   const fmtKm3 = v => Math.round(v).toLocaleString('es-AR');
   function delta(p, c, isCost) {
-    if (!p || !c) return '<td>—</td>';
+    if (!p || !c) return '<td>â€”</td>';
     const pct = ((c - p) / Math.abs(p)) * 100;
     const up = c > p;
     const cls = isCost ? (up ? 'delta-up' : 'delta-dn') : (up ? 'delta-dn' : 'delta-up');
-    return `<td class="${cls}" style="font-weight:700">${up ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}%</td>`;
+    return `<td class="${cls}" style="font-weight:700">${up ? 'â–²' : 'â–¼'} ${Math.abs(pct).toFixed(1)}%</td>`;
   }
 
   const allDom = [...new Set([...currVehs.map(v => v.dominio), ...prevVehs.map(v => v.dominio)])].sort();
@@ -1111,9 +1119,9 @@ function renderComparativa() {
     const p = prevMap[d], c = currMap[d];
     return `<tr>
       <td class="vdom">${d}</td>
-      <td>${p ? fmt2(p.total) : '—'}</td><td>${c ? fmt2(c.total) : '—'}</td>${delta(p?.total, c?.total, true)}
-      <td>${p ? fmtKm3(p.km) : '—'}</td><td>${c ? fmtKm3(c.km) : '—'}</td>${delta(p?.km, c?.km, false)}
-      <td>${p && p.costoKm ? fmt2(p.costoKm) : '—'}</td><td>${c && c.costoKm ? fmt2(c.costoKm) : '—'}</td>${delta(p?.costoKm, c?.costoKm, true)}
+      <td>${p ? fmt2(p.total) : 'â€”'}</td><td>${c ? fmt2(c.total) : 'â€”'}</td>${delta(p?.total, c?.total, true)}
+      <td>${p ? fmtKm3(p.km) : 'â€”'}</td><td>${c ? fmtKm3(c.km) : 'â€”'}</td>${delta(p?.km, c?.km, false)}
+      <td>${p && p.costoKm ? fmt2(p.costoKm) : 'â€”'}</td><td>${c && c.costoKm ? fmt2(c.costoKm) : 'â€”'}</td>${delta(p?.costoKm, c?.costoKm, true)}
     </tr>`;
   }).join('');
   document.getElementById('comp-tbody').innerHTML = rows;
@@ -1121,7 +1129,8 @@ function renderComparativa() {
 </script>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
+<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">ðŸ”’</div><div class="sgi-title">SGI Â· ESINEL</div><div class="sgi-sub">Acceso restringido<br>IniciÃ¡ sesiÃ³n con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
 <script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')=== '1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
 </body>
 </html>
+
