@@ -1,82 +1,650 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SGI - Listado de Documentos</title>
-<style>
-:root{--bg:#f1f5f9;--bg2:#fff;--tx:#1a1a1a;--tx2:#64748b;--bdr:#e2e8f0}
-@media(prefers-color-scheme:dark){:root{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--tx2:#94a3b8;--bdr:#1e293b}}
-@media(prefers-color-scheme:dark){body{background:var(--bg);color:var(--tx)}.card,.panel,.sidebar,.doc-card,.file-card,.modal,.dialog{background:var(--bg2)!important;border-color:var(--bdr)!important}input,select,textarea{background:var(--bg2)!important;border-color:var(--bdr)!important;color:var(--tx)!important}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGI — Listado Maestro de Documentos ESINEL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  
+  <style>
+    :root {
+      --g-font-display: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --g-font-body: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      
+      /* Looker / Google Workspace Palette */
+      --g-blue: #1a73e8;
+      --g-blue-hover: #1557b0;
+      --g-blue-bg: #e8f0fe;
+      --g-green: #1e8e3e;
+      --g-green-bg: #e6f4ea;
+      --g-yellow: #f9ab00;
+      --g-yellow-bg: #fef7e0;
+      --g-red: #d93025;
+      --g-red-bg: #fce8e6;
+      --g-purple: #9334e6;
+      --g-purple-bg: #f3e8fd;
+      
+      /* Superficies & Bordes */
+      --surface-bg: #f8fafd;
+      --card-bg: #ffffff;
+      --border-subtle: #dadce0;
+      --border-light: #edf2f7;
+      --text-main: #202124;
+      --text-muted: #5f6368;
+      --text-soft: #80868b;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+      --shadow-md: 0 2px 6px 2px rgba(60,64,67,0.15), 0 1px 2px 0 rgba(60,64,67,0.3);
+      --shadow-lg: 0 4px 8px 3px rgba(60,64,67,0.15), 0 1px 3px 0 rgba(60,64,67,0.3);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-pill: 9999px;
+    }
 
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
-.wrap{max-width:1300px;margin:0 auto;padding:24px}
-h1{font-size:22px;font-weight:700;margin-bottom:2px;color:#0f172a}
-.sub{color:#64748b;font-size:13px;margin-bottom:20px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;border-top:3px solid transparent}
-.card.c-all{border-top-color:#6366f1}.card.c-green{border-top-color:#16a34a}.card.c-amber{border-top-color:#d97706}.card.c-red{border-top-color:#dc2626}
-.card-label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
-.card-val{font-size:30px;font-weight:700;line-height:1}
-.card.c-all .card-val{color:#6366f1}.card.c-green .card-val{color:#16a34a}.card.c-amber .card-val{color:#d97706}.card.c-red .card-val{color:#dc2626}
-.card-sub{font-size:12px;color:#94a3b8;margin-top:4px}
-.tipo-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.tipo-btn{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
-.tipo-btn:hover{filter:brightness(.95)}
-.tipo-btn.active{border-color:currentColor;filter:brightness(.9)}
-.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.toolbar input,.toolbar select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#0f172a}
-.toolbar input{flex:1;min-width:220px}
-.toolbar input:focus,.toolbar select:focus{border-color:#6366f1;box-shadow:0 0 0 3px #6366f120}
-.count-info{font-size:12px;color:#64748b;margin-bottom:8px}
-.tbl-wrap{border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;background:#fff}
-table{width:100%;border-collapse:collapse}
-thead th{background:#f8fafc;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;white-space:nowrap;cursor:pointer;user-select:none}
-thead th:hover{background:var(--bg);color:#475569}
-tbody tr:hover{background:#f8fafc}
-tbody tr.clickable{cursor:pointer}
-tbody tr.clickable:hover{background:#eff6ff}
-.disc-txt{text-decoration:line-through;color:#94a3b8}
-tbody td{padding:9px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
-tbody tr:last-child td{border-bottom:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.2px}
-.cod{font-family:'SF Mono',Consolas,monospace;font-size:11.5px;color:#475569;font-weight:600;white-space:nowrap;background:var(--bg);padding:1px 5px;border-radius:3px}
-.nombre-cell{max-width:320px}
-.nombre-txt{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:310px;font-size:13px}
-.link-btn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#eff6ff;border-radius:6px;text-decoration:none;color:#2563eb;font-size:12px;font-weight:700}
-.link-btn:hover{background:#dbeafe}
-.no-link{color:#cbd5e1;font-size:12px;display:flex;justify-content:center}
-.ctrl-date{font-size:12px;font-variant-numeric:tabular-nums}
-.empty{text-align:center;padding:48px;color:#94a3b8;font-size:14px}
-.rev-badge{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:5px;font-size:11px;font-weight:700;background:var(--bg);color:#475569}
-.charts-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap}
-.ch-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;flex:1;min-width:260px}
-.ch-title{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
-.ch-inner{display:flex;gap:14px;align-items:center}
-.ch-legend{display:flex;flex-direction:column;gap:5px;flex:1}
-.ch-leg-row{display:flex;align-items:center;gap:6px;cursor:pointer;padding:3px 5px;border-radius:6px;transition:background .12s}
-.ch-leg-row:hover{background:#f8fafc}
-.ch-leg-row.ch-active{background:#ede9fe;outline:1.5px solid #6366f1;border-radius:6px}
-.ch-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-.ch-lbl{font-size:12px;color:#374151;flex:1}
-.ch-n{font-size:12px;font-weight:700;color:#6b7280}
-.bar-wrap{display:flex;flex-direction:column;gap:8px;width:100%}
-.bar-row{display:flex;align-items:center;gap:8px}
-.bar-label{font-size:12px;font-weight:600;color:#374151;width:34px;flex:0 0 auto}
-.bar-track{flex:1;background:var(--bg);border-radius:4px;height:22px;overflow:hidden;cursor:pointer}
-.bar-fill{height:100%;border-radius:4px;transition:opacity .2s;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
-.bar-fill-n{font-size:11px;font-weight:700;color:#fff}
-.bar-row.bar-active .bar-track{outline:2px solid #6366f1}
-</style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--g-font-body);
+      background-color: var(--surface-bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .g-dashboard-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 24px 24px 64px;
+    }
+
+    /* Top Bar & Titulares */
+    .g-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .g-title-group h1 {
+      font-family: var(--g-font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f1f1f;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .g-title-group p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .g-quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .g-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-family: var(--g-font-display);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .g-btn:hover {
+      background: #f1f3f4;
+      border-color: #c6c9cc;
+    }
+
+    .g-btn-primary {
+      background: var(--g-blue);
+      border-color: var(--g-blue);
+      color: #fff;
+    }
+
+    .g-btn-primary:hover {
+      background: var(--g-blue-hover);
+      border-color: var(--g-blue-hover);
+      color: #fff;
+    }
+
+    /* KPI Banner / Looker Studio Stat Boxes */
+    .g-stats-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .g-stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+
+    .g-stat-box:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .g-stat-box.active-filter {
+      outline: 2px solid var(--g-blue);
+      background: #fafcff;
+    }
+
+    .g-stat-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .g-stat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .g-stat-val {
+      font-family: var(--g-font-display);
+      font-size: 28px;
+      font-weight: 700;
+      margin: 8px 0 2px;
+      line-height: 1.1;
+    }
+
+    .g-stat-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Gráficos Looker Grid */
+    .g-charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .g-chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .g-chart-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .g-chart-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .g-chart-hint {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    /* Donut & Barras */
+    .donut-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      min-height: 190px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .bar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .bar-lbl-group {
+      width: 140px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 20px;
+      background: #f1f3f4;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      transition: width 0.3s ease;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .bar-row.active .bar-track {
+      outline: 2px solid var(--g-blue);
+    }
+
+    /* Control Deck estilo Google Drive / Workspace */
+    .g-control-deck {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .g-search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .g-search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .g-search-box i.search-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 18px;
+      color: var(--text-soft);
+      pointer-events: none;
+    }
+
+    .g-search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 40px 0 42px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      background: #f1f3f4;
+      font-family: var(--g-font-body);
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+
+    .g-search-input:hover {
+      background: #e8eaed;
+    }
+
+    .g-search-input:focus {
+      background: #ffffff;
+      border-color: var(--g-blue);
+      box-shadow: 0 1px 6px rgba(26, 115, 232, 0.28);
+    }
+
+    .g-search-clear {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      cursor: pointer;
+      font-size: 16px;
+      display: none;
+      padding: 4px;
+      border-radius: 50%;
+    }
+
+    .g-search-clear:hover {
+      color: var(--text-main);
+      background: #e8eaed;
+    }
+
+    .g-select-pill {
+      height: 38px;
+      border-radius: var(--radius-pill);
+      padding: 0 14px;
+      font-size: 12.5px;
+      font-family: var(--g-font-display);
+      border: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .g-select-pill:hover {
+      border-color: #bdc1c6;
+    }
+
+    .g-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f3f4;
+    }
+
+    .g-chip-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 4px;
+    }
+
+    .g-chip {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-family: var(--g-font-display);
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s ease;
+      user-select: none;
+    }
+
+    .g-chip:hover {
+      background: #f1f3f4;
+      color: var(--text-main);
+      border-color: #bdc1c6;
+    }
+
+    .g-chip.active {
+      background: var(--g-blue-bg);
+      border-color: #aecbfa;
+      color: var(--g-blue);
+      font-weight: 600;
+    }
+
+    .g-chip-badge {
+      background: rgba(0,0,0,0.06);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .g-chip.active .g-chip-badge {
+      background: #d2e3fc;
+      color: var(--g-blue);
+    }
+
+    /* Tabla Corporativa de Documentos */
+    .g-table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .g-table-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: #fafbfc;
+    }
+
+    .g-table-wrap {
+      overflow-x: auto;
+    }
+
+    .g-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .g-table th {
+      background: #f8f9fa;
+      padding: 12px 16px;
+      font-family: var(--g-font-display);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .g-table th:hover {
+      color: var(--text-main);
+      background: #f1f3f4;
+    }
+
+    .g-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f3f4;
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .g-table tr:hover td {
+      background-color: #f8fafd;
+    }
+
+    .g-table tr.row-clickable {
+      cursor: pointer;
+    }
+
+    .g-doc-code {
+      font-family: 'SF Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      background: #f1f3f4;
+      color: #3c4043;
+      padding: 3px 6px;
+      border-radius: 4px;
+      border: 1px solid #e8eaed;
+      white-space: nowrap;
+    }
+
+    .g-doc-name-cell {
+      max-width: 360px;
+    }
+
+    .g-doc-name {
+      font-weight: 500;
+      color: var(--text-main);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.35;
+    }
+
+    .g-doc-name.is-discontinued {
+      text-decoration: line-through;
+      color: var(--text-soft);
+    }
+
+    .g-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .g-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .g-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .g-rev-badge {
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f1f3f4;
+      color: var(--text-muted);
+    }
+
+    .g-drive-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: #f1f3f4;
+      color: var(--g-blue);
+      text-decoration: none;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .g-drive-btn:hover {
+      background: var(--g-blue-bg);
+      transform: scale(1.08);
+    }
+
+    .g-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #323232;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999999;
+      pointer-events: none;
+    }
+
+    .g-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
 <body>
+
 <!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
 <style>
-:root{--bg:#f1f5f9;--bg2:#fff;--tx:#1a1a1a;--tx2:#64748b;--bdr:#e2e8f0}
-@media(prefers-color-scheme:dark){:root{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--tx2:#94a3b8;--bdr:#1e293b}}
-@media(prefers-color-scheme:dark){body{background:var(--bg);color:var(--tx)}.card,.panel,.sidebar,.doc-card,.file-card,.modal,.dialog{background:var(--bg2)!important;border-color:var(--bdr)!important}input,select,textarea{background:var(--bg2)!important;border-color:var(--bdr)!important;color:var(--tx)!important}}
-
 .esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
 .esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
 .esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
@@ -98,20 +666,20 @@ tbody tr:last-child td{border-bottom:none}
   <div class="esinel-hdr-top">
     <a class="esinel-logo" href="index.html">
       <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
-  <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
-  <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
-  <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-  <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
-  <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
-  <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
-  <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
-  <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
-</svg>
+        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
+        <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
+        <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+        <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+      </svg>
       <div>
         <div class="esinel-logo-name">ESINEL</div>
         <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
@@ -131,7 +699,8 @@ tbody tr:last-child td{border-bottom:none}
     <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
     <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
     <a class="esinel-nav-item esinel-active" href="documentos.html">📄 Documentos</a>
-      <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+    <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+    <a class="esinel-nav-item" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">💼 Comercial</a>
   </nav>
 </div>
 <script>(function(){try{
@@ -147,307 +716,948 @@ tbody tr:last-child td{border-bottom:none}
 }catch(e){}})()</script>
 <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-<div class="wrap">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">
-    <h1>Listado de Documentos SGI</h1>
-    <a href="https://docs.google.com/spreadsheets/d/1HyGyeTO0qOCyL36C2tpxet4kEO2qJIezdAlecTNARn8/edit" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 1px 3px #0001">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      Ver Sheets
-    </a>
-  </div>
-  <div class="sub">Esinel S.R.L. &middot; RG-01-01 Rev03 &middot; Sistema de Gesti&oacute;n Integrado ISO 9001 / 14001 / 45001</div>
+<main class="g-dashboard-wrap">
 
-  <div class="cards">
-    <div class="card c-all" onclick="setStatus('')" style="cursor:pointer">
-      <div class="card-label">Total</div>
-      <div class="card-val" id="cnt-all">—</div>
-      <div class="card-sub">documentos en el SGI</div>
+  <!-- Top Title & Quick Links -->
+  <header class="g-top-bar">
+    <div class="g-title-group">
+      <h1><i class="ti ti-files" style="color:var(--g-blue)"></i> Listado Maestro de Documentos SGI</h1>
+      <p>Control de información documentada, instructivos, registros y procedimientos · RG-01-01 Rev03 · ESINEL S.R.L.</p>
     </div>
-    <div class="card c-green" onclick="setStatus('v')" style="cursor:pointer">
-      <div class="card-label">Vigentes</div>
-      <div class="card-val" id="cnt-v">—</div>
-      <div class="card-sub">control &lt; 1 a&ntilde;o</div>
+    <div class="g-quick-actions">
+      <a href="https://docs.google.com/spreadsheets/d/1HyGyeTO0qOCyL36C2tpxet4kEO2qJIezdAlecTNARn8/edit" target="_blank" rel="noopener" class="g-btn">
+        <i class="ti ti-table-shortcut" style="color:#0f9d58"></i> Abrir en Google Sheets
+      </a>
+      <button class="g-btn g-btn-primary" onclick="exportFilteredCSV()">
+        <i class="ti ti-download"></i> Exportar CSV
+      </button>
     </div>
-    <div class="card c-amber" onclick="setStatus('r')" style="cursor:pointer">
-      <div class="card-label">A revisar</div>
-      <div class="card-val" id="cnt-r">—</div>
-      <div class="card-sub">control &gt; 1 a&ntilde;o</div>
+  </header>
+
+  <!-- Google Stats Row (KPIs) -->
+  <section class="g-stats-banner">
+    <div class="g-stat-box" id="card-all" onclick="setStatusFilter('')">
+      <div class="g-stat-box-header">
+        <span>Total Documentos</span>
+        <div class="g-stat-icon" style="background:#e8f0fe; color:#1a73e8;"><i class="ti ti-folder"></i></div>
+      </div>
+      <div class="g-stat-val" id="cnt-all" style="color:#1a73e8;">—</div>
+      <div class="g-stat-sub"><i class="ti ti-shield-check"></i> SGI 9001 · 14001 · 45001</div>
     </div>
-    <div class="card c-red" onclick="setStatus('s')" style="cursor:pointer">
-      <div class="card-label">Sin control</div>
-      <div class="card-val" id="cnt-s">—</div>
-      <div class="card-sub">sin fecha registrada</div>
+
+    <div class="g-stat-box" id="card-v" onclick="setStatusFilter('v')">
+      <div class="g-stat-box-header">
+        <span>Vigentes</span>
+        <div class="g-stat-icon" style="background:#e6f4ea; color:#1e8e3e;"><i class="ti ti-circle-check"></i></div>
+      </div>
+      <div class="g-stat-val" id="cnt-v" style="color:#1e8e3e;">—</div>
+      <div class="g-stat-sub">Control al día (&lt; 1 año)</div>
+    </div>
+
+    <div class="g-stat-box" id="card-r" onclick="setStatusFilter('r')">
+      <div class="g-stat-box-header">
+        <span>A Revisar</span>
+        <div class="g-stat-icon" style="background:#fef7e0; color:#d97706;"><i class="ti ti-clock-exclamation"></i></div>
+      </div>
+      <div class="g-stat-val" id="cnt-r" style="color:#d97706;">—</div>
+      <div class="g-stat-sub">Control pendiente (&gt; 1 año)</div>
+    </div>
+
+    <div class="g-stat-box" id="card-s" onclick="setStatusFilter('s')">
+      <div class="g-stat-box-header">
+        <span>Sin Control / Obsoletos</span>
+        <div class="g-stat-icon" style="background:#fce8e6; color:#d93025;"><i class="ti ti-alert-triangle"></i></div>
+      </div>
+      <div class="g-stat-val" id="cnt-s" style="color:#d93025;">—</div>
+      <div class="g-stat-sub">Sin fecha o discontinuados</div>
+    </div>
+  </section>
+
+  <!-- Looker Studio Charts Grid -->
+  <section class="g-charts-grid">
+    <!-- Donut de Años -->
+    <div class="g-chart-card">
+      <div class="g-chart-head">
+        <span class="g-chart-title"><i class="ti ti-calendar-time"></i> Vigencia por Año de Aprobación</span>
+        <span class="g-chart-hint" id="donut-filter-hint">Clic para filtrar</span>
+      </div>
+      <div class="donut-container">
+        <svg id="donut-svg" viewBox="0 0 260 260" style="width:200px; height:200px;"></svg>
+        <div id="donut-legend" style="display:flex; flex-direction:column; gap:6px; font-size:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Barras de Tipos -->
+    <div class="g-chart-card">
+      <div class="g-chart-head">
+        <span class="g-chart-title"><i class="ti ti-category"></i> Distribución por Tipología</span>
+        <span class="g-chart-hint">Clic en la barra para filtrar</span>
+      </div>
+      <div id="bar-chart-container" style="display:flex; flex-direction:column; justify-content:center; min-height:190px;">
+        <!-- Se llena con JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Google Control Deck (Search + Process Filter + Type Chips) -->
+  <section class="g-control-deck">
+    <div class="g-search-row">
+      <div class="g-search-box">
+        <i class="ti ti-search search-icon"></i>
+        <input type="text" id="searchInput" class="g-search-input" placeholder="Buscar documento por código (ej. RG-04-01) o palabras clave del título..." autocomplete="off">
+        <button id="clearSearchBtn" class="g-search-clear" onclick="clearSearch()" title="Limpiar"><i class="ti ti-x"></i></button>
+      </div>
+
+      <select id="selProceso" class="g-select-pill" onchange="applyFilters()">
+        <option value="">Todos los procesos</option>
+      </select>
+
+      <select id="selStatus" class="g-select-pill" onchange="applyFilters()">
+        <option value="">Todos los estados</option>
+        <option value="v">Vigente</option>
+        <option value="r">A revisar</option>
+        <option value="s">Sin control</option>
+        <option value="x">Discontinuado</option>
+      </select>
+    </div>
+
+    <!-- Type Chips Row -->
+    <div class="g-chips-row" id="typeChipsRow">
+      <!-- Se llena dinámicamente -->
+    </div>
+  </section>
+
+  <!-- Tabla Principal de Resultados -->
+  <div class="g-table-card">
+    <div class="g-table-top-meta">
+      <span id="count-info">Cargando registros...</span>
+      <span style="font-size:11px; color:var(--text-soft);"><i class="ti ti-click"></i> Haz clic en una fila con enlace para abrir en Google Drive</span>
+    </div>
+
+    <div class="g-table-wrap">
+      <table class="g-table">
+        <thead>
+          <tr>
+            <th onclick="sortBy(0)">Código <i class="ti ti-arrows-sort"></i></th>
+            <th onclick="sortBy(1)">Tipo <i class="ti ti-arrows-sort"></i></th>
+            <th onclick="sortBy(5)">Nombre del Documento <i class="ti ti-arrows-sort"></i></th>
+            <th onclick="sortBy(2)" style="text-align:center;">Rev</th>
+            <th onclick="sortBy(3)">Proceso Asociado <i class="ti ti-arrows-sort"></i></th>
+            <th onclick="sortBy(6)">F. Vigencia <i class="ti ti-arrows-sort"></i></th>
+            <th onclick="sortBy(4)">Último Control <i class="ti ti-arrows-sort"></i></th>
+            <th>Estado</th>
+            <th style="text-align:center;">Drive</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
     </div>
   </div>
+</main>
 
-  <div class="charts-row">
-    <div class="ch-card" style="flex:2"><div class="ch-title">Documentos por año de vigencia</div><svg id="donut-svg" viewBox="0 0 260 260" style="width:100%;max-width:260px;display:block;margin:0 auto"></svg></div>
-    <div class="ch-card" style="flex:1.4;min-width:220px"><div class="ch-title">Documentos por tipo</div><div class="bar-wrap" id="bar-chart"></div></div>
-  </div>
+<!-- Google Toast -->
+<div class="g-toast" id="toastMessage">
+  <i class="ti ti-check"></i> <span id="toastText">Acción completada</span>
+</div>
 
-  <div class="tipo-bar" id="tipo-bar">
-    <button class="tipo-btn active" style="background:#ede9fe;color:#4f46e5" onclick="setTipo('')" data-t="">Todos (351)</button>
-    <button class="tipo-btn" style="background:#dbeafe;color:#1d4ed8" onclick="setTipo('PG')" data-t="PG">PG &mdash; Procedimiento (27)</button>
-    <button class="tipo-btn" style="background:#dcfce7;color:#15803d" onclick="setTipo('IN')" data-t="IN">IN &mdash; Instructivo (88)</button>
-    <button class="tipo-btn" style="background:#f3e8ff;color:#7e22ce" onclick="setTipo('RE')" data-t="RE">RE &mdash; Registro (218)</button>
-    <button class="tipo-btn" style="background:#fff7ed;color:#c2410c" onclick="setTipo('CA')" data-t="CA">CA &mdash; Capacitaci&oacute;n (13)</button>
-    <button class="tipo-btn" style="background:var(--bg);color:#475569" onclick="setTipo('DO')" data-t="DO">DO &mdash; Documento (5)</button>
-  </div>
+<!-- ── OVERLAY DE ACCESO GOOGLE SIGN-IN ── -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style id="sgi-s">
+  #sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}
+  .sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}
+  .sgi-icon{font-size:2.5rem;margin-bottom:.75rem}
+  .sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}
+  .sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}
+</style>
 
-  <div class="toolbar">
-    <input type="text" id="search" placeholder="Buscar por nombre o c&oacute;digo..." oninput="applyFilters()">
-    <select id="sel-proceso" onchange="applyFilters()">
-      <option value="">Todos los procesos</option>
-      <option value="0">Administración</option><option value="1">Comercial</option><option value="2">Compras</option><option value="3">Depósito</option><option value="4">Diseño</option><option value="5">Gerencia General</option><option value="6">Ingeniería</option><option value="7">Legales</option><option value="8">Medio Ambiente</option><option value="9">Obra</option><option value="10">Producción</option><option value="11">RRHH</option><option value="12">SGI</option><option value="13">Seguridad e Higiene</option><option value="14">Sistemas</option><option value="15">Ventas</option>
-    </select>
-    <select id="sel-status" onchange="applyFilters()">
-      <option value="">Todos los estados</option>
-      <option value="v">Vigente</option>
-      <option value="r">A revisar</option>
-      <option value="x">Discontinuado</option>
-      <option value="x">Discontinuado</option>
-    </select>
-  </div>
-
-  <div class="count-info" id="count-info"></div>
-  <div class="tbl-wrap">
-    <table id="main-table">
-      <thead>
-        <tr>
-          <th onclick="sortBy(0)" title="Ordenar">C&oacute;digo &nbsp;&#8597;</th>
-          <th onclick="sortBy(1)" title="Ordenar">Tipo &nbsp;&#8597;</th>
-          <th onclick="sortBy(5)" title="Ordenar">Nombre del documento &nbsp;&#8597;</th>
-          <th onclick="sortBy(2)">Rev</th>
-          <th onclick="sortBy(3)" title="Ordenar">Proceso &nbsp;&#8597;</th>
-          <th onclick="sortBy(6)" title="Ordenar">F. Vigencia &nbsp;&#8597;</th>
-          <th onclick="sortBy(4)" title="Ordenar">F. Control &nbsp;&#8597;</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+<div id="sgi-auth-overlay">
+  <div class="sgi-card">
+    <div class="sgi-icon">🔒</div>
+    <div class="sgi-title">SGI · ESINEL</div>
+    <div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div>
+    <div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div>
   </div>
 </div>
 
-<script>
-const DATA = {"p":["Administración","Comercial","Compras","Depósito","Diseño","Gerencia General","Ingeniería","Legales","Medio Ambiente","Obra","Producción","RRHH","SGI","Seguridad e Higiene","Sistemas","Ventas"],"d":[["NORMAS ISO","DO","","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1YqBIu7UXgHihTpl98A_16xfr6CiOe79k",""],["Política Integrada","DO","","02",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1aW-K1gFFfIyoFWvuiOOD1QyE-Ql6blQJ","2/9/2021"],["Política Interna Ética y Conducta","DO","","00",5,"4/5/2026","v",1,"https://drive.google.com/drive/folders/1aW-K1gFFfIyoFWvuiOOD1QyE-Ql6blQJ","1/5/2026"],["Manual de Gestión Integrado","DO","","04",5,"29/7/2025","r",1,"https://drive.google.com/drive/folders/1aW-K1gFFfIyoFWvuiOOD1QyE-Ql6blQJ","1/8/2024"],["Organigrama","DO","","30",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1ZEW0YIUonNA_V2e-I019iwQxgMtSPXTS","20/3/2025"],["Identificación de aspectos e impactos ambientales","PG","PMA-01","05",8,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1e8J9rkM6p_hrPpAJt63phf6z_09LC-_Q","12/8/2026"],["Matriz de Aspectos e Impactos Ambientales","RE","RMA-01-01","07",8,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","12/8/2026"],["Análisis ciclo de vida materiales e insumos","RE","RMA-01-02","01",8,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","13/7/2020"],["Seguimiento de Consumos","RE","RMA-01-03","04",8,"29/7/2025","r",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","11/7/2023"],["Informe cliente de materiales e insumos provistos","RE","RMA-01-04","00",8,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","15/7/2020"],["Listado Fichas Ciclo Vida","RE","RMA-01-05","00",8,"19/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","8/6/2026"],["Gestión de los residuos","PG","PMA-02","04",8,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1e53I9nAGxAR81LR8tTcwLNdbAkZAAYbc","27/3/2023"],["Gestión de los residuos","RE","RMA-02-01","02",8,"1/8/2025","r",1,"https://drive.google.com/drive/folders/1hw0NI9Gb1DoM2tNMcJaTeCbKkajzifN8","29/1/2023"],["Control de la información Documentada","PG","PG-01","03",12,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1bDot94He0zFiLMgrpvvrRQ_1lAXmuIip","1/2/2024"],["Listado de Documentos del SGI","RE","RG-01-01","03",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bukdgON3ApbK8iFN63dTZQ3ijy15KGH1","1/2/2024"],["Análisis del contexto, partes interesadas y gestión de riesgos","PG","PG-02","02",5,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1bC_viHhuuQ4CZ6oRG-kLYriVPnCU6_AX","3/10/2019"],["Análisis del contexto","RE","RG-02-01","04",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bgAkFl-Y8M1TBnk-SFPswQgzNlwchbyd","1/4/2025"],["Partes interesadas","RE","RG-02-02","04",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bgAkFl-Y8M1TBnk-SFPswQgzNlwchbyd","1/5/2024"],["Liderazgo y revisión por la Gerencia General","PG","PG-03","00",5,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1b9L4X-Gtok9DJHXVg9q1hn4N_b0QCTDN","20/2/2018"],["Objetivos del SGI","RE","RG-03-01","05",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bQDQev-bfLlq8l-nNsmh2r6S58VRc9hy","26/9/2021"],["Informe de revisión por la Dirección SGI","RE","RG-03-02","09",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bQDQev-bfLlq8l-nNsmh2r6S58VRc9hy","11/8/2026"],["Evaluación semestral de proveedores","RE","I-COMP1","00",2,"1/8/2025","r",0,"","11/4/2018"],["Evaluación trimestral de materiales representativos de obras","RE","I-COMP2","06",2,"1/8/2025","r",0,"","16/4/2018"],["Encuesta anual a clientes","RE","I-COME1","02",1,"3/7/2026","v",0,"","1/1/2026"],["Aumentar cantidad trimestral de Clientes Corporativos","RE","I-COME2","00",1,"1/8/2025","r",0,"","4/5/2018"],["Relación trimestral pedidos Ganados versus ofertados","RE","I-COME3","00",1,"1/8/2025","r",0,"","4/5/2018"],["Informe mensual de rentabilidad teórica de ventas","RE","I-COME4","00",1,"1/8/2025","r",0,"","4/5/2018"],["Cantidad de proyectos de impacto positivo","RE","I-COME5","00",1,"16/6/2026","v",0,"","1/4/2026"],["Evaluación trimestral Seguridad, Orden y Limpieza (SOL)","RE","I-ARMTAB1","00",10,"1/8/2025","r",0,"","27/4/2018"],["Seguimiento mensual de Costos de Armado de tableros","RE","I-ARMTAB2","00",10,"1/8/2025","r",0,"","31/8/2018"],["Desarrollo semestral de Manual y Estandarización del armado de Tableros","RE","I-ARMTAB3","00",10,"1/8/2025","r",0,"","31/8/2018"],["Evaluación mensual Seguridad, Orden y Limpieza (SOL)","RE","I-OBRA1","00",12,"1/8/2025","r",0,"","27/4/2018"],["Seguimiento mensual de Costos de Obras","RE","I-OBRA2","00",12,"1/8/2025","r",0,"","31/8/2018"],["Desarrollo semestral de Manual y Estandarización de Obras","RE","I-OBRA3","00",12,"1/8/2025","r",0,"","31/8/2018"],["Cumplimiento de plazo de obra","RE","I-OBRA4","00",12,"1/8/2025","r",0,"","1/9/2019"],["Estandarización de Presentación y métodos trimestral","RE","I-INGE1","00",6,"1/8/2025","r",0,"","27/4/2018"],["Seguimiento de Costos de Ingenierías mensual","RE","I-INGE2","00",6,"1/8/2025","r",0,"","27/4/2018"],["Propuestas de mejora de proyectos de impacto positivo","RE","I-INGE3","00",6,"1/8/2025","r",0,"","1/4/2024"],["Cantidad de proyectos de impacto positivo","RE","I-INGE4","00",6,"","x",0,"",""],["Reducción de Residuos","RE","I-AMB1","02",0,"1/8/2025","r",0,"","26/9/2019"],["Reducción de consumos","RE","I-AMB2","01",0,"1/8/2025","r",0,"","27/8/2018"],["Tiempo empleado en reuniones virtuales","RE","I-AMB3","00",11,"","x",0,"",""],["Medicion de huella de carbono","RE","I-AMB4","00",0,"1/8/2025","r",0,"","1/4/2024"],["Encuesta interna de comunicación y trabajo en equipo","RE","I-RRHH1","00",11,"1/8/2025","r",0,"","6/8/2018"],["ausentismo e impuntualidad","RE","I-RRHH2","00",11,"1/8/2025","r",0,"","30/4/2018"],["Capacitación","RE","I-RRHH3","02",11,"1/8/2025","r",0,"","1/4/2025"],["Accidentes laborales","RE","I-RRHH4","00",11,"1/8/2025","r",0,"","7/8/2018"],["Seguimiento del personal juvenil","RE","I-RRHH5","00",11,"1/8/2025","r",0,"","1/4/2024"],["Nuevos ingresos efectivos","RE","I-RRHH6","00",11,"1/8/2025","r",0,"","1/4/2024"],["Formación y concientización en cuidado de la Salud","RE","I-SAL1","00",11,"","x",0,"",""],["Salud del personal","RE","I-SAL2","00",11,"1/8/2025","r",0,"","7/8/2018"],["Inasistencias por enfermedad","RE","I-SAL3","00",11,"1/8/2025","r",0,"","5/4/2021"],["Gestión de RRHH","PG","PG-04","15",11,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1b7edny1Ojf4k8rR53kW4lBOsUZqOCoIl","1/6/2025"],["Perfiles de Puesto","RE","RG-04-01","01",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","13/2/2025"],["Curriculum","RE","RG-04-02","01",11,"27/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","27/5/2026"],["Plan Anual de Formación","RE","RG-04-03","09",11,"12/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","15/5/2026"],["Registro de Capacitación","RE","RG-04-04","06",11,"12/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","15/5/2026"],["Evaluación de desempeño 360","RE","RG-04-05","01",11,"16/4/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/3/2026"],["Informe de evaluación de desempeño 360","RE","RG-04-06","01",11,"16/4/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/3/2026"],["Planilla de medición de hs de capacitación","RE","RG-04-07","02",11,"","x",0,"",""],["Encuesta de contenidos de capacitaciones","RE","RG-04-08","01",11,"","x",0,"",""],["Formulario Medición de horas de capacitación","RE","RG-04-09","00",11,"","x",0,"",""],["Formulario de Encuesta interna de clima laboral","RE","RG-04-10","00",11,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","28/7/2022"],["Encuesta de feedback","RE","RG-04-11","00",11,"22/7/2024","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","9/6/2023"],["Base de datos operatividad","RE","RG-04-12","00",11,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/3/2024"],["Proceso ingresos_egresos","RE","RG-04-13","02",11,"17/7/2025","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","17/7/2025"],["Evaluacion de periodo de prueba","RE","RG-04-14","01",11,"18/3/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","18/3/2026"],["Acta de Asignación de Equipos y Responsabilidad del Empleado","RE","RG-04-15","01",11,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/4/2026"],["Apercibimiento Interno","RE","RG-04-16","00",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","9/10/2024"],["Registro de Sanciones","RE","RG-04-17","01",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","10/2/2025"],["Planilla de Vacaciones","RE","RG-04-18","00",11,"","x",0,"",""],["Registro personal de capacitaciones","RE","RG-04-19","02",11,"15/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","15/5/2026"],["Acuerdo de Confidencialidad","RE","RG-04-20","00",11,"4/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/5/2026"],["Induccion para ingresantes","IN","IG-04-01","02",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","11/8/2020"],["Induccion Soft Landing","IN","IG-04-02","01",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","17/7/2025"],["Modalidad Evaluación de desempeño 360","IN","IG-04-03","01",11,"5/2/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","5/2/2026"],["Efectivización de vacaciones y/o licencias","IN","IG-04-04","03",11,"9/12/2025","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","9/12/2025"],["Manual para ingresantes","RE","RG-04-21","00",11,"19/8/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","19/8/2026"],["Auditorías internas","PG","PG-05","05",12,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1dH7dKZ94M1CphKWTZ4cOyxDzvUm_XUTU","1/11/2025"],["Matriz de requisitos y plan de auditoría","RE","RG-05-01","02",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","6/9/2021"],["Informe de Auditoría","RE","RG-05-02","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","26/11/2017"],["Cronograma de auditorias","RE","RG-05-03","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","12/7/2019"],["Inspección Interna","RE","RG-05-04","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","20/11/2019"],["Reporte de SGI","RE","RG-05-05","00",12,"","x",0,"",""],["Hallazgos y acciones para la mejora","PG","PG-06","04",12,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1dCzkAo20w0CyJTfvEw-rhBMmTKxPxzzI","20/3/2024"],["Registro de hallazgos","RE","RG-06-01","04",12,"1/8/2025","r",1,"https://drive.google.com/drive/folders/1jkkL2ZfV1G_JfaA8SW4UwT-ZoqGoa8hc","15/3/2023"],["Recopilacion de hallazgos","RE","RG-06-02","01",12,"23/3/2026","v",1,"https://drive.google.com/drive/folders/1jkkL2ZfV1G_JfaA8SW4UwT-ZoqGoa8hc","23/3/2026"],["Identificación de requisitos legales","PG","PG-07","02",5,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1dBJJBpXocFBnF8KnIr5VlZTRcmfEjC4y","3/10/2019"],["Matriz de requisitos legales y otros","RE","RG-07-01","01",7,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jf9hHtUjhPZ6QeLKxtuHuP1q-WxgxVuY","4/8/2020"],["Monitoreo de variables","RE","RG-07-02","05",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jf9hHtUjhPZ6QeLKxtuHuP1q-WxgxVuY","16/2/2024"],["Comunicación participación y consulta","PG","PG-08","06",11,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1d7np9LJ4r2u3h5ftdF3ulVha3Qn8_UTW","8/7/2025"],["Registro de Comunicaciones externas","RE","RG-08-01","01",11,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","21/8/2020"],["Registro de Comunicaciones internas","RE","RG-08-02","02",11,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","15/4/2024"],["Comunicado interno","RE","RG-08-03","00",11,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","16/11/2018"],["Canal de denuncias","RE","RG-08-04","00",11,"1/7/2025","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","1/7/2025"],["Protocolo de Prevención e Intervención ante Conductas Irregulares","RE","RG-08-05","00",11,"1/7/2025","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","1/7/2025"],["Respuesta ante emergencias","PG","PG-09","08",12,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1d6ywsHw_u_9aN1VwtvsERdki67Nuij3D","25/6/2024"],["Programa de simulacros","RE","RG-09-01","02",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","15/11/2021"],["Plan de evacuación","RE","RG-09-02","02",12,"1/10/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","1/10/2024"],["Evaluación de simulacro","RE","RG-09-03","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","12/12/2017"],["Rol de emergencia","RE","RG-09-04","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","1/1/2023"],["Planilla control de extintores","RE","RG-09-05","00",12,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","25/6/2024"],["Plan y Rol de emergencias","RE","RG-09-06","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","25/6/2024"],["Instructivo Respuesta a Accidentes","IN","IG-09-01","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eCKM1ii7Brhofv3dzAhG3DrTqryaDOln","2/12/2019"],["Identificación de peligros y riegos","PG","PS-01","09",13,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1gBo7QBC9OPEqgCaSTaUBxRq9jRUMKQxY","4/8/2026"],["Matriz de riesgos y peligros","RE","RS-01-01","03",13,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","4/3/2025"],["Plan de seguridad de la obra","RE","RS-01-02","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","3/8/2020"],["Planilla de seguimiento de COVID19","RE","RS-01-03","01",13,"","x",0,"",""],["Manual de calidad, medio ambiente y seguridad","RE","RS-01-04","01",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","28/11/2023"],["Analisis de trabajo seguro","RE","RS-01-05","00",13,"15/8/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","15/8/2024"],["Reportes de Salud, Seguridad y Medio Ambiente","RE","RS-01-06","01",13,"3/8/2026","v",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","3/8/2026"],["Notificación de Desvío","RE","RS-01-07","00",13,"9/10/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","9/10/2024"],["Plan de Sanciones por Desvíos en Seguridad e Higiene","RE","RS-01-08","00",13,"11/10/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","11/10/2024"],["Planilla de registro para generar Programa de Seguridad","RE","RS-01-09","00",13,"1/11/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","1/11/2024"],["Plan de Contingencia en caso de una Emergencia Sanitaria","IN","IS-01-01","03",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","20/7/2020"],["Protocolo Covid-19 para obras","IN","IS-01-02","04",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","24/7/2020"],["Guia para modalidad de trabajo temporal Home Office para Administración","IN","IS-01-03","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","3/4/2020"],["Protección contra ruidos","IN","IS-01-04","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],["Plan de rescate en altura","IN","IS-01-05","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],["Protección contra caídas","IN","IS-01-06","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],["Ergonomía de los puestos de trabajo","IN","IS-01-07","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],["Trabajo espacio confinado","IN","IS-01-08","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],["Entrega de indumentaria laboral y EPP","IN","IS-01-09","01",13,"11/5/2026","v",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","11/5/2026"],["Seguimiento de la salud","PG","PS-02","04",12,"22/11/2024","r",1,"https://drive.google.com/drive/folders/1g766_zChwDKNEgnZOWT1Vn3EpS3tTr4T","22/11/2024"],["Ficha Medica","RE","RS-02-01","01",12,"22/11/2024","r",1,"https://drive.google.com/drive/folders/1jgJsRvPjH0ja6TONw781mQJhZTpKQNL8","22/11/2024"],["Seguimiento de la salud","RE","RS-02-02","03",12,"12/5/2026","v",1,"https://drive.google.com/drive/folders/1jgJsRvPjH0ja6TONw781mQJhZTpKQNL8","12/5/2026"],["Protocolo de Prevención e Intervención ante Consumo Problemático","RE","RS-02-03","00",12,"4/5/2026","v",1,"https://drive.google.com/drive/folders/1jgJsRvPjH0ja6TONw781mQJhZTpKQNL8","1/5/2026"],["Investigación de Accidentes","PG","PS-03","03",13,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1g5bYNyCaw9xFGQVSpUIiNv183NAaYGJT","11/9/2024"],["Planilla de Investigación de Accidentes","RE","RS-03-01","00",13,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","19/11/2021"],["Estadística Incidentes","RE","RS-03-02","03",13,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","29/1/2024"],["Registro de Accidentes Initineres","RE","RS-03-03","00",13,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","29/12/2023"],["Resumen estadistica de accidentes","RE","RS-03-04","00",13,"11/9/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","11/9/2024"],["Actuación ante Accidente Laboral","IN","IS-03-01","00",13,"1/8/2026","v",1,"https://drive.google.com/drive/folders/1XrvIhzUr94qi7oL1j08Q8wz9iCk3Feug","1/8/2026"],["Metodo de derivación de accidentes en planta de terceros","IN","IS-03-02","00",13,"1/8/2026","v",1,"https://drive.google.com/drive/folders/1XrvIhzUr94qi7oL1j08Q8wz9iCk3Feug","29/7/2026"],["Gestión de Compras","PG","PO-01","15",2,"19/8/2026","v",1,"https://drive.google.com/drive/folders/1dwXpuPdHAThHk9cO5l94Mito2dNs8Js2","19/6/2026"],["Planilla de Comparativa","RE","RO-01-01","04",2,"19/6/2026","v",1,"https://drive.google.com/drive/folders/1hcCRGcpdoDPK6Eco6hYvWc4_TPiHvrOA","18/6/2026"],["Orden de Compra","RE","RO-01-02","00",2,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1hcCRGcpdoDPK6Eco6hYvWc4_TPiHvrOA","29/3/2018"],["Certificado de avance subcontratistas","RE","RO-01-03","00",2,"","x",0,"",""],["Instructivo de Comparativas","IN","IO-01-01","03",2,"19/6/2026","v",1,"https://drive.google.com/drive/folders/1hcRaLW7TczGqyvuxSAp1UCode24DXKQu","18/6/2026"],["Capacitacion Gestion de compras","CA","CO-01-01","01",2,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1DrbO4OMePz884RjHfgYKNjovrXXzilR3","1/2/2024"],["Evaluación de los Proveedores","PG","PO-02","06",2,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1dtITu3WkjjdSTIM76F1FKrvsOcZE7Tvr","1/11/2026"],["Listado de proveedores habilitados","RE","RO-02-01","03",2,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1hPwf8PBUobPFtWowkQ5SfxaNH0dcuUnf","5/8/2020"],["Re evaluación de proveedores","RE","RO-02-02","01",2,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1hPwf8PBUobPFtWowkQ5SfxaNH0dcuUnf","1/6/2019"],["Capacitacion Evaluacion de proveedores","CA","CO-02-01","01",2,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1DuH6kumrZpirQnK91YpH-CTm1G3gxYQY","27/8/2026"],["Gestión de Contratistas","PG","PO-03","04",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1dqEisGVqQJHgcKkwcyMNpzkqG05P8HbC","1/4/2026"],["Documentación de Contratistas  - Obra larga","RE","RO-03-01","05",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],["Documentación de Contratistas  - Obra corta","RE","RO-03-02","00",12,"8/8/2025","r",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","8/8/2025"],["Base de Contratistas","RE","RO-03-03","01",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],["Documentación Inicial Contratistas","RE","RO-03-04","00",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],["Acuerdo Mutuo Contratistas","RE","RO-03-05","00",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],["Evaluación de Desempeño de Contratistas","RE","RO-03-06","00",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],["Planificación y control de Diseño","PG","PO-04","22",12,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1dmbvcbgDHWCU0K9iq-AsVqXkqsHDG4Da","2/7/2026"],["Registro de diseño","RE","RO-04-01","05",4,"24/10/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","21/10/2024"],["Listado de Documentos","RE","RO-04-02","15",4,"15/4/2026","v",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","14/4/2026"],["Minuta de Reunión","RE","RO-04-03","01",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","29/12/2017"],["Consulta al Cliente","RE","RO-04-06","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","29/12/2017"],["Cronograma de Ingeniería de la obra","RE","RO-04-07","00",12,"","x",0,"",""],["Requerimiento de autorización para relevamiento asistido","RE","RO-04-08","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","7/2/2022"],["QR","RE","RO-04-09","00",12,"","x",0,"",""],["Balance modelo","RE","RO-04-10","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","23/2/2024"],["Lineamientos para especificacion de materiales","RE","RO-04-11","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","15/3/2024"],["PAT SET","RE","RO-04-12","01",4,"31/10/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","31/10/2024"],["PAT Anillo Perimetral","RE","RO-04-13","02",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","13/2/2023"],["Necesidad de Pararrayos","RE","RO-04-14","02",4,"15/1/2025","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/1/2025"],["Memoria de Calculo Teórica de cables","RE","RO-04-15","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],["Memoria de Calculo de Cables de tableros","RE","RO-04-16","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],["Memoria de Calculo de Cables","RE","RO-04-17","08",4,"12/5/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","12/5/2026"],["Memoria Teórica de Calculo de Cables con carga desequilibrada","RE","RO-04-18","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],["Memoria de Calculo de Cables con carga desequilibrada","RE","RO-04-19","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],["Verificacion Cables de MT","RE","RO-04-20","02",4,"27/5/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","27/5/2026"],["Calculo de Barras de Cu segun IRAM 2359","RE","RO-04-21","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],["Estudio de Selectividad y Coordinacion de protecciones","RE","RO-04-22","02",4,"22/6/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","22/6/2026"],["Memoria de Calculo de Ventilacion Transformadores Secos","RE","RO-04-23","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],["INSTALACIONES FOTOVOLTAICAS","RE","RO-04-24","01",4,"3/10/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","3/10/2024"],["Listado I-O","RE","RO-04-25","00",4,"26/9/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","26/9/2024"],["Datos necesarios para construcción tablero","RE","RO-04-26","03",4,"3/8/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","3/8/2026"],["Planilla cableado","RE","RO-04-27","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","9/1/2025"],["Memoria de cálculo de elección de Bandejas Portacables","RE","RO-04-28","01",4,"24/7/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","24/7/2026"],["Memoria de cálculo de llenado de cañeros","RE","RO-04-29","00",4,"16/12/2025","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","16/12/2025"],["Instructivo General de Ingeniería","IN","IO-04-01","05",4,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","2/7/2026"],["Instructivo Datos de Ingeniería","IN","IO-04-02","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],["Instructivo Estándares de Dibujo & Cadismo","IN","IO-04-03","07",4,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","2/7/2026"],["Instructivo Layes y Texto (bloque de AutoCAD)","IN","IO-04-04","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],["Instructivo Alcance del proyecto","IN","IO-04-05","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],["Instructivo Referencias y simbología (bloque de AutoCAD)","IN","IO-04-06","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],["Instructivo Referencias de cableados (bloque de AutoCAD)","IN","IO-04-07","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","17/5/2019"],["Instructivo Emisión y aprobación Ingeniería","IN","IO-04-08","02",4,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","2/7/2026"],["Instructivo EBS Esinel BIM Standard","IN","IO-04-09","01",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","4/10/2021"],["Instructivo ERS Esinel Revit Standard","IN","IO-04-10","01",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","4/10/2021"],["Instructivo Planificacion Tareas","IN","IO-04-11","00",4,"","x",0,"",""],["Instructivo Generación de QR","IN","IO-04-12","00",4,"","x",0,"",""],["Parametrización Relé protección Schneider P3UXX","IN","IO-04-13","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","30/6/2023"],["Impresión DWG mapa bits","IN","IO-04-14","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","14/12/2022"],["Instructivo Template AutoCAD","IN","IO-04-15","00",4,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","7/8/2023"],["Instructivo Balance Ingenieria","IN","IO-04-16","00",4,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/1/2024"],["Capacitacion procedimientos Planificacion y control de diseño","CA","CO-04-01","01",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1E7bCRzbLNxwvGPVAWOa97m5DROOy-R28","1/2/2024"],["Planificación y control de las Obras","PG","PO-05","22",9,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1RbOO7CSGSidmxsUq7DpLTfC4Klrq2w5a","6/12/2024"],["Instructivo Apertura de nuevo centro de costos","IN","IO-05-01","08",9,"15/7/2026","v",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","28/5/2026"],["Instructivo Apertura de nueva Obra","IN","IO-05-02","21",9,"26/6/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","26/6/2025"],["Normativa Para el jefe de Obra","IN","IO-05-03","02",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","21/2/2019"],["Comunicación de sucesos en obras","IN","IO-05-04","02",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","14/10/2024"],["Simulacro de Accidentes","IN","IO-05-05","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","30/6/2022"],["Aviso Final de contrato","IN","IO-05-06","02",9,"9/5/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","9/5/2025"],["Elaboración y Gestión de Documentación Conforme a Obra","IN","IO-05-07","00",9,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p7","3/7/2026"],["Requerimiento de Materiales","RE","RO-05-01","04",2,"2/6/2025","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","2/6/2025"],["Aviso Comercial","RE","RO-05-02","06",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],["Reporte Semanal de Obra","RE","RO-05-03","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","29/12/2017"],["Verificación Calidad de la Obra","RE","RO-05-04","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","24/5/2019"],["Acta de presentación de documentación - Conformes a Obra","RE","RO-05-05","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","29/12/2017"],["Planificación General de las Obras","RE","RO-05-06","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","24/8/2018"],["Planilla de Seguimiento de Costos de Obra","RE","RO-05-07","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","29/12/2017"],["Acta de Recepción Provisoria","RE","RO-05-08","01",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","14/7/2020"],["Acta de Recepción Definitiva","RE","RO-05-09","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","22/12/2017"],["Detalle para cobertura seguro","RE","RO-05-10","01",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","3/3/2022"],["Verificación RES 900/15 SRT","RE","RO-05-11","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","26/4/2019"],["Aviso Tecnico","RE","RO-05-12","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],["Cronograma de Obra","RE","RO-05-13","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],["Nota de pedido de Contratista","RE","RO-05-14","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],["Protocolo medición de puesta a tierra","RE","RO-05-15","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","26/3/2020"],["Resistencia de aislación de la instalación o megado","RE","RO-05-16","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","26/3/2020"],["Medición de Iluminación","RE","RO-05-17","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","15/1/2021"],["Protocolo medición de resistividad del terreno","RE","RO-05-18","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","7/1/2022"],["Planilla inspeccion de obrador","RE","RO-05-19","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","5/7/2023"],["Check list herramientas electricas","RE","RO-05-20","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","21/7/2022"],["Check list herramientas manuales","RE","RO-05-21","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","21/7/2022"],["Planilla visita a obra","RE","RO-05-22","01",9,"1/8/2026","v",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","1/8/2026"],["Informe termográfico","RE","RO-05-23","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","31/10/2022"],["Check list de arnes","RE","RO-05-24","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","7/9/2023"],["Aviso Final de contrato","RE","RO-05-25","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","27/2/2024"],["Certificado de avances","RE","RO-05-26","00",9,"6/12/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","6/12/2024"],["Listado de documentos conforme a obra","RE","RO-05-27","00",9,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","3/7/2026"],["Uso de cuter retráctil","IN","IO-05-11","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],["Instructivo Máquina agujereadora","IN","IO-05-12","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],["Instructivo Máquina Punzonadora, dobladora y cortadora de metales","IN","IO-05-13","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],["Instructivo Máquina soldadura eléctrica","IN","IO-05-14","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],["Instructivo Cableado y precintado en bandejas portacables","IN","IO-05-15","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","2/7/2018"],["Instructivo Cañerías eléctricas a la vista","IN","IO-05-16","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","3/7/2018"],["Instructivo instalación de Bandejas portacables","IN","IO-05-17","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","25/6/2018"],["Instructivo Instalación y conexionado Tableros eléctricos","IN","IO-05-18","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","25/6/2018"],["Instructivo Armado de andamio","IN","IO-05-19","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","1/6/2022"],["Instructivo uso Plataforma elevadora","IN","IO-05-20","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","7/11/2018"],["Instalación de Cañería eléctrica embutida","IN","IO-05-21","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","7/11/2018"],["Uso de trompo mezclador","IN","IO-05-22","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","22/7/2019"],["Uso de hoyadora o poseadora","IN","IO-05-23","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","22/7/2019"],["Uso de pala manual","IN","IO-05-24","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","22/7/2019"],["Ensayo de aislación de cables de baja tensión","IN","IO-05-25","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","26/3/2020"],["Trabajo en altura con escalera extensible","IN","IO-05-26","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","27/3/2020"],["Armado y Montaje de Blindobarras","IN","IO-05-27","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","25/3/2020"],["Ejecución de terminales y emplames de MT","IN","IO-05-28","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","30/3/2020"],["Carga y descarga de materiales","IN","IO-05-29","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","6/4/2022"],["Sistema de bloqueo","IN","IO-05-32","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],["Uso de cámarar termográfica","IN","IO-05-33","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","31/10/2022"],["Confección de informe termográfico","IN","IO-05-34","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","31/10/2022"],["Guia Mantenimiento Predictivo-termografia","IN","IO-05-35","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","31/10/2022"],["Armado de obrador","IN","IO-05-36","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2023"],["Arnes anticaidas","IN","IO-05-38","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","3/4/2023"],["Relevamiento de herramientas","IN","IO-05-39","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","3/11/2023"],["Planificacion y Control de las Obras","CA","CO-05-01","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EAmRhIgt0_10VtczWf_lzqUjPSU3bYyu","1/2/2024"],["Aviso Final de contrato","CA","CO-05-02","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EAmRhIgt0_10VtczWf_lzqUjPSU3bYyu","20/3/2024"],["Cumplimiento de Procedimientos Jefe de Obra","CA","CO-05-03","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EAmRhIgt0_10VtczWf_lzqUjPSU3bYyu","25/11/2024"],["Producción","PG","PO-06","10",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1RaeVmNLxgn1gPDLSmIHqoRDsD-Yx6L16","12/6/2026"],["Cronograma de Armado","RE","RO-06-01","00",10,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SpPbuueUsYOj5W51Ziu-fLzcUoPJ8XEM","16/1/2018"],["Protocolo de ensayo final de Tablero","RE","RO-06-02","04",10,"8/10/2024","r",1,"https://drive.google.com/drive/folders/1SpPbuueUsYOj5W51Ziu-fLzcUoPJ8XEM","1/10/2024"],["Planilla seguimiento y Verificación Proceso Fabricación Tableros","RE","RO-06-03","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SpPbuueUsYOj5W51Ziu-fLzcUoPJ8XEM","12/5/2026"],["Instructivo Corte con disco","IN","IO-06-01","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],["Instructivo Maquina Agujereadora","IN","IO-06-02","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],["Instructivo Maquina Punzonadora, Cortadora, dobladora","IN","IO-06-03","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],["Instructivo máquina soldadura eléctrica","IN","IO-06-04","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],["Instructivo malacate electrico","IN","IO-06-05","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","6/4/2022"],["Torque de ajuste en elementos eléctricos","IN","IO-06-06","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/6/2026"],["Capacitacion procedimientos Armado de tableros","CA","CO-06-01","01",10,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1ENyGOsxxTy2YwupAAvDAdV7nSsrfI9yI","1/2/2024"],["Calibración de Instrumentos","PG","PO-07","03",12,"22/5/2025","r",1,"https://drive.google.com/drive/folders/1RYSjNACvj754swTq1_QS66PP-wESqman","22/5/2025"],["Listado de Instrumentos","RE","RO-07-01","04",3,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1SlEG8Q1GoWOOlHNDY8YcgecSOil1tBIn","26/8/2024"],["Contraste de Instrumentos","RE","RO-07-02","00",3,"22/5/2025","r",1,"https://drive.google.com/drive/folders/1SlEG8Q1GoWOOlHNDY8YcgecSOil1tBIn","22/5/2025"],["Capacitacion procedimientos Calibracion de instrumentos","CA","CO-07-01","01",3,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EKEgbYA2MJCo_9e29szsc2bT43srNJT0","1/2/2024"],["Comercial","PG","PO-08","15",15,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1RW_8JGfRLT9s_oV_WiFu2ZA4cYJ26FQQ","1/2/2026"],["Planilla de cotización tipo","RE","RO-08-01","223",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","2/6/2026"],["Planilla de cotización tipo Ingeniería","RE","RO-08-02","34",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","23/9/2025"],["Pedido de adicional & Balance","RE","RO-08-03","01",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","2/11/2021"],["Seguimiento de clientes","RE","RO-08-05","06",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","10/7/2025"],["Costos por unidad","RE","RO-08-06","00",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","9/11/2020"],["Propuesta técnica y comercial de la Oferta - Obra","RE","RO-08-07","03",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","22/2/2024"],["Encuesta Esinel a clientes","RE","RO-08-08","02",1,"21/7/2025","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","28/3/2025"],["Respuestas de Encuesta Esinel a clientes","RE","RO-08-09","02",1,"21/7/2025","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","28/3/2025"],["Diseño y difusión de imagen institucional","RE","RO-08-10","00",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","4/10/2023"],["Brochure Español","RE","RO-08-11","00",1,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","19/7/2024"],["Brochure English","RE","RO-08-12","00",1,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","19/7/2024"],["Brochure DWG services","RE","RO-08-13","00",1,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","19/7/2024"],["Brochure Esinel Sustentable","RE","RO-08-14","01",1,"14/8/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","14/8/2024"],["Propuesta Técnica Renovables","RE","RO-08-15","00",1,"1/8/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","1/8/2024"],["Propuesta Comercial Renovables","RE","RO-08-16","01",1,"9/8/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","5/8/2024"],["Planilla de típicos para cotizar","RE","RO-08-17","00",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","1/2/2026"],["Planilla de típicos para cotizar Renovables","RE","RO-08-18","00",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","1/2/2026"],["Instructivo Datos Necesarios RES 900/15","IN","IO-08-01","01",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNh7vwNNm1_1LKXGnK3k3TTwH3MqrSgM","2/7/2019"],["Instructivo detalle de computo","IN","IO-08-02","00",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNh7vwNNm1_1LKXGnK3k3TTwH3MqrSgM","4/3/2020"],["Capacitacion procedimientos Gestion de ventas","CA","CO-08-01","00",1,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1ETE9nvM7RRCu4DkkJrFovMUU6AzfsUiT","1/2/2024"],["Seguridad, Orden y Limpieza (SOL)","PG","PO-09","03",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1RVl-0LlzG9WDM7WNDOghZv5-ymZqeTfq","28/6/2024"],["Evaluación de SOL","RE","RO-09-01","01",12,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1THk8zinnwKA5Y7ajBOoaNCKiOZ4QUwuN","1/5/2019"],["Control Botiquín","RE","RO-09-02","00",12,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1THk8zinnwKA5Y7ajBOoaNCKiOZ4QUwuN","1/2/2023"],["Rótulo Botiquín","RE","RO-09-03","00",12,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1THk8zinnwKA5Y7ajBOoaNCKiOZ4QUwuN","22/6/2023"],["Capacitacion procedimientos Seguridad, Orden y Limpieza","CA","CO-09-01","00",12,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EVGZvge66MzZRtcfziXyUqLJxpQwPz0f","1/2/2024"],["Gestión de Stock","PG","PO-10","05",3,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1RVkb2ztFjXH9NPaZN49cohrFGw9bAApj","11/8/2025"],["Planilla de materiales en tránsito","RE","RO-10-01","00",3,"","x",0,"",""],["Cargo herramientas","RE","RO-10-02","01",3,"25/3/2026","v",1,"https://drive.google.com/drive/folders/1TEDOe2lGmP4MWCd1QsROdwX--azh9cfz","25/3/2026"],["Instructivo sistema Néctica","IN","IO-10-01","00",3,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TG6cPFzHk873FJdj8BZoZiAdIMEMik8z","4/9/2020"],["Capacitacion procedimientos Gestion de stock","CA","CO-10-01","00",3,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EVZ3FcmUpu8af6w5UBUEjreBl3hF8-Un","1/2/2024"],["Sistemas","PG","PO-11","01",14,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1RTy2rNi763cP9la2y5rupdk3jN78Uz8e","5/3/2024"],["Necesidad de soporte","RE","RO-11-01","01",14,"","x",0,"",""],["Control de tareas desarrolladas","RE","RO-11-02","00",14,"","x",0,"",""],["Licenciamiento","RE","RO-11-03","00",14,"","x",0,"",""],["Bitácora CPU","RE","RO-11-04","00",14,"","x",0,"",""],["Bitácora Monitores","RE","RO-11-05","00",14,"","x",0,"",""],["Bitácora Notebook","RE","RO-11-06","00",14,"","x",0,"",""],["Asignación de equipamiento","RE","RO-11-07","00",14,"","x",0,"",""],["Relevamiento Esinel","RE","RO-11-08","01",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TApCraTSqnYf9uhlcC2RpuUPGrVl_0WP","22/10/2024"],["Instructivo actualización  Necap","IN","IO-11-01","00",14,"","x",0,"",""],["Guía sobre uso de Drive File Stream y Gsheets","IN","IO-11-02","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","17/5/2019"],["Instructivo de Seguridad Informática","IN","IO-11-03","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","31/10/2019"],["Intructivo Topología de Red","IN","IO-11-04","01",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","4/11/2021"],["Instructivo de Carpetas Compartidas","IN","IO-11-05","01",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","4/11/2021"],["Instructivo de Backup","IN","IO-11-06","02",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","6/2/2025"],["Instructivo de Cámaras","IN","IO-11-07","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","8/4/2021"],["Instructivo de equipamiento","IN","IO-11-08","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","19/4/2021"],["Instructivo de Seguridad de Gmail","IN","IO-11-09","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","19/4/2021"],["Instructivo de Alta","IN","IO-11-10","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","3/5/2021"],["Instructivo de Baja","IN","IO-11-11","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","3/5/2021"],["Instructivo de Backup para Google (Previo limpieza)","IN","IO-11-12","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","9/5/2021"],["Instructivo VPN para usuario","IN","IO-11-13","01",14,"","x",0,"",""],["Instructivo para Administrador la VPN","IN","IO-11-14","01",14,"","x",0,"",""],["Como pedir un ticket","IN","IO-11-15","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","5/3/2024"],["Uso de vehículos","PG","PO-12","03",12,"6/6/2026","v",1,"https://drive.google.com/drive/folders/1RS_ATEsvsZ0Rj9xLu2AbgfGtAAJVLgCU","1/4/2026"],["Alta de vehículos","RE","RO-12-01","00",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],["Condiciones de uso de vehículos","RE","RO-12-02","00",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],["Planilla uso de vehículos","RE","RO-12-03","01",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],["Seguimiento de vehículos","RE","RO-12-04","01",0,"1/9/2025","v",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/9/2025"],["Seguimiento de talleres mecánicos","RE","RO-12-05","00",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],["Uso de vehiculos","CA","CO-12-01","01",0,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1E_Ig7L56qwHEVMsQqgx6Z306QjByU_2b","20/8/2026"],["Administración","PG","PO-13","04",0,"1/7/2026","v",1,"https://drive.google.com/drive/folders/1RQMN1gz6uixn5Uc1Q9tJdD6zrRomjNTv","1/7/2026"],["Planilla compromisos","RE","RO-13-01","01",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","1/4/2023"],["Planilla cobranzas","RE","RO-13-02","00",0,"","x",0,"",""],["Planilla IIBB","RE","RO-13-03","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],["Planilla IVA","RE","RO-13-04","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],["Planilla YPF en ruta","RE","RO-13-05","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],["Telepeaje","RE","RO-13-06","01",0,"23/2/2026","v",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","23/2/2026"],["Planilla registro de temperatura","RE","RO-13-07","00",0,"","x",0,"",""],["Planilla Ingreso - Egreso Personal","RE","RO-13-08","00",0,"","x",0,"",""],["Calendario general de polizas de caucion","RE","RO-13-09","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],["Base de datos operativa","RE","RO-13-10","00",0,"","x",0,"",""],["BNA_Carta Liberación de AportesFCL","RE","RO-13-11","00",0,"","x",0,"",""],["Carta de liquidacion final","RE","RO-13-12","00",0,"","x",0,"",""],["Cert de trabajo","RE","RO-13-13","00",0,"","x",0,"",""],["Control de docum. presentada a Clientes","RE","RO-13-14","00",0,"","x",0,"",""],["Programacion O.C.","RE","RO-13-15","00",0,"","x",0,"",""],["Saldos a cobrar obras contratadas","RE","RO-13-16","00",0,"","x",0,"",""],["Planilla de Facturas Contabilizadas","RE","RO-13-17","00",0,"15/5/2026","v",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","15/5/2026"],["Administracion","CA","CO-13-01","02",0,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1EdSgmIbQU2BhPpcJnVVCVPacyJgXX3TQ","20/8/2026"],["Portal de Proveedores","IN","IO-13-01","00",0,"5/5/2026","v",1,"https://drive.google.com/drive/folders/1HaHjpo4iH96TxCexkjM8vQ0XVpDiZTos","9/12/2025"],["Rendición de Tarjetas Corporativas y Cajas Chicas","IN","IO-13-02","00",0,"1/7/2026","v",1,"https://drive.google.com/drive/folders/1HaHjpo4iH96TxCexkjM8vQ0XVpDiZTos","1/7/2026"]]};
-const PROCESOS = DATA.p;
-const DOCS = DATA.d;
-function initStats() {
-  const counts = {v:0, r:0, s:0};
-  DOCS.forEach(d => { counts[d[6]] = (counts[d[6]]||0) + 1; });
-  document.getElementById('cnt-all').textContent = DOCS.length;
-  document.getElementById('cnt-v').textContent = counts.v||0;
-  document.getElementById('cnt-r').textContent = counts.r||0;
-  document.getElementById('cnt-s').textContent = counts.s||0;
-  buildDonut();
-  buildBarChart();
-}
-
-function buildDonut() {
-  const cur = new Date().getFullYear();
-  const yColor = yr => !yr ? '#94a3b8' : yr>=cur ? '#16a34a' : yr>=cur-1 ? '#3b82f6' : yr>=cur-2 ? '#f59e0b' : '#ef4444';
-  const byYear = {};
-  DOCS.forEach(d => {
-    const m = (d[9]||'').match(/(\d{4})$/);
-    const yr = m ? parseInt(m[1]) : 0;
-    byYear[yr] = (byYear[yr]||0) + 1;
-  });
-  const yrs = Object.keys(byYear).map(Number).sort((a,b)=>b-a);
-  const total = DOCS.length;
-  const cx=130, cy=130, r0=56, r1=116;
-  const toRad = a => (a-90)*Math.PI/180;
-  const pt = (r,a) => [cx+r*Math.cos(toRad(a)), cy+r*Math.sin(toRad(a))];
-  function arcP(a1,a2) {
-    const lg=(a2-a1)>180?1:0;
-    const [x1,y1]=pt(r0,a1),[x2,y2]=pt(r1,a1),[x3,y3]=pt(r1,a2),[x4,y4]=pt(r0,a2);
-    return `M${x1.toFixed(2)},${y1.toFixed(2)} L${x2.toFixed(2)},${y2.toFixed(2)} A${r1},${r1} 0 ${lg} 1 ${x3.toFixed(2)},${y3.toFixed(2)} L${x4.toFixed(2)},${y4.toFixed(2)} A${r0},${r0} 0 ${lg} 0 ${x1.toFixed(2)},${y1.toFixed(2)} Z`;
-  }
-  const GAP = yrs.length > 1 ? 2 : 0;
-  const totalAngle = 360 - yrs.length * GAP;
-  let paths = '', labels = '', angle = 0;
-  const midR = (r0 + r1) / 2;
-  yrs.forEach(yr => {
-    const span = (byYear[yr]/total)*totalAngle;
-    const col = yColor(yr);
-    paths += `<path d="${arcP(angle, angle+span)}" fill="${col}" id="dna-${yr}" class="dn-arc" style="cursor:pointer;transition:opacity .2s" onclick="filterByYear(${yr})"/>`;
-    if (span > 12) {
-      const mid = angle + span/2;
-      const [lx,ly] = pt(midR, mid);
-      const fs = span > 25 ? 10 : 8;
-      labels += `<text x="${lx.toFixed(1)}" y="${(ly - (span>18?5:2)).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${fs}" font-weight="700" fill="#fff" style="pointer-events:none">${yr||'S/F'}</text>`;
-      if (span > 18) labels += `<text x="${lx.toFixed(1)}" y="${(ly+7).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${fs+2}" font-weight="800" fill="#fff" style="pointer-events:none">${byYear[yr]}</text>`;
+<script id="sgi-js">
+  (function(){
+    if(sessionStorage.getItem('sgi_ok') === '1'){
+      var ov = document.getElementById('sgi-auth-overlay');
+      if(ov) ov.remove();
+      return;
     }
-    angle += span + GAP;
-  });
-  paths += `<text x="130" y="126" text-anchor="middle" font-size="30" font-weight="800" fill="#0f172a" id="dn-n">${total}</text>`;
-  paths += `<text x="130" y="146" text-anchor="middle" font-size="11" fill="#94a3b8" id="dn-l">documentos</text>`;
-  document.getElementById('donut-svg').innerHTML = paths + labels;
-}
+    function sgiCb(r){
+      try {
+        var p = JSON.parse(atob(r.credential.split('.')[1]));
+        if(p.email && (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com')){
+          sessionStorage.setItem('sgi_ok', '1');
+          var ov = document.getElementById('sgi-auth-overlay');
+          if(ov) ov.remove();
+        }
+      } catch(err) {
+        console.error('Auth error', err);
+      }
+    }
+    window.sgiCb = sgiCb;
+  })();
+</script>
 
-function buildBarChart() {
-  const TC2 = {PG:'#3b82f6',IN:'#22c55e',RE:'#a855f7',CA:'#f97316',DO:'#94a3b8'};
-  const TL2 = {PG:'Procedimientos',IN:'Instructivos',RE:'Registros',CA:'Capacitaciones',DO:'Documentos'};
-  const byType = {PG:0,IN:0,RE:0,CA:0,DO:0};
-  DOCS.forEach(d => { byType[d[1]] = (byType[d[1]]||0) + 1; });
-  const max = Math.max(...Object.values(byType));
-  const order = ['RE','IN','PG','CA','DO'];
-  let html = '';
-  order.forEach(t => {
-    const n = byType[t]||0;
-    const pct = max ? Math.round((n/max)*100) : 0;
-    html += `<div class="bar-row" id="bar-${t}" onclick="filterByTipo('${t}')">` +
-      `<div class="bar-label" style="color:${TC2[t]}">${t}</div>` +
-      `<div class="bar-track" title="${TL2[t]}">` +
-      `<div class="bar-fill" style="width:${pct}%;background:${TC2[t]}" id="barf-${t}">` +
-      `<span class="bar-fill-n">${n}</span></div></div></div>`;
-  });
-  document.getElementById('bar-chart').innerHTML = html;
-}
+<script>
+  // Datos del SGI integrados
+  const DATA = {
+    "p": ["Administración","Comercial","Compras","Depósito","Diseño","Gerencia General","Ingeniería","Legales","Medio Ambiente","Obra","Producción","RRHH","SGI","Seguridad e Higiene","Sistemas","Ventas"],
+    "d": [
+      ["NORMAS ISO","DO","","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1YqBIu7UXgHihTpl98A_16xfr6CiOe79k",""],
+      ["Política Integrada","DO","","02",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1aW-K1gFFfIyoFWvuiOOD1QyE-Ql6blQJ","2/9/2021"],
+      ["Política Interna Ética y Conducta","DO","","00",5,"4/5/2026","v",1,"https://drive.google.com/drive/folders/1aW-K1gFFfIyoFWvuiOOD1QyE-Ql6blQJ","1/5/2026"],
+      ["Manual de Gestión Integrado","DO","","04",5,"29/7/2025","r",1,"https://drive.google.com/drive/folders/1aW-K1gFFfIyoFWvuiOOD1QyE-Ql6blQJ","1/8/2024"],
+      ["Organigrama","DO","","30",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1ZEW0YIUonNA_V2e-I019iwQxgMtSPXTS","20/3/2025"],
+      ["Identificación de aspectos e impactos ambientales","PG","PMA-01","05",8,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1e8J9rkM6p_hrPpAJt63phf6z_09LC-_Q","12/8/2026"],
+      ["Matriz de Aspectos e Impactos Ambientales","RE","RMA-01-01","07",8,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","12/8/2026"],
+      ["Análisis ciclo de vida materiales e insumos","RE","RMA-01-02","01",8,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","13/7/2020"],
+      ["Seguimiento de Consumos","RE","RMA-01-03","04",8,"29/7/2025","r",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","11/7/2023"],
+      ["Informe cliente de materiales e insumos provistos","RE","RMA-01-04","00",8,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","15/7/2020"],
+      ["Listado Fichas Ciclo Vida","RE","RMA-01-05","00",8,"19/8/2026","v",1,"https://drive.google.com/drive/folders/1i4b38ZRVXG_DyJ-6f3npIsGZRDN9WodT","8/6/2026"],
+      ["Gestión de los residuos","PG","PMA-02","04",8,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1e53I9nAGxAR81LR8tTcwLNdbAkZAAYbc","27/3/2023"],
+      ["Gestión de los residuos","RE","RMA-02-01","02",8,"1/8/2025","r",1,"https://drive.google.com/drive/folders/1hw0NI9Gb1DoM2tNMcJaTeCbKkajzifN8","29/1/2023"],
+      ["Control de la información Documentada","PG","PG-01","03",12,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1bDot94He0zFiLMgrpvvrRQ_1lAXmuIip","1/2/2024"],
+      ["Listado de Documentos del SGI","RE","RG-01-01","03",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bukdgON3ApbK8iFN63dTZQ3ijy15KGH1","1/2/2024"],
+      ["Análisis del contexto, partes interesadas y gestión de riesgos","PG","PG-02","02",5,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1bC_viHhuuQ4CZ6oRG-kLYriVPnCU6_AX","3/10/2019"],
+      ["Análisis del contexto","RE","RG-02-01","04",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bgAkFl-Y8M1TBnk-SFPswQgzNlwchbyd","1/4/2025"],
+      ["Partes interesadas","RE","RG-02-02","04",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bgAkFl-Y8M1TBnk-SFPswQgzNlwchbyd","1/5/2024"],
+      ["Liderazgo y revisión por la Gerencia General","PG","PG-03","00",5,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1b9L4X-Gtok9DJHXVg9q1hn4N_b0QCTDN","20/2/2018"],
+      ["Objetivos del SGI","RE","RG-03-01","05",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bQDQev-bfLlq8l-nNsmh2r6S58VRc9hy","26/9/2021"],
+      ["Informe de revisión por la Dirección SGI","RE","RG-03-02","09",5,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bQDQev-bfLlq8l-nNsmh2r6S58VRc9hy","11/8/2026"],
+      ["Evaluación semestral de proveedores","RE","I-COMP1","00",2,"1/8/2025","r",0,"","11/4/2018"],
+      ["Evaluación trimestral de materiales representativos de obras","RE","I-COMP2","06",2,"1/8/2025","r",0,"","16/4/2018"],
+      ["Encuesta anual a clientes","RE","I-COME1","02",1,"3/7/2026","v",0,"","1/1/2026"],
+      ["Aumentar cantidad trimestral de Clientes Corporativos","RE","I-COME2","00",1,"1/8/2025","r",0,"","4/5/2018"],
+      ["Relación trimestral pedidos Ganados versus ofertados","RE","I-COME3","00",1,"1/8/2025","r",0,"","4/5/2018"],
+      ["Informe mensual de rentabilidad teórica de ventas","RE","I-COME4","00",1,"1/8/2025","r",0,"","4/5/2018"],
+      ["Cantidad de proyectos de impacto positivo","RE","I-COME5","00",1,"16/6/2026","v",0,"","1/4/2026"],
+      ["Evaluación trimestral Seguridad, Orden y Limpieza (SOL)","RE","I-ARMTAB1","00",10,"1/8/2025","r",0,"","27/4/2018"],
+      ["Seguimiento mensual de Costos de Armado de tableros","RE","I-ARMTAB2","00",10,"1/8/2025","r",0,"","31/8/2018"],
+      ["Desarrollo semestral de Manual y Estandarización del armado de Tableros","RE","I-ARMTAB3","00",10,"1/8/2025","r",0,"","31/8/2018"],
+      ["Evaluación mensual Seguridad, Orden y Limpieza (SOL)","RE","I-OBRA1","00",12,"1/8/2025","r",0,"","27/4/2018"],
+      ["Seguimiento mensual de Costos de Obras","RE","I-OBRA2","00",12,"1/8/2025","r",0,"","31/8/2018"],
+      ["Desarrollo semestral de Manual y Estandarización de Obras","RE","I-OBRA3","00",12,"1/8/2025","r",0,"","31/8/2018"],
+      ["Cumplimiento de plazo de obra","RE","I-OBRA4","00",12,"1/8/2025","r",0,"","1/9/2019"],
+      ["Estandarización de Presentación y métodos trimestral","RE","I-INGE1","00",6,"1/8/2025","r",0,"","27/4/2018"],
+      ["Seguimiento de Costos de Ingenierías mensual","RE","I-INGE2","00",6,"1/8/2025","r",0,"","27/4/2018"],
+      ["Propuestas de mejora de proyectos de impacto positivo","RE","I-INGE3","00",6,"1/8/2025","r",0,"","1/4/2024"],
+      ["Cantidad de proyectos de impacto positivo","RE","I-INGE4","00",6,"","x",0,"",""],
+      ["Reducción de Residuos","RE","I-AMB1","02",0,"1/8/2025","r",0,"","26/9/2019"],
+      ["Reducción de consumos","RE","I-AMB2","01",0,"1/8/2025","r",0,"","27/8/2018"],
+      ["Tiempo empleado en reuniones virtuales","RE","I-AMB3","00",11,"","x",0,"",""],
+      ["Medicion de huella de carbono","RE","I-AMB4","00",0,"1/8/2025","r",0,"","1/4/2024"],
+      ["Encuesta interna de comunicación y trabajo en equipo","RE","I-RRHH1","00",11,"1/8/2025","r",0,"","6/8/2018"],
+      ["ausentismo e impuntualidad","RE","I-RRHH2","00",11,"1/8/2025","r",0,"","30/4/2018"],
+      ["Capacitación","RE","I-RRHH3","02",11,"1/8/2025","r",0,"","1/4/2025"],
+      ["Accidentes laborales","RE","I-RRHH4","00",11,"1/8/2025","r",0,"","7/8/2018"],
+      ["Seguimiento del personal juvenil","RE","I-RRHH5","00",11,"1/8/2025","r",0,"","1/4/2024"],
+      ["Nuevos ingresos efectivos","RE","I-RRHH6","00",11,"1/8/2025","r",0,"","1/4/2024"],
+      ["Formación y concientización en cuidado de la Salud","RE","I-SAL1","00",11,"","x",0,"",""],
+      ["Salud del personal","RE","I-SAL2","00",11,"1/8/2025","r",0,"","7/8/2018"],
+      ["Inasistencias por enfermedad","RE","I-SAL3","00",11,"1/8/2025","r",0,"","5/4/2021"],
+      ["Gestión de RRHH","PG","PG-04","15",11,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1b7edny1Ojf4k8rR53kW4lBOsUZqOCoIl","1/6/2025"],
+      ["Perfiles de Puesto","RE","RG-04-01","01",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","13/2/2025"],
+      ["Curriculum","RE","RG-04-02","01",11,"27/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","27/5/2026"],
+      ["Plan Anual de Formación","RE","RG-04-03","09",11,"12/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","15/5/2026"],
+      ["Registro de Capacitación","RE","RG-04-04","06",11,"12/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","15/5/2026"],
+      ["Evaluación de desempeño 360","RE","RG-04-05","01",11,"16/4/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/3/2026"],
+      ["Informe de evaluación de desempeño 360","RE","RG-04-06","01",11,"16/4/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/3/2026"],
+      ["Planilla de medición de hs de capacitación","RE","RG-04-07","02",11,"","x",0,"",""],
+      ["Encuesta de contenidos de capacitaciones","RE","RG-04-08","01",11,"","x",0,"",""],
+      ["Formulario Medición de horas de capacitación","RE","RG-04-09","00",11,"","x",0,"",""],
+      ["Formulario de Encuesta interna de clima laboral","RE","RG-04-10","00",11,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","28/7/2022"],
+      ["Encuesta de feedback","RE","RG-04-11","00",11,"22/7/2024","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","9/6/2023"],
+      ["Base de datos operatividad","RE","RG-04-12","00",11,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/3/2024"],
+      ["Proceso ingresos_egresos","RE","RG-04-13","02",11,"17/7/2025","r",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","17/7/2025"],
+      ["Evaluacion de periodo de prueba","RE","RG-04-14","01",11,"18/3/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","18/3/2026"],
+      ["Acta de Asignación de Equipos y Responsabilidad del Empleado","RE","RG-04-15","01",11,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/4/2026"],
+      ["Apercibimiento Interno","RE","RG-04-16","00",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","9/10/2024"],
+      ["Registro de Sanciones","RE","RG-04-17","01",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","10/2/2025"],
+      ["Planilla de Vacaciones","RE","RG-04-18","00",11,"","x",0,"",""],
+      ["Registro personal de capacitaciones","RE","RG-04-19","02",11,"15/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","15/5/2026"],
+      ["Acuerdo de Confidencialidad","RE","RG-04-20","00",11,"4/5/2026","v",1,"https://drive.google.com/drive/folders/1bHuMdYskC6WsW7Idew-_OhQ6wdiA_MOr","1/5/2026"],
+      ["Induccion para ingresantes","IN","IG-04-01","02",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","11/8/2020"],
+      ["Induccion Soft Landing","IN","IG-04-02","01",11,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","17/7/2025"],
+      ["Modalidad Evaluación de desempeño 360","IN","IG-04-03","01",11,"5/2/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","5/2/2026"],
+      ["Efectivización de vacaciones y/o licencias","IN","IG-04-04","03",11,"9/12/2025","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","9/12/2025"],
+      ["Manual para ingresantes","RE","RG-04-21","00",11,"19/8/2026","v",1,"https://drive.google.com/drive/folders/1bKCQVUpLE-xc3oa0B4UaxUjPBGlz_aCM","19/8/2026"],
+      ["Auditorías internas","PG","PG-05","05",12,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1dH7dKZ94M1CphKWTZ4cOyxDzvUm_XUTU","1/11/2025"],
+      ["Matriz de requisitos y plan de auditoría","RE","RG-05-01","02",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","6/9/2021"],
+      ["Informe de Auditoría","RE","RG-05-02","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","26/11/2017"],
+      ["Cronograma de auditorias","RE","RG-05-03","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","12/7/2019"],
+      ["Inspección Interna","RE","RG-05-04","00",12,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1jtjTGBwV3_Q9ZB4yIKj2QL9QRFa8OHQQ","20/11/2019"],
+      ["Reporte de SGI","RE","RG-05-05","00",12,"","x",0,"",""],
+      ["Hallazgos y acciones para la mejora","PG","PG-06","04",12,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1dCzkAo20w0CyJTfvEw-rhBMmTKxPxzzI","20/3/2024"],
+      ["Registro de hallazgos","RE","RG-06-01","04",12,"1/8/2025","r",1,"https://drive.google.com/drive/folders/1jkkL2ZfV1G_JfaA8SW4UwT-ZoqGoa8hc","15/3/2023"],
+      ["Recopilacion de hallazgos","RE","RG-06-02","01",12,"23/3/2026","v",1,"https://drive.google.com/drive/folders/1jkkL2ZfV1G_JfaA8SW4UwT-ZoqGoa8hc","23/3/2026"],
+      ["Identificación de requisitos legales","PG","PG-07","02",5,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1dBJJBpXocFBnF8KnIr5VlZTRcmfEjC4y","3/10/2019"],
+      ["Matriz de requisitos legales y otros","RE","RG-07-01","01",7,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jf9hHtUjhPZ6QeLKxtuHuP1q-WxgxVuY","4/8/2020"],
+      ["Monitoreo de variables","RE","RG-07-02","05",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jf9hHtUjhPZ6QeLKxtuHuP1q-WxgxVuY","16/2/2024"],
+      ["Comunicación participación y consulta","PG","PG-08","06",11,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1d7np9LJ4r2u3h5ftdF3ulVha3Qn8_UTW","8/7/2025"],
+      ["Registro de Comunicaciones externas","RE","RG-08-01","01",11,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","21/8/2020"],
+      ["Registro de Comunicaciones internas","RE","RG-08-02","02",11,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","15/4/2024"],
+      ["Comunicado interno","RE","RG-08-03","00",11,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","16/11/2018"],
+      ["Canal de denuncias","RE","RG-08-04","00",11,"1/7/2025","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","1/7/2025"],
+      ["Protocolo de Prevención e Intervención ante Conductas Irregulares","RE","RG-08-05","00",11,"1/7/2025","r",1,"https://drive.google.com/drive/folders/1eLAo580iVKacG3_NFaZ59O3_aa6C3p3t","1/7/2025"],
+      ["Respuesta ante emergencias","PG","PG-09","08",12,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1d6ywsHw_u_9aN1VwtvsERdki67Nuij3D","25/6/2024"],
+      ["Programa de simulacros","RE","RG-09-01","02",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","15/11/2021"],
+      ["Plan de evacuación","RE","RG-09-02","02",12,"1/10/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","1/10/2024"],
+      ["Evaluación de simulacro","RE","RG-09-03","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","12/12/2017"],
+      ["Rol de emergencia","RE","RG-09-04","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","1/1/2023"],
+      ["Planilla control de extintores","RE","RG-09-05","00",12,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","25/6/2024"],
+      ["Plan y Rol de emergencias","RE","RG-09-06","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eAM9ohArp6OU268eUqobChySaDQbPuSi","25/6/2024"],
+      ["Instructivo Respuesta a Accidentes","IN","IG-09-01","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eCKM1ii7Brhofv3dzAhG3DrTqryaDOln","2/12/2019"],
+      ["Identificación de peligros y riegos","PG","PS-01","09",13,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1gBo7QBC9OPEqgCaSTaUBxRq9jRUMKQxY","4/8/2026"],
+      ["Matriz de riesgos y peligros","RE","RS-01-01","03",13,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","4/3/2025"],
+      ["Plan de seguridad de la obra","RE","RS-01-02","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","3/8/2020"],
+      ["Planilla de seguimiento de COVID19","RE","RS-01-03","01",13,"","x",0,"",""],
+      ["Manual de calidad, medio ambiente y seguridad","RE","RS-01-04","01",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","28/11/2023"],
+      ["Analisis de trabajo seguro","RE","RS-01-05","00",13,"15/8/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","15/8/2024"],
+      ["Reportes de Salud, Seguridad y Medio Ambiente","RE","RS-01-06","01",13,"3/8/2026","v",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","3/8/2026"],
+      ["Notificación de Desvío","RE","RS-01-07","00",13,"9/10/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","9/10/2024"],
+      ["Plan de Sanciones por Desvíos en Seguridad e Higiene","RE","RS-01-08","00",13,"11/10/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","11/10/2024"],
+      ["Planilla de registro para generar Programa de Seguridad","RE","RS-01-09","00",13,"1/11/2024","r",1,"https://drive.google.com/drive/folders/1jsBMa8t1uvIUUgAyu_vuTo1i-9htIwPW","1/11/2024"],
+      ["Plan de Contingencia en caso de una Emergencia Sanitaria","IN","IS-01-01","03",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","20/7/2020"],
+      ["Protocolo Covid-19 para obras","IN","IS-01-02","04",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","24/7/2020"],
+      ["Guia para modalidad de trabajo temporal Home Office para Administración","IN","IS-01-03","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","3/4/2020"],
+      ["Protección contra ruidos","IN","IS-01-04","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],
+      ["Plan de rescate en altura","IN","IS-01-05","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],
+      ["Protección contra caídas","IN","IS-01-06","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],
+      ["Ergonomía de los puestos de trabajo","IN","IS-01-07","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],
+      ["Trabajo espacio confinado","IN","IS-01-08","00",13,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","17/5/2021"],
+      ["Entrega de indumentaria laboral y EPP","IN","IS-01-09","01",13,"11/5/2026","v",1,"https://drive.google.com/drive/folders/1k2_j9OyYE5A8wCNbSTJf6AloC0bCR3G3","11/5/2026"],
+      ["Seguimiento de la salud","PG","PS-02","04",12,"22/11/2024","r",1,"https://drive.google.com/drive/folders/1g766_zChwDKNEgnZOWT1Vn3EpS3tTr4T","22/11/2024"],
+      ["Ficha Medica","RE","RS-02-01","01",12,"22/11/2024","r",1,"https://drive.google.com/drive/folders/1jgJsRvPjH0ja6TONw781mQJhZTpKQNL8","22/11/2024"],
+      ["Seguimiento de la salud","RE","RS-02-02","03",12,"12/5/2026","v",1,"https://drive.google.com/drive/folders/1jgJsRvPjH0ja6TONw781mQJhZTpKQNL8","12/5/2026"],
+      ["Protocolo de Prevención e Intervención ante Consumo Problemático","RE","RS-02-03","00",12,"4/5/2026","v",1,"https://drive.google.com/drive/folders/1jgJsRvPjH0ja6TONw781mQJhZTpKQNL8","1/5/2026"],
+      ["Investigación de Accidentes","PG","PS-03","03",13,"30/6/2026","v",1,"https://drive.google.com/drive/folders/1g5bYNyCaw9xFGQVSpUIiNv183NAaYGJT","11/9/2024"],
+      ["Planilla de Investigación de Accidentes","RE","RS-03-01","00",13,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","19/11/2021"],
+      ["Estadística Incidentes","RE","RS-03-02","03",13,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","29/1/2024"],
+      ["Registro de Accidentes Initineres","RE","RS-03-03","00",13,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","29/12/2023"],
+      ["Resumen estadistica de accidentes","RE","RS-03-04","00",13,"11/9/2024","r",1,"https://drive.google.com/drive/folders/1j_Pu6uzgo8xTLcRKWX3lgUxzCG6kQ_lF","11/9/2024"],
+      ["Actuación ante Accidente Laboral","IN","IS-03-01","00",13,"1/8/2026","v",1,"https://drive.google.com/drive/folders/1XrvIhzUr94qi7oL1j08Q8wz9iCk3Feug","1/8/2026"],
+      ["Metodo de derivación de accidentes en planta de terceros","IN","IS-03-02","00",13,"1/8/2026","v",1,"https://drive.google.com/drive/folders/1XrvIhzUr94qi7oL1j08Q8wz9iCk3Feug","29/7/2026"],
+      ["Gestión de Compras","PG","PO-01","15",2,"19/8/2026","v",1,"https://drive.google.com/drive/folders/1dwXpuPdHAThHk9cO5l94Mito2dNs8Js2","19/6/2026"],
+      ["Planilla de Comparativa","RE","RO-01-01","04",2,"19/6/2026","v",1,"https://drive.google.com/drive/folders/1hcCRGcpdoDPK6Eco6hYvWc4_TPiHvrOA","18/6/2026"],
+      ["Orden de Compra","RE","RO-01-02","00",2,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1hcCRGcpdoDPK6Eco6hYvWc4_TPiHvrOA","29/3/2018"],
+      ["Certificado de avance subcontratistas","RE","RO-01-03","00",2,"","x",0,"",""],
+      ["Instructivo de Comparativas","IN","IO-01-01","03",2,"19/6/2026","v",1,"https://drive.google.com/drive/folders/1hcRaLW7TczGqyvuxSAp1UCode24DXKQu","18/6/2026"],
+      ["Capacitacion Gestion de compras","CA","CO-01-01","01",2,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1DrbO4OMePz884RjHfgYKNjovrXXzilR3","1/2/2024"],
+      ["Evaluación de los Proveedores","PG","PO-02","06",2,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1dtITu3WkjjdSTIM76F1FKrvsOcZE7Tvr","1/11/2026"],
+      ["Listado de proveedores habilitados","RE","RO-02-01","03",2,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1hPwf8PBUobPFtWowkQ5SfxaNH0dcuUnf","5/8/2020"],
+      ["Re evaluación de proveedores","RE","RO-02-02","01",2,"21/8/2026","v",1,"https://drive.google.com/drive/folders/1hPwf8PBUobPFtWowkQ5SfxaNH0dcuUnf","1/6/2019"],
+      ["Capacitacion Evaluacion de proveedores","CA","CO-02-01","01",2,"27/8/2026","v",1,"https://drive.google.com/drive/folders/1DuH6kumrZpirQnK91YpH-CTm1G3gxYQY","27/8/2026"],
+      ["Gestión de Contratistas","PG","PO-03","04",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1dqEisGVqQJHgcKkwcyMNpzkqG05P8HbC","1/4/2026"],
+      ["Documentación de Contratistas  - Obra larga","RE","RO-03-01","05",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],
+      ["Documentación de Contratistas  - Obra corta","RE","RO-03-02","00",12,"8/8/2025","r",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","8/8/2025"],
+      ["Base de Contratistas","RE","RO-03-03","01",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],
+      ["Documentación Inicial Contratistas","RE","RO-03-04","00",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],
+      ["Acuerdo Mutuo Contratistas","RE","RO-03-05","00",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],
+      ["Evaluación de Desempeño de Contratistas","RE","RO-03-06","00",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1h6QYQDwOJdiXDD-TcYs50RmD4kgOo0vb","1/4/2026"],
+      ["Planificación y control de Diseño","PG","PO-04","22",12,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1dmbvcbgDHWCU0K9iq-AsVqXkqsHDG4Da","2/7/2026"],
+      ["Registro de diseño","RE","RO-04-01","05",4,"24/10/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","21/10/2024"],
+      ["Listado de Documentos","RE","RO-04-02","15",4,"15/4/2026","v",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","14/4/2026"],
+      ["Minuta de Reunión","RE","RO-04-03","01",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","29/12/2017"],
+      ["Consulta al Cliente","RE","RO-04-06","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","29/12/2017"],
+      ["Cronograma de Ingeniería de la obra","RE","RO-04-07","00",12,"","x",0,"",""],
+      ["Requerimiento de autorización para relevamiento asistido","RE","RO-04-08","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","7/2/2022"],
+      ["QR","RE","RO-04-09","00",12,"","x",0,"",""],
+      ["Balance modelo","RE","RO-04-10","00",12,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","23/2/2024"],
+      ["Lineamientos para especificacion de materiales","RE","RO-04-11","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1RfZOp1GEQ2PjKh4C-WeiA1ukmCTHQZ4N","15/3/2024"],
+      ["PAT SET","RE","RO-04-12","01",4,"31/10/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","31/10/2024"],
+      ["PAT Anillo Perimetral","RE","RO-04-13","02",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","13/2/2023"],
+      ["Necesidad de Pararrayos","RE","RO-04-14","02",4,"15/1/2025","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/1/2025"],
+      ["Memoria de Calculo Teórica de cables","RE","RO-04-15","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],
+      ["Memoria de Calculo de Cables de tableros","RE","RO-04-16","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],
+      ["Memoria de Calculo de Cables","RE","RO-04-17","08",4,"12/5/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","12/5/2026"],
+      ["Memoria Teórica de Calculo de Cables con carga desequilibrada","RE","RO-04-18","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],
+      ["Memoria de Calculo de Cables con carga desequilibrada","RE","RO-04-19","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],
+      ["Verificacion Cables de MT","RE","RO-04-20","02",4,"27/5/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","27/5/2026"],
+      ["Calculo de Barras de Cu segun IRAM 2359","RE","RO-04-21","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],
+      ["Estudio de Selectividad y Coordinacion de protecciones","RE","RO-04-22","02",4,"22/6/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","22/6/2026"],
+      ["Memoria de Calculo de Ventilacion Transformadores Secos","RE","RO-04-23","00",4,"9/8/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","15/8/2018"],
+      ["INSTALACIONES FOTOVOLTAICAS","RE","RO-04-24","01",4,"3/10/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","3/10/2024"],
+      ["Listado I-O","RE","RO-04-25","00",4,"26/9/2024","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","26/9/2024"],
+      ["Datos necesarios para construcción tablero","RE","RO-04-26","03",4,"3/8/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","3/8/2026"],
+      ["Planilla cableado","RE","RO-04-27","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","9/1/2025"],
+      ["Memoria de cálculo de elección de Bandejas Portacables","RE","RO-04-28","01",4,"24/7/2026","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","24/7/2026"],
+      ["Memoria de cálculo de llenado de cañeros","RE","RO-04-29","00",4,"16/12/2025","v",1,"https://drive.google.com/drive/folders/11h9guwOGkduQpdDM2KN1MwM8OypTS2xi","16/12/2025"],
+      ["Instructivo General de Ingeniería","IN","IO-04-01","05",4,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","2/7/2026"],
+      ["Instructivo Datos de Ingeniería","IN","IO-04-02","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],
+      ["Instructivo Estándares de Dibujo & Cadismo","IN","IO-04-03","07",4,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","2/7/2026"],
+      ["Instructivo Layes y Texto (bloque de AutoCAD)","IN","IO-04-04","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],
+      ["Instructivo Alcance del proyecto","IN","IO-04-05","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],
+      ["Instructivo Referencias y simbología (bloque de AutoCAD)","IN","IO-04-06","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/8/2018"],
+      ["Instructivo Referencias de cableados (bloque de AutoCAD)","IN","IO-04-07","00",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","17/5/2019"],
+      ["Instructivo Emisión y aprobación Ingeniería","IN","IO-04-08","02",4,"2/7/2026","v",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","2/7/2026"],
+      ["Instructivo EBS Esinel BIM Standard","IN","IO-04-09","01",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","4/10/2021"],
+      ["Instructivo ERS Esinel Revit Standard","IN","IO-04-10","01",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","4/10/2021"],
+      ["Instructivo Planificacion Tareas","IN","IO-04-11","00",4,"","x",0,"",""],
+      ["Instructivo Generación de QR","IN","IO-04-12","00",4,"","x",0,"",""],
+      ["Parametrización Relé protección Schneider P3UXX","IN","IO-04-13","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","30/6/2023"],
+      ["Impresión DWG mapa bits","IN","IO-04-14","00",4,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","14/12/2022"],
+      ["Instructivo Template AutoCAD","IN","IO-04-15","00",4,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","7/8/2023"],
+      ["Instructivo Balance Ingenieria","IN","IO-04-16","00",4,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1eaPudV44b7IvizhJCEMgjDjUYfH_HZEn","15/1/2024"],
+      ["Capacitacion procedimientos Planificacion y control de diseño","CA","CO-04-01","01",4,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1E7bCRzbLNxwvGPVAWOa97m5DROOy-R28","1/2/2024"],
+      ["Planificación y control de las Obras","PG","PO-05","22",9,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1RbOO7CSGSidmxsUq7DpLTfC4Klrq2w5a","6/12/2024"],
+      ["Instructivo Apertura de nuevo centro de costos","IN","IO-05-01","08",9,"15/7/2026","v",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","28/5/2026"],
+      ["Instructivo Apertura de nueva Obra","IN","IO-05-02","21",9,"26/6/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","26/6/2025"],
+      ["Normativa Para el jefe de Obra","IN","IO-05-03","02",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","21/2/2019"],
+      ["Comunicación de sucesos en obras","IN","IO-05-04","02",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","14/10/2024"],
+      ["Simulacro de Accidentes","IN","IO-05-05","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","30/6/2022"],
+      ["Aviso Final de contrato","IN","IO-05-06","02",9,"9/5/2025","r",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p6","9/5/2025"],
+      ["Elaboración y Gestión de Documentación Conforme a Obra","IN","IO-05-07","00",9,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1T0PtTYkCXboTG0Koewp1utzJUA9LD8p7","3/7/2026"],
+      ["Requerimiento de Materiales","RE","RO-05-01","04",2,"2/6/2025","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","2/6/2025"],
+      ["Aviso Comercial","RE","RO-05-02","06",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],
+      ["Reporte Semanal de Obra","RE","RO-05-03","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","29/12/2017"],
+      ["Verificación Calidad de la Obra","RE","RO-05-04","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","24/5/2019"],
+      ["Acta de presentación de documentación - Conformes a Obra","RE","RO-05-05","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","29/12/2017"],
+      ["Planificación General de las Obras","RE","RO-05-06","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","24/8/2018"],
+      ["Planilla de Seguimiento de Costos de Obra","RE","RO-05-07","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","29/12/2017"],
+      ["Acta de Recepción Provisoria","RE","RO-05-08","01",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","14/7/2020"],
+      ["Acta de Recepción Definitiva","RE","RO-05-09","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","22/12/2017"],
+      ["Detalle para cobertura seguro","RE","RO-05-10","01",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","3/3/2022"],
+      ["Verificación RES 900/15 SRT","RE","RO-05-11","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","26/4/2019"],
+      ["Aviso Tecnico","RE","RO-05-12","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],
+      ["Cronograma de Obra","RE","RO-05-13","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],
+      ["Nota de pedido de Contratista","RE","RO-05-14","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","9/8/2019"],
+      ["Protocolo medición de puesta a tierra","RE","RO-05-15","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","26/3/2020"],
+      ["Resistencia de aislación de la instalación o megado","RE","RO-05-16","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","26/3/2020"],
+      ["Medición de Iluminación","RE","RO-05-17","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","15/1/2021"],
+      ["Protocolo medición de resistividad del terreno","RE","RO-05-18","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","7/1/2022"],
+      ["Planilla inspeccion de obrador","RE","RO-05-19","02",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","5/7/2023"],
+      ["Check list herramientas electricas","RE","RO-05-20","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","21/7/2022"],
+      ["Check list herramientas manuales","RE","RO-05-21","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","21/7/2022"],
+      ["Planilla visita a obra","RE","RO-05-22","01",9,"1/8/2026","v",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","1/8/2026"],
+      ["Informe termográfico","RE","RO-05-23","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","31/10/2022"],
+      ["Check list de arnes","RE","RO-05-24","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","7/9/2023"],
+      ["Aviso Final de contrato","RE","RO-05-25","00",9,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","27/2/2024"],
+      ["Certificado de avances","RE","RO-05-26","00",9,"6/12/2024","r",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","6/12/2024"],
+      ["Listado de documentos conforme a obra","RE","RO-05-27","00",9,"3/7/2026","v",1,"https://drive.google.com/drive/folders/1SxNoU6Yuv0ua_JtEYQutQYQw5BCk2j8N","3/7/2026"],
+      ["Uso de cuter retráctil","IN","IO-05-11","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],
+      ["Instructivo Máquina agujereadora","IN","IO-05-12","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],
+      ["Instructivo Máquina Punzonadora, dobladora y cortadora de metales","IN","IO-05-13","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],
+      ["Instructivo Máquina soldadura eléctrica","IN","IO-05-14","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],
+      ["Instructivo Cableado y precintado en bandejas portacables","IN","IO-05-15","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","2/7/2018"],
+      ["Instructivo Cañerías eléctricas a la vista","IN","IO-05-16","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","3/7/2018"],
+      ["Instructivo instalación de Bandejas portacables","IN","IO-05-17","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","25/6/2018"],
+      ["Instructivo Instalación y conexionado Tableros eléctricos","IN","IO-05-18","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","25/6/2018"],
+      ["Instructivo Armado de andamio","IN","IO-05-19","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","1/6/2022"],
+      ["Instructivo uso Plataforma elevadora","IN","IO-05-20","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","7/11/2018"],
+      ["Instalación de Cañería eléctrica embutida","IN","IO-05-21","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","7/11/2018"],
+      ["Uso de trompo mezclador","IN","IO-05-22","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","22/7/2019"],
+      ["Uso de hoyadora o poseadora","IN","IO-05-23","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","22/7/2019"],
+      ["Uso de pala manual","IN","IO-05-24","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","22/7/2019"],
+      ["Ensayo de aislación de cables de baja tensión","IN","IO-05-25","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","26/3/2020"],
+      ["Trabajo en altura con escalera extensible","IN","IO-05-26","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","27/3/2020"],
+      ["Armado y Montaje de Blindobarras","IN","IO-05-27","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","25/3/2020"],
+      ["Ejecución de terminales y emplames de MT","IN","IO-05-28","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","30/3/2020"],
+      ["Carga y descarga de materiales","IN","IO-05-29","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","6/4/2022"],
+      ["Sistema de bloqueo","IN","IO-05-32","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2018"],
+      ["Uso de cámarar termográfica","IN","IO-05-33","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","31/10/2022"],
+      ["Confección de informe termográfico","IN","IO-05-34","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","31/10/2022"],
+      ["Guia Mantenimiento Predictivo-termografia","IN","IO-05-35","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","31/10/2022"],
+      ["Armado de obrador","IN","IO-05-36","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","16/1/2023"],
+      ["Arnes anticaidas","IN","IO-05-38","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","3/4/2023"],
+      ["Relevamiento de herramientas","IN","IO-05-39","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1T0cZljg6hUOT1XoFGCRg6ucRFD0qsJO5","3/11/2023"],
+      ["Planificacion y Control de las Obras","CA","CO-05-01","01",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EAmRhIgt0_10VtczWf_lzqUjPSU3bYyu","1/2/2024"],
+      ["Aviso Final de contrato","CA","CO-05-02","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EAmRhIgt0_10VtczWf_lzqUjPSU3bYyu","20/3/2024"],
+      ["Cumplimiento de Procedimientos Jefe de Obra","CA","CO-05-03","00",9,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EAmRhIgt0_10VtczWf_lzqUjPSU3bYyu","25/11/2024"],
+      ["Producción","PG","PO-06","10",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1RaeVmNLxgn1gPDLSmIHqoRDsD-Yx6L16","12/6/2026"],
+      ["Cronograma de Armado","RE","RO-06-01","00",10,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1SpPbuueUsYOj5W51Ziu-fLzcUoPJ8XEM","16/1/2018"],
+      ["Protocolo de ensayo final de Tablero","RE","RO-06-02","04",10,"8/10/2024","r",1,"https://drive.google.com/drive/folders/1SpPbuueUsYOj5W51Ziu-fLzcUoPJ8XEM","1/10/2024"],
+      ["Planilla seguimiento y Verificación Proceso Fabricación Tableros","RE","RO-06-03","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SpPbuueUsYOj5W51Ziu-fLzcUoPJ8XEM","12/5/2026"],
+      ["Instructivo Corte con disco","IN","IO-06-01","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],
+      ["Instructivo Maquina Agujereadora","IN","IO-06-02","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],
+      ["Instructivo Maquina Punzonadora, Cortadora, dobladora","IN","IO-06-03","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],
+      ["Instructivo máquina soldadura eléctrica","IN","IO-06-04","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/2/2018"],
+      ["Instructivo malacate electrico","IN","IO-06-05","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","6/4/2022"],
+      ["Torque de ajuste en elementos eléctricos","IN","IO-06-06","00",10,"12/6/2026","v",1,"https://drive.google.com/drive/folders/1SrnJCJ7_Fi9pijZ-c9HxnRcNi_PsUUMU","1/6/2026"],
+      ["Capacitacion procedimientos Armado de tableros","CA","CO-06-01","01",10,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1ENyGOsxxTy2YwupAAvDAdV7nSsrfI9yI","1/2/2024"],
+      ["Calibración de Instrumentos","PG","PO-07","03",12,"22/5/2025","r",1,"https://drive.google.com/drive/folders/1RYSjNACvj754swTq1_QS66PP-wESqman","22/5/2025"],
+      ["Listado de Instrumentos","RE","RO-07-01","04",3,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1SlEG8Q1GoWOOlHNDY8YcgecSOil1tBIn","26/8/2024"],
+      ["Contraste de Instrumentos","RE","RO-07-02","00",3,"22/5/2025","r",1,"https://drive.google.com/drive/folders/1SlEG8Q1GoWOOlHNDY8YcgecSOil1tBIn","22/5/2025"],
+      ["Capacitacion procedimientos Calibracion de instrumentos","CA","CO-07-01","01",3,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EKEgbYA2MJCo_9e29szsc2bT43srNJT0","1/2/2024"],
+      ["Comercial","PG","PO-08","15",15,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1RW_8JGfRLT9s_oV_WiFu2ZA4cYJ26FQQ","1/2/2026"],
+      ["Planilla de cotización tipo","RE","RO-08-01","223",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","2/6/2026"],
+      ["Planilla de cotización tipo Ingeniería","RE","RO-08-02","34",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","23/9/2025"],
+      ["Pedido de adicional & Balance","RE","RO-08-03","01",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","2/11/2021"],
+      ["Seguimiento de clientes","RE","RO-08-05","06",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","10/7/2025"],
+      ["Costos por unidad","RE","RO-08-06","00",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","9/11/2020"],
+      ["Propuesta técnica y comercial de la Oferta - Obra","RE","RO-08-07","03",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","22/2/2024"],
+      ["Encuesta Esinel a clientes","RE","RO-08-08","02",1,"21/7/2025","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","28/3/2025"],
+      ["Respuestas de Encuesta Esinel a clientes","RE","RO-08-09","02",1,"21/7/2025","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","28/3/2025"],
+      ["Diseño y difusión de imagen institucional","RE","RO-08-10","00",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","4/10/2023"],
+      ["Brochure Español","RE","RO-08-11","00",1,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","19/7/2024"],
+      ["Brochure English","RE","RO-08-12","00",1,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","19/7/2024"],
+      ["Brochure DWG services","RE","RO-08-13","00",1,"19/7/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","19/7/2024"],
+      ["Brochure Esinel Sustentable","RE","RO-08-14","01",1,"14/8/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","14/8/2024"],
+      ["Propuesta Técnica Renovables","RE","RO-08-15","00",1,"1/8/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","1/8/2024"],
+      ["Propuesta Comercial Renovables","RE","RO-08-16","01",1,"9/8/2024","r",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","5/8/2024"],
+      ["Planilla de típicos para cotizar","RE","RO-08-17","00",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","1/2/2026"],
+      ["Planilla de típicos para cotizar Renovables","RE","RO-08-18","00",1,"8/6/2026","v",1,"https://drive.google.com/drive/folders/1TNKozb2dLIPxwv-uvwg7NAaDGM3tfL4p","1/2/2026"],
+      ["Instructivo Datos Necesarios RES 900/15","IN","IO-08-01","01",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNh7vwNNm1_1LKXGnK3k3TTwH3MqrSgM","2/7/2019"],
+      ["Instructivo detalle de computo","IN","IO-08-02","00",1,"15/7/2024","r",1,"https://drive.google.com/drive/folders/1TNh7vwNNm1_1LKXGnK3k3TTwH3MqrSgM","4/3/2020"],
+      ["Capacitacion procedimientos Gestion de ventas","CA","CO-08-01","00",1,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1ETE9nvM7RRCu4DkkJrFovMUU6AzfsUiT","1/2/2024"],
+      ["Seguridad, Orden y Limpieza (SOL)","PG","PO-09","03",12,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1RVl-0LlzG9WDM7WNDOghZv5-ymZqeTfq","28/6/2024"],
+      ["Evaluación de SOL","RE","RO-09-01","01",12,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1THk8zinnwKA5Y7ajBOoaNCKiOZ4QUwuN","1/5/2019"],
+      ["Control Botiquín","RE","RO-09-02","00",12,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1THk8zinnwKA5Y7ajBOoaNCKiOZ4QUwuN","1/2/2023"],
+      ["Rótulo Botiquín","RE","RO-09-03","00",12,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1THk8zinnwKA5Y7ajBOoaNCKiOZ4QUwuN","22/6/2023"],
+      ["Capacitacion procedimientos Seguridad, Orden y Limpieza","CA","CO-09-01","00",12,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EVGZvge66MzZRtcfziXyUqLJxpQwPz0f","1/2/2024"],
+      ["Gestión de Stock","PG","PO-10","05",3,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1RVkb2ztFjXH9NPaZN49cohrFGw9bAApj","11/8/2025"],
+      ["Planilla de materiales en tránsito","RE","RO-10-01","00",3,"","x",0,"",""],
+      ["Cargo herramientas","RE","RO-10-02","01",3,"25/3/2026","v",1,"https://drive.google.com/drive/folders/1TEDOe2lGmP4MWCd1QsROdwX--azh9cfz","25/3/2026"],
+      ["Instructivo sistema Néctica","IN","IO-10-01","00",3,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TG6cPFzHk873FJdj8BZoZiAdIMEMik8z","4/9/2020"],
+      ["Capacitacion procedimientos Gestion de stock","CA","CO-10-01","00",3,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1EVZ3FcmUpu8af6w5UBUEjreBl3hF8-Un","1/2/2024"],
+      ["Sistemas","PG","PO-11","01",14,"1/4/2026","v",1,"https://drive.google.com/drive/folders/1RTy2rNi763cP9la2y5rupdk3jN78Uz8e","5/3/2024"],
+      ["Necesidad de soporte","RE","RO-11-01","01",14,"","x",0,"",""],
+      ["Control de tareas desarrolladas","RE","RO-11-02","00",14,"","x",0,"",""],
+      ["Licenciamiento","RE","RO-11-03","00",14,"","x",0,"",""],
+      ["Bitácora CPU","RE","RO-11-04","00",14,"","x",0,"",""],
+      ["Bitácora Monitores","RE","RO-11-05","00",14,"","x",0,"",""],
+      ["Bitácora Notebook","RE","RO-11-06","00",14,"","x",0,"",""],
+      ["Asignación de equipamiento","RE","RO-11-07","00",14,"","x",0,"",""],
+      ["Relevamiento Esinel","RE","RO-11-08","01",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TApCraTSqnYf9uhlcC2RpuUPGrVl_0WP","22/10/2024"],
+      ["Instructivo actualización  Necap","IN","IO-11-01","00",14,"","x",0,"",""],
+      ["Guía sobre uso de Drive File Stream y Gsheets","IN","IO-11-02","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","17/5/2019"],
+      ["Instructivo de Seguridad Informática","IN","IO-11-03","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","31/10/2019"],
+      ["Intructivo Topología de Red","IN","IO-11-04","01",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","4/11/2021"],
+      ["Instructivo de Carpetas Compartidas","IN","IO-11-05","01",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","4/11/2021"],
+      ["Instructivo de Backup","IN","IO-11-06","02",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","6/2/2025"],
+      ["Instructivo de Cámaras","IN","IO-11-07","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","8/4/2021"],
+      ["Instructivo de equipamiento","IN","IO-11-08","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","19/4/2021"],
+      ["Instructivo de Seguridad de Gmail","IN","IO-11-09","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","19/4/2021"],
+      ["Instructivo de Alta","IN","IO-11-10","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","3/5/2021"],
+      ["Instructivo de Baja","IN","IO-11-11","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","3/5/2021"],
+      ["Instructivo de Backup para Google (Previo limpieza)","IN","IO-11-12","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","9/5/2021"],
+      ["Instructivo VPN para usuario","IN","IO-11-13","01",14,"","x",0,"",""],
+      ["Instructivo para Administrador la VPN","IN","IO-11-14","01",14,"","x",0,"",""],
+      ["Como pedir un ticket","IN","IO-11-15","00",14,"11/8/2025","r",1,"https://drive.google.com/drive/folders/1TBUKf2TZs6IXCOu0PM13NWiRpjZSpheM","5/3/2024"],
+      ["Uso de vehículos","PG","PO-12","03",12,"6/6/2026","v",1,"https://drive.google.com/drive/folders/1RS_ATEsvsZ0Rj9xLu2AbgfGtAAJVLgCU","1/4/2026"],
+      ["Alta de vehículos","RE","RO-12-01","00",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],
+      ["Condiciones de uso de vehículos","RE","RO-12-02","00",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],
+      ["Planilla uso de vehículos","RE","RO-12-03","01",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],
+      ["Seguimiento de vehículos","RE","RO-12-04","01",0,"1/9/2025","v",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/9/2025"],
+      ["Seguimiento de talleres mecánicos","RE","RO-12-05","00",0,"17/7/2024","r",1,"https://drive.google.com/drive/folders/1T6UEag6fzPValqI7JOJQ_eAvNQ-H20EC","1/12/2020"],
+      ["Uso de vehiculos","CA","CO-12-01","01",0,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1E_Ig7L56qwHEVMsQqgx6Z306QjByU_2b","20/8/2026"],
+      ["Administración","PG","PO-13","04",0,"1/7/2026","v",1,"https://drive.google.com/drive/folders/1RQMN1gz6uixn5Uc1Q9tJdD6zrRomjNTv","1/7/2026"],
+      ["Planilla compromisos","RE","RO-13-01","01",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","1/4/2023"],
+      ["Planilla cobranzas","RE","RO-13-02","00",0,"","x",0,"",""],
+      ["Planilla IIBB","RE","RO-13-03","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],
+      ["Planilla IVA","RE","RO-13-04","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],
+      ["Planilla YPF en ruta","RE","RO-13-05","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],
+      ["Telepeaje","RE","RO-13-06","01",0,"23/2/2026","v",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","23/2/2026"],
+      ["Planilla registro de temperatura","RE","RO-13-07","00",0,"","x",0,"",""],
+      ["Planilla Ingreso - Egreso Personal","RE","RO-13-08","00",0,"","x",0,"",""],
+      ["Calendario general de polizas de caucion","RE","RO-13-09","00",0,"5/8/2025","r",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","6/5/2021"],
+      ["Base de datos operativa","RE","RO-13-10","00",0,"","x",0,"",""],
+      ["BNA_Carta Liberación de AportesFCL","RE","RO-13-11","00",0,"","x",0,"",""],
+      ["Carta de liquidacion final","RE","RO-13-12","00",0,"","x",0,"",""],
+      ["Cert de trabajo","RE","RO-13-13","00",0,"","x",0,"",""],
+      ["Control de docum. presentada a Clientes","RE","RO-13-14","00",0,"","x",0,"",""],
+      ["Programacion O.C.","RE","RO-13-15","00",0,"","x",0,"",""],
+      ["Saldos a cobrar obras contratadas","RE","RO-13-16","00",0,"","x",0,"",""],
+      ["Planilla de Facturas Contabilizadas","RE","RO-13-17","00",0,"15/5/2026","v",1,"https://drive.google.com/drive/folders/1TUUCh1sCcWC4_vQn-P3QMWnUzYSju-Ub","15/5/2026"],
+      ["Administracion","CA","CO-13-01","02",0,"20/8/2026","v",1,"https://drive.google.com/drive/folders/1EdSgmIbQU2BhPpcJnVVCVPacyJgXX3TQ","20/8/2026"],
+      ["Portal de Proveedores","IN","IO-13-01","00",0,"5/5/2026","v",1,"https://drive.google.com/drive/folders/1HaHjpo4iH96TxCexkjM8vQ0XVpDiZTos","9/12/2025"],
+      ["Rendición de Tarjetas Corporativas y Cajas Chicas","IN","IO-13-02","00",0,"1/7/2026","v",1,"https://drive.google.com/drive/folders/1HaHjpo4iH96TxCexkjM8vQ0XVpDiZTos","1/7/2026"]
+    ]
+  };
 
-function filterByTipo(t) {
-  activeTipo = (activeTipo === t) ? '' : t;
-  document.querySelectorAll('.bar-row').forEach(el => el.classList.toggle('bar-active', el.id==='bar-'+activeTipo));
-  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.toggle('active', b.dataset.t === activeTipo));
-  applyFilters();
-}
+  const PROCESOS = DATA.p;
+  const DOCS = DATA.d;
 
-const TL = {PG:'Procedimiento',IN:'Instructivo',RE:'Registro',CA:'Capacitaci\u00f3n',DO:'Documento'};
-const TC = {
-  PG:['#1d4ed8','#dbeafe'], IN:['#15803d','#dcfce7'], RE:['#7e22ce','#f3e8ff'],
-  CA:['#c2410c','#fff7ed'], DO:['#475569','#f1f5f9']
-};
-const SC = {
-  v:['Vigente','#15803d','#dcfce7'],
-  r:['A revisar','#a16207','#fef9c3'],
-  s:['Sin control','#b91c1c','#fee2e2'],
-  x:['Discontinuado','#6b7280','#f1f5f9']
-};
+  // Configuración de Tipos y Estados
+  const TYPE_CONFIG = {
+    PG: { label: 'Procedimiento', color: '#1a73e8', bg: '#e8f0fe', icon: 'ti-file-text' },
+    IN: { label: 'Instructivo', color: '#1e8e3e', bg: '#e6f4ea', icon: 'ti-clipboard-list' },
+    RE: { label: 'Registro', color: '#9334e6', bg: '#f3e8fd', icon: 'ti-file-pencil' },
+    CA: { label: 'Capacitación', color: '#e37400', bg: '#fef7e0', icon: 'ti-certificate' },
+    DO: { label: 'Documento / Norma', color: '#5f6368', bg: '#f1f3f4', icon: 'ti-bookmark' }
+  };
 
-let filtered = [...DOCS];
-let sortCol = -1, sortAsc = true;
-let activeTipo = '', activeStatus = '', activeYear = null;
+  const STATUS_CONFIG = {
+    v: { label: 'Vigente', color: '#137333', bg: '#e6f4ea', dot: '#1e8e3e' },
+    r: { label: 'A revisar', color: '#b05a00', bg: '#fef7e0', dot: '#f9ab00' },
+    s: { label: 'Sin control', color: '#c5221f', bg: '#fce8e6', dot: '#d93025' },
+    x: { label: 'Discontinuado', color: '#5f6368', bg: '#f1f3f4', dot: '#9aa0a6' }
+  };
 
-function filterByYear(yr) {
-  activeYear = (activeYear === yr) ? null : yr;
-  document.querySelectorAll('.dn-arc').forEach(el => el.style.opacity = activeYear===null||el.id==='dna-'+activeYear?'1':'0.3');
-  document.querySelectorAll('.ch-leg-row').forEach(el => el.classList.toggle('ch-active', activeYear!==null&&el.id==='dnl-'+activeYear));
-  const dn = document.getElementById('dn-n'), dl = document.getElementById('dn-l');
-  if (dn && activeYear !== null) {
-    const cnt = DOCS.filter(d=>{const m=(d[9]||'').match(/(\d{4})$/);return (m?parseInt(m[1]):0)===activeYear;}).length;
-    dn.textContent = cnt; dl.textContent = activeYear||'Sin fecha';
-  } else if (dn) { dn.textContent = DOCS.length; dl.textContent = 'documentos'; }
-  applyFilters();
-}
+  let activeTipo = '';
+  let activeStatus = '';
+  let activeYear = null;
+  let sortCol = -1;
+  let sortAsc = true;
+  let filteredDocs = [...DOCS];
 
-function setTipo(t) {
-  activeTipo = t;
-  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.toggle('active', b.dataset.t === t));
-  applyFilters();
-}
-function setStatus(s) {
-  activeStatus = s;
-  document.getElementById('sel-status').value = s;
-  applyFilters();
-}
-
-function applyFilters() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const t = activeTipo;
-  const pr = document.getElementById('sel-proceso').value;
-  const st = document.getElementById('sel-status').value || activeStatus;
-  activeStatus = st;
-  filtered = DOCS.filter(d => {
-    const nomCod = ((d[2]||'') + ' ' + d[0]).toLowerCase();
-    if (q && !nomCod.includes(q)) return false;
-    if (t && d[1] !== t) return false;
-    if (pr !== '' && d[4] !== parseInt(pr)) return false;
-    if (st && d[6] !== st) return false;
-    if (activeYear !== null) { const m = (d[9]||'').match(/(\d{4})$/); const yr = m ? parseInt(m[1]) : null; if (yr !== activeYear) return false; }
-    return true;
-  });
-  if (sortCol >= 0) doSort();
-  render();
-}
-
-function sortBy(col) {
-  if (sortCol === col) sortAsc = !sortAsc;
-  else { sortCol = col; sortAsc = true; }
-  doSort(); render();
-}
-
-function parseDateSort(s) {
-  if (!s || s === '') return '9999-99-99';
-  const p = String(s).split('/');
-  if (p.length !== 3) return '9999-99-99';
-  return p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');
-}
-
-function doSort() {
-  filtered.sort((a,b) => {
-    let va, vb;
-    if (sortCol === 0) { va = (a[2]||'').toLowerCase(); vb = (b[2]||'').toLowerCase(); }
-    else if (sortCol === 1) { va = a[1]; vb = b[1]; }
-    else if (sortCol === 2) { va = parseInt(a[3])||0; vb = parseInt(b[3])||0; }
-    else if (sortCol === 3) { va = PROCESOS[a[4]]||''; vb = PROCESOS[b[4]]||''; }
-    else if (sortCol === 4) { va = parseDateSort(a[5]); vb = parseDateSort(b[5]); }
-    else if (sortCol === 5) { va = a[0].toLowerCase(); vb = b[0].toLowerCase(); }
-    else if (sortCol === 6) { va = parseDateSort(a[9]); vb = parseDateSort(b[9]); }
-    const r = va > vb ? 1 : va < vb ? -1 : 0;
-    return sortAsc ? r : -r;
-  });
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function render() {
-  const tbody = document.getElementById('tbody');
-  const total = DOCS.length;
-  document.getElementById('count-info').textContent =
-    filtered.length === total
-      ? `Mostrando ${total} documentos`
-      : `Mostrando ${filtered.length} de ${total} documentos`;
-
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">Sin resultados para los filtros seleccionados</td></tr>';
-    return;
+  function initProcesses() {
+    const sel = document.getElementById('selProceso');
+    PROCESOS.forEach((p, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = p;
+      sel.appendChild(opt);
+    });
   }
 
-  tbody.innerHTML = filtered.map(d => {
-    const [nombre, tipo, codigo, rev, proc_idx, fecha_ctrl, status, hasLink, link, fecha_vig] = d;
-    const [tFg, tBg] = TC[tipo] || ['#475569','#f1f5f9'];
-    const [sLabel, sFg, sBg] = SC[status] || ['\u2014','#6b7280','#f3f4f6'];
-    const proceso = PROCESOS[proc_idx] || '';
-    const isDisc = status === 'x';
-    const codCell = codigo ? `<span class="cod">${esc(codigo)}</span>` : '<span style="color:#cbd5e1">\u2014</span>';
-    const nameCls = isDisc ? 'nombre-txt disc-txt' : 'nombre-txt';
-    const ctrlCls = status === 's' ? 'ctrl-date" style="color:#b91c1c;font-weight:600' : status === 'r' ? 'ctrl-date" style="color:#a16207' : 'ctrl-date';
-    const ctrlVal = fecha_ctrl || '<span style="color:#cbd5e1">\u2014</span>';
-    const vigVal = fecha_vig || '<span style="color:#cbd5e1">\u2014</span>';
-    const trCls = link ? ' class="clickable"' : '';
-    const trClick = link ? ` onclick="if(event.target.tagName!=='A')window.open('${esc(link)}','_blank')"` : '';
-    return `<tr${trCls}${trClick}>
-      <td>${codCell}</td>
-      <td><span class="badge" style="background:${tBg};color:${tFg}">${TL[tipo]||tipo}</span></td>
-      <td class="nombre-cell"><span class="${nameCls}" title="${esc(nombre)}">${esc(nombre)}</span></td>
-      <td><span class="rev-badge">${esc(rev||'\u2014')}</span></td>
-      <td style="font-size:12px;color:#475569">${esc(proceso)}</td>
-      <td><span class="ctrl-date">${vigVal}</span></td>
-      <td><span class="${ctrlCls}">${ctrlVal}</span></td>
-      <td><span class="badge" style="background:${sBg};color:${sFg}">${sLabel}</span></td>
-    </tr>`;
-  }).join('');
-}
+  function initStatsAndCharts() {
+    const counts = { v: 0, r: 0, s: 0, x: 0 };
+    DOCS.forEach(d => {
+      const st = d[6] || 's';
+      counts[st] = (counts[st] || 0) + 1;
+    });
 
-initStats();
-render();
+    document.getElementById('cnt-all').textContent = DOCS.length;
+    document.getElementById('cnt-v').textContent = counts.v || 0;
+    document.getElementById('cnt-r').textContent = counts.r || 0;
+    document.getElementById('cnt-s').textContent = (counts.s || 0) + (counts.x || 0);
 
+    buildDonut();
+    buildBarChart();
+    renderTypeChips();
+  }
+
+  function renderTypeChips() {
+    const byType = {};
+    DOCS.forEach(d => { byType[d[1]] = (byType[d[1]] || 0) + 1; });
+
+    const chipsRow = document.getElementById('typeChipsRow');
+    chipsRow.innerHTML = `
+      <span class="g-chip-label">Tipo:</span>
+      <button class="g-chip ${activeTipo === '' ? 'active' : ''}" onclick="setTypeFilter('')">
+        <span>Todos</span>
+        <span class="g-chip-badge">${DOCS.length}</span>
+      </button>
+    ` + Object.keys(TYPE_CONFIG).map(t => {
+      const conf = TYPE_CONFIG[t];
+      const count = byType[t] || 0;
+      return `
+        <button class="g-chip ${activeTipo === t ? 'active' : ''}" onclick="setTypeFilter('${t}')">
+          <i class="ti ${conf.icon}" style="font-size:13px; color:${conf.color}"></i>
+          <span>${t} &mdash; ${conf.label}</span>
+          <span class="g-chip-badge">${count}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function buildDonut() {
+    const cur = 2026;
+    const yColor = yr => !yr ? '#9aa0a6' : yr >= cur ? '#1e8e3e' : yr >= cur - 1 ? '#1a73e8' : yr >= cur - 2 ? '#f9ab00' : '#d93025';
+    const byYear = {};
+
+    DOCS.forEach(d => {
+      const m = (d[9] || '').match(/(\d{4})$/);
+      const yr = m ? parseInt(m[1]) : 0;
+      byYear[yr] = (byYear[yr] || 0) + 1;
+    });
+
+    const yrs = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+    const total = DOCS.length;
+    const cx = 130, cy = 130, r0 = 55, r1 = 110;
+    const toRad = a => (a - 90) * Math.PI / 180;
+    const pt = (r, a) => [cx + r * Math.cos(toRad(a)), cy + r * Math.sin(toRad(a))];
+
+    function arcP(a1, a2) {
+      const lg = (a2 - a1) > 180 ? 1 : 0;
+      const [x1, y1] = pt(r0, a1), [x2, y2] = pt(r1, a1), [x3, y3] = pt(r1, a2), [x4, y4] = pt(r0, a2);
+      return `M${x1.toFixed(2)},${y1.toFixed(2)} L${x2.toFixed(2)},${y2.toFixed(2)} A${r1},${r1} 0 ${lg} 1 ${x3.toFixed(2)},${y3.toFixed(2)} L${x4.toFixed(2)},${y4.toFixed(2)} A${r0},${r0} 0 ${lg} 0 ${x1.toFixed(2)},${y1.toFixed(2)} Z`;
+    }
+
+    const GAP = yrs.length > 1 ? 2.5 : 0;
+    const totalAngle = 360 - yrs.length * GAP;
+    let paths = '', angle = 0;
+    const legendEl = document.getElementById('donut-legend');
+    legendEl.innerHTML = '';
+
+    yrs.forEach(yr => {
+      const span = (byYear[yr] / total) * totalAngle;
+      const col = yColor(yr);
+      const yrLabel = yr || 'Sin fecha';
+      paths += `<path d="${arcP(angle, angle + span)}" fill="${col}" class="dn-arc" id="dna-${yr}" style="cursor:pointer; transition:opacity .2s;" onclick="setYearFilter(${yr})"><title>${yrLabel}: ${byYear[yr]} docs</title></path>`;
+      
+      // Items en leyenda lateral
+      legendEl.innerHTML += `
+        <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="setYearFilter(${yr})">
+          <span style="width:10px; height:10px; border-radius:50%; background:${col};"></span>
+          <span style="font-weight:${activeYear === yr ? '700' : '400'}; color:${activeYear === yr ? 'var(--g-blue)' : 'var(--text-main)'};">${yrLabel}</span>
+          <span style="color:var(--text-soft); font-size:11px;">(${byYear[yr]})</span>
+        </div>
+      `;
+      angle += span + GAP;
+    });
+
+    paths += `<text x="130" y="125" text-anchor="middle" font-size="28" font-family="Google Sans, Roboto" font-weight="700" fill="#202124" id="dn-center-n">${total}</text>`;
+    paths += `<text x="130" y="145" text-anchor="middle" font-size="11.5" font-family="Roboto" fill="#80868b" id="dn-center-l">documentos</text>`;
+
+    document.getElementById('donut-svg').innerHTML = paths;
+  }
+
+  function buildBarChart() {
+    const byType = {};
+    DOCS.forEach(d => { byType[d[1]] = (byType[d[1]] || 0) + 1; });
+    const max = Math.max(...Object.values(byType));
+    const order = ['RE', 'IN', 'PG', 'CA', 'DO'];
+    
+    let html = '';
+    order.forEach(t => {
+      const conf = TYPE_CONFIG[t] || { label: t, color: '#5f6368' };
+      const n = byType[t] || 0;
+      const pct = max ? Math.round((n / max) * 100) : 0;
+      const isActive = activeTipo === t;
+
+      html += `
+        <div class="bar-row ${isActive ? 'active' : ''}" onclick="setTypeFilter('${isActive ? '' : t}')">
+          <div class="bar-lbl-group">
+            <span class="g-type-badge" style="background:${conf.bg}; color:${conf.color};">
+              <i class="ti ${conf.icon}"></i> ${t}
+            </span>
+            <span style="font-size:11px; color:var(--text-muted);">${conf.label}</span>
+          </div>
+          <div class="bar-track" title="${conf.label}: ${n} documentos">
+            <div class="bar-fill" style="width:${pct}%; background:${conf.color};">
+              <span>${n}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('bar-chart-container').innerHTML = html;
+  }
+
+  function setStatusFilter(st) {
+    activeStatus = (activeStatus === st) ? '' : st;
+    document.getElementById('selStatus').value = activeStatus;
+    
+    // Highlight tarjetas
+    document.querySelectorAll('.g-stat-box').forEach(el => el.classList.remove('active-filter'));
+    if (activeStatus) {
+      const target = document.getElementById('card-' + activeStatus);
+      if (target) target.classList.add('active-filter');
+    }
+    applyFilters();
+  }
+
+  function setTypeFilter(t) {
+    activeTipo = (activeTipo === t) ? '' : t;
+    renderTypeChips();
+    buildBarChart();
+    applyFilters();
+  }
+
+  function setYearFilter(yr) {
+    activeYear = (activeYear === yr) ? null : yr;
+    const centerN = document.getElementById('dn-center-n');
+    const centerL = document.getElementById('dn-center-l');
+    const hint = document.getElementById('donut-filter-hint');
+
+    document.querySelectorAll('.dn-arc').forEach(el => {
+      el.style.opacity = activeYear === null || el.id === 'dna-' + activeYear ? '1' : '0.25';
+    });
+
+    if (activeYear !== null) {
+      const count = DOCS.filter(d => {
+        const m = (d[9] || '').match(/(\d{4})$/);
+        return (m ? parseInt(m[1]) : 0) === activeYear;
+      }).length;
+      if (centerN) centerN.textContent = count;
+      if (centerL) centerL.textContent = activeYear ? `año ${activeYear}` : 'sin fecha';
+      if (hint) hint.textContent = `Filtrado por: ${activeYear || 'S/F'} (clic para limpiar)`;
+    } else {
+      if (centerN) centerN.textContent = DOCS.length;
+      if (centerL) centerL.textContent = 'documentos';
+      if (hint) hint.textContent = 'Clic para filtrar';
+    }
+
+    buildDonut();
+    applyFilters();
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('clearSearchBtn').style.display = 'none';
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+    const clearBtn = document.getElementById('clearSearchBtn');
+    if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+    const procVal = document.getElementById('selProceso').value;
+    const statusVal = document.getElementById('selStatus').value;
+    activeStatus = statusVal;
+
+    filteredDocs = DOCS.filter(d => {
+      const [nombre, tipo, codigo, rev, proc_idx, fecha_ctrl, status, hasLink, link, fecha_vig] = d;
+      const matchText = !q || (nombre && nombre.toLowerCase().includes(q)) || (codigo && codigo.toLowerCase().includes(q));
+      const matchTipo = !activeTipo || tipo === activeTipo;
+      const matchProc = procVal === '' || proc_idx === parseInt(procVal);
+      const matchStatus = !activeStatus || status === activeStatus;
+      
+      let matchYear = true;
+      if (activeYear !== null) {
+        const m = (fecha_vig || '').match(/(\d{4})$/);
+        const yr = m ? parseInt(m[1]) : 0;
+        matchYear = (yr === activeYear);
+      }
+
+      return matchText && matchTipo && matchProc && matchStatus && matchYear;
+    });
+
+    if (sortCol >= 0) doSort();
+    renderTable();
+  }
+
+  function parseDateSort(s) {
+    if (!s || s === '') return '9999-99-99';
+    const p = String(s).split('/');
+    if (p.length !== 3) return '9999-99-99';
+    return p[2] + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
+  }
+
+  function sortBy(col) {
+    if (sortCol === col) {
+      sortAsc = !sortAsc;
+    } else {
+      sortCol = col;
+      sortAsc = true;
+    }
+    doSort();
+    renderTable();
+  }
+
+  function doSort() {
+    filteredDocs.sort((a, b) => {
+      let va, vb;
+      if (sortCol === 0) { va = (a[2] || '').toLowerCase(); vb = (b[2] || '').toLowerCase(); }
+      else if (sortCol === 1) { va = a[1]; vb = b[1]; }
+      else if (sortCol === 2) { va = parseInt(a[3]) || 0; vb = parseInt(b[3]) || 0; }
+      else if (sortCol === 3) { va = PROCESOS[a[4]] || ''; vb = PROCESOS[b[4]] || ''; }
+      else if (sortCol === 4) { va = parseDateSort(a[5]); vb = parseDateSort(b[5]); }
+      else if (sortCol === 5) { va = a[0].toLowerCase(); vb = b[0].toLowerCase(); }
+      else if (sortCol === 6) { va = parseDateSort(a[9]); vb = parseDateSort(b[9]); }
+      const r = va > vb ? 1 : va < vb ? -1 : 0;
+      return sortAsc ? r : -r;
+    });
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('tbody');
+    const total = DOCS.length;
+    document.getElementById('count-info').innerHTML = `Mostrando <strong>${filteredDocs.length}</strong> de <strong>${total}</strong> documentos registrados`;
+
+    if (!filteredDocs.length) {
+      tbody.innerHTML = '<tr><td colspan="9" class="no-results"><i class="ti ti-file-search" style="font-size:32px; display:block; margin-bottom:8px; color:var(--text-soft)"></i>No se encontraron documentos con los filtros seleccionados.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filteredDocs.map(d => {
+      const [nombre, tipo, codigo, rev, proc_idx, fecha_ctrl, status, hasLink, link, fecha_vig] = d;
+      const tConf = TYPE_CONFIG[tipo] || { label: tipo, color: '#5f6368', bg: '#f1f3f4', icon: 'ti-file' };
+      const sConf = STATUS_CONFIG[status] || { label: 'S/D', color: '#5f6368', bg: '#f1f3f4', dot: '#9aa0a6' };
+      const proceso = PROCESOS[proc_idx] || 'General';
+      const isDiscontinued = status === 'x';
+      const hasDrive = Boolean(link);
+
+      const trClick = hasDrive ? `onclick="if(event.target.tagName!=='A'&&event.target.tagName!=='I')window.open('${esc(link)}','_blank')"` : '';
+      const trClass = hasDrive ? 'row-clickable' : '';
+
+      return `
+        <tr class="${trClass}" ${trClick}>
+          <td>
+            ${codigo ? `<span class="g-doc-code">${esc(codigo)}</span>` : '<span style="color:#cbd5e1">—</span>'}
+          </td>
+          <td>
+            <span class="g-type-badge" style="background:${tConf.bg}; color:${tConf.color};">
+              <i class="ti ${tConf.icon}"></i> ${tipo}
+            </span>
+          </td>
+          <td class="g-doc-name-cell">
+            <span class="g-doc-name ${isDiscontinued ? 'is-discontinued' : ''}" title="${esc(nombre)}">${esc(nombre)}</span>
+          </td>
+          <td style="text-align:center;">
+            <span class="g-rev-badge">${esc(rev || '00')}</span>
+          </td>
+          <td>
+            <span style="font-size:12.5px; font-weight:500; color:var(--text-muted);">${esc(proceso)}</span>
+          </td>
+          <td>
+            <span style="font-size:12px; font-variant-numeric:tabular-nums;">${fecha_vig || '<span style="color:#cbd5e1">—</span>'}</span>
+          </td>
+          <td>
+            <span style="font-size:12px; font-variant-numeric:tabular-nums; color:${status === 'r' ? 'var(--g-yellow)' : status === 's' ? 'var(--g-red)' : 'inherit'}; font-weight:${status !== 'v' ? '600' : 'normal'};">
+              ${fecha_ctrl || '<span style="color:#cbd5e1">—</span>'}
+            </span>
+          </td>
+          <td>
+            <span class="g-status-badge" style="background:${sConf.bg}; color:${sConf.color};">
+              <span class="g-status-dot" style="background:${sConf.dot};"></span>
+              ${sConf.label}
+            </span>
+          </td>
+          <td style="text-align:center;">
+            ${hasDrive ? `
+              <a href="${esc(link)}" target="_blank" rel="noopener" class="g-drive-btn" title="Abrir carpeta en Drive">
+                <i class="ti ti-brand-google-drive"></i>
+              </a>
+            ` : '<span style="color:#cbd5e1; font-size:11px;">—</span>'}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function exportFilteredCSV() {
+    let csv = 'Código,Tipo,Nombre del Documento,Revisión,Proceso,Fecha Vigencia,Último Control,Estado,Link Drive\n';
+    filteredDocs.forEach(d => {
+      const [nombre, tipo, codigo, rev, proc_idx, fecha_ctrl, status, hasLink, link, fecha_vig] = d;
+      const proc = PROCESOS[proc_idx] || '';
+      const st = STATUS_CONFIG[status]?.label || status;
+      csv += `"${codigo || ''}","${tipo}","${nombre}","${rev}","${proc}","${fecha_vig || ''}","${fecha_ctrl || ''}","${st}","${link || ''}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Listado_Documentos_SGI_ESINEL_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('Exportación a CSV generada con éxito');
+  }
+
+  function showToast(text) {
+    const toast = document.getElementById('toastMessage');
+    document.getElementById('toastText').textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 2800);
+  }
+
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+  });
+
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+  // Inicialización
+  initProcesses();
+  initStatsAndCharts();
+  renderTable();
 </script>
-<script src="https://accounts.google.com/gsi/client" async></script>
-<style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
-<script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')=== '1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
 </body>
 </html>
