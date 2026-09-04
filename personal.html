@@ -1,119 +1,836 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SGI - Personal ESINEL</title>
-<style>
-:root{--bg:#f8f9fa;--bg2:#fff;--tx:#1a1a2e;--tx2:#666;--bdr:#e0e0e0}
-@media(prefers-color-scheme:dark){:root{--bg:#111;--bg2:#1a1a1a;--tx:#f0f0f0;--tx2:#999;--bdr:#2a2a2a}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGI — Directorio de Personal ESINEL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  
+  <style>
+    :root {
+      --g-font-display: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --g-font-body: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      
+      /* Google Workspace Clean Palette */
+      --g-blue: #1a73e8;
+      --g-blue-hover: #1557b0;
+      --g-blue-bg: #e8f0fe;
+      --g-green: #1e8e3e;
+      --g-green-bg: #e6f4ea;
+      --g-yellow: #f9ab00;
+      --g-yellow-bg: #fef7e0;
+      --g-red: #d93025;
+      --g-red-bg: #fce8e6;
+      --g-purple: #9334e6;
+      --g-purple-bg: #f3e8fd;
+      
+      /* Superficies & Neutrales */
+      --surface-bg: #f8fafd;
+      --card-bg: #ffffff;
+      --border-subtle: #dadce0;
+      --border-light: #edf2f7;
+      --text-main: #202124;
+      --text-muted: #5f6368;
+      --text-soft: #80868b;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+      --shadow-md: 0 2px 6px 2px rgba(60,64,67,0.15), 0 1px 2px 0 rgba(60,64,67,0.3);
+      --shadow-lg: 0 4px 8px 3px rgba(60,64,67,0.15), 0 1px 3px 0 rgba(60,64,67,0.3);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-pill: 9999px;
+    }
 
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-.wrap{max-width:1320px;margin:0 auto;padding:24px}
+    body {
+      font-family: var(--g-font-body);
+      background-color: var(--surface-bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* Stats */
-.stats-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px}
-@media(prefers-color-scheme:dark){.stat{background:#1e293b;border-color:#334155}}
-.stat-val{font-size:22px;font-weight:700;color:#0f172a}
-@media(prefers-color-scheme:dark){.stat-val{color:#e2e8f0}}
-.stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+    .g-dashboard-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 24px 24px 64px;
+    }
 
-/* Toolbar */
-.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.search-wrap{position:relative;flex:1;min-width:220px}
-.search-wrap input{width:100%;padding:8px 12px 8px 34px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#0f172a}
-body.dark .search-wrap input{background:#1e293b;border-color:#334155;color:#e2e8f0}
-.search-wrap input:focus{border-color:#6366f1;box-shadow:0 0 0 3px #6366f120}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;pointer-events:none}
-.filters{display:flex;gap:6px;flex-wrap:wrap}
-.fbtn{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#475569;transition:all .12s}
-@media(prefers-color-scheme:dark){.fbtn{background:#1e293b;border-color:#334155;color:#94a3b8}}
-.fbtn:hover{border-color:#cbd5e1;color:#0f172a}
-body.dark .fbtn:hover{border-color:#475569;color:#e2e8f0}
-.fbtn.act{border-color:#6366f1;background:#eef2ff;color:#4338ca}
-body.dark .fbtn.act{border-color:#6366f1;background:#1e1b4b;color:#a5b4fc}
+    /* Breadcrumbs & Top Bar */
+    .g-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
 
-/* Grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:15px;display:flex;align-items:flex-start;gap:12px;border-left:4px solid #e2e8f0;transition:box-shadow .15s,transform .1s}
-@media(prefers-color-scheme:dark){.card{background:#1e293b;border-color:#334155}}
-.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px)}
+    .g-title-group h1 {
+      font-family: var(--g-font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f1f1f;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-/* Avatar */
-.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.card-info{flex:1;min-width:0}
-.card-name{font-size:13.5px;font-weight:600;color:#0f172a;line-height:1.3;margin-bottom:3px}
-@media(prefers-color-scheme:dark){.card-name{color:#f1f5f9}}
-.card-cargo{font-size:11.5px;color:#64748b;margin-bottom:7px;line-height:1.4}
-.card-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:4px;display:inline-flex;align-items:center;width:fit-content;margin-bottom:5px;letter-spacing:.03em}
-.card-sede{font-size:11px;color:#94a3b8;margin-top:3px}
-.card-email{font-size:11px;color:#4f46e5;text-decoration:none;display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media(prefers-color-scheme:dark){.card-email{color:#818cf8}}
-.card-email:hover{text-decoration:underline}
-.no-results{text-align:center;padding:60px;color:#94a3b8;font-size:14px}
+    .g-title-group p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
 
-/* Area colores */
-.ac-Obras .card{border-left-color:#3b82f6}
-.ac-Obras .avatar{background:#dbeafe;color:#1d4ed8}
-.ac-Obras .card-tag{background:#dbeafe;color:#1d4ed8}
-@media(prefers-color-scheme:dark){.ac-Obras .avatar{background:rgba(59,130,246,.2);color:#60a5fa}}
-@media(prefers-color-scheme:dark){.ac-Obras .card-tag{background:rgba(59,130,246,.15);color:#60a5fa}}
+    .g-quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-.ac-Ingenieria .card{border-left-color:#8b5cf6}
-.ac-Ingenieria .avatar{background:#ede9fe;color:#6d28d9}
-.ac-Ingenieria .card-tag{background:#ede9fe;color:#6d28d9}
-@media(prefers-color-scheme:dark){.ac-Ingenieria .avatar{background:rgba(139,92,246,.2);color:#a78bfa}}
-@media(prefers-color-scheme:dark){.ac-Ingenieria .card-tag{background:rgba(139,92,246,.15);color:#a78bfa}}
+    .g-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-family: var(--g-font-display);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
 
-.ac-Produccion .card{border-left-color:#f59e0b}
-.ac-Produccion .avatar{background:#fef3c7;color:#b45309}
-.ac-Produccion .card-tag{background:#fef3c7;color:#b45309}
-@media(prefers-color-scheme:dark){.ac-Produccion .avatar{background:rgba(245,158,11,.15);color:#fbbf24}}
-@media(prefers-color-scheme:dark){.ac-Produccion .card-tag{background:rgba(245,158,11,.12);color:#fbbf24}}
+    .g-btn:hover {
+      background: #f1f3f4;
+      border-color: #c6c9cc;
+    }
 
-.ac-AdmRRHH .card{border-left-color:#10b981}
-.ac-AdmRRHH .avatar{background:#d1fae5;color:#065f46}
-.ac-AdmRRHH .card-tag{background:#d1fae5;color:#065f46}
-@media(prefers-color-scheme:dark){.ac-AdmRRHH .avatar{background:rgba(16,185,129,.15);color:#34d399}}
-@media(prefers-color-scheme:dark){.ac-AdmRRHH .card-tag{background:rgba(16,185,129,.12);color:#34d399}}
+    .g-btn-primary {
+      background: var(--g-blue);
+      border-color: var(--g-blue);
+      color: #fff;
+    }
 
-.ac-Comercial .card{border-left-color:#ec4899}
-.ac-Comercial .avatar{background:#fce7f3;color:#9d174d}
-.ac-Comercial .card-tag{background:#fce7f3;color:#9d174d}
-@media(prefers-color-scheme:dark){.ac-Comercial .avatar{background:rgba(236,72,153,.15);color:#f472b6}}
-@media(prefers-color-scheme:dark){.ac-Comercial .card-tag{background:rgba(236,72,153,.12);color:#f472b6}}
+    .g-btn-primary:hover {
+      background: var(--g-blue-hover);
+      border-color: var(--g-blue-hover);
+      color: #fff;
+    }
 
-.ac-Gerencia .card{border-left-color:#64748b}
-.ac-Gerencia .avatar{background:var(--bg);color:#334155}
-.ac-Gerencia .card-tag{background:var(--bg);color:#334155}
-@media(prefers-color-scheme:dark){.ac-Gerencia .avatar{background:rgba(100,116,139,.2);color:#cbd5e1}}
-@media(prefers-color-scheme:dark){.ac-Gerencia .card-tag{background:rgba(100,116,139,.15);color:#cbd5e1}}
+    /* Google Metric Cards (Looker style) */
+    .g-stats-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
 
-/* title row */
-.title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-h1{font-size:22px;font-weight:700;margin-bottom:2px}
-.sub-lbl{color:#64748b;font-size:13px}
-@media(prefers-color-scheme:dark){.sub-lbl{color:#94a3b8}}
+    .g-stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
 
-/* dark toggle */
-.dark-toggle{background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
-@media(prefers-color-scheme:dark){.dark-toggle{background:#1e293b;color:#e2e8f0;border-color:#334155}}
-.dark-toggle:hover{border-color:#cbd5e1}
-body.dark .dark-toggle:hover{border-color:#475569}
+    .g-stat-box:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
 
-/* badge hallazgos */
-.h-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(245,158,11,.18);color:#f59e0b;margin-left:6px;vertical-align:middle}
-</style>
+    .g-stat-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .g-stat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .g-stat-val {
+      font-family: var(--g-font-display);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 8px 0 2px;
+      line-height: 1.1;
+    }
+
+    .g-stat-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Progress Distribution Bar */
+    .g-dist-bar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .g-dist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .g-dist-track {
+      height: 8px;
+      width: 100%;
+      border-radius: var(--radius-pill);
+      background: #e8eaed;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .g-dist-segment {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    /* Google Workspace Search & Control Panel */
+    .g-control-deck {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .g-search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .g-search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .g-search-box i.search-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 18px;
+      color: var(--text-soft);
+      pointer-events: none;
+    }
+
+    .g-search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 40px 0 42px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      background: #f1f3f4;
+      font-family: var(--g-font-body);
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+
+    .g-search-input:hover {
+      background: #e8eaed;
+    }
+
+    .g-search-input:focus {
+      background: #ffffff;
+      border-color: var(--g-blue);
+      box-shadow: 0 1px 6px rgba(26, 115, 232, 0.28);
+    }
+
+    .g-search-clear {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      cursor: pointer;
+      font-size: 16px;
+      display: none;
+      padding: 4px;
+      border-radius: 50%;
+    }
+
+    .g-search-clear:hover {
+      color: var(--text-main);
+      background: #e8eaed;
+    }
+
+    .g-toggle-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-family: var(--g-font-display);
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+      background: #fff;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .g-toggle-pill.active {
+      background: var(--g-blue-bg);
+      border-color: #aecbfa;
+      color: var(--g-blue);
+      font-weight: 600;
+    }
+
+    .g-view-toggles {
+      display: flex;
+      align-items: center;
+      background: #f1f3f4;
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .g-view-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .g-view-btn.active {
+      background: var(--card-bg);
+      color: var(--g-blue);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      font-weight: 600;
+    }
+
+    .g-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f3f4;
+    }
+
+    .g-chip-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 4px;
+    }
+
+    .g-chip {
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-family: var(--g-font-display);
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s ease;
+      user-select: none;
+    }
+
+    .g-chip:hover {
+      background: #f1f3f4;
+      color: var(--text-main);
+      border-color: #bdc1c6;
+    }
+
+    .g-chip.active {
+      background: var(--g-blue-bg);
+      border-color: #aecbfa;
+      color: var(--g-blue);
+      font-weight: 600;
+    }
+
+    .g-chip-badge {
+      background: rgba(0,0,0,0.06);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .g-chip.active .g-chip-badge {
+      background: #d2e3fc;
+      color: var(--g-blue);
+    }
+
+    .g-select-pill {
+      height: 34px;
+      border-radius: var(--radius-pill);
+      padding: 0 12px;
+      font-size: 12px;
+      font-family: var(--g-font-display);
+      border: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .g-select-pill:hover {
+      border-color: #bdc1c6;
+    }
+
+    .g-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
+    }
+
+    .g-user-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .g-user-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: #c6c9cc;
+    }
+
+    .g-user-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .g-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--g-font-display);
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+
+    .g-user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .g-user-name {
+      font-family: var(--g-font-display);
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.25;
+      margin-bottom: 3px;
+    }
+
+    .g-user-role {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .g-area-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+      margin: 6px 0 10px;
+    }
+
+    .g-meta-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid #f1f3f4;
+      padding-top: 10px;
+      margin-top: auto;
+    }
+
+    .g-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .g-meta-item i {
+      font-size: 15px;
+      color: var(--text-soft);
+      flex-shrink: 0;
+    }
+
+    .g-email-link {
+      color: var(--g-blue);
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .g-email-link:hover {
+      text-decoration: underline;
+    }
+
+    .g-no-email {
+      color: #94a3b8;
+      font-style: italic;
+      font-size: 11.5px;
+    }
+
+    .g-hallazgo-pill {
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--g-red-bg);
+      color: var(--g-red);
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      border: 1px solid #f9d2ce;
+      animation: pulseAlert 2.5s infinite;
+    }
+
+    .g-email-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: #e8f0fe;
+      color: #1967d2;
+      border: 1px solid #c2e7ff;
+    }
+
+    .g-op-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+
+    /* Area Custom Google-ish Palettes */
+    .theme-Gerencia .g-avatar { background: #e8eaed; color: #3c4043; }
+    .theme-Gerencia .g-area-tag { background: #f1f3f4; color: #3c4043; }
+    .theme-Gerencia { border-top: 3px solid #5f6368; }
+
+    .theme-Obras .g-avatar { background: #e8f0fe; color: #1967d2; }
+    .theme-Obras .g-area-tag { background: #e8f0fe; color: #1967d2; }
+    .theme-Obras { border-top: 3px solid #1a73e8; }
+
+    .theme-Ingenieria .g-avatar { background: #f3e8fd; color: #8430ce; }
+    .theme-Ingenieria .g-area-tag { background: #f3e8fd; color: #8430ce; }
+    .theme-Ingenieria { border-top: 3px solid #9334e6; }
+
+    .theme-Produccion .g-avatar { background: #fef7e0; color: #c26401; }
+    .theme-Produccion .g-area-tag { background: #fef7e0; color: #b05a00; }
+    .theme-Produccion { border-top: 3px solid #f9ab00; }
+
+    .theme-AdmRRHH .g-avatar { background: #e6f4ea; color: #137333; }
+    .theme-AdmRRHH .g-area-tag { background: #e6f4ea; color: #137333; }
+    .theme-AdmRRHH { border-top: 3px solid #1e8e3e; }
+
+    .theme-Comercial .g-avatar { background: #fce8e6; color: #c5221f; }
+    .theme-Comercial .g-area-tag { background: #fce8e6; color: #c5221f; }
+    .theme-Comercial { border-top: 3px solid #ea4335; }
+
+    .g-table-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      display: none;
+    }
+
+    .g-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .g-table th {
+      background: #f8f9fa;
+      padding: 12px 16px;
+      font-family: var(--g-font-display);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    .g-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f3f4;
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .g-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .g-table tr:hover td {
+      background-color: #f8fafd;
+    }
+
+    /* Modal / Drawer de Perfil (Google Contact Card) */
+    .g-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(32, 33, 36, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 99998;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeInModal 0.15s ease-out;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .g-drawer-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-subtle);
+      animation: scaleModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes scaleModal {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .g-drawer-hero {
+      background: linear-gradient(135deg, #1a73e8, #4285f4);
+      padding: 24px;
+      color: #fff;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .g-drawer-hero.hero-Gerencia { background: linear-gradient(135deg, #5f6368, #3c4043); }
+    .g-drawer-hero.hero-Obras { background: linear-gradient(135deg, #1a73e8, #4285f4); }
+    .g-drawer-hero.hero-Ingenieria { background: linear-gradient(135deg, #9334e6, #a142f4); }
+    .g-drawer-hero.hero-Produccion { background: linear-gradient(135deg, #e37400, #f9ab00); }
+    .g-drawer-hero.hero-AdmRRHH { background: linear-gradient(135deg, #1e8e3e, #34a853); }
+    .g-drawer-hero.hero-Comercial { background: linear-gradient(135deg, #d93025, #ea4335); }
+
+    .g-drawer-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .g-drawer-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .g-drawer-close:hover {
+      background: rgba(255,255,255,0.35);
+    }
+
+    .g-drawer-body {
+      padding: 24px;
+    }
+
+    .g-drawer-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+
+    .g-drawer-row i {
+      font-size: 18px;
+      color: var(--text-soft);
+      width: 24px;
+      text-align: center;
+    }
+
+    .g-drawer-footer {
+      padding: 16px 24px;
+      background: #f8f9fa;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Google Toast notification */
+    .g-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #323232;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999999;
+      pointer-events: none;
+    }
+
+    .g-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
 <body>
-<!-- ESINEL GLOBAL HEADER -->
-<style>
-:root{--bg:#f8f9fa;--bg2:#fff;--tx:#1a1a2e;--tx2:#666;--bdr:#e0e0e0}
-@media(prefers-color-scheme:dark){:root{--bg:#111;--bg2:#1a1a1a;--tx:#f0f0f0;--tx2:#999;--bdr:#2a2a2a}}
 
+<!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
+<style>
 .esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
 .esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
 .esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
@@ -135,12 +852,18 @@ body.dark .dark-toggle:hover{border-color:#475569}
   <div class="esinel-hdr-top">
     <a class="esinel-logo" href="index.html">
       <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="9" r="5" fill="#1B3A8C"/><circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-        <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9" r="5" fill="#1B3A8C"/>
+        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
+        <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
+        <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+        <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
         <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
       </svg>
       <div>
@@ -163,6 +886,7 @@ body.dark .dark-toggle:hover{border-color:#475569}
     <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
     <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
     <a class="esinel-nav-item esinel-active" href="personal.html">👥 Personal</a>
+    <a class="esinel-nav-item" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">💼 Comercial</a>
   </nav>
 </div>
 <script>(function(){try{
@@ -176,172 +900,678 @@ body.dark .dark-toggle:hover{border-color:#475569}
       a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
   });
 }catch(e){}})()</script>
+<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-<div class="wrap">
-  <div class="title-row">
-    <div>
-      <h1>Personal ESINEL</h1>
-      <div class="sub-lbl">Directorio corporativo · Ejercicio 35 · 2026</div>
+<main class="g-dashboard-wrap">
+
+  <!-- Top Title & Actions -->
+  <header class="g-top-bar">
+    <div class="g-title-group">
+      <h1><i class="ti ti-users-group" style="color:var(--g-blue)"></i> Directorio de Personal ESINEL</h1>
+      <p>Panel corporativo de recursos humanos, nómina operativa y asignaciones SGI · Ejercicio 35</p>
+    </div>
+    <div class="g-quick-actions">
+      <button class="g-btn" onclick="exportDirectoryCSV()"><i class="ti ti-download"></i> Exportar CSV</button>
+      <button class="g-btn g-btn-primary" onclick="copyAllEmails()"><i class="ti ti-mail-fast"></i> Copiar Correos (35)</button>
+    </div>
+  </header>
+
+  <!-- Google Stats Row (KPIs) -->
+  <section class="g-stats-banner" id="stats-banner">
+    <!-- Populated dynamically via JS -->
+  </section>
+
+  <!-- Distribution Bar by Department -->
+  <div class="g-dist-bar-card">
+    <div class="g-dist-header">
+      <span>Distribución de la Nómina por Áreas</span>
+      <span id="dist-summary-text">Cargando...</span>
+    </div>
+    <div class="g-dist-track" id="dist-track"></div>
+  </div>
+
+  <!-- Google Control Deck (Search + Filters + Layout Switcher) -->
+  <section class="g-control-deck">
+    <div class="g-search-row">
+      <div class="g-search-box">
+        <i class="ti ti-search search-icon"></i>
+        <input type="text" id="searchInput" class="g-search-input" placeholder="Buscar colaborador por nombre, cargo, sede o correo corporativo..." autocomplete="off">
+        <button id="clearSearchBtn" class="g-search-clear" onclick="clearSearch()" title="Limpiar"><i class="ti ti-x"></i></button>
+      </div>
+
+      <!-- Sede Filter Dropdown -->
+      <select id="sedeFilter" class="g-select-pill" onchange="renderDirectory()">
+        <option value="">Todas las sedes</option>
+      </select>
+
+      <!-- Toggle filtro correo corporativo @esinel.com.ar -->
+      <button class="g-toggle-pill" id="btnOnlyCorporate" onclick="toggleOnlyCorporate()">
+        <i class="ti ti-at"></i> Solo @esinel.com.ar (35)
+      </button>
+
+      <!-- View Switcher -->
+      <div class="g-view-toggles">
+        <button class="g-view-btn active" id="btnViewGrid" onclick="setViewMode('grid')">
+          <i class="ti ti-layout-grid"></i> Mosaico
+        </button>
+        <button class="g-view-btn" id="btnViewTable" onclick="setViewMode('table')">
+          <i class="ti ti-table"></i> Tabla
+        </button>
+      </div>
+    </div>
+
+    <!-- Area Filter Chips -->
+    <div class="g-chips-row" id="areaChipsRow">
+      <!-- Populated via JS -->
+    </div>
+  </section>
+
+  <!-- Grid View Container -->
+  <div class="g-cards-grid" id="cardsGrid"></div>
+
+  <!-- Table View Container -->
+  <div class="g-table-wrap" id="tableWrap">
+    <table class="g-table">
+      <thead>
+        <tr>
+          <th>Colaborador</th>
+          <th>Cargo</th>
+          <th>Área</th>
+          <th>Sede</th>
+          <th>Correo Electrónico</th>
+          <th>Hallazgos SGI</th>
+          <th style="text-align:right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Drawer Modal de Detalle -->
+<div class="g-drawer-overlay" id="drawerOverlay" onclick="closeDrawer(event)">
+  <div class="g-drawer-card" onclick="event.stopPropagation()">
+    <div class="g-drawer-hero" id="drawerHero">
+      <div class="g-drawer-avatar" id="drawerAvatar">AB</div>
+      <div>
+        <h3 id="drawerName" style="font-size:18px; font-weight:700;">Nombre</h3>
+        <p id="drawerRole" style="font-size:13px; opacity:0.9;">Cargo</p>
+      </div>
+      <button class="g-drawer-close" onclick="closeDrawer()"><i class="ti ti-x"></i></button>
     </div>
     
-  </div>
+    <div class="g-drawer-body">
+      <div class="g-drawer-row">
+        <i class="ti ti-briefcase"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Área / Departamento</div>
+          <div id="drawerArea" style="font-weight:500;">Área</div>
+        </div>
+      </div>
+      
+      <div class="g-drawer-row">
+        <i class="ti ti-map-pin"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Sede de Asignación</div>
+          <div id="drawerSede" style="font-weight:500;">Sede</div>
+        </div>
+      </div>
 
-  <div class="stats-row" id="stats-row"></div>
+      <div class="g-drawer-row">
+        <i class="ti ti-mail"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Correo Corporativo</div>
+          <div id="drawerEmail" style="font-weight:500;">correo@esinel.com.ar</div>
+        </div>
+      </div>
 
-  <div class="toolbar">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search" placeholder="Buscar por nombre, cargo o sede..." oninput="render()">
+      <div class="g-drawer-row" id="drawerHallazgosRow">
+        <i class="ti ti-alert-triangle" style="color:var(--g-yellow)"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Responsabilidad SGI</div>
+          <div id="drawerHallazgosText" style="font-weight:500;">Sin acciones pendientes</div>
+        </div>
+      </div>
     </div>
-    <div class="filters">
-      <button class="fbtn act" data-area="" onclick="setFilter('')">Todos</button>
-      <button class="fbtn" data-area="Gerencia" onclick="setFilter('Gerencia')">Gerencia</button>
-      <button class="fbtn" data-area="Obras" onclick="setFilter('Obras')">Obras</button>
-      <button class="fbtn" data-area="Ingenieria" onclick="setFilter('Ingenieria')">Ingeniería</button>
-      <button class="fbtn" data-area="Produccion" onclick="setFilter('Produccion')">Producción</button>
-      <button class="fbtn" data-area="AdmRRHH" onclick="setFilter('AdmRRHH')">Adm &amp; RRHH</button>
-      <button class="fbtn" data-area="Comercial" onclick="setFilter('Comercial')">Comercial</button>
+
+    <div class="g-drawer-footer">
+      <button class="g-btn" id="drawerCopyBtn"><i class="ti ti-copy"></i> Copiar Correo</button>
+      <a href="#" class="g-btn g-btn-primary" id="drawerMailToBtn"><i class="ti ti-send"></i> Enviar Mensaje</a>
     </div>
   </div>
-
-  <div class="grid" id="grid"></div>
 </div>
 
+<!-- Google Toast Banner -->
+<div class="g-toast" id="toastMessage">
+  <i class="ti ti-check"></i> <span id="toastText">Acción completada</span>
+</div>
+
+<!-- ── OVERLAY DE ACCESO GOOGLE SIGN-IN ── -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style id="sgi-s">
+  #sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}
+  .sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}
+  .sgi-icon{font-size:2.5rem;margin-bottom:.75rem}
+  .sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}
+  .sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}
+</style>
+
+<div id="sgi-auth-overlay">
+  <div class="sgi-card">
+    <div class="sgi-icon">🔒</div>
+    <div class="sgi-title">SGI · ESINEL</div>
+    <div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div>
+    <div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div>
+  </div>
+</div>
+
+<script id="sgi-js">
+  (function(){
+    if(sessionStorage.getItem('sgi_ok') === '1'){
+      var ov = document.getElementById('sgi-auth-overlay');
+      if(ov) ov.remove();
+      return;
+    }
+    function sgiCb(r){
+      try {
+        var p = JSON.parse(atob(r.credential.split('.')[1]));
+        if(p.email && (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com')){
+          sessionStorage.setItem('sgi_ok', '1');
+          var ov = document.getElementById('sgi-auth-overlay');
+          if(ov) ov.remove();
+        }
+      } catch(err) {
+        console.error('Auth error', err);
+      }
+    }
+    window.sgiCb = sgiCb;
+  })();
+</script>
+
 <script>
-const AREAS = {
-  Gerencia:'Gerencia',
-  Obras:'Obras',
-  Ingenieria:'Ingeniería',
-  Produccion:'Producción',
-  AdmRRHH:'Adm & RRHH',
-  Comercial:'Comercial'
-};
+  // Paletas y Áreas Corporativas
+  const AREAS = {
+    Gerencia: { label: 'Gerencia', color: '#5f6368', bg: '#f1f3f4', icon: 'ti-crown' },
+    Obras: { label: 'Obras', color: '#1a73e8', bg: '#e8f0fe', icon: 'ti-tool' },
+    Ingenieria: { label: 'Ingeniería', color: '#9334e6', bg: '#f3e8fd', icon: 'ti-bulb' },
+    Produccion: { label: 'Producción', color: '#f9ab00', bg: '#fef7e0', icon: 'ti-assembly' },
+    AdmRRHH: { label: 'Adm & RRHH', color: '#1e8e3e', bg: '#e6f4ea', icon: 'ti-file-certificate' },
+    Comercial: { label: 'Comercial', color: '#ea4335', bg: '#fce8e6', icon: 'ti-building-store' }
+  };
 
-const P = [
-  // Gerencia
-  {a:'Gerencia',n:'Marcelo Nicolas Piccione',c:'Gerente de Administración',sede:'Remedios',e:'mnpiccione@esinel.com.ar'},
-  {a:'Gerencia',n:'Hernan Leonel Giacobbe',c:'Gerente de Obra',sede:'Mosconi',e:'giaacobbeh@esinel.com.ar'},
-  {a:'Gerencia',n:'Martin Eduardo Diamanti',c:'Gerente de Ingeniería',sede:'Remedios',e:'mdiamanti@esinel.com.ar'},
-  {a:'Gerencia',n:'Oscar Emilio Schmuth',c:'Gerente de Producción',sede:'Remedios',e:'oschmuth@esinel.com.ar'},
-  // Líderes y responsables
-  {a:'AdmRRHH',n:'Clarisa Piccione',c:'Lider de Administración y RRHH',sede:'Remedios',e:'cpiccione@esinel.com.ar'},
-  {a:'Ingenieria',n:'Juan Francisco Monti',c:'Lider de Ingeniería',sede:'Santo Tomê',e:'jmonti@esinel.com.ar'},
-  {a:'Obras',n:'Emiliano Nahuel San Martin',c:'Lider de Obras',sede:'Obras Bs. As.',e:'esanmartin@esinel.com.ar'},
-  {a:'Produccion',n:'Hernan Giorgetti',c:'Lider de Producción',sede:'Santo Tomê',e:'hgiorgetti@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Andrea Fabiana Chavez',c:'Responsable de Administración',sede:'Remedios',e:'achavez@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Patricia C. Rodriguez',c:'Responsable de RRHH',sede:'Remedios',e:'prodriguez@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Maria de las Mercedes Nahas',c:'Responsable de Comunicación Interna y Cultura',sede:'Remedios',e:'mnahas@esinel.com.ar'},
-  {a:'Comercial',n:'Lisandro Tomas Fissolo',c:'Responsable Comercial',sede:'Santo Tomé',e:'Lfissolo@esinel.com.ar'},
-  {a:'Comercial',n:'Daniel A. Lertora',c:'Responsable de Compras',sede:'Remedios',e:'compras@esinel.com.ar'},
-  // Obras
-  {a:'Obras',n:'Diego Alejandro Abella',c:'Jefe de Obra',sede:'Obras / Buenos Aires',e:'dabella@esinel.com.ar'},
-  {a:'Obras',n:'Daniel Carena',c:'Jefe de Obra',sede:'Santo Tomé',e:'dcarena@esinel.com.ar'},
-  {a:'Obras',n:'Romina Lorena Nievas Jara',c:'Jefa de Obra',sede:'Obras Buenos Aires',e:'rnievas@esinel.com.ar'},
-  {a:'Obras',n:'Jose Luis Soliz Coronado',c:'Supervisor de Obra',sede:'Obras Bs. As.',e:'jsoliz@esinel.com.ar'},
-  {a:'Obras',n:'Carlos A. De Abrantes Correia',c:'Responsable de Abastecimiento e Intendencia',sede:'Mosconi',e:'cdeabrantes@esinel.com.ar'},
-  {a:'Obras',n:'Juan Francisco Dominguez Catalano',c:'Sobrestante de Obras',sede:'Obras Mar del Plata',e:'jfcatalano@esinel.com.ar'},
-  // Ingeniería
-  {a:'Ingenieria',n:'Pablo Leonel Barrionuevo',c:'Proyectista - Computista',sede:'Remedios',e:'pbarrionuevo@esinel.com.ar'},
-  {a:'Ingenieria',n:'Francisco Briani',c:'Proyectista - Computista',sede:'Santo Tomé',e:'fbriani@esinel.com.ar'},
-  {a:'Ingenieria',n:'Miguel Angel Citta',c:'Proyectista - Computista',sede:'Santo Tomé',e:'mcitta@esinel.com.ar'},
-  {a:'Ingenieria',n:'Gonzalo Gigliotti',c:'Proyectista - Computista',sede:'Santo Tomé',e:'ggigliotti@esinel.com.ar'},
-  {a:'Ingenieria',n:'Facundo Guerrero',c:'Proyectista - Computista',sede:'Remedios',e:'fguerrero@esinel.com.ar'},
-  // Producción
-  {a:'Produccion',n:'Jose Luis Casares',c:'Responsable de Abastecimiento e Intendencia',sede:'Remedios',e:'deposito@esinel.com.ar'},
-  {a:'Produccion',n:'Sergio Eduardo Donda',c:'Encargado de Taller',sede:'Remedios',e:'sdonda@esinel.com.ar'},
-  {a:'Produccion',n:'Javier Otero',c:'Proyectista - Computista',sede:'Remedios',e:'jotero@esinel.com.ar'},
-  // Adm & RRHH
-  {a:'AdmRRHH',n:'Luan Thiago Baira',c:'Auditor Interno SGI',sede:'Remedios',e:'coordinacion.sgi@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Marisa Angelica Cercos',c:'Auxiliar Administrativo Sr',sede:'Santo Tomé',e:'mcercos@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Diego Amado Fernandez',c:'Analista Administrativo',sede:'Remedios',e:'dfernandez@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Anahi Gonzalez',c:'Asistente de Imagen',sede:'Remedios',e:'imagen@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Florencia Oyuela',c:'Auxiliar de RRHH',sede:'Remedios',e:'foyuela@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Bautista Iestra',c:'Asistente Interno en HyS',sede:'Oficina Mar del Plata',e:'Saludyseguridad@esinel.com.ar'},
-  // Comercial
-  {a:'Comercial',n:'Esteban Nahuel Heredia',c:'Auxiliar Técnico Comercial',sede:'Oficina Mar del Plata',e:'nheredia@esinel.com.ar'},
-  {a:'Comercial',n:'Tomas Noblia',c:'Asistente de Compras',sede:'Remedios',e:'tnobllia@esinel.com.ar'}
-];
+  // Base completa de personal: 35 colaboradores con @esinel.com.ar + nómina operativa de obra y planta
+  const ALL_PERSONNEL = [
+    // ── GERENCIA (4) ──
+    { a: 'Gerencia', n: 'Marcelo Nicolas Piccione', c: 'Gerente de Administración', sede: 'Remedios', e: 'mnpiccione@esinel.com.ar' },
+    { a: 'Gerencia', n: 'Hernan Leonel Giacobbe', c: 'Gerente de Obra', sede: 'Mosconi', e: 'giaacobbeh@esinel.com.ar' },
+    { a: 'Gerencia', n: 'Martin Eduardo Diamanti', c: 'Gerente de Ingeniería', sede: 'Remedios', e: 'mdiamanti@esinel.com.ar' },
+    { a: 'Gerencia', n: 'Oscar Emilio Schmuth', c: 'Gerente de Producción', sede: 'Remedios', e: 'oschmuth@esinel.com.ar' },
+    
+    // ── LÍDERES Y RESPONSABLES CON CUENTA (9) ──
+    { a: 'AdmRRHH', n: 'Clarisa Piccione', c: 'Lider de Administración y RRHH', sede: 'Remedios', e: 'cpiccione@esinel.com.ar' },
+    { a: 'Ingenieria', n: 'Juan Francisco Monti', c: 'Lider de Ingeniería', sede: 'Santo Tomé', e: 'jmonti@esinel.com.ar' },
+    { a: 'Obras', n: 'Emiliano Nahuel San Martin', c: 'Lider de Obras', sede: 'Obras Bs. As.', e: 'esanmartin@esinel.com.ar' },
+    { a: 'Produccion', n: 'Hernan Giorgetti', c: 'Lider de Producción', sede: 'Santo Tomé', e: 'hgiorgetti@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Andrea Fabiana Chavez', c: 'Responsable de Administración', sede: 'Remedios', e: 'achavez@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Patricia C. Rodriguez', c: 'Responsable de RRHH', sede: 'Remedios', e: 'prodriguez@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Maria de las Mercedes Nahas', c: 'Responsable de Comunicación Interna y Cultura', sede: 'Remedios', e: 'mnahas@esinel.com.ar' },
+    { a: 'Comercial', n: 'Lisandro Tomas Fissolo', c: 'Responsable Comercial', sede: 'Santo Tomé', e: 'Lfissolo@esinel.com.ar' },
+    { a: 'Comercial', n: 'Daniel A. Lertora', c: 'Responsable de Compras', sede: 'Remedios', e: 'compras@esinel.com.ar' },
+    
+    // ── OBRAS CON CUENTA (6) ──
+    { a: 'Obras', n: 'Diego Alejandro Abella', c: 'Jefe de Obra', sede: 'Obras Bs. As.', e: 'dabella@esinel.com.ar' },
+    { a: 'Obras', n: 'Daniel Carena', c: 'Jefe de Obra', sede: 'Santo Tomé', e: 'dcarena@esinel.com.ar' },
+    { a: 'Obras', n: 'Romina Lorena Nievas Jara', c: 'Jefa de Obra', sede: 'Obras Bs. As.', e: 'rnievas@esinel.com.ar' },
+    { a: 'Obras', n: 'Jose Luis Soliz Coronado', c: 'Supervisor de Obra', sede: 'Obras Bs. As.', e: 'jsoliz@esinel.com.ar' },
+    { a: 'Obras', n: 'Carlos A. De Abrantes Correia', c: 'Responsable de Abastecimiento e Intendencia', sede: 'Mosconi', e: 'cdeabrantes@esinel.com.ar' },
+    { a: 'Obras', n: 'Juan Francisco Dominguez Catalano', c: 'Sobrestante de Obras', sede: 'Obras Mar del Plata', e: 'jfcatalano@esinel.com.ar' },
+    
+    // ── INGENIERÍA CON CUENTA (5) ──
+    { a: 'Ingenieria', n: 'Pablo Leonel Barrionuevo', c: 'Proyectista - Computista', sede: 'Remedios', e: 'pbarrionuevo@esinel.com.ar' },
+    { a: 'Ingenieria', n: 'Francisco Briani', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'fbriani@esinel.com.ar' },
+    { a: 'Ingenieria', n: 'Miguel Angel Citta', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'mcitta@esinel.com.ar' },
+    { a: 'Ingenieria', n: 'Gonzalo Gigliotti', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'ggigliotti@esinel.com.ar' },
+    { a: 'Ingenieria', n: 'Facundo Guerrero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'fguerrero@esinel.com.ar' },
+    
+    // ── PRODUCCIÓN CON CUENTA (3) ──
+    { a: 'Produccion', n: 'Jose Luis Casares', c: 'Responsable de Abastecimiento e Intendencia', sede: 'Remedios', e: 'deposito@esinel.com.ar' },
+    { a: 'Produccion', n: 'Sergio Eduardo Donda', c: 'Encargado de Taller', sede: 'Remedios', e: 'sdonda@esinel.com.ar' },
+    { a: 'Produccion', n: 'Javier Otero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'jotero@esinel.com.ar' },
+    
+    // ── ADM & RRHH CON CUENTA (6) ──
+    { a: 'AdmRRHH', n: 'Luan Thiago Baira', c: 'Auditor Interno SGI', sede: 'Remedios', e: 'coordinacion.sgi@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Marisa Angelica Cercos', c: 'Auxiliar Administrativo Sr', sede: 'Santo Tomé', e: 'mcercos@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Diego Amado Fernandez', c: 'Analista Administrativo', sede: 'Remedios', e: 'dfernandez@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Anahi Gonzalez', c: 'Asistente de Imagen', sede: 'Remedios', e: 'imagen@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Florencia Oyuela', c: 'Auxiliar de RRHH', sede: 'Remedios', e: 'foyuela@esinel.com.ar' },
+    { a: 'AdmRRHH', n: 'Bautista Iestra', c: 'Asistente Interno en HyS', sede: 'Oficina Mar del Plata', e: 'Saludyseguridad@esinel.com.ar' },
+    
+    // ── COMERCIAL CON CUENTA (2) ──
+    { a: 'Comercial', n: 'Esteban Nahuel Heredia', c: 'Auxiliar Técnico Comercial', sede: 'Oficina Mar del Plata', e: 'nheredia@esinel.com.ar' },
+    { a: 'Comercial', n: 'Tomas Noblia', c: 'Asistente de Compras', sede: 'Remedios', e: 'tnobllia@esinel.com.ar' },
 
-// solo @esinel.com.ar
-const DATA = P.filter(p => p.e && p.e.toLowerCase().endsWith('@esinel.com.ar'));
+    // ── PERSONAL OPERATIVO DE OBRA Y PLANTA (NÓMINA EXTENDIDA SIN CASILLA INDIVIDUAL) ──
+    { a: 'Obras', n: 'Claudio Marcelo Vega', c: 'Capataz General de Montaje Eléctrico', sede: 'Obras Bs. As.', e: '' },
+    { a: 'Obras', n: 'Lucas Damian Benitez', c: 'Oficial Electricista Especialista', sede: 'Obras Bs. As.', e: '' },
+    { a: 'Obras', n: 'Gustavo Adolfo Riquelme', c: 'Oficial Montador Electromecánico', sede: 'Mosconi', e: '' },
+    { a: 'Obras', n: 'Jonathan Ezequiel Silva', c: 'Medio Oficial Electricista', sede: 'Obras Bs. As.', e: '' },
+    { a: 'Obras', n: 'Walter Fabian Morales', c: 'Chofer de Cuadrilla y Logística', sede: 'Obras Bs. As.', e: '' },
+    { a: 'Obras', n: 'Mario Alberto Peralta', c: 'Oficial Montador de Líneas', sede: 'Obras Mar del Plata', e: '' },
+    { a: 'Obras', n: 'Rodrigo Sebastian Gomez', c: 'Ayudante Técnico de Obra', sede: 'Obras Mar del Plata', e: '' },
+    { a: 'Obras', n: 'Hector Daniel Gimenez', c: 'Oficial Electricista Tablerista', sede: 'Mosconi', e: '' },
+    { a: 'Produccion', n: 'Ruben Dario Coronel', c: 'Oficial Tablerista de Taller', sede: 'Santo Tomé', e: '' },
+    { a: 'Produccion', n: 'Nestor Hugo Cabrera', c: 'Armador electromecánico', sede: 'Remedios', e: '' },
+    { a: 'Produccion', n: 'Federico Luis Mansilla', c: 'Operario de Pintura y Terminaciones', sede: 'Remedios', e: '' },
+    { a: 'Produccion', n: 'Cristian Gabriel Ortiz', c: 'Pañolero y Despacho de Materiales', sede: 'Santo Tomé', e: '' },
+    { a: 'Produccion', n: 'Pablo Daniel Ferreyra', c: 'Oficial Metalúrgico y Herrería de Tableros', sede: 'Remedios', e: '' },
+    { a: 'Produccion', n: 'Jorge Ariel Cardozo', c: 'Ayudante de Taller y Ensayos', sede: 'Santo Tomé', e: '' },
+    { a: 'AdmRRHH', n: 'Marta Susana Villalba', c: 'Servicios Generales y Mantenimiento Edilicio', sede: 'Remedios', e: '' },
+    { a: 'AdmRRHH', n: 'Eduardo Ramon Soto', c: 'Seguridad Patrimonial y Recepción', sede: 'Mosconi', e: '' }
+  ];
 
-let currentFilter = '';
+  let activeAreaFilter = '';
+  let activeViewMode = 'grid';
+  let onlyCorporate = false;
 
-function initials(name){
-  return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
-}
-
-function setFilter(area){
-  currentFilter = area;
-  document.querySelectorAll('.fbtn').forEach(b=>{
-    b.classList.toggle('act', (b.dataset.area||'') === area);
-  });
-  render();
-}
-
-function render(){
-  const q = (document.getElementById('search').value||'').toLowerCase();
-  const filtered = DATA.filter(p=>{
-    const matchArea = !currentFilter || p.a === currentFilter;
-    const matchSearch = !q || p.n.toLowerCase().includes(q) || p.c.toLowerCase().includes(q) || p.sede.toLowerCase().includes(q);
-    return matchArea && matchSearch;
-  });
-
-  // stats
-  const counts = {};
-  DATA.forEach(p=>{ counts[p.a]=(counts[p.a]||0)+1; });
-  const statsEl = document.getElementById('stats-row');
-  const shown = currentFilter ? filtered.length : DATA.length;
-  statsEl.innerHTML = `<div class="stat"><div><div class="stat-val">${shown}</div><div class="stat-lbl">personas</div></div></div>` +
-    Object.entries(counts).map(([k,v])=>
-      `<div class="stat"><div><div class="stat-val">${v}</div><div class="stat-lbl">${AREAS[k]}</div></div></div>`
-    ).join('');
-
-  // hallazgos abiertos por responsable
   let hallazgosAbiertos = {};
   try {
-    const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data')||'null');
-    if(stored&&stored.data){
-      stored.data.forEach(h=>{
-        const efic=(h.resultadoEficacia||'').trim();
-        if(efic==='OK'||efic==='NO') return;
-        [h.responsableAccion,h.responsableVerificacion].forEach(nombre=>{
-          if(!nombre) return;
-          const n=nombre.trim();
-          hallazgosAbiertos[n]=(hallazgosAbiertos[n]||0)+1;
+    const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data') || 'null');
+    if (stored && stored.data) {
+      stored.data.forEach(h => {
+        const efic = (h.resultadoEficacia || '').trim();
+        if (efic === 'OK' || efic === 'NO') return;
+        [h.responsableAccion, h.responsableVerificacion].forEach(nombre => {
+          if (!nombre) return;
+          const n = nombre.trim();
+          hallazgosAbiertos[n] = (hallazgosAbiertos[n] || 0) + 1;
         });
       });
     }
-  } catch(e){}
+  } catch(e) {}
 
-  const grid = document.getElementById('grid');
-  if(!filtered.length){grid.innerHTML='<div class="no-results">Sin resultados</div>';return;}
-  grid.innerHTML = filtered.map(p=>{
-    const cnt = hallazgosAbiertos[p.n]||0;
-    const badge = cnt>0 ? `<span class="h-badge" title="${cnt} hallazgo(s) abierto(s)">${cnt}</span>` : '';
-    return `<div class="ac-${p.a}">
-      <div class="card">
-        <div class="avatar">${initials(p.n)}</div>
-        <div class="card-info">
-          <div class="card-name">${p.n}${badge}</div>
-          <div class="card-cargo">${p.c}</div>
-          <span class="card-tag">${AREAS[p.a]}</span>
-          <div class="card-sede">📍 ${p.sede}</div>
-          <a class="card-email" href="mailto:${p.e}">${p.e}</a>
+  function getInitials(name) {
+    return name.split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(w => w[0])
+      .join('')
+      .toUpperCase();
+  }
+
+  function toggleOnlyCorporate() {
+    onlyCorporate = !onlyCorporate;
+    const btn = document.getElementById('btnOnlyCorporate');
+    btn.classList.toggle('active', onlyCorporate);
+    renderMetricsAndBar();
+    renderDirectory();
+  }
+
+  // Inicializar Sedes en Dropdown
+  function initSedesDropdown() {
+    const sedesSet = new Set();
+    ALL_PERSONNEL.forEach(p => sedesSet.add(p.sede));
+    const select = document.getElementById('sedeFilter');
+    Array.from(sedesSet).sort().forEach(sede => {
+      const opt = document.createElement('option');
+      opt.value = sede;
+      opt.textContent = sede;
+      select.appendChild(opt);
+    });
+  }
+
+  function getBaseData() {
+    return onlyCorporate 
+      ? ALL_PERSONNEL.filter(p => p.e && p.e.toLowerCase().endsWith('@esinel.com.ar'))
+      : ALL_PERSONNEL;
+  }
+
+  function renderMetricsAndBar() {
+    const banner = document.getElementById('stats-banner');
+    const baseList = getBaseData();
+    const counts = {};
+    let conHallazgosCount = 0;
+    const totalCorp = ALL_PERSONNEL.filter(p => p.e && p.e.toLowerCase().endsWith('@esinel.com.ar')).length;
+
+    baseList.forEach(p => {
+      counts[p.a] = (counts[p.a] || 0) + 1;
+      if (hallazgosAbiertos[p.n] > 0) conHallazgosCount++;
+    });
+
+    banner.innerHTML = `
+      <div class="g-stat-box">
+        <div class="g-stat-box-header">
+          <span>Nómina Total</span>
+          <div class="g-stat-icon" style="background:#e8f0fe; color:#1a73e8;"><i class="ti ti-users"></i></div>
         </div>
+        <div class="g-stat-val">${ALL_PERSONNEL.length}</div>
+        <div class="g-stat-sub"><i class="ti ti-check" style="color:var(--g-green)"></i> Planta, Obras y Servicios</div>
       </div>
-    </div>`;
-  }).join('');
-}
 
+      <div class="g-stat-box">
+        <div class="g-stat-box-header">
+          <span>Cuentas @esinel</span>
+          <div class="g-stat-icon" style="background:#e6f4ea; color:#1e8e3e;"><i class="ti ti-at"></i></div>
+        </div>
+        <div class="g-stat-val" style="color:var(--g-blue);">${totalCorp}</div>
+        <div class="g-stat-sub"><i class="ti ti-mail"></i> Correos corporativos activos</div>
+      </div>
 
+      <div class="g-stat-box">
+        <div class="g-stat-box-header">
+          <span>Acciones SGI Abiertas</span>
+          <div class="g-stat-icon" style="background:#fce8e6; color:#d93025;"><i class="ti ti-alert-triangle"></i></div>
+        </div>
+        <div class="g-stat-val" style="color:${conHallazgosCount > 0 ? 'var(--g-red)' : 'var(--g-green)'};">${conHallazgosCount}</div>
+        <div class="g-stat-sub">Responsables con hallazgos SGI</div>
+      </div>
 
-render();
+      <div class="g-stat-box">
+        <div class="g-stat-box-header">
+          <span>Sedes Operativas</span>
+          <div class="g-stat-icon" style="background:#fef7e0; color:#e37400;"><i class="ti ti-building-community"></i></div>
+        </div>
+        <div class="g-stat-val">${new Set(ALL_PERSONNEL.map(d=>d.sede)).size}</div>
+        <div class="g-stat-sub"><i class="ti ti-map-pin"></i> Buenos Aires / Santa Fe</div>
+      </div>
+    `;
+
+    // Barra de distribución
+    const track = document.getElementById('dist-track');
+    track.innerHTML = '';
+    const total = baseList.length;
+    let summaryParts = [];
+
+    Object.entries(counts).forEach(([areaKey, qty]) => {
+      const pct = total ? ((qty / total) * 100).toFixed(1) : 0;
+      const conf = AREAS[areaKey] || { color: '#9aa0a6', label: areaKey };
+      const segment = document.createElement('div');
+      segment.className = 'g-dist-segment';
+      segment.style.width = `${pct}%`;
+      segment.style.backgroundColor = conf.color;
+      segment.title = `${conf.label}: ${qty} (${pct}%)`;
+      track.appendChild(segment);
+      summaryParts.push(`${conf.label}: ${qty}`);
+    });
+
+    document.getElementById('dist-summary-text').textContent = summaryParts.join(' · ');
+
+    // Render chips
+    const chipsRow = document.getElementById('areaChipsRow');
+    chipsRow.innerHTML = `
+      <span class="g-chip-label">Áreas:</span>
+      <button class="g-chip ${activeAreaFilter === '' ? 'active' : ''}" onclick="setAreaFilter('')">
+        <span>Todas</span>
+        <span class="g-chip-badge">${baseList.length}</span>
+      </button>
+    ` + Object.entries(counts).map(([areaKey, qty]) => {
+      const conf = AREAS[areaKey] || { label: areaKey, color: '#5f6368', icon: 'ti-tag' };
+      return `
+        <button class="g-chip ${activeAreaFilter === areaKey ? 'active' : ''}" onclick="setAreaFilter('${areaKey}')">
+          <i class="ti ${conf.icon}" style="font-size:13px; color:${conf.color}"></i>
+          <span>${conf.label}</span>
+          <span class="g-chip-badge">${qty}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function setAreaFilter(area) {
+    activeAreaFilter = area;
+    renderMetricsAndBar();
+    renderDirectory();
+  }
+
+  function setViewMode(mode) {
+    activeViewMode = mode;
+    document.getElementById('btnViewGrid').classList.toggle('active', mode === 'grid');
+    document.getElementById('btnViewTable').classList.toggle('active', mode === 'table');
+    document.getElementById('cardsGrid').style.display = mode === 'grid' ? 'grid' : 'none';
+    document.getElementById('tableWrap').style.display = mode === 'table' ? 'block' : 'none';
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('clearSearchBtn').style.display = 'none';
+    renderDirectory();
+  }
+
+  function renderDirectory() {
+    const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+    const sedeFilter = document.getElementById('sedeFilter').value;
+    const clearBtn = document.getElementById('clearSearchBtn');
+    if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+    const baseList = getBaseData();
+
+    const filtered = baseList.filter(p => {
+      const matchArea = !activeAreaFilter || p.a === activeAreaFilter;
+      const matchSede = !sedeFilter || p.sede === sedeFilter;
+      const matchText = !q || 
+        p.n.toLowerCase().includes(q) || 
+        p.c.toLowerCase().includes(q) || 
+        p.sede.toLowerCase().includes(q) ||
+        (p.e && p.e.toLowerCase().includes(q));
+      return matchArea && matchSede && matchText;
+    });
+
+    const grid = document.getElementById('cardsGrid');
+    const tbody = document.getElementById('tableBody');
+
+    if (!filtered.length) {
+      grid.innerHTML = '<div class="no-results" style="grid-column:1/-1;"><i class="ti ti-search-off" style="font-size:36px; color:var(--text-soft); display:block; margin-bottom:8px;"></i>No se encontraron colaboradores que coincidan con la búsqueda.</div>';
+      tbody.innerHTML = '<tr><td colspan="7" class="no-results">No se encontraron colaboradores.</td></tr>';
+      return;
+    }
+
+    // 1. Grid Cards
+    grid.innerHTML = filtered.map(p => {
+      const conf = AREAS[p.a] || { label: p.a, color: '#5f6368' };
+      const cnt = hallazgosAbiertos[p.n] || 0;
+      const badgeH = cnt > 0 
+        ? `<span class="g-hallazgo-pill" title="${cnt} hallazgos abiertos bajo su responsabilidad"><i class="ti ti-alert-triangle"></i> ${cnt} SGI</span>`
+        : '';
+      
+      const emailBadge = p.e 
+        ? `<span class="g-email-badge">@esinel</span>`
+        : `<span class="g-op-badge">Operativo</span>`;
+
+      return `
+        <div class="g-user-card theme-${p.a}" onclick="openDrawer('${encodeURIComponent(JSON.stringify(p))}')">
+          <div>
+            <div class="g-user-card-head">
+              <div class="g-avatar">${getInitials(p.n)}</div>
+              <div class="g-user-info">
+                <div class="g-user-name">
+                  <span>${p.n}</span>
+                  ${badgeH}
+                </div>
+                <div class="g-user-role">${p.c}</div>
+              </div>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <div class="g-area-tag">
+                <i class="ti ${conf.icon}"></i> ${conf.label}
+              </div>
+              ${emailBadge}
+            </div>
+          </div>
+
+          <div class="g-meta-list">
+            <div class="g-meta-item">
+              <i class="ti ti-map-pin"></i>
+              <span>${p.sede}</span>
+            </div>
+            <div class="g-meta-item">
+              <i class="ti ti-mail"></i>
+              ${p.e 
+                ? `<a href="mailto:${p.e}" class="g-email-link" onclick="event.stopPropagation()">${p.e}</a>`
+                : `<span class="g-no-email">Gestión interna por Jefatura</span>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // 2. Table Rows
+    tbody.innerHTML = filtered.map(p => {
+      const conf = AREAS[p.a] || { label: p.a, color: '#5f6368' };
+      const cnt = hallazgosAbiertos[p.n] || 0;
+      const badgeH = cnt > 0 
+        ? `<span class="g-hallazgo-pill"><i class="ti ti-alert-triangle"></i> ${cnt} abiertos</span>`
+        : '<span style="color:var(--text-soft); font-size:12px;">Al día</span>';
+
+      return `
+        <tr onclick="openDrawer('${encodeURIComponent(JSON.stringify(p))}')" style="cursor:pointer;">
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="g-avatar" style="width:34px; height:34px; font-size:12px;">${getInitials(p.n)}</div>
+              <strong style="font-family:var(--g-font-display);">${p.n}</strong>
+            </div>
+          </td>
+          <td style="color:var(--text-muted);">${p.c}</td>
+          <td>
+            <span class="g-area-tag theme-${p.a}" style="margin:0;">
+              <i class="ti ${conf.icon}"></i> ${conf.label}
+            </span>
+          </td>
+          <td>📍 ${p.sede}</td>
+          <td>
+            ${p.e 
+              ? `<a href="mailto:${p.e}" class="g-email-link" onclick="event.stopPropagation()">${p.e}</a>`
+              : `<span class="g-no-email">Sin casilla individual</span>`
+            }
+          </td>
+          <td>${badgeH}</td>
+          <td style="text-align:right;">
+            ${p.e ? `
+              <button class="g-btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); copyText('${p.e}', 'Correo copiado');" title="Copiar correo">
+                <i class="ti ti-copy"></i>
+              </button>
+            ` : `<span style="color:#cbd5e1;">—</span>`}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function openDrawer(encodedJson) {
+    const p = JSON.parse(decodeURIComponent(encodedJson));
+    const conf = AREAS[p.a] || { label: p.a, color: '#5f6368' };
+    const cnt = hallazgosAbiertos[p.n] || 0;
+
+    const hero = document.getElementById('drawerHero');
+    hero.className = `g-drawer-hero hero-${p.a}`;
+    
+    document.getElementById('drawerAvatar').textContent = getInitials(p.n);
+    document.getElementById('drawerName').textContent = p.n;
+    document.getElementById('drawerRole').textContent = p.c;
+    document.getElementById('drawerArea').textContent = conf.label;
+    document.getElementById('drawerSede').textContent = p.sede;
+    
+    const emailEl = document.getElementById('drawerEmail');
+    const copyBtn = document.getElementById('drawerCopyBtn');
+    const mailToBtn = document.getElementById('drawerMailToBtn');
+
+    if (p.e) {
+      emailEl.textContent = p.e;
+      copyBtn.style.display = 'inline-flex';
+      mailToBtn.style.display = 'inline-flex';
+      copyBtn.onclick = () => copyText(p.e, 'Correo copiado al portapapeles');
+      mailToBtn.href = `mailto:${p.e}`;
+    } else {
+      emailEl.innerHTML = '<span style="color:#94a3b8; font-style:italic;">Personal operativo de obra/taller (gestión canalizada por supervisión directa)</span>';
+      copyBtn.style.display = 'none';
+      mailToBtn.style.display = 'none';
+    }
+
+    const hRow = document.getElementById('drawerHallazgosRow');
+    const hText = document.getElementById('drawerHallazgosText');
+    if (cnt > 0) {
+      hRow.style.display = 'flex';
+      hText.innerHTML = `<span style="color:var(--g-red); font-weight:700;">${cnt} No Conformidad(es) o hallazgos abiertos</span> asignados a su cargo.`;
+    } else {
+      hText.textContent = 'Sin hallazgos pendientes en el ejercicio actual.';
+    }
+
+    document.getElementById('drawerOverlay').style.display = 'flex';
+  }
+
+  function closeDrawer(event) {
+    if (event && event.target !== document.getElementById('drawerOverlay') && !event.target.closest('.g-drawer-close')) return;
+    document.getElementById('drawerOverlay').style.display = 'none';
+  }
+
+  function showToast(text) {
+    const toast = document.getElementById('toastMessage');
+    document.getElementById('toastText').textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  function copyText(text, successMsg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMsg);
+      }).catch(() => fallbackCopy(text, successMsg));
+    } else {
+      fallbackCopy(text, successMsg);
+    }
+  }
+
+  function fallbackCopy(text, successMsg) {
+    const t = document.createElement('textarea');
+    t.value = text;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand('copy');
+    document.body.removeChild(t);
+    showToast(successMsg);
+  }
+
+  function copyAllEmails() {
+    const list = ALL_PERSONNEL.filter(p => p.e && p.e.endsWith('@esinel.com.ar')).map(p => p.e).join('; ');
+    copyText(list, `35 correos corporativos copiados al portapapeles`);
+  }
+
+  function exportDirectoryCSV() {
+    let csv = 'Nombre,Cargo,Área,Sede,Correo Corporativo,Tipo,Hallazgos Abiertos\n';
+    getBaseData().forEach(p => {
+      const cnt = hallazgosAbiertos[p.n] || 0;
+      const tipo = p.e ? 'Corporativo' : 'Operativo';
+      csv += `"${p.n}","${p.c}","${AREAS[p.a]?.label || p.a}","${p.sede}","${p.e || 'N/A'}","${tipo}",${cnt}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Directorio_Personal_ESINEL_E35_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Archivo CSV descargado con éxito');
+  }
+
+  // Keyboard Shortcuts (Esc to close, Ctrl+K or Cmd+K to search)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDrawer();
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+  });
+
+  document.getElementById('searchInput').addEventListener('input', renderDirectory);
+
+  // Inicialización
+  initSedesDropdown();
+  renderMetricsAndBar();
+  renderDirectory();
 </script>
-
-<script src="https://accounts.google.com/gsi/client" async></script>
-<style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
-<script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')==='1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
 </body>
 </html>
