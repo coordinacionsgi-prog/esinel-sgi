@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
@@ -42,7 +42,7 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
     </style>
-</head>
+<script>(function(){var mq=window.matchMedia("(prefers-color-scheme:dark)");function a(e){document.documentElement.classList.toggle("dark",e.matches)}a(mq);mq.addEventListener("change",a)})();</script></head>
 <body class="h-full flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
 <!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
 <style>
@@ -168,9 +168,7 @@
                         <i class="fa-solid fa-rotate-left"></i>
                         <span class="hidden sm:inline">Restablecer</span>
                     </button>
-                    <button onclick="toggleDarkMode()" title="Cambiar Tema" class="p-2 text-slate-400 hover:text-amber-400 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition border border-slate-700">
-                        <i id="themeIcon" class="fa-solid fa-moon"></i>
-                    </button>
+                    
                 </div>
 
             </div>
@@ -430,11 +428,7 @@
             }
         }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const icon = document.getElementById('themeIcon');
-            icon.className = document.documentElement.classList.contains('dark') ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
-        }
+        
 
         function renderContextoDashboard() {
             document.getElementById('badge-foda-count').innerText = ctxData.foda.length;
