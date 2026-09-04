@@ -217,7 +217,8 @@ function render(){
   const filtered = P.filter(p=>{
     const matchArea = !currentFilter || p.a === currentFilter;
     const matchSearch = !q || p.n.toLowerCase().includes(q) || p.c.toLowerCase().includes(q) || p.sede.toLowerCase().includes(q);
-    return matchArea && matchSearch;
+    const hasCorporateEmail = p.e && p.e.toLowerCase().endsWith('@esinel.com.ar');
+  return hasCorporateEmail && matchArea && matchSearch;
   });
 
   const counts = {};
