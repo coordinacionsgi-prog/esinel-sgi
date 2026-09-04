@@ -2,11 +2,112 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SGI - Personal ESINEL</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px;transition:background .2s,color .2s}
+body.dark{background:#0f172a;color:#e2e8f0}
+.wrap{max-width:1320px;margin:0 auto;padding:24px}
+
+/* Stats */
+.stats-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+body.dark .stat{background:#1e293b;border-color:#334155}
+.stat-val{font-size:22px;font-weight:700;color:#0f172a}
+body.dark .stat-val{color:#e2e8f0}
+.stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+
+/* Toolbar */
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:220px}
+.search-wrap input{width:100%;padding:8px 12px 8px 34px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#0f172a}
+body.dark .search-wrap input{background:#1e293b;border-color:#334155;color:#e2e8f0}
+.search-wrap input:focus{border-color:#6366f1;box-shadow:0 0 0 3px #6366f120}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;pointer-events:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#475569;transition:all .12s}
+body.dark .fbtn{background:#1e293b;border-color:#334155;color:#94a3b8}
+.fbtn:hover{border-color:#cbd5e1;color:#0f172a}
+body.dark .fbtn:hover{border-color:#475569;color:#e2e8f0}
+.fbtn.act{border-color:#6366f1;background:#eef2ff;color:#4338ca}
+body.dark .fbtn.act{border-color:#6366f1;background:#1e1b4b;color:#a5b4fc}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:15px;display:flex;align-items:flex-start;gap:12px;border-left:4px solid #e2e8f0;transition:box-shadow .15s,transform .1s}
+body.dark .card{background:#1e293b;border-color:#334155}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px)}
+
+/* Avatar */
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.card-info{flex:1;min-width:0}
+.card-name{font-size:13.5px;font-weight:600;color:#0f172a;line-height:1.3;margin-bottom:3px}
+body.dark .card-name{color:#f1f5f9}
+.card-cargo{font-size:11.5px;color:#64748b;margin-bottom:7px;line-height:1.4}
+.card-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:4px;display:inline-flex;align-items:center;width:fit-content;margin-bottom:5px;letter-spacing:.03em}
+.card-sede{font-size:11px;color:#94a3b8;margin-top:3px}
+.card-email{font-size:11px;color:#4f46e5;text-decoration:none;display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.dark .card-email{color:#818cf8}
+.card-email:hover{text-decoration:underline}
+.no-results{text-align:center;padding:60px;color:#94a3b8;font-size:14px}
+
+/* Area colores */
+.ac-Obras .card{border-left-color:#3b82f6}
+.ac-Obras .avatar{background:#dbeafe;color:#1d4ed8}
+.ac-Obras .card-tag{background:#dbeafe;color:#1d4ed8}
+body.dark .ac-Obras .avatar{background:rgba(59,130,246,.2);color:#60a5fa}
+body.dark .ac-Obras .card-tag{background:rgba(59,130,246,.15);color:#60a5fa}
+
+.ac-Ingenieria .card{border-left-color:#8b5cf6}
+.ac-Ingenieria .avatar{background:#ede9fe;color:#6d28d9}
+.ac-Ingenieria .card-tag{background:#ede9fe;color:#6d28d9}
+body.dark .ac-Ingenieria .avatar{background:rgba(139,92,246,.2);color:#a78bfa}
+body.dark .ac-Ingenieria .card-tag{background:rgba(139,92,246,.15);color:#a78bfa}
+
+.ac-Produccion .card{border-left-color:#f59e0b}
+.ac-Produccion .avatar{background:#fef3c7;color:#b45309}
+.ac-Produccion .card-tag{background:#fef3c7;color:#b45309}
+body.dark .ac-Produccion .avatar{background:rgba(245,158,11,.15);color:#fbbf24}
+body.dark .ac-Produccion .card-tag{background:rgba(245,158,11,.12);color:#fbbf24}
+
+.ac-AdmRRHH .card{border-left-color:#10b981}
+.ac-AdmRRHH .avatar{background:#d1fae5;color:#065f46}
+.ac-AdmRRHH .card-tag{background:#d1fae5;color:#065f46}
+body.dark .ac-AdmRRHH .avatar{background:rgba(16,185,129,.15);color:#34d399}
+body.dark .ac-AdmRRHH .card-tag{background:rgba(16,185,129,.12);color:#34d399}
+
+.ac-Comercial .card{border-left-color:#ec4899}
+.ac-Comercial .avatar{background:#fce7f3;color:#9d174d}
+.ac-Comercial .card-tag{background:#fce7f3;color:#9d174d}
+body.dark .ac-Comercial .avatar{background:rgba(236,72,153,.15);color:#f472b6}
+body.dark .ac-Comercial .card-tag{background:rgba(236,72,153,.12);color:#f472b6}
+
+.ac-Gerencia .card{border-left-color:#64748b}
+.ac-Gerencia .avatar{background:#f1f5f9;color:#334155}
+.ac-Gerencia .card-tag{background:#f1f5f9;color:#334155}
+body.dark .ac-Gerencia .avatar{background:rgba(100,116,139,.2);color:#cbd5e1}
+body.dark .ac-Gerencia .card-tag{background:rgba(100,116,139,.15);color:#cbd5e1}
+
+/* title row */
+.title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+h1{font-size:22px;font-weight:700;margin-bottom:2px}
+.sub-lbl{color:#64748b;font-size:13px}
+body.dark .sub-lbl{color:#94a3b8}
+
+/* dark toggle */
+.dark-toggle{background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+body.dark .dark-toggle{background:#1e293b;color:#e2e8f0;border-color:#334155}
+.dark-toggle:hover{border-color:#cbd5e1}
+body.dark .dark-toggle:hover{border-color:#475569}
+
+/* badge hallazgos */
+.h-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(245,158,11,.18);color:#f59e0b;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<!-- ESINEL GLOBAL HEADER -->
+<style>
 .esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
 .esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
 .esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
@@ -15,108 +116,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .esinel-logo-certs{font-size:8px;font-weight:600;letter-spacing:.8px;margin-top:2px}
 .esinel-iso9{color:#94a3b8}.esinel-iso14{color:#4caf72;margin-left:5px}.esinel-iso45{color:#ef5350;margin-left:5px}
 .esinel-badge{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);padding:4px 10px;border-radius:4px;border:1px solid rgba(59,130,246,.2)}
-.esinel-nav{display:flex;align-items:center;border-top:1px solid #1e293b;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.esinel-nav{display:flex;align-items:center;border-top:1px solid #1e293b;padding:0 16px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
 .esinel-nav::-webkit-scrollbar{display:none}
 .esinel-nav-item{display:flex;align-items:center;gap:5px;padding:8px 12px;font-size:12px;font-weight:500;color:#64748b;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s}
 .esinel-nav-item:hover{color:#e2e8f0;border-bottom-color:#334155}
 .esinel-nav-item.esinel-active{color:#60a5fa;border-bottom-color:#3b82f6;font-weight:600}
-.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
+.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle}
 .esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
 .esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
-
-.content{padding:24px 28px;max-width:1400px;margin:0 auto}
-.page-title{font-size:22px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
-.page-sub{font-size:13px;color:#64748b;margin-bottom:24px}
-
-.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-.search-box{position:relative;flex:1;min-width:220px}
-.search-box input{width:100%;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 12px 9px 36px;font-size:13px;color:#e2e8f0;outline:none;transition:border-color .15s}
-.search-box input:focus{border-color:#3b82f6}
-.search-box input::placeholder{color:#475569}
-.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#475569;font-size:14px}
-
-.filters{display:flex;gap:6px;flex-wrap:wrap}
-.filter-btn{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .15s}
-.filter-btn.all{background:#1e293b;color:#94a3b8;border-color:#334155}
-.filter-btn.all.active,.filter-btn.all:hover{background:#334155;color:#e2e8f0}
-.filter-btn[data-area="Obras"]{background:rgba(59,130,246,.12);color:#60a5fa;border-color:rgba(59,130,246,.25)}
-.filter-btn[data-area="Obras"].active{background:#3b82f6;color:#fff}
-.filter-btn[data-area="Ingenieria"]{background:rgba(139,92,246,.12);color:#a78bfa;border-color:rgba(139,92,246,.25)}
-.filter-btn[data-area="Ingenieria"].active{background:#8b5cf6;color:#fff}
-.filter-btn[data-area="Produccion"]{background:rgba(245,158,11,.1);color:#fbbf24;border-color:rgba(245,158,11,.25)}
-.filter-btn[data-area="Produccion"].active{background:#f59e0b;color:#0f172a}
-.filter-btn[data-area="AdmRRHH"]{background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.25)}
-.filter-btn[data-area="AdmRRHH"].active{background:#10b981;color:#fff}
-.filter-btn[data-area="Comercial"]{background:rgba(236,72,153,.1);color:#f472b6;border-color:rgba(236,72,153,.25)}
-.filter-btn[data-area="Comercial"].active{background:#ec4899;color:#fff}
-.filter-btn[data-area="Gerencia"]{background:rgba(100,116,139,.12);color:#94a3b8;border-color:rgba(100,116,139,.25)}
-.filter-btn[data-area="Gerencia"].active{background:#64748b;color:#fff}
-
-.stats-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.stat-chip{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 14px;font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:8px}
-.stat-chip strong{color:#e2e8f0;font-size:14px}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:15px;display:flex;align-items:flex-start;gap:12px;transition:border-color .15s,transform .1s}
-.card:hover{border-color:#475569;transform:translateY(-1px)}
-.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.card-info{flex:1;min-width:0}
-.card-name{font-size:13.5px;font-weight:600;color:#f1f5f9;line-height:1.3;margin-bottom:3px}
-.card-cargo{font-size:11px;color:#94a3b8;margin-bottom:7px;line-height:1.4}
-.card-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-flex;align-items:center;width:fit-content;margin-bottom:4px}
-.card-sede{font-size:10.5px;color:#64748b;margin-top:3px}
-.card-email{font-size:10.5px;color:#3b82f6;text-decoration:none;display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-email:hover{text-decoration:underline}
-.no-results{text-align:center;padding:60px;color:#475569;font-size:14px}
-
-/* area colors por clave interna */
-.ac-Obras .avatar{background:rgba(59,130,246,.2);color:#60a5fa}
-.ac-Obras .card-tag{background:rgba(59,130,246,.15);color:#60a5fa}
-.ac-Ingenieria .avatar{background:rgba(139,92,246,.2);color:#a78bfa}
-.ac-Ingenieria .card-tag{background:rgba(139,92,246,.15);color:#a78bfa}
-.ac-Produccion .avatar{background:rgba(245,158,11,.15);color:#fbbf24}
-.ac-Produccion .card-tag{background:rgba(245,158,11,.12);color:#fbbf24}
-.ac-AdmRRHH .avatar{background:rgba(16,185,129,.15);color:#34d399}
-.ac-AdmRRHH .card-tag{background:rgba(16,185,129,.12);color:#34d399}
-.ac-Comercial .avatar{background:rgba(236,72,153,.15);color:#f472b6}
-.ac-Comercial .card-tag{background:rgba(236,72,153,.12);color:#f472b6}
-.ac-Gerencia .avatar{background:rgba(100,116,139,.2);color:#cbd5e1}
-.ac-Gerencia .card-tag{background:rgba(100,116,139,.15);color:#cbd5e1}
 </style>
-</head>
-<body>
 <div class="esinel-hdr">
   <div class="esinel-hdr-top">
     <a class="esinel-logo" href="index.html">
       <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/><circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/><circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/><circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="9" r="5" fill="#1B3A8C"/><circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
         <circle cx="22" cy="35" r="5" fill="#1B3A8C"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9" r="5" fill="#1B3A8C"/>
         <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
       </svg>
       <div>
         <div class="esinel-logo-name">ESINEL</div>
-        <div class="esinel-logo-tagline">Obras Electricas · Ingenieria · Tableros</div>
+        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
         <div class="esinel-logo-certs">
           <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
         </div>
       </div>
     </a>
-    <div class="esinel-badge">SGI · Gestion Integrada</div>
+    <div class="esinel-badge">SGI · Gestión Integrada</div>
   </div>
   <nav class="esinel-nav">
-    <a class="esinel-nav-item" href="index.html">Inicio</a>
-    <a class="esinel-nav-item" href="hallazgos.html">Hallazgos</a>
-    <a class="esinel-nav-item" href="agenda-auditoria.html">Agenda Auditoria</a>
-    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">Informe</a>
-    <a class="esinel-nav-item" href="contexto.html">Contexto</a>
-    <a class="esinel-nav-item" href="indicadores.html">Indicadores</a>
-    <a class="esinel-nav-item" href="vehiculos.html">Vehiculos</a>
-    <a class="esinel-nav-item" href="documentos.html">Documentos</a>
-    <a class="esinel-nav-item esinel-active" href="personal.html">Personal</a>
+    <a class="esinel-nav-item" href="index.html">🏠 Inicio</a>
+    <a class="esinel-nav-item" href="hallazgos.html">⚠️ Hallazgos</a>
+    <a class="esinel-nav-item" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
+    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
+    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
+    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
+    <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
+    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
+    <a class="esinel-nav-item esinel-active" href="personal.html">👥 Personal</a>
   </nav>
 </div>
 <script>(function(){try{
@@ -131,161 +171,187 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   });
 }catch(e){}})()</script>
 
-<div class="content">
-  <div class="page-title">Personal ESINEL</div>
-  <div class="page-sub">Directorio corporativo · Ejercicio 35 · 2026</div>
+<div class="wrap">
+  <div class="title-row">
+    <div>
+      <h1>Personal ESINEL</h1>
+      <div class="sub-lbl">Directorio corporativo · Ejercicio 35 · 2026</div>
+    </div>
+    <button class="dark-toggle" id="darkBtn" onclick="toggleDark()">🌙 Modo oscuro</button>
+  </div>
 
-  <div class="controls">
-    <div class="search-box">
-      <span class="search-icon">&#128269;</span>
-      <input type="text" id="search" placeholder="Buscar por nombre, cargo o sede...">
+  <div class="stats-row" id="stats-row"></div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Buscar por nombre, cargo o sede..." oninput="render()">
     </div>
     <div class="filters">
-      <button class="filter-btn all active" onclick="setFilter('')">Todos</button>
-      <button class="filter-btn" data-area="Obras" onclick="setFilter('Obras')">Obras</button>
-      <button class="filter-btn" data-area="Ingenieria" onclick="setFilter('Ingenieria')">Ingenieria</button>
-      <button class="filter-btn" data-area="Produccion" onclick="setFilter('Produccion')">Produccion</button>
-      <button class="filter-btn" data-area="AdmRRHH" onclick="setFilter('AdmRRHH')">Adm &amp; RRHH</button>
-      <button class="filter-btn" data-area="Comercial" onclick="setFilter('Comercial')">Comercial</button>
-      <button class="filter-btn" data-area="Gerencia" onclick="setFilter('Gerencia')">Gerencia</button>
+      <button class="fbtn act" data-area="" onclick="setFilter('')">Todos</button>
+      <button class="fbtn" data-area="Gerencia" onclick="setFilter('Gerencia')">Gerencia</button>
+      <button class="fbtn" data-area="Obras" onclick="setFilter('Obras')">Obras</button>
+      <button class="fbtn" data-area="Ingenieria" onclick="setFilter('Ingenieria')">Ingeniería</button>
+      <button class="fbtn" data-area="Produccion" onclick="setFilter('Produccion')">Producción</button>
+      <button class="fbtn" data-area="AdmRRHH" onclick="setFilter('AdmRRHH')">Adm &amp; RRHH</button>
+      <button class="fbtn" data-area="Comercial" onclick="setFilter('Comercial')">Comercial</button>
     </div>
   </div>
-  <div class="stats-row" id="stats-row"></div>
+
   <div class="grid" id="grid"></div>
 </div>
 
 <script>
 const AREAS = {
-  'Obras':'Obras',
-  'Ingenieria':'Ingenieria',
-  'Produccion':'Produccion',
-  'AdmRRHH':'Adm & RRHH',
-  'Comercial':'Comercial',
-  'Gerencia':'Gerencia'
+  Gerencia:'Gerencia',
+  Obras:'Obras',
+  Ingenieria:'Ingeniería',
+  Produccion:'Producción',
+  AdmRRHH:'Adm & RRHH',
+  Comercial:'Comercial'
 };
 
-// a = area key, n = nombre, c = cargo, sede, e = email
 const P = [
-  {a:'Gerencia',n:'Marcelo Nicolas Piccione',c:'Gerente de Administracion',sede:'Remedios',e:'mnpiccione@esinel.com.ar'},
-  {a:'Obras',n:'Hernan Leonel Giacobbe',c:'Gerente de Obra',sede:'Mosconi',e:'giaacobbeh@esinel.com.ar'},
-  {a:'Ingenieria',n:'Martin Eduardo Diamanti',c:'Gerente de Ingenieria',sede:'Remedios',e:'mdiamanti@esinel.com.ar'},
-  {a:'Produccion',n:'Oscar Emilio Schmuth',c:'Gerente de Produccion',sede:'Remedios',e:'oschmuth@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Clarisa Piccione',c:'Lider de Administracion y RRHH',sede:'Remedios',e:'cpiccione@esinel.com.ar'},
-  {a:'Ingenieria',n:'Juan Francisco Monti',c:'Lider de Ingenieria',sede:'Santo Tome',e:'jmonti@esinel.com.ar'},
+  // Gerencia
+  {a:'Gerencia',n:'Marcelo Nicolas Piccione',c:'Gerente de Administración',sede:'Remedios',e:'mnpiccione@esinel.com.ar'},
+  {a:'Gerencia',n:'Hernan Leonel Giacobbe',c:'Gerente de Obra',sede:'Mosconi',e:'giaacobbeh@esinel.com.ar'},
+  {a:'Gerencia',n:'Martin Eduardo Diamanti',c:'Gerente de Ingeniería',sede:'Remedios',e:'mdiamanti@esinel.com.ar'},
+  {a:'Gerencia',n:'Oscar Emilio Schmuth',c:'Gerente de Producción',sede:'Remedios',e:'oschmuth@esinel.com.ar'},
+  // Líderes y responsables
+  {a:'AdmRRHH',n:'Clarisa Piccione',c:'Lider de Administración y RRHH',sede:'Remedios',e:'cpiccione@esinel.com.ar'},
+  {a:'Ingenieria',n:'Juan Francisco Monti',c:'Lider de Ingeniería',sede:'Santo Tomê',e:'jmonti@esinel.com.ar'},
   {a:'Obras',n:'Emiliano Nahuel San Martin',c:'Lider de Obras',sede:'Obras Bs. As.',e:'esanmartin@esinel.com.ar'},
-  {a:'Produccion',n:'Hernan Giorgetti',c:'Lider de Produccion',sede:'Santo Tome',e:'hgiorgetti@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Andrea Fabiana Chavez',c:'Responsable de Administracion',sede:'Remedios',e:'achavez@esinel.com.ar'},
+  {a:'Produccion',n:'Hernan Giorgetti',c:'Lider de Producción',sede:'Santo Tomê',e:'hgiorgetti@esinel.com.ar'},
+  {a:'AdmRRHH',n:'Andrea Fabiana Chavez',c:'Responsable de Administración',sede:'Remedios',e:'achavez@esinel.com.ar'},
   {a:'AdmRRHH',n:'Patricia C. Rodriguez',c:'Responsable de RRHH',sede:'Remedios',e:'prodriguez@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Maria de las Mercedes Nahas',c:'Responsable de Comunicacion Interna y Cultura',sede:'Remedios',e:'mnahas@esinel.com.ar'},
-  {a:'Comercial',n:'Lisandro Tomas Fissolo',c:'Responsable Comercial',sede:'Santo Tome',e:'Lfissolo@esinel.com.ar'},
+  {a:'AdmRRHH',n:'Maria de las Mercedes Nahas',c:'Responsable de Comunicación Interna y Cultura',sede:'Remedios',e:'mnahas@esinel.com.ar'},
+  {a:'Comercial',n:'Lisandro Tomas Fissolo',c:'Responsable Comercial',sede:'Santo Tomé',e:'Lfissolo@esinel.com.ar'},
   {a:'Comercial',n:'Daniel A. Lertora',c:'Responsable de Compras',sede:'Remedios',e:'compras@esinel.com.ar'},
+  // Obras
   {a:'Obras',n:'Diego Alejandro Abella',c:'Jefe de Obra',sede:'Obras / Buenos Aires',e:'dabella@esinel.com.ar'},
-  {a:'Obras',n:'Daniel Carena',c:'Jefe de Obra',sede:'Santo Tome',e:'dcarena@esinel.com.ar'},
+  {a:'Obras',n:'Daniel Carena',c:'Jefe de Obra',sede:'Santo Tomé',e:'dcarena@esinel.com.ar'},
   {a:'Obras',n:'Romina Lorena Nievas Jara',c:'Jefa de Obra',sede:'Obras Buenos Aires',e:'rnievas@esinel.com.ar'},
-  {a:'Obras',n:'Victor Salazar',c:'Supervisor de Obra',sede:'Obras Bs. As.',e:'salazarvictor270@gmail.com'},
   {a:'Obras',n:'Jose Luis Soliz Coronado',c:'Supervisor de Obra',sede:'Obras Bs. As.',e:'jsoliz@esinel.com.ar'},
   {a:'Obras',n:'Carlos A. De Abrantes Correia',c:'Responsable de Abastecimiento e Intendencia',sede:'Mosconi',e:'cdeabrantes@esinel.com.ar'},
   {a:'Obras',n:'Juan Francisco Dominguez Catalano',c:'Sobrestante de Obras',sede:'Obras Mar del Plata',e:'jfcatalano@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Luan Thiago Baira',c:'Auditor Interno SGI',sede:'Remedios',e:'coordinacion.sgi@esinel.com.ar'},
+  // Ingeniería
   {a:'Ingenieria',n:'Pablo Leonel Barrionuevo',c:'Proyectista - Computista',sede:'Remedios',e:'pbarrionuevo@esinel.com.ar'},
-  {a:'Ingenieria',n:'Francisco Briani',c:'Proyectista - Computista',sede:'Santo Tome',e:'fbriani@esinel.com.ar'},
-  {a:'Ingenieria',n:'Miguel Angel Citta',c:'Proyectista - Computista',sede:'Santo Tome',e:'mcitta@esinel.com.ar'},
-  {a:'Ingenieria',n:'Gonzalo Gigliotti',c:'Proyectista - Computista',sede:'Santo Tome',e:'ggigliotti@esinel.com.ar'},
+  {a:'Ingenieria',n:'Francisco Briani',c:'Proyectista - Computista',sede:'Santo Tomé',e:'fbriani@esinel.com.ar'},
+  {a:'Ingenieria',n:'Miguel Angel Citta',c:'Proyectista - Computista',sede:'Santo Tomé',e:'mcitta@esinel.com.ar'},
+  {a:'Ingenieria',n:'Gonzalo Gigliotti',c:'Proyectista - Computista',sede:'Santo Tomé',e:'ggigliotti@esinel.com.ar'},
   {a:'Ingenieria',n:'Facundo Guerrero',c:'Proyectista - Computista',sede:'Remedios',e:'fguerrero@esinel.com.ar'},
+  // Producción
   {a:'Produccion',n:'Jose Luis Casares',c:'Responsable de Abastecimiento e Intendencia',sede:'Remedios',e:'deposito@esinel.com.ar'},
   {a:'Produccion',n:'Sergio Eduardo Donda',c:'Encargado de Taller',sede:'Remedios',e:'sdonda@esinel.com.ar'},
   {a:'Produccion',n:'Javier Otero',c:'Proyectista - Computista',sede:'Remedios',e:'jotero@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Marisa Angelica Cercos',c:'Auxiliar Administrativo Sr',sede:'Santo Tome',e:'mcercos@esinel.com.ar'},
+  // Adm & RRHH
+  {a:'AdmRRHH',n:'Luan Thiago Baira',c:'Auditor Interno SGI',sede:'Remedios',e:'coordinacion.sgi@esinel.com.ar'},
+  {a:'AdmRRHH',n:'Marisa Angelica Cercos',c:'Auxiliar Administrativo Sr',sede:'Santo Tomé',e:'mcercos@esinel.com.ar'},
   {a:'AdmRRHH',n:'Diego Amado Fernandez',c:'Analista Administrativo',sede:'Remedios',e:'dfernandez@esinel.com.ar'},
   {a:'AdmRRHH',n:'Anahi Gonzalez',c:'Asistente de Imagen',sede:'Remedios',e:'imagen@esinel.com.ar'},
   {a:'AdmRRHH',n:'Florencia Oyuela',c:'Auxiliar de RRHH',sede:'Remedios',e:'foyuela@esinel.com.ar'},
-  {a:'AdmRRHH',n:'Fabiola Cortez Poma',c:'Auxiliar de Maestranza',sede:'Remedios',e:'fabiolacortezpoma@hotmail.com'},
   {a:'AdmRRHH',n:'Bautista Iestra',c:'Asistente Interno en HyS',sede:'Oficina Mar del Plata',e:'Saludyseguridad@esinel.com.ar'},
-  {a:'Comercial',n:'Esteban Nahuel Heredia',c:'Auxiliar Tecnico Comercial',sede:'Oficina Mar del Plata',e:'nheredia@esinel.com.ar'},
+  // Comercial
+  {a:'Comercial',n:'Esteban Nahuel Heredia',c:'Auxiliar Técnico Comercial',sede:'Oficina Mar del Plata',e:'nheredia@esinel.com.ar'},
   {a:'Comercial',n:'Tomas Noblia',c:'Asistente de Compras',sede:'Remedios',e:'tnobllia@esinel.com.ar'}
 ];
 
+// solo @esinel.com.ar
+const DATA = P.filter(p => p.e && p.e.toLowerCase().endsWith('@esinel.com.ar'));
+
 let currentFilter = '';
-let currentSearch = '';
 
 function initials(name){
   return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 }
 
+function setFilter(area){
+  currentFilter = area;
+  document.querySelectorAll('.fbtn').forEach(b=>{
+    b.classList.toggle('act', (b.dataset.area||'') === area);
+  });
+  render();
+}
+
 function render(){
-  const q = currentSearch.toLowerCase();
-  const filtered = P.filter(p=>{
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const filtered = DATA.filter(p=>{
     const matchArea = !currentFilter || p.a === currentFilter;
     const matchSearch = !q || p.n.toLowerCase().includes(q) || p.c.toLowerCase().includes(q) || p.sede.toLowerCase().includes(q);
-    const hasCorporateEmail = p.e && p.e.toLowerCase().endsWith('@esinel.com.ar');
-  return hasCorporateEmail && matchArea && matchSearch;
+    return matchArea && matchSearch;
   });
 
+  // stats
   const counts = {};
-  P.forEach(p=>{counts[p.a]=(counts[p.a]||0)+1});
-
+  DATA.forEach(p=>{ counts[p.a]=(counts[p.a]||0)+1; });
   const statsEl = document.getElementById('stats-row');
-  if(!currentFilter){
-    statsEl.innerHTML = '<div class="stat-chip"><strong>'+filtered.length+'</strong> personas</div>' +
-      Object.entries(counts).map(([k,v])=>'<div class="stat-chip"><strong>'+v+'</strong> '+AREAS[k]+'</div>').join('');
-  } else {
-    statsEl.innerHTML = '<div class="stat-chip"><strong>'+filtered.length+'</strong> en '+AREAS[currentFilter]+'</div>';
-  }
+  const shown = currentFilter ? filtered.length : DATA.length;
+  statsEl.innerHTML = `<div class="stat"><div><div class="stat-val">${shown}</div><div class="stat-lbl">personas</div></div></div>` +
+    Object.entries(counts).map(([k,v])=>
+      `<div class="stat"><div><div class="stat-val">${v}</div><div class="stat-lbl">${AREAS[k]}</div></div></div>`
+    ).join('');
+
+  // hallazgos abiertos por responsable
+  let hallazgosAbiertos = {};
+  try {
+    const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data')||'null');
+    if(stored&&stored.data){
+      stored.data.forEach(h=>{
+        const efic=(h.resultadoEficacia||'').trim();
+        if(efic==='OK'||efic==='NO') return;
+        [h.responsableAccion,h.responsableVerificacion].forEach(nombre=>{
+          if(!nombre) return;
+          const n=nombre.trim();
+          hallazgosAbiertos[n]=(hallazgosAbiertos[n]||0)+1;
+        });
+      });
+    }
+  } catch(e){}
 
   const grid = document.getElementById('grid');
   if(!filtered.length){grid.innerHTML='<div class="no-results">Sin resultados</div>';return;}
   grid.innerHTML = filtered.map(p=>{
-    const cnt = hallazgosAbiertos[p.n] || 0;
-    const badge = cnt > 0 ? `<span title="${cnt} hallazgo(s) abierto(s)" style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(245,158,11,.18);color:#f59e0b;margin-left:6px">${cnt}</span>` : '';
-    return `
-    <div class="card ac-${p.a}">
-      <div class="avatar">${initials(p.n)}</div>
-      <div class="card-info">
-        <div class="card-name">${p.n}${badge}</div>
-        <div class="card-cargo">${p.c}</div>
-        <span class="card-tag">${AREAS[p.a]}</span>
-        <div class="card-sede">&#128205; ${p.sede}</div>
-        <a class="card-email" href="mailto:${p.e}">${p.e}</a>
+    const cnt = hallazgosAbiertos[p.n]||0;
+    const badge = cnt>0 ? `<span class="h-badge" title="${cnt} hallazgo(s) abierto(s)">${cnt}</span>` : '';
+    return `<div class="ac-${p.a}">
+      <div class="card">
+        <div class="avatar">${initials(p.n)}</div>
+        <div class="card-info">
+          <div class="card-name">${p.n}${badge}</div>
+          <div class="card-cargo">${p.c}</div>
+          <span class="card-tag">${AREAS[p.a]}</span>
+          <div class="card-sede">📍 ${p.sede}</div>
+          <a class="card-email" href="mailto:${p.e}">${p.e}</a>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// Cargar datos de hallazgos desde localStorage
-let hallazgosAbiertos = {};
-try {
-  const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data') || 'null');
-  if (stored && stored.data) {
-    stored.data.forEach(h => {
-      const efic = (h.resultadoEficacia || '').trim();
-      if (efic === 'OK' || efic === 'NO') return;
-      [h.responsableAccion, h.responsableVerificacion].forEach(nombre => {
-        if (!nombre) return;
-        const n = nombre.trim();
-        hallazgosAbiertos[n] = (hallazgosAbiertos[n] || 0) + 1;
-      });
-    });
-  }
-} catch(e) {}
-
-function setFilter(area){
-  currentFilter = area;
-  document.querySelectorAll('.filter-btn').forEach(b=>{
-    const ba = b.dataset.area||'';
-    b.classList.toggle('active', ba===area||(!area&&b.classList.contains('all')));
-  });
-  render();
+// Dark mode
+function toggleDark(){
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('darkBtn').textContent = isDark ? '☀️ Modo claro' : '🌙 Modo oscuro';
+  try { localStorage.setItem('esinel_personal_dark', isDark ? '1' : '0'); } catch(e){}
 }
-
-document.getElementById('search').addEventListener('input',e=>{
-  currentSearch=e.target.value;render();
-});
+(function(){
+  try {
+    if(localStorage.getItem('esinel_personal_dark')==='1'){
+      document.body.classList.add('dark');
+      document.addEventListener('DOMContentLoaded',function(){
+        var btn=document.getElementById('darkBtn');
+        if(btn) btn.textContent='☀️ Modo claro';
+      });
+    }
+  } catch(e){}
+})();
 
 render();
 </script>
+
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
 <div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
-<script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')=== '1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
+<script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')==='1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
 </body>
 </html>
