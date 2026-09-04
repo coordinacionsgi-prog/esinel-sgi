@@ -1,54 +1,379 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESINEL SGI — Inicio</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#0f172a}
-.main{max-width:1100px;margin:0 auto;padding:28px 24px}
-.page-title{font-size:22px;font-weight:700;color:#0f172a;margin-bottom:4px}
-.page-sub{font-size:13px;color:#64748b;margin-bottom:28px}
-.section{margin-bottom:32px}
-.section-title{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;text-decoration:none;display:block;transition:box-shadow .15s,border-color .15s}
-.card:hover{box-shadow:0 4px 16px rgba(15,23,42,.1);border-color:#cbd5e1}
-.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
-.ic-blue{background:#eff6ff;color:#2563eb}
-.ic-purple{background:#faf5ff;color:#7c3aed}
-.ic-orange{background:#fff7ed;color:#ea580c}
-.ic-teal{background:#f0fdf4;color:#16a34a}
-.ic-amber{background:#fefce8;color:#d97706}
-.ic-gray{background:#f8fafc;color:#64748b}
-.card-name{font-size:14px;font-weight:600;color:#0f172a;margin-bottom:4px}
-.card-desc{font-size:12px;color:#64748b;line-height:1.5;margin-bottom:12px}
-.card-foot{display:flex;align-items:center;justify-content:space-between}
-.card-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#2563eb}
-.card-badge.green{background:#f0fdf4;color:#16a34a}
-.card-badge.gray{background:#f8fafc;color:#64748b}
-.card-arrow{color:#cbd5e1;font-size:16px}
-/* ── Estado del sistema ── */
-.estado-section{margin-bottom:32px}
-.estado-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.estado-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;text-decoration:none;display:flex;flex-direction:column;gap:3px;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s}
-.estado-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#e2e8f0;transition:background .2s}
-.estado-card:hover{box-shadow:0 4px 16px rgba(15,23,42,.1);border-color:#cbd5e1}
-.estado-card.alerta::before{background:#f59e0b}
-.estado-card.alerta .estado-num{color:#d97706}
-.estado-card.ok::before{background:#22c55e}
-.estado-card.ok .estado-num{color:#16a34a}
-.estado-card.info::before{background:#3b82f6}
-.estado-card.info .estado-num{color:#2563eb}
-.estado-num{font-size:34px;font-weight:800;color:#0f172a;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
-.estado-label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
-.estado-sub{font-size:11px;color:#94a3b8;margin-top:2px}
-.estado-mod{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#cbd5e1;margin-bottom:2px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESINEL SGI — Sistema de Gestión Integrado</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Contenedor principal */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+      width: 100%;
+    }
+
+    /* Encabezado del dashboard */
+    .dash-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 28px;
+    }
+
+    .dash-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .dash-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .dash-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      border: 1px solid #bae6fd;
+    }
+
+    .dash-sub {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    /* Métricas / Estado del Sistema */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 20px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -3px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #e2e8f0;
+    }
+
+    .metric-card.alerta::before { background: #f59e0b; }
+    .metric-card.alerta .metric-val { color: #d97706; }
+
+    .metric-card.ok::before { background: #10b981; }
+    .metric-card.ok .metric-val { color: #059669; }
+
+    .metric-card.info::before { background: #3b82f6; }
+    .metric-card.info .metric-val { color: #2563eb; }
+
+    .metric-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .metric-val {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-desc {
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      margin-top: 4px;
+    }
+
+    .metric-hint {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* Secciones de módulos */
+    .module-section {
+      margin-bottom: 36px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+
+    .section-heading i {
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    /* Tarjetas estándar */
+    .card-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card-box:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 10px 24px -5px rgba(15, 23, 42, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .card-header-line {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .card-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    /* Paletas de íconos */
+    .ic-blue { background: #eff6ff; color: #2563eb; }
+    .ic-purple { background: #faf5ff; color: #7c3aed; }
+    .ic-orange { background: #fff7ed; color: #ea580c; }
+    .ic-emerald { background: #ecfdf5; color: #059669; }
+    .ic-teal { background: #f0fdfa; color: #0d9488; }
+    .ic-amber { background: #fefce8; color: #b45309; }
+    .ic-indigo { background: #e0e7ff; color: #4338ca; }
+
+    .card-content {
+      flex-grow: 1;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-text {
+      font-size: 12.5px;
+      color: #64748b;
+      line-height: 1.45;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .badge-code {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #2563eb;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-code.green { background: #ecfdf5; color: #059669; }
+    .badge-code.orange { background: #fff7ed; color: #ea580c; }
+    .badge-code.purple { background: #faf5ff; color: #7c3aed; }
+    .badge-code.gray { background: #f1f5f9; color: #475569; }
+
+    .action-arrow {
+      color: #94a3b8;
+      font-size: 16px;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    .card-box:hover .action-arrow {
+      color: #2563eb;
+      transform: translateX(3px);
+    }
+
+    /* ── Dropdown interactivo para Vehículos y Auditorías ── */
+    .dropdown-group {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .dropdown-menu-list {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+      z-index: 100;
+      padding: 6px;
+      animation: fadeInDropdown 0.15s ease-out;
+    }
+
+    .dropdown-group.open .dropdown-menu-list {
+      display: block;
+    }
+
+    @keyframes fadeInDropdown {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #334155;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .dropdown-item:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .dropdown-item.active-item {
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 600;
+    }
+
+    .dropdown-item i {
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .dropdown-item:hover i {
+      color: #2563eb;
+    }
+
+    .dropdown-subtag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .dropdown-caret {
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown-group.open .dropdown-caret {
+      transform: rotate(180deg);
+    }
+  </style>
 </head>
 <body>
+
 <!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
 <style>
 .esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
@@ -72,20 +397,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="esinel-hdr-top">
     <a class="esinel-logo" href="index.html">
       <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
-  <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
-  <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
-  <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
-  <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-  <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
-  <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
-  <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
-  <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
-  <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
-</svg>
+        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
+        <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
+        <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
+        <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
+        <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+        <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
+        <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+      </svg>
       <div>
         <div class="esinel-logo-name">ESINEL</div>
         <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
@@ -105,8 +430,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
     <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
     <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
-      <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
-<a class="esinel-nav-item" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">💼 Comercial</a>
+    <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+    <a class="esinel-nav-item" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">💼 Comercial</a>
   </nav>
 </div>
 <script>(function(){try{
@@ -122,150 +447,343 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 }catch(e){}})()</script>
 <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-<div class="main">
-  <div class="page-title">Sistema de Gestión Integrado</div>
-  <p class="page-sub">Acceso rápido a todos los módulos · ESINEL S.R.L. · Ejercicio fiscal 35</p>
-
-  <!-- ── Estado del Sistema (live) ── -->
-  <div class="estado-section">
-    <p class="section-title">Estado del sistema · Ejercicio 35</p>
-    <div class="estado-grid">
-      <a href="hallazgos.html" class="estado-card" id="ec-hallazgos">
-        <div class="estado-mod">⚠️ Hallazgos</div>
-        <div class="estado-num" id="en-abiertos">—</div>
-        <div class="estado-label">abiertos este ejercicio</div>
-        <div class="estado-sub" id="es-total-h">conectando…</div>
-      </a>
-      <a href="indicadores.html" class="estado-card" id="ec-indicadores">
-        <div class="estado-mod">📈 Indicadores</div>
-        <div class="estado-num" id="en-desvios">—</div>
-        <div class="estado-label">indicadores en desvío</div>
-        <div class="estado-sub" id="es-total-i">de — totales</div>
-      </a>
-      <a href="agenda-auditoria.html" class="estado-card info">
-        <div class="estado-mod">📋 Auditoría</div>
-        <div class="estado-num" style="font-size:20px;margin-top:8px">P2 DNV ✓</div>
-        <div class="estado-label">última auditoría</div>
-        <div class="estado-sub">27–28 Ago 2026 · Finalizada</div>
-      </a>
-      <a href="contexto.html" class="estado-card info">
-        <div class="estado-mod">🌐 Contexto</div>
-        <div class="estado-num" style="font-size:20px;margin-top:8px">Abr 2026</div>
-        <div class="estado-label">última revisión de contexto</div>
-        <div class="estado-sub">Próxima revisión: Oct 2026</div>
-      </a>
+<main class="main-container">
+  <!-- Cabecera principal -->
+  <header class="dash-header">
+    <div class="dash-title-row">
+      <h1 class="dash-title">Sistema de Gestión Integrado</h1>
+      <span class="dash-pill"><i class="ti ti-shield-check"></i> ISO 9001 · 14001 · 45001</span>
     </div>
+    <p class="dash-sub">Panel de control unificado y acceso a módulos operativos · ESINEL S.R.L. · Ejercicio fiscal 35</p>
+  </header>
+
+  <!-- ── Estado del Sistema (Métricas en vivo) ── -->
+  <div class="metric-grid">
+    <a href="hallazgos.html" class="metric-card" id="ec-hallazgos">
+      <div class="metric-tag"><i class="ti ti-alert-triangle"></i> Hallazgos</div>
+      <div class="metric-val" id="en-abiertos">—</div>
+      <div class="metric-desc">abiertos este ejercicio</div>
+      <div class="metric-hint" id="es-total-h">conectando…</div>
+    </a>
+
+    <a href="indicadores.html" class="metric-card" id="ec-indicadores">
+      <div class="metric-tag"><i class="ti ti-chart-arrows"></i> Indicadores</div>
+      <div class="metric-val" id="en-desvios">—</div>
+      <div class="metric-desc">indicadores en desvío</div>
+      <div class="metric-hint" id="es-total-i">de — totales</div>
+    </a>
+
+    <a href="agenda-auditoria.html" class="metric-card info">
+      <div class="metric-tag"><i class="ti ti-calendar-check"></i> Auditoría</div>
+      <div class="metric-val" style="font-size:22px; margin-top: 4px;">P2 DNV ✓</div>
+      <div class="metric-desc">última auditoría</div>
+      <div class="metric-hint">27–28 Ago 2026 · Finalizada</div>
+    </a>
+
+    <a href="contexto.html" class="metric-card info">
+      <div class="metric-tag"><i class="ti ti-world"></i> Contexto</div>
+      <div class="metric-val" style="font-size:22px; margin-top: 4px;">Abr 2026</div>
+      <div class="metric-desc">última revisión estratégica</div>
+      <div class="metric-hint">Próxima revisión: Oct 2026</div>
+    </a>
   </div>
 
-  <div class="section">
-    <p class="section-title">Calidad y Auditoría</p>
-    <div class="cards">
-      <a href="hallazgos.html" class="card">
-        <div class="card-icon ic-blue"><i class="ti ti-alert-circle"></i></div>
-        <p class="card-name">Hallazgos</p>
-        <p class="card-desc">Registro y seguimiento de NC, reclamos, oportunidades de mejora y observaciones</p>
-        <div class="card-foot"><span class="card-badge">RG-06-01</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
-      <a href="agenda-auditoria.html" class="card">
-        <div class="card-icon ic-purple"><i class="ti ti-calendar-event"></i></div>
-        <p class="card-name">Agenda de Auditoría</p>
-        <p class="card-desc">Programa y seguimiento de auditorías internas del SGI</p>
-        <div class="card-foot"><span class="card-badge">RG-06-02</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
-      <a href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html" class="card">
-        <div class="card-icon ic-orange"><i class="ti ti-report-analytics"></i></div>
-        <p class="card-name">Informe de Auditoría</p>
-        <p class="card-desc">Dashboard de hallazgos y notas por auditor y sector</p>
-        <div class="card-foot"><span class="card-badge">Informe</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
+  <!-- ── SECCIÓN 1: SISTEMA DE GESTIÓN INTEGRADO (SGI) ── -->
+  <section class="module-section">
+    <div class="section-heading">
+      <i class="ti ti-folders"></i> Módulos Centrales del SGI
     </div>
-  </div>
+    
+    <div class="cards-grid">
+      
+      <!-- 1. Auditorías Agrupadas (con desplegable para Agenda o Informes) -->
+      <div class="dropdown-group" id="group-auditorias">
+        <div class="card-box">
+          <button type="button" class="dropdown-btn" onclick="toggleDropdown('group-auditorias', event)">
+            <div class="card-header-line">
+              <div class="card-icon-wrap ic-purple">
+                <i class="ti ti-checklist"></i>
+              </div>
+              <i class="ti ti-chevron-down action-arrow dropdown-caret"></i>
+            </div>
+            <div class="card-content">
+              <div class="card-title">Auditorías SGI</div>
+              <p class="card-text">Planificación, cronograma de auditorías internas e informes de desempeño por auditor.</p>
+            </div>
+          </button>
+          
+          <div class="card-footer">
+            <span class="badge-code purple">RG-06-02</span>
+            <span style="font-size: 11px; color:#7c3aed; font-weight:600; cursor:pointer;" onclick="toggleDropdown('group-auditorias', event)">Ver opciones ▾</span>
+          </div>
+        </div>
 
-  <div class="section">
-    <p class="section-title">Análisis del Sistema</p>
-    <div class="cards">
-      <a href="contexto.html" class="card">
-        <div class="card-icon ic-teal"><i class="ti ti-building"></i></div>
-        <p class="card-name">Contexto y Partes Interesadas</p>
-        <p class="card-desc">FODA, PESTEL, riesgos estratégicos y mapa de partes interesadas</p>
-        <div class="card-foot"><span class="card-badge green">RG-02-01/02</span><i class="ti ti-arrow-right card-arrow"></i></div>
+        <!-- Menú desplegable Auditorías -->
+        <div class="dropdown-menu-list">
+          <a href="agenda-auditoria.html" class="dropdown-item">
+            <span><i class="ti ti-calendar-event"></i> Agenda de Auditorías</span>
+            <span class="dropdown-subtag">Programa</span>
+          </a>
+          <a href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html" class="dropdown-item">
+            <span><i class="ti ti-report-analytics"></i> Informe y Hallazgos</span>
+            <span class="dropdown-subtag">Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. Hallazgos -->
+      <a href="hallazgos.html" class="card-box">
+        <div>
+          <div class="card-header-line">
+            <div class="card-icon-wrap ic-blue">
+              <i class="ti ti-alert-circle"></i>
+            </div>
+            <i class="ti ti-arrow-right action-arrow"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Hallazgos y Acciones</div>
+            <p class="card-text">Registro, tratamiento y seguimiento de No Conformidades, desvíos y oportunidades de mejora.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="badge-code">RG-06-01</span>
+          <span style="font-size: 11px; color:#64748b;">Acceder</span>
+        </div>
       </a>
-      <a href="indicadores.html" class="card">
-        <div class="card-icon ic-teal"><i class="ti ti-chart-line"></i></div>
-        <p class="card-name">Indicadores SGI</p>
-        <p class="card-desc">KPIs del sistema con metas y evolución temporal por proceso</p>
-        <div class="card-foot"><span class="card-badge green">Indicadores</span><i class="ti ti-arrow-right card-arrow"></i></div>
+
+      <!-- 3. Indicadores -->
+      <a href="indicadores.html" class="card-box">
+        <div>
+          <div class="card-header-line">
+            <div class="card-icon-wrap ic-emerald">
+              <i class="ti ti-chart-line"></i>
+            </div>
+            <i class="ti ti-arrow-right action-arrow"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Indicadores SGI</div>
+            <p class="card-text">Tablero de KPIs de calidad, medio ambiente y seguridad con control de metas y desvíos.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="badge-code green">Indicadores</span>
+          <span style="font-size: 11px; color:#64748b;">Monitorear</span>
+        </div>
       </a>
+
+      <!-- 4. Contexto y Partes Interesadas -->
+      <a href="contexto.html" class="card-box">
+        <div>
+          <div class="card-header-line">
+            <div class="card-icon-wrap ic-teal">
+              <i class="ti ti-building"></i>
+            </div>
+            <i class="ti ti-arrow-right action-arrow"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Contexto y Partes Interesadas</div>
+            <p class="card-text">Matrices FODA, PESTEL, análisis de riesgos estratégicos y expectativas de las partes interesadas.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="badge-code green">RG-02-01/02</span>
+          <span style="font-size: 11px; color:#64748b;">Explorar</span>
+        </div>
+      </a>
+
+      <!-- 5. Listado de Documentos del SGI -->
+      <a href="documentos.html" class="card-box">
+        <div>
+          <div class="card-header-line">
+            <div class="card-icon-wrap ic-amber">
+              <i class="ti ti-files"></i>
+            </div>
+            <i class="ti ti-arrow-right action-arrow"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Listado de Documentos</div>
+            <p class="card-text">Control de información documentada, procedimientos operativos y registros vigentes del sistema.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="badge-code orange">Control Doc.</span>
+          <span style="font-size: 11px; color:#64748b;">Consultar</span>
+        </div>
+      </a>
+
     </div>
-  </div>
+  </section>
 
-  <div class="section">
-    <p class="section-title">Operaciones</p>
-    <div class="cards">
-      <a href="vehiculos.html" class="card">
-        <div class="card-icon ic-orange"><i class="ti ti-car"></i></div>
-        <p class="card-name">Vehículos</p>
-        <p class="card-desc">Gestión de flota, mantenimientos y licencias — período actual</p>
-        <div class="card-foot"><span class="card-badge">Flota</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
-      <a href="vehiculos-1-2026.html" class="card">
-        <div class="card-icon ic-orange"><i class="ti ti-car"></i></div>
-        <p class="card-name">Vehículos 1-2026</p>
-        <p class="card-desc">Historial de flota período 1 del ejercicio 2026</p>
-        <div class="card-foot"><span class="card-badge">Período 1</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
-      <a href="vehiculos-2-2025.html" class="card">
-        <div class="card-icon ic-gray"><i class="ti ti-car"></i></div>
-        <p class="card-name">Vehículos 2-2025</p>
-        <p class="card-desc">Historial de flota período 2 del ejercicio 2025</p>
-        <div class="card-foot"><span class="card-badge gray">Archivo</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
-      <a href="documentos.html" class="card">
-        <div class="card-icon ic-amber"><i class="ti ti-files"></i></div>
-        <p class="card-name">Documentos</p>
-        <p class="card-desc">Control documental y registros vigentes del SGI</p>
-        <div class="card-foot"><span class="card-badge">Control doc.</span><i class="ti ti-arrow-right card-arrow"></i></div>
-      </a>
+  <!-- ── SECCIÓN 2: OPERACIONES Y GESTIÓN DE FLOTA ── -->
+  <section class="module-section">
+    <div class="section-heading">
+      <i class="ti ti-truck"></i> Operaciones y Recursos
     </div>
-  </div>
-</div>
 
-<div class="section">
-<p class="section-title">Comercial</p>
-<div class="cards">
-<a href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener" class="card">
-<div class="card-icon ic-teal"><i class="ti ti-building-store"></i></div>
-<p class="card-name">CRM Comercial</p>
-<p class="card-desc">Gestión de clientes, oportunidades y seguimiento comercial del equipo</p>
-<div class="card-foot"><span class="card-badge green">CRM</span><i class="ti ti-arrow-right card-arrow"></i></div>
-</a>
-</div>
-</div>
+    <div class="cards-grid">
+
+      <!-- Vehículos agrupado con desplegables -->
+      <div class="dropdown-group" id="group-vehiculos">
+        <div class="card-box">
+          <button type="button" class="dropdown-btn" onclick="toggleDropdown('group-vehiculos', event)">
+            <div class="card-header-line">
+              <div class="card-icon-wrap ic-orange">
+                <i class="ti ti-car"></i>
+              </div>
+              <i class="ti ti-chevron-down action-arrow dropdown-caret"></i>
+            </div>
+            <div class="card-content">
+              <div class="card-title">Flota de Vehículos</div>
+              <p class="card-text">Gestión operativa, mantenimientos, ITV/VTV y asignación de unidades. Selecciona el período:</p>
+            </div>
+          </button>
+          
+          <div class="card-footer">
+            <span class="badge-code orange">Flota</span>
+            <span style="font-size: 11px; color:#ea580c; font-weight:600; cursor:pointer;" onclick="toggleDropdown('group-vehiculos', event)">Elegir período ▾</span>
+          </div>
+        </div>
+
+        <!-- Menú Desplegable con todos los períodos -->
+        <div class="dropdown-menu-list">
+          <a href="vehiculos.html" class="dropdown-item active-item">
+            <span><i class="ti ti-car-suv"></i> Vehículos (Período Actual)</span>
+            <span class="dropdown-subtag" style="background:#dbeafe; color:#1d4ed8;">Vigente</span>
+          </a>
+          <a href="vehiculos-1-2026.html" class="dropdown-item">
+            <span><i class="ti ti-history"></i> Vehículos 1-2026</span>
+            <span class="dropdown-subtag">2026 / P1</span>
+          </a>
+          <a href="vehiculos-2-2025.html" class="dropdown-item">
+            <span><i class="ti ti-archive"></i> Vehículos 2-2025</span>
+            <span class="dropdown-subtag">Histórico</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Personal -->
+      <a href="personal.html" class="card-box">
+        <div>
+          <div class="card-header-line">
+            <div class="card-icon-wrap ic-indigo">
+              <i class="ti ti-users"></i>
+            </div>
+            <i class="ti ti-arrow-right action-arrow"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Gestión de Personal</div>
+            <p class="card-text">Competencias, inducciones, capacitaciones y registros del personal operativo y técnico.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="badge-code gray">Recursos</span>
+          <span style="font-size: 11px; color:#64748b;">Ver legajos</span>
+        </div>
+      </a>
+
+      <!-- CRM Comercial -->
+      <a href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener" class="card-box">
+        <div>
+          <div class="card-header-line">
+            <div class="card-icon-wrap ic-emerald">
+              <i class="ti ti-building-store"></i>
+            </div>
+            <i class="ti ti-external-link action-arrow"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-title">CRM Comercial</div>
+            <p class="card-text">Gestión integral de clientes, cotizaciones, obras en curso y seguimiento de oportunidades.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="badge-code green">Comercial</span>
+          <span style="font-size: 11px; color:#059669;">Abrir aplicación</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+</main>
 
 <script>
-// Valores de referencia (última medición conocida) — se actualizan al visitar cada módulo
-const DEFAULTS = {
-  hallazgos: { total: 638, abiertos: 43 },
-  indicadores: { total: 28, desvios: 5 }
-};
+  // Manejador de apertura y cierre de dropdowns interactivos
+  function toggleDropdown(groupId, event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    const group = document.getElementById(groupId);
+    const isOpen = group.classList.contains('open');
 
-try {
-  const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
-  document.getElementById('en-abiertos').textContent = h.abiertos ?? '—';
-  document.getElementById('es-total-h').textContent = `de ${h.total} hallazgos totales`;
-  document.getElementById('ec-hallazgos').classList.add(h.abiertos > 30 ? 'alerta' : 'ok');
-} catch(e) {}
+    // Cerrar otros dropdowns abiertos
+    document.querySelectorAll('.dropdown-group').forEach(el => el.classList.remove('open'));
 
-try {
-  const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
-  document.getElementById('en-desvios').textContent = i.desvios;
-  document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
-  document.getElementById('ec-indicadores').classList.add(i.desvios > 3 ? 'alerta' : 'ok');
-} catch(e) {}
+    if (!isOpen) {
+      group.classList.add('open');
+    }
+  }
+
+  // Cerrar menús desplegables al hacer clic fuera
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown-group')) {
+      document.querySelectorAll('.dropdown-group').forEach(el => el.classList.remove('open'));
+    }
+  });
+
+  // Valores de referencia (última medición conocida) — se actualizan al visitar cada módulo
+  const DEFAULTS = {
+    hallazgos: { total: 638, abiertos: 43 },
+    indicadores: { total: 28, desvios: 5 }
+  };
+
+  try {
+    const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
+    document.getElementById('en-abiertos').textContent = h.abiertos ?? '—';
+    document.getElementById('es-total-h').textContent = `de ${h.total} hallazgos totales`;
+    document.getElementById('ec-hallazgos').classList.add(h.abiertos > 30 ? 'alerta' : 'ok');
+  } catch(e) {}
+
+  try {
+    const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
+    document.getElementById('en-desvios').textContent = i.desvios;
+    document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
+    document.getElementById('ec-indicadores').classList.add(i.desvios > 3 ? 'alerta' : 'ok');
+  } catch(e) {}
 </script>
+
 <script src="https://accounts.google.com/gsi/client" async></script>
-<style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
-<script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')=== '1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
+<style id="sgi-s">
+  #sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}
+  .sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}
+  .sgi-icon{font-size:2.5rem;margin-bottom:.75rem}
+  .sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}
+  .sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}
+</style>
+
+<div id="sgi-auth-overlay">
+  <div class="sgi-card">
+    <div class="sgi-icon">🔒</div>
+    <div class="sgi-title">SGI · ESINEL</div>
+    <div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div>
+    <div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div>
+  </div>
+</div>
+
+<script id="sgi-js">
+  (function(){
+    if(sessionStorage.getItem('sgi_ok') === '1'){
+      document.getElementById('sgi-auth-overlay').remove();
+      return;
+    }
+    function sgiCb(r){
+      var p=JSON.parse(atob(r.credential.split('.')[1]));
+      if(p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com'){
+        sessionStorage.setItem('sgi_ok','1');
+        document.getElementById('sgi-auth-overlay').remove();
+      }
+    }
+    window.sgiCb = sgiCb;
+  })();
+</script>
 </body>
 </html>
