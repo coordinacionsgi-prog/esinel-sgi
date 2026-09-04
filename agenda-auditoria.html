@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="h-full bg-slate-50 text-slate-800">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Agenda Auditoría ESINEL S.R.L.</title>
+    <title>Dashboard Agenda AuditorÃ­a ESINEL S.R.L.</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,10 +44,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+:root{--bg:#f8fafc;--bg2:#fff;--tx:#1e293b;--tx2:#64748b;--bdr:#e2e8f0}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--tx2:#94a3b8;--bdr:#1e293b}}
+@media(prefers-color-scheme:dark){body{background:var(--bg);color:var(--tx)}.clean-card,.card,.modal,aside,.sidebar{background:var(--bg2)!important;border-color:var(--bdr)!important}input,select,textarea{background:var(--bg2)!important;border-color:var(--bdr)!important;color:var(--tx)!important}}
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+            background-color:var(--bg);
+            color:var(--tx);
         }
         
         .clean-card {
@@ -95,8 +99,12 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
-<!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
+<!-- â–¼â–¼â–¼ ESINEL GLOBAL HEADER â€” do not remove â–¼â–¼â–¼ -->
 <style>
+:root{--bg:#f8fafc;--bg2:#fff;--tx:#1e293b;--tx2:#64748b;--bdr:#e2e8f0}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--tx2:#94a3b8;--bdr:#1e293b}}
+@media(prefers-color-scheme:dark){body{background:var(--bg);color:var(--tx)}.clean-card,.card,.modal,aside,.sidebar{background:var(--bg2)!important;border-color:var(--bdr)!important}input,select,textarea{background:var(--bg2)!important;border-color:var(--bdr)!important;color:var(--tx)!important}}
+
 .esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
 .esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
 .esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
@@ -134,24 +142,24 @@
 </svg>
       <div>
         <div class="esinel-logo-name">ESINEL</div>
-        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
+        <div class="esinel-logo-tagline">Obras ElÃ©ctricas Â· IngenierÃ­a Â· Tableros</div>
         <div class="esinel-logo-certs">
           <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
         </div>
       </div>
     </a>
-    <div class="esinel-badge">SGI · Gestión Integrada</div>
+    <div class="esinel-badge">SGI Â· GestiÃ³n Integrada</div>
   </div>
   <nav class="esinel-nav">
-    <a class="esinel-nav-item" href="index.html">🏠 Inicio</a>
-    <a class="esinel-nav-item" href="hallazgos.html">⚠️ Hallazgos</a>
-    <a class="esinel-nav-item esinel-active" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
-    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
-    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
-    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
-    <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
-    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
-      <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+    <a class="esinel-nav-item" href="index.html">ðŸ  Inicio</a>
+    <a class="esinel-nav-item" href="hallazgos.html">âš ï¸ Hallazgos</a>
+    <a class="esinel-nav-item esinel-active" href="agenda-auditoria.html">ðŸ“‹ Agenda AuditorÃ­a</a>
+    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">ðŸ“Š Informe</a>
+    <a class="esinel-nav-item" href="contexto.html">ðŸŒ Contexto</a>
+    <a class="esinel-nav-item" href="indicadores.html">ðŸ“ˆ Indicadores</a>
+    <a class="esinel-nav-item" href="vehiculos.html">ðŸš— VehÃ­culos</a>
+    <a class="esinel-nav-item" href="documentos.html">ðŸ“„ Documentos</a>
+      <a class="esinel-nav-item" href="personal.html">ðŸ‘¥ Personal</a>
   </nav>
 </div>
 <script>(function(){try{
@@ -165,7 +173,7 @@
       a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
   });
 }catch(e){}})()</script>
-<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
+<!-- â–²â–²â–² /ESINEL GLOBAL HEADER â–²â–²â–² -->
 
 
     <!-- Top Bar Navigation / Header -->
@@ -194,7 +202,7 @@
                         <div class="flex items-center gap-2">
                             <h1 class="text-xl font-bold text-slate-900 tracking-tight">ESINEL S.R.L.</h1>
                             <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-800 border border-sky-200">
-                                Auditoría P2 - DNV
+                                AuditorÃ­a P2 - DNV
                             </span>
                             <!-- Cloud Real-time Status Badge -->
                             <span id="cloud-status-badge" class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1">
@@ -203,8 +211,8 @@
                         </div>
                         <p class="text-xs text-slate-500">
                             <i class="fa-regular fa-calendar-check text-sky-600 mr-1"></i> 27 y 28 de Agosto, 2026 
-                            <span class="mx-1">•</span> 
-                            <i class="fa-solid fa-location-dot text-amber-500 mr-1"></i> HQ Remedios Escalada (Presencial), Santo Tomé (Virtual) & Obra PANALAB (Presencial)
+                            <span class="mx-1">â€¢</span> 
+                            <i class="fa-solid fa-location-dot text-amber-500 mr-1"></i> HQ Remedios Escalada (Presencial), Santo TomÃ© (Virtual) & Obra PANALAB (Presencial)
                         </p>
                     </div>
                 </div>
@@ -253,14 +261,14 @@
                 </div>
             </div>
 
-            <!-- Card 2: Equipo Auditor DNV con Teléfonos y Datos -->
+            <!-- Card 2: Equipo Auditor DNV con TelÃ©fonos y Datos -->
             <div class="clean-card rounded-xl p-4 flex items-start justify-between">
                 <div class="space-y-1.5 w-full">
                     <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Equipo Auditor DNV</span>
                     
                     <div class="text-xs text-slate-800 pt-0.5">
                         <div class="font-bold text-slate-900">
-                            Ricardo Segade <span class="text-[10px] text-amber-600 font-semibold">(Líder - RS)</span>
+                            Ricardo Segade <span class="text-[10px] text-amber-600 font-semibold">(LÃ­der - RS)</span>
                         </div>
                         <p class="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                             <i class="fa-solid fa-phone text-amber-500 text-[10px]"></i> +54 9 11 4405-1319
@@ -269,7 +277,7 @@
 
                     <div class="text-xs text-slate-800 border-t border-slate-100 pt-1.5">
                         <div class="font-bold text-slate-900">
-                            José Costa <span class="text-[10px] text-sky-600 font-semibold">(Auditor - JC)</span>
+                            JosÃ© Costa <span class="text-[10px] text-sky-600 font-semibold">(Auditor - JC)</span>
                         </div>
                         <p class="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                             <i class="fa-solid fa-phone text-sky-500 text-[10px]"></i> +54 9 11 5516-5699
@@ -284,7 +292,7 @@
             <!-- Card 3: Modalidad Desglosada -->
             <div class="clean-card rounded-xl p-4 flex items-start justify-between">
                 <div class="space-y-1">
-                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Modalidades de Auditoría</span>
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Modalidades de AuditorÃ­a</span>
                     <div class="text-xs font-bold text-slate-800 pt-1 space-y-1">
                         <div class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -292,7 +300,7 @@
                         </div>
                         <div class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-                            <span>Santo Tomé: <strong class="text-sky-700">Virtual (TIC)</strong></span>
+                            <span>Santo TomÃ©: <strong class="text-sky-700">Virtual (TIC)</strong></span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-amber-500"></span>
@@ -305,14 +313,14 @@
                 </div>
             </div>
 
-            <!-- Card 4: Foco Estratégico ESINEL / DNV -->
+            <!-- Card 4: Foco EstratÃ©gico ESINEL / DNV -->
             <div class="clean-card rounded-xl p-4 flex items-start justify-between">
                 <div class="space-y-1 pr-2 flex-1">
                     <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block">
-                        <i class="fa-solid fa-bullseye mr-1"></i> Foco de Interés DNV
+                        <i class="fa-solid fa-bullseye mr-1"></i> Foco de InterÃ©s DNV
                     </span>
                     <p class="text-xs text-slate-700 font-medium leading-relaxed pt-0.5">
-                        Potenciar recursos humanos con la fidelización del personal, impulsando la autogestión, la capacitación y fortaleciendo las comunicaciones internas.
+                        Potenciar recursos humanos con la fidelizaciÃ³n del personal, impulsando la autogestiÃ³n, la capacitaciÃ³n y fortaleciendo las comunicaciones internas.
                     </p>
                 </div>
                 <div class="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex-shrink-0">
@@ -332,21 +340,21 @@
                     <i class="fa-solid fa-users"></i> Participantes & Roles
                 </button>
                 <button onclick="switchTab('normas')" id="tab-btn-normas" class="tab-btn px-4 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2">
-                    <i class="fa-solid fa-list-check"></i> Cobertura Cláusulas ISO
+                    <i class="fa-solid fa-list-check"></i> Cobertura ClÃ¡usulas ISO
                 </button>
                 <button onclick="switchTab('ubicaciones')" id="tab-btn-ubicaciones" class="tab-btn px-4 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2">
-                    <i class="fa-solid fa-map-location-dot"></i> Auditores & Datos Logísticos
+                    <i class="fa-solid fa-map-location-dot"></i> Auditores & Datos LogÃ­sticos
                 </button>
                 <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2">
                     <i class="fa-solid fa-tasks"></i> Checklist
                 </button>
-                <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+                <a class="esinel-nav-item" href="personal.html">ðŸ‘¥ Personal</a>
   </nav>
 
             <!-- Global Search Box -->
             <div class="relative min-w-[260px] flex-1 sm:flex-none">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
-                <input type="text" id="global-search" onkeyup="handleSearch()" placeholder="Buscar proceso, persona, obra o cláusula (ej: PANALAB, Compras)..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-white border border-slate-300 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition shadow-sm">
+                <input type="text" id="global-search" onkeyup="handleSearch()" placeholder="Buscar proceso, persona, obra o clÃ¡usula (ej: PANALAB, Compras)..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-white border border-slate-300 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition shadow-sm">
             </div>
         </div>
 
@@ -358,15 +366,15 @@
                 
                 <!-- Day Selector -->
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-slate-500 uppercase mr-1">Día:</span>
+                    <span class="text-xs font-bold text-slate-500 uppercase mr-1">DÃ­a:</span>
                     <button onclick="filterDay('all')" id="day-btn-all" class="day-filter-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-sky-600 text-white shadow-sm transition">
-                        Ambos Días
+                        Ambos DÃ­as
                     </button>
                     <button onclick="filterDay('1')" id="day-btn-1" class="day-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                        Día 1 (27/8)
+                        DÃ­a 1 (27/8)
                     </button>
                     <button onclick="filterDay('2')" id="day-btn-2" class="day-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                        Día 2 (28/8)
+                        DÃ­a 2 (28/8)
                     </button>
                 </div>
 
@@ -380,16 +388,16 @@
                         <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1"></span> RS (Ricardo Segade)
                     </button>
                     <button onclick="filterAuditor('JC')" id="auditor-btn-JC" class="auditor-filter-btn px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">
-                        <span class="inline-block w-2 h-2 rounded-full bg-sky-500 mr-1"></span> JC (José Costa)
+                        <span class="inline-block w-2 h-2 rounded-full bg-sky-500 mr-1"></span> JC (JosÃ© Costa)
                     </button>
                 </div>
 
                 <!-- View Switcher -->
                 <div class="flex items-center gap-1 border border-slate-200 rounded-lg p-0.5 bg-slate-50">
-                    <button onclick="setViewMode('parallel')" id="view-parallel-btn" class="px-2.5 py-1 text-xs rounded font-medium text-sky-700 bg-white shadow-sm" title="Vista Simultánea en Paralelo">
+                    <button onclick="setViewMode('parallel')" id="view-parallel-btn" class="px-2.5 py-1 text-xs rounded font-medium text-sky-700 bg-white shadow-sm" title="Vista SimultÃ¡nea en Paralelo">
                         <i class="fa-solid fa-columns mr-1"></i> Columnas Paralelas
                     </button>
-                    <button onclick="setViewMode('table')" id="view-table-btn" class="px-2.5 py-1 text-xs rounded font-medium text-slate-600 hover:text-slate-900" title="Vista Tabla Clásica">
+                    <button onclick="setViewMode('table')" id="view-table-btn" class="px-2.5 py-1 text-xs rounded font-medium text-slate-600 hover:text-slate-900" title="Vista Tabla ClÃ¡sica">
                         <i class="fa-solid fa-list mr-1"></i> Lista
                     </button>
                 </div>
@@ -398,7 +406,7 @@
             <!-- Active Filters Reset Bar -->
             <div id="active-filters-bar" class="hidden text-xs text-slate-500 flex items-center justify-between px-1">
                 <span>Sesiones encontradas: <strong id="result-count" class="text-sky-600">0</strong></span>
-                <button onclick="resetAgendaFilters()" class="text-sky-600 hover:underline font-semibold">Limpiar filtros de búsqueda</button>
+                <button onclick="resetAgendaFilters()" class="text-sky-600 hover:underline font-semibold">Limpiar filtros de bÃºsqueda</button>
             </div>
 
             <!-- PARALLEL TIMELINE VIEW -->
@@ -410,7 +418,7 @@
                     <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
                             <span class="px-3 py-1 rounded-lg bg-amber-500 text-slate-900 font-extrabold text-sm shadow-sm">
-                                DÍA 1
+                                DÃA 1
                             </span>
                             <div>
                                 <h2 class="text-lg font-bold text-slate-900">Jueves 27 de Agosto, 2026</h2>
@@ -418,7 +426,7 @@
                             </div>
                         </div>
                         <div class="text-xs text-amber-800 bg-amber-100/80 px-3 py-1.5 rounded-lg border border-amber-200 font-medium">
-                            <i class="fa-solid fa-network-wired mr-1"></i> 2 Pistas Auditoras en Simultáneo
+                            <i class="fa-solid fa-network-wired mr-1"></i> 2 Pistas Auditoras en SimultÃ¡neo
                         </div>
                     </div>
 
@@ -443,12 +451,12 @@
                             </div>
                         </div>
 
-                        <!-- Track B: JC (José Costa) -->
+                        <!-- Track B: JC (JosÃ© Costa) -->
                         <div class="space-y-4">
                             <div class="flex items-center justify-between bg-slate-100 p-3 rounded-xl border border-slate-200">
                                 <div class="flex items-center gap-2">
                                     <div class="w-3 h-3 rounded-full bg-sky-500"></div>
-                                    <h3 class="font-bold text-slate-900 text-sm">PISTA B: José Costa (JC)</h3>
+                                    <h3 class="font-bold text-slate-900 text-sm">PISTA B: JosÃ© Costa (JC)</h3>
                                 </div>
                                 <span class="text-xs px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-semibold border border-sky-200">HQ Remedios</span>
                             </div>
@@ -467,15 +475,15 @@
                     <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
                             <span class="px-3 py-1 rounded-lg bg-sky-600 text-white font-extrabold text-sm shadow-sm">
-                                DÍA 2
+                                DÃA 2
                             </span>
                             <div>
                                 <h2 class="text-lg font-bold text-slate-900">Viernes 28 de Agosto, 2026</h2>
-                                <p class="text-xs text-slate-600">Jornada Final - Casa Central (Presencial), Sitio Santo Tomé (Virtual) & Obra PANALAB (Presencial)</p>
+                                <p class="text-xs text-slate-600">Jornada Final - Casa Central (Presencial), Sitio Santo TomÃ© (Virtual) & Obra PANALAB (Presencial)</p>
                             </div>
                         </div>
                         <div class="text-xs text-sky-800 bg-sky-100/80 px-3 py-1.5 rounded-lg border border-sky-200 font-medium">
-                            <i class="fa-solid fa-location-crosshairs mr-1"></i> Auditoría Descentralizada por Sitio y Modalidad
+                            <i class="fa-solid fa-location-crosshairs mr-1"></i> AuditorÃ­a Descentralizada por Sitio y Modalidad
                         </div>
                     </div>
 
@@ -497,14 +505,14 @@
                             </div>
                         </div>
 
-                        <!-- Track B: Santo Tomé / Obra PANALAB (JC) -->
+                        <!-- Track B: Santo TomÃ© / Obra PANALAB (JC) -->
                         <div class="space-y-4">
                             <div class="flex items-center justify-between bg-slate-100 p-3 rounded-xl border border-slate-200">
                                 <div class="flex items-center gap-2">
                                     <div class="w-3 h-3 rounded-full bg-sky-500"></div>
-                                    <h3 class="font-bold text-slate-900 text-sm">PISTA B: José Costa (JC)</h3>
+                                    <h3 class="font-bold text-slate-900 text-sm">PISTA B: JosÃ© Costa (JC)</h3>
                                 </div>
-                                <span class="text-xs px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-semibold border border-sky-200">Santo Tomé (Virtual) & PANALAB (Presencial)</span>
+                                <span class="text-xs px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-semibold border border-sky-200">Santo TomÃ© (Virtual) & PANALAB (Presencial)</span>
                             </div>
 
                             <div id="day2-track-jc" class="space-y-4">
@@ -526,12 +534,12 @@
                     <table class="w-full text-left text-xs text-slate-700">
                         <thead class="bg-slate-100 text-slate-600 font-semibold uppercase tracking-wider border-b border-slate-200">
                             <tr>
-                                <th class="p-3">Día / Hora</th>
+                                <th class="p-3">DÃ­a / Hora</th>
                                 <th class="p-3">Proceso / Actividad</th>
                                 <th class="p-3">Auditor</th>
                                 <th class="p-3">Lugar / Modalidad</th>
                                 <th class="p-3">Participantes Convocados</th>
-                                <th class="p-3">Link Reunión</th>
+                                <th class="p-3">Link ReuniÃ³n</th>
                             </tr>
                         </thead>
                         <tbody id="agenda-table-body" class="divide-y divide-slate-200">
@@ -549,15 +557,15 @@
             <div class="clean-card rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-sky-600"></i> Directorio de Auditados por Rol y Área
+                        <i class="fa-solid fa-users text-sky-600"></i> Directorio de Auditados por Rol y Ãrea
                     </h2>
                     <p class="text-xs text-slate-500 mt-1">
-                        Consulte y edite quiénes participan en cada sección organizados por jerarquía y sector. Los cambios se guardan automáticamente.
+                        Consulte y edite quiÃ©nes participan en cada secciÃ³n organizados por jerarquÃ­a y sector. Los cambios se guardan automÃ¡ticamente.
                     </p>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="syncDirectorySchedules()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5" title="Sincronizar automáticamente con la agenda actual">
+                    <button onclick="syncDirectorySchedules()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5" title="Sincronizar automÃ¡ticamente con la agenda actual">
                         <i class="fa-solid fa-rotate text-xs"></i> Sincronizar Horarios
                     </button>
                     <button onclick="openAddParticipantModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
@@ -569,12 +577,12 @@
             <!-- Department / Role Filters -->
             <div class="flex flex-wrap gap-1.5 pb-1">
                 <button onclick="filterParticipants('all')" class="part-filter-btn px-3 py-1 text-xs font-semibold rounded-lg bg-sky-600 text-white">Todos</button>
-                <button onclick="filterParticipants('Dirección')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-user-tie mr-1 text-purple-600"></i> Dirección</button>
-                <button onclick="filterParticipants('Ingeniería')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-drafting-compass mr-1 text-indigo-600"></i> Ingeniería</button>
-                <button onclick="filterParticipants('Producción')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-industry mr-1 text-emerald-600"></i> Producción / Taller</button>
+                <button onclick="filterParticipants('DirecciÃ³n')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-user-tie mr-1 text-purple-600"></i> DirecciÃ³n</button>
+                <button onclick="filterParticipants('IngenierÃ­a')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-drafting-compass mr-1 text-indigo-600"></i> IngenierÃ­a</button>
+                <button onclick="filterParticipants('ProducciÃ³n')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-industry mr-1 text-emerald-600"></i> ProducciÃ³n / Taller</button>
                 <button onclick="filterParticipants('Obras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-helmet-safety mr-1 text-amber-600"></i> Obras</button>
                 <button onclick="filterParticipants('RRHH')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-heart-pulse mr-1 text-rose-600"></i> RRHH, SGI & SySO</button>
-                <button onclick="filterParticipants('Administración')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-calculator mr-1 text-blue-600"></i> Administración</button>
+                <button onclick="filterParticipants('AdministraciÃ³n')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-calculator mr-1 text-blue-600"></i> AdministraciÃ³n</button>
                 <button onclick="filterParticipants('Comercial')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-chart-line mr-1 text-cyan-600"></i> Comercial</button>
                 <button onclick="filterParticipants('Compras')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-cart-shopping mr-1 text-orange-600"></i> Compras</button>
                 <button onclick="filterParticipants('Abastecimiento')" class="part-filter-btn px-3 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-boxes-packing mr-1 text-teal-600"></i> Abastecimiento</button>
@@ -586,17 +594,17 @@
             </div>
         </section>
 
-        <!-- TAB 3: COBERTURA CLÁUSULAS ISO -->
+        <!-- TAB 3: COBERTURA CLÃUSULAS ISO -->
         <section id="tab-content-normas" class="tab-content hidden space-y-6">
             
             <div class="clean-card rounded-2xl p-5 space-y-4">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-amber-600"></i> Matriz Interactiva de Cláusulas Normativas
+                            <i class="fa-solid fa-list-check text-amber-600"></i> Matriz Interactiva de ClÃ¡usulas Normativas
                         </h2>
                         <p class="text-xs text-slate-500 mt-1">
-                            Seleccione una norma o haga clic en cualquier requisito oficial para ver las reuniones de auditoría correspondientes.
+                            Seleccione una norma o haga clic en cualquier requisito oficial para ver las reuniones de auditorÃ­a correspondientes.
                         </p>
                     </div>
 
@@ -632,10 +640,10 @@
                         <span class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">Calidad</span>
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Diseño, desarrollo, ejecución, montaje, puesta en marcha y gerenciamiento de obras de ingeniería eléctrica. Armado de tableros eléctricos.
+                        DiseÃ±o, desarrollo, ejecuciÃ³n, montaje, puesta en marcha y gerenciamiento de obras de ingenierÃ­a elÃ©ctrica. Armado de tableros elÃ©ctricos.
                     </p>
                     <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-100 space-y-1">
-                        <p><strong>Cláusulas Clave:</strong> 8.1 Planificación, 8.2 Requisitos clientes, 8.3 Diseño y desarrollo, 8.4 Compras y proveedores, 8.5 Producción y servicio, 8.7 Salidas no conformes.</p>
+                        <p><strong>ClÃ¡usulas Clave:</strong> 8.1 PlanificaciÃ³n, 8.2 Requisitos clientes, 8.3 DiseÃ±o y desarrollo, 8.4 Compras y proveedores, 8.5 ProducciÃ³n y servicio, 8.7 Salidas no conformes.</p>
                     </div>
                 </div>
 
@@ -646,10 +654,10 @@
                         <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Medio Ambiente</span>
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Gestión ambiental aplicable a operaciones de taller, obras de montaje eléctrico, logística y depósitos con perspectiva de ciclo de vida.
+                        GestiÃ³n ambiental aplicable a operaciones de taller, obras de montaje elÃ©ctrico, logÃ­stica y depÃ³sitos con perspectiva de ciclo de vida.
                     </p>
                     <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-100 space-y-1">
-                        <p><strong>Cláusulas Clave:</strong> 6.1.2 Aspectos ambientales, 6.1.3 Requisitos legales, 8.1 Control operacional, 8.2 Respuesta ante emergencias, 9.1.2 Evaluación del cumplimiento.</p>
+                        <p><strong>ClÃ¡usulas Clave:</strong> 6.1.2 Aspectos ambientales, 6.1.3 Requisitos legales, 8.1 Control operacional, 8.2 Respuesta ante emergencias, 9.1.2 EvaluaciÃ³n del cumplimiento.</p>
                     </div>
                 </div>
 
@@ -660,10 +668,10 @@
                         <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">SST</span>
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Seguridad y salud en el trabajo para obras eléctricas, taller de tableros y mantenimiento con enfoque de prevención y participación.
+                        Seguridad y salud en el trabajo para obras elÃ©ctricas, taller de tableros y mantenimiento con enfoque de prevenciÃ³n y participaciÃ³n.
                     </p>
                     <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-100 space-y-1">
-                        <p><strong>Cláusulas Clave:</strong> 5.4 Consulta y participación, 6.1.2 Identificación de peligros, 8.1.2 Eliminar peligros, 8.1.3 Gestión del cambio, 8.1.4 Contratistas.</p>
+                        <p><strong>ClÃ¡usulas Clave:</strong> 5.4 Consulta y participaciÃ³n, 6.1.2 IdentificaciÃ³n de peligros, 8.1.2 Eliminar peligros, 8.1.3 GestiÃ³n del cambio, 8.1.4 Contratistas.</p>
                     </div>
                 </div>
             </div>
@@ -680,7 +688,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900 text-base">Datos Personales y de Contacto - Equipo DNV</h3>
-                        <p class="text-xs text-slate-500">Información de identificación para ingresos y coordinación logística</p>
+                        <p class="text-xs text-slate-500">InformaciÃ³n de identificaciÃ³n para ingresos y coordinaciÃ³n logÃ­stica</p>
                     </div>
                 </div>
 
@@ -689,7 +697,7 @@
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
                         <div class="flex items-center justify-between border-b border-slate-200 pb-2">
                             <h4 class="font-bold text-slate-900 text-sm">Ricardo Segade Benito</h4>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Auditor Líder (RS)</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Auditor LÃ­der (RS)</span>
                         </div>
                         <div class="space-y-1.5 text-slate-700 pt-1">
                             <p><i class="fa-solid fa-phone text-amber-500 w-5"></i> <strong>Celular:</strong> +54 9 11 4405-1319</p>
@@ -698,10 +706,10 @@
                         </div>
                     </div>
 
-                    <!-- Auditor 2: José Alfredo Costa -->
+                    <!-- Auditor 2: JosÃ© Alfredo Costa -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
                         <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-                            <h4 class="font-bold text-slate-900 text-sm">José Alfredo Costa</h4>
+                            <h4 class="font-bold text-slate-900 text-sm">JosÃ© Alfredo Costa</h4>
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-300">Auditor (JC)</span>
                         </div>
                         <div class="space-y-1.5 text-slate-700 pt-1">
@@ -728,28 +736,28 @@
                         </div>
                     </div>
                     <div class="text-xs space-y-2 text-slate-700 pt-2 border-t border-slate-100">
-                        <p><strong class="text-slate-900">Dirección:</strong> Remedios Escalada de San Martín 743, CABA</p>
+                        <p><strong class="text-slate-900">DirecciÃ³n:</strong> Remedios Escalada de San MartÃ­n 743, CABA</p>
                         <p><strong class="text-slate-900">Contacto Principal:</strong> Marcelo Piccione (<a href="mailto:mnpiccione@esinel.com.ar" class="text-sky-600 hover:underline">mnpiccione@esinel.com.ar</a>)</p>
-                        <p><strong class="text-slate-900">Teléfono:</strong> +54 4585-3173</p>
-                        <p><strong class="text-slate-900">Auditor Principal Líder:</strong> Ricardo Segade (RS)</p>
+                        <p><strong class="text-slate-900">TelÃ©fono:</strong> +54 4585-3173</p>
+                        <p><strong class="text-slate-900">Auditor Principal LÃ­der:</strong> Ricardo Segade (RS)</p>
                     </div>
                 </div>
 
-                <!-- Location 2: Santo Tomé -->
+                <!-- Location 2: Santo TomÃ© -->
                 <div class="clean-card rounded-2xl p-5 space-y-3 border-l-4 border-l-sky-500">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-xl bg-sky-100 text-sky-700 border border-sky-200">
                             <i class="fa-solid fa-industry text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-base">SITIO SANTO TOMÉ</h3>
+                            <h3 class="font-bold text-slate-900 text-base">SITIO SANTO TOMÃ‰</h3>
                             <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-sky-100 text-sky-800 border border-sky-300">VIRTUAL (TIC)</span>
                         </div>
                     </div>
                     <div class="text-xs space-y-2 text-slate-700 pt-2 border-t border-slate-100">
-                        <p><strong class="text-slate-900">Procesos Evaluados:</strong> Administración, Comercial y Pañol (Remoto/TIC).</p>
-                        <p><strong class="text-slate-900">Referentes en Sitio:</strong> Juan Monti / Miguel Ángel Citta / Marisa Cercos</p>
-                        <p><strong class="text-slate-900">Auditor Asignado Día 2:</strong> José Costa (JC)</p>
+                        <p><strong class="text-slate-900">Procesos Evaluados:</strong> AdministraciÃ³n, Comercial y PaÃ±ol (Remoto/TIC).</p>
+                        <p><strong class="text-slate-900">Referentes en Sitio:</strong> Juan Monti / Miguel Ãngel Citta / Marisa Cercos</p>
+                        <p><strong class="text-slate-900">Auditor Asignado DÃ­a 2:</strong> JosÃ© Costa (JC)</p>
                     </div>
                 </div>
 
@@ -765,9 +773,9 @@
                         </div>
                     </div>
                     <div class="text-xs space-y-2 text-slate-700 pt-2 border-t border-slate-100">
-                        <p><strong class="text-slate-900">Proceso Evaluado:</strong> Obras, montaje, puesta en marcha y gerenciamiento eléctrico.</p>
-                        <p><strong class="text-slate-900">Referentes de Obra:</strong> Hernán Giacobbe (Gte. Obras), Daniel Carena (Jefe de Obra)</p>
-                        <p><strong class="text-slate-900">Auditor Asignado Día 2:</strong> José Costa (JC - 13:30 hs In Situ)</p>
+                        <p><strong class="text-slate-900">Proceso Evaluado:</strong> Obras, montaje, puesta en marcha y gerenciamiento elÃ©ctrico.</p>
+                        <p><strong class="text-slate-900">Referentes de Obra:</strong> HernÃ¡n Giacobbe (Gte. Obras), Daniel Carena (Jefe de Obra)</p>
+                        <p><strong class="text-slate-900">Auditor Asignado DÃ­a 2:</strong> JosÃ© Costa (JC - 13:30 hs In Situ)</p>
                     </div>
                 </div>
             </div>
@@ -777,7 +785,7 @@
                 <div class="flex items-center gap-3">
                     <i class="fa-solid fa-headset text-2xl text-sky-600"></i>
                     <div>
-                        <h3 class="font-bold text-slate-900 text-base">Protocolo de Auditoría Mixta (TIC)</h3>
+                        <h3 class="font-bold text-slate-900 text-base">Protocolo de AuditorÃ­a Mixta (TIC)</h3>
                         <p class="text-xs text-slate-500">Condiciones evaluadas y aprobadas por DNV</p>
                     </div>
                 </div>
@@ -785,32 +793,32 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                     <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                         <div class="font-bold text-sky-700 mb-1"><i class="fa-solid fa-laptop mr-1"></i> Hardware</div>
-                        <p class="text-slate-600">Laptops institucionales y teléfonos celulares con cámara activada para recorridas in-situ de pañol, taller y Obra PANALAB.</p>
+                        <p class="text-slate-600">Laptops institucionales y telÃ©fonos celulares con cÃ¡mara activada para recorridas in-situ de paÃ±ol, taller y Obra PANALAB.</p>
                     </div>
                     <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                         <div class="font-bold text-sky-700 mb-1"><i class="fa-brands fa-microsoft mr-1"></i> Software & Videollamadas</div>
-                        <p class="text-slate-600">MS Teams y Google Meet para reuniones virtuales, presentación de pantalla y soporte por WhatsApp.</p>
+                        <p class="text-slate-600">MS Teams y Google Meet para reuniones virtuales, presentaciÃ³n de pantalla y soporte por WhatsApp.</p>
                     </div>
                     <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                         <div class="font-bold text-sky-700 mb-1"><i class="fa-solid fa-shield-halved mr-1"></i> Requisito ENAC ISO 45001</div>
-                        <p class="text-slate-600">Se debe invitar al Servicio Médico (SUMO) y delegados de SST a la reunión de cierre.</p>
+                        <p class="text-slate-600">Se debe invitar al Servicio MÃ©dico (SUMO) y delegados de SST a la reuniÃ³n de cierre.</p>
                     </div>
                 </div>
             </div>
 
         </section>
 
-        <!-- TAB 5: CHECKLIST DE PREPARACIÓN -->
+        <!-- TAB 5: CHECKLIST DE PREPARACIÃ“N -->
         <section id="tab-content-checklist" class="tab-content hidden space-y-6">
             
             <div class="clean-card rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-square-check text-emerald-600"></i> Checklist Interno de Preparación ESINEL
+                            <i class="fa-solid fa-square-check text-emerald-600"></i> Checklist Interno de PreparaciÃ³n ESINEL
                         </h2>
                         <p class="text-xs text-slate-500 mt-1">
-                            Verifique que los ítems logísticos y documentales estén listos. Los cambios se guardan automáticamente.
+                            Verifique que los Ã­tems logÃ­sticos y documentales estÃ©n listos. Los cambios se guardan automÃ¡ticamente.
                         </p>
                     </div>
                     <button onclick="resetChecklist()" class="text-xs text-slate-500 hover:text-rose-600 underline">
@@ -848,7 +856,7 @@
                     <span id="modal-auditor" class="text-slate-900 font-bold"></span>
                 </div>
                 <div>
-                    <span class="text-slate-500 font-semibold block mb-0.5">Ubicación / Sitio / Modalidad:</span>
+                    <span class="text-slate-500 font-semibold block mb-0.5">UbicaciÃ³n / Sitio / Modalidad:</span>
                     <span id="modal-location" class="text-slate-800"></span>
                 </div>
                 <div>
@@ -862,7 +870,7 @@
                     <div id="modal-attendees-view" class="bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed text-slate-800"></div>
                     <!-- Edit Mode -->
                     <div id="modal-attendees-edit" class="hidden space-y-2 pt-1">
-                        <textarea id="modal-attendees-input" rows="3" class="w-full p-2.5 text-xs rounded-xl border border-sky-300 focus:ring-2 focus:ring-sky-500 focus:outline-none text-slate-800" placeholder="Escribí los nombres y cargos de los auditados..."></textarea>
+                        <textarea id="modal-attendees-input" rows="3" class="w-full p-2.5 text-xs rounded-xl border border-sky-300 focus:ring-2 focus:ring-sky-500 focus:outline-none text-slate-800" placeholder="EscribÃ­ los nombres y cargos de los auditados..."></textarea>
                         <div class="flex justify-end gap-2">
                             <button onclick="cancelEditAttendees()" class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium">Cancelar</button>
                             <button onclick="saveAttendeesFromModal()" class="px-3 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center gap-1">
@@ -872,7 +880,7 @@
                     </div>
                 </div>
                 <div>
-                    <span class="text-slate-500 font-semibold block mb-0.5">Cláusulas / Requisitos ISO evaluados:</span>
+                    <span class="text-slate-500 font-semibold block mb-0.5">ClÃ¡usulas / Requisitos ISO evaluados:</span>
                     <div id="modal-clauses" class="flex flex-wrap gap-1.5 pt-1"></div>
                 </div>
 
@@ -909,7 +917,7 @@
             </h3>
             <p id="prompt-session-title" class="text-xs text-slate-600 font-medium"></p>
             
-            <input type="url" id="fast-meet-input" placeholder="Pegá el link de Meet o Teams aquí..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <input type="url" id="fast-meet-input" placeholder="PegÃ¡ el link de Meet o Teams aquÃ­..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
 
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeFastLinkModal()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">Cancelar</button>
@@ -928,32 +936,32 @@
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Nombre Completo:</label>
-                    <input type="text" id="part-input-name" placeholder="Ej: Juan Pérez" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    <input type="text" id="part-input-name" placeholder="Ej: Juan PÃ©rez" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Puesto / Rol:</label>
                     <input type="text" id="part-input-role" placeholder="Ej: Jefe de Calidad" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Área / Categoría:</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Ãrea / CategorÃ­a:</label>
                     <select id="part-input-area" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
-                        <option value="Dirección">Dirección</option>
-                        <option value="Ingeniería">Ingeniería</option>
-                        <option value="Producción">Producción / Taller</option>
+                        <option value="DirecciÃ³n">DirecciÃ³n</option>
+                        <option value="IngenierÃ­a">IngenierÃ­a</option>
+                        <option value="ProducciÃ³n">ProducciÃ³n / Taller</option>
                         <option value="Obras">Obras</option>
                         <option value="RRHH">RRHH, SGI & SySO</option>
-                        <option value="Administración">Administración</option>
+                        <option value="AdministraciÃ³n">AdministraciÃ³n</option>
                         <option value="Comercial">Comercial</option>
                         <option value="Compras">Compras</option>
                         <option value="Abastecimiento">Abastecimiento</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Horarios Día 1:</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Horarios DÃ­a 1:</label>
                     <input type="text" id="part-input-day1" placeholder="Ej: 08:00 (Apertura), 13:00 (Taller)" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Horarios Día 2:</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Horarios DÃ­a 2:</label>
                     <input type="text" id="part-input-day2" placeholder="Ej: 17:00 (Cierre)" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
                 </div>
             </div>
@@ -968,12 +976,12 @@
     <!-- Toast Notification -->
     <div id="toast-notification" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs flex items-center gap-2">
         <i class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toast-message">Notificación</span>
+        <span id="toast-message">NotificaciÃ³n</span>
     </div>
 
     <!-- Footer -->
     <footer class="no-print border-t border-slate-200 bg-white mt-12 py-4 text-center text-xs text-slate-500">
-        <p>Dashboard Interactivo ESINEL S.R.L. © 2026 | Auditoría DNV P2 (ISO 9001 / 14001 / 45001)</p>
+        <p>Dashboard Interactivo ESINEL S.R.L. Â© 2026 | AuditorÃ­a DNV P2 (ISO 9001 / 14001 / 45001)</p>
     </footer>
 
     <!-- Firebase SDK Imports & Real-time Integration -->
@@ -1105,18 +1113,18 @@
         }
 
         const AGENDA_DATA = [
-            // DÍA 1
+            // DÃA 1
             {
                 id: 'd1-opening',
                 day: '1',
                 date: '27/08/2026',
                 time: '08:00',
-                title: 'Reunión de Apertura con la Alta Dirección',
+                title: 'ReuniÃ³n de Apertura con la Alta DirecciÃ³n',
                 auditorCode: 'RS / JC',
-                auditorName: 'Ricardo Segade (RS) & José Costa (JC)',
+                auditorName: 'Ricardo Segade (RS) & JosÃ© Costa (JC)',
                 track: 'joint',
                 location: 'Casa Central HQ (Presencial)',
-                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Tomás, Lisandro Fissolo, Nahuel, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos',
+                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, TomÃ¡s, Lisandro Fissolo, Nahuel, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos',
                 clauses: ['4.1', '4.2', '5.1', '5.2', '5.3', '5.4']
             },
             {
@@ -1129,7 +1137,7 @@
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Sala Compras (Presencial)',
-                attendees: 'Daniel Lértora, Tomás, José Luis Casares, Carlos de Abrantes',
+                attendees: 'Daniel LÃ©rtora, TomÃ¡s, JosÃ© Luis Casares, Carlos de Abrantes',
                 clauses: ['4.4', '5.3', '6.1', '6.2', '6.3', '7.1', '8.1', '8.4', '9.1', '10.2', '10.3']
             },
             {
@@ -1137,12 +1145,12 @@
                 day: '1',
                 date: '27/08/2026',
                 time: '11:00 - 12:30',
-                title: 'Recursos Humanos & Servicio Médico',
+                title: 'Recursos Humanos & Servicio MÃ©dico',
                 auditorCode: 'RS',
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Casa Central - Oficina RRHH (Presencial)',
-                attendees: 'Clarisa Piccione, Patricia Rodríguez, Mercedes Nahas, Servicio Médico (SUMO)',
+                attendees: 'Clarisa Piccione, Patricia RodrÃ­guez, Mercedes Nahas, Servicio MÃ©dico (SUMO)',
                 clauses: ['4.4', '5.3', '5.4', '6.1', '6.2', '7.1', '7.2', '7.3', '8.1', '9.1', '10.2']
             },
             {
@@ -1150,12 +1158,12 @@
                 day: '1',
                 date: '27/08/2026',
                 time: '13:00 - 16:00',
-                title: 'Depósito / Taller de ARMADO de Tableros Eléctricos',
+                title: 'DepÃ³sito / Taller de ARMADO de Tableros ElÃ©ctricos',
                 auditorCode: 'RS',
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
                 location: 'Taller de Tableros In Situ (Presencial)',
-                attendees: 'Oscar Schmuth (Gte Producción), Sergio Donda (Jefe Taller), Claudio Salazar (Of. Electricista), Mariano Prieto (Resp SySO), Bautista Iestra (Asist SySO)',
+                attendees: 'Oscar Schmuth (Gte ProducciÃ³n), Sergio Donda (Jefe Taller), Claudio Salazar (Of. Electricista), Mariano Prieto (Resp SySO), Bautista Iestra (Asist SySO)',
                 clauses: ['4.4', '8.1', '8.2', '8.4', '8.5', '8.6', '8.7', '9.1']
             },
             {
@@ -1167,7 +1175,7 @@
                 auditorCode: 'RS',
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
-                location: 'Casa Central - Pañol / Mantenimiento (Presencial)',
+                location: 'Casa Central - PaÃ±ol / Mantenimiento (Presencial)',
                 attendees: 'Oscar Schmuth, Sergio Donda, Claudio Salazar, Mariano Prieto, Bautista Iestra',
                 clauses: ['7.1.5', '8.1', '8.5.1', '9.1']
             },
@@ -1176,12 +1184,12 @@
                 day: '1',
                 date: '27/08/2026',
                 time: '08:15 - 11:00',
-                title: 'Diseño e Ingeniería Electromecánica (Unificado CABA)',
+                title: 'DiseÃ±o e IngenierÃ­a ElectromecÃ¡nica (Unificado CABA)',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
-                location: 'Casa Central - Oficina Ingeniería (Presencial)',
-                attendees: 'Martín Diamanti (Gte Ingeniería), Juan Monti (Líder Ing), Francisco Briani, Miguel Ángel Citta, Pablo Barrionuevo, Facundo Guerrero, Gonzalo Gigliotti, Sebastian Bechard.',
+                location: 'Casa Central - Oficina IngenierÃ­a (Presencial)',
+                attendees: 'MartÃ­n Diamanti (Gte IngenierÃ­a), Juan Monti (LÃ­der Ing), Francisco Briani, Miguel Ãngel Citta, Pablo Barrionuevo, Facundo Guerrero, Gonzalo Gigliotti, Sebastian Bechard.',
                 clauses: ['8.1', '8.3', '6.1', '6.2']
             },
             {
@@ -1189,22 +1197,22 @@
                 day: '1',
                 date: '27/08/2026',
                 time: '14:00 - 16:15',
-                title: 'Evaluación Sistema Integrado de Gestión (SGI) - JC',
+                title: 'EvaluaciÃ³n Sistema Integrado de GestiÃ³n (SGI) - JC',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
                 location: 'Casa Central - Oficina SGI (Presencial / Virtual)',
                 attendees: 'Thiago Baira (Resp. SGI)',
                 clauses: ['4.1', '4.2', '4.3', '4.4', '6.1', '7.5', '9.2', '10.2']
             },
 
-            // DÍA 2
+            // DÃA 2
             {
                 id: 'd2-rs-direccion',
                 day: '2',
                 date: '28/08/2026',
                 time: '08:00 - 09:00',
-                title: 'Alta Dirección - Estrategia, Liderazgo y Revisión',
+                title: 'Alta DirecciÃ³n - Estrategia, Liderazgo y RevisiÃ³n',
                 auditorCode: 'RS',
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
@@ -1217,7 +1225,7 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '09:00 - 12:30',
-                title: 'Gestión del Sistema Integrado (SGI) - Parte 1',
+                title: 'GestiÃ³n del Sistema Integrado (SGI) - Parte 1',
                 auditorCode: 'RS',
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
@@ -1230,7 +1238,7 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '13:00 - 15:00',
-                title: 'Gestión del Sistema Integrado (SGI) - Parte 2',
+                title: 'GestiÃ³n del Sistema Integrado (SGI) - Parte 2',
                 auditorCode: 'RS',
                 auditorName: 'Ricardo Segade (RS)',
                 track: 'rs',
@@ -1243,9 +1251,9 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '15:00 - 17:00',
-                title: 'Preparación de Resultados y Conclusiones del Equipo Auditor',
+                title: 'PreparaciÃ³n de Resultados y Conclusiones del Equipo Auditor',
                 auditorCode: 'RS / JC',
-                auditorName: 'Ricardo Segade & José Costa',
+                auditorName: 'Ricardo Segade & JosÃ© Costa',
                 track: 'rs',
                 location: 'Privado Auditores (Presencial)',
                 attendees: 'Equipo Auditor DNV',
@@ -1256,11 +1264,11 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '08:00 - 08:15',
-                title: 'Reunión de Apertura Local Sitio Santo Tomé',
+                title: 'ReuniÃ³n de Apertura Local Sitio Santo TomÃ©',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
-                location: 'Sitio Santo Tomé (Virtual TIC)',
+                location: 'Sitio Santo TomÃ© (Virtual TIC)',
                 attendees: 'Marisa Cercos, Daniel Carena.',
                 clauses: ['5.1', '5.3']
             },
@@ -1269,12 +1277,12 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '08:15 - 10:00',
-                title: 'Depósito, Pañol & Oficinas Santo Tomé (Recorrido y Administración)',
+                title: 'DepÃ³sito, PaÃ±ol & Oficinas Santo TomÃ© (Recorrido y AdministraciÃ³n)',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
-                location: 'Sitio Santo Tomé - Pañol y Oficinas (Virtual TIC)',
-                attendees: 'Daniel Carena, Carlos de Abrantes (Resp. Pañol Sistema), Marisa Cercos, Andrea Chávez.',
+                location: 'Sitio Santo TomÃ© - PaÃ±ol y Oficinas (Virtual TIC)',
+                attendees: 'Daniel Carena, Carlos de Abrantes (Resp. PaÃ±ol Sistema), Marisa Cercos, Andrea ChÃ¡vez.',
                 clauses: ['4.4', '8.1-8.7', '8.1.2']
             },
             {
@@ -1282,12 +1290,12 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '10:00 - 11:00',
-                title: 'Sistema Informático & Procesos Clave SGI',
+                title: 'Sistema InformÃ¡tico & Procesos Clave SGI',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
                 location: 'Casa Central - IT / SGI (Virtual TIC)',
-                attendees: 'Martín Diamanti, Thiago Baira (Resp. SGI), Representante Nectica.',
+                attendees: 'MartÃ­n Diamanti, Thiago Baira (Resp. SGI), Representante Nectica.',
                 clauses: ['4.4', '7.1.3', '7.5', '8.1', '8.5']
             },
             {
@@ -1295,11 +1303,11 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '11:00 - 13:00',
-                title: 'Comercial Santo Tomé',
+                title: 'Comercial Santo TomÃ©',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
-                location: 'Sitio Santo Tomé - Comercial (Virtual TIC)',
+                location: 'Sitio Santo TomÃ© - Comercial (Virtual TIC)',
                 attendees: 'Lisandro Fissolo, Nahuel Heredia, Gerencia (Comercial)',
                 clauses: ['4.1', '4.2', '5.4', '6.1', '7.1-7.5', '8.1', '8.2', '9.1']
             },
@@ -1310,10 +1318,10 @@
                 time: '13:30 - 16:00',
                 title: 'Obra PANALAB - Montaje, Puesta en Marcha y Gerenciamiento',
                 auditorCode: 'JC',
-                auditorName: 'José Costa (JC)',
+                auditorName: 'JosÃ© Costa (JC)',
                 track: 'jc',
                 location: 'Obra PANALAB (Presencial In Situ)',
-                attendees: 'Hernán Giacobbe (Gte. Obras), Daniel Carena (Jefe de Obra PANALAB)',
+                attendees: 'HernÃ¡n Giacobbe (Gte. Obras), Daniel Carena (Jefe de Obra PANALAB)',
                 clauses: ['4.4', '7.1', '8.1', '8.4', '8.5', '8.6', '8.7']
             },
             {
@@ -1321,74 +1329,74 @@
                 day: '2',
                 date: '28/08/2026',
                 time: '17:00 - 17:30',
-                title: 'Reunión de Cierre General de Auditoría',
+                title: 'ReuniÃ³n de Cierre General de AuditorÃ­a',
                 auditorCode: 'RS / JC',
-                auditorName: 'Ricardo Segade (RS) & José Costa (JC)',
+                auditorName: 'Ricardo Segade (RS) & JosÃ© Costa (JC)',
                 track: 'joint',
-                location: 'Casa Central (Presencial) + Conexión Santo Tomé (Virtual) / Teams',
-                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Lisandro Fissolo, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos, Servicio Médico SUMO / Delegados SST',
+                location: 'Casa Central (Presencial) + ConexiÃ³n Santo TomÃ© (Virtual) / Teams',
+                attendees: 'Marcelo Piccione, Martin Diamanti, Oscar Schmuth, Hernan Giacobbe, Clarisa Piccione, Patricia Rodriguez, Mercedes Nahas, Daniel Lertora, Lisandro Fissolo, Sergio Donda, Jose Luis Casares, Carlos de Abrantes, Andrea Chavez, Emiliano San Martin, Diego Abella, Romina Nievas, Daniel Carena, Juan Monti, Thiago Baira, Hernan Giorgietti, Marisa Cercos, Servicio MÃ©dico SUMO / Delegados SST',
                 clauses: ['5.1', '5.4', '9.3', '10.2', '10.3']
             }
         ];
 
         const OFFICIAL_ISO_CLAUSES = [
-            { code: '4.1', title: 'Comprensión de la organización y de su contexto', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '4.1', title: 'ComprensiÃ³n de la organizaciÃ³n y de su contexto', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '4.2', title: 'Necesidades y expectativas de las partes interesadas', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '4.3', title: 'Determinación del alcance del sistema de gestión', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '4.4', title: 'Sistema de gestión y sus procesos', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '5.1', title: 'Liderazgo y compromiso (Alta Dirección)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '5.2', title: 'Política Integrada (Calidad / MA / SST)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '4.3', title: 'DeterminaciÃ³n del alcance del sistema de gestiÃ³n', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '4.4', title: 'Sistema de gestiÃ³n y sus procesos', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '5.1', title: 'Liderazgo y compromiso (Alta DirecciÃ³n)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '5.2', title: 'PolÃ­tica Integrada (Calidad / MA / SST)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '5.3', title: 'Roles, responsabilidades y autoridades', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '5.4', title: 'Consulta y participación de los trabajadores', std: ['ISO 45001'] },
+            { code: '5.4', title: 'Consulta y participaciÃ³n de los trabajadores', std: ['ISO 45001'] },
             { code: '6.1', title: 'Acciones para abordar riesgos y oportunidades', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '6.1.2', title: 'Identificación de peligros / Aspectos ambientales', std: ['ISO 14001', 'ISO 45001'] },
-            { code: '6.1.3', title: 'Determinación de requisitos legales y otros requisitos', std: ['ISO 14001', 'ISO 45001'] },
-            { code: '6.2', title: 'Objetivos del SGI y planificación para lograrlos', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '6.3', title: 'Planificación de los cambios', std: ['ISO 9001', 'ISO 45001'] },
+            { code: '6.1.2', title: 'IdentificaciÃ³n de peligros / Aspectos ambientales', std: ['ISO 14001', 'ISO 45001'] },
+            { code: '6.1.3', title: 'DeterminaciÃ³n de requisitos legales y otros requisitos', std: ['ISO 14001', 'ISO 45001'] },
+            { code: '6.2', title: 'Objetivos del SGI y planificaciÃ³n para lograrlos', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '6.3', title: 'PlanificaciÃ³n de los cambios', std: ['ISO 9001', 'ISO 45001'] },
             { code: '7.1', title: 'Recursos (Personal, Infraestructura, Ambiente)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '7.2', title: 'Competencia y formación', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '7.2', title: 'Competencia y formaciÃ³n', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '7.3', title: 'Toma de conciencia', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '7.4', title: 'Comunicación interna y externa', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '7.5', title: 'Información documentada (Control y actualización)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '8.1', title: 'Planificación y control operacional', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '7.4', title: 'ComunicaciÃ³n interna y externa', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '7.5', title: 'InformaciÃ³n documentada (Control y actualizaciÃ³n)', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '8.1', title: 'PlanificaciÃ³n y control operacional', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '8.1.2', title: 'Eliminar peligros y reducir riesgos para la SST', std: ['ISO 45001'] },
-            { code: '8.1.3', title: 'Gestión del cambio operacional', std: ['ISO 45001'] },
-            { code: '8.1.4', title: 'Compras, Contratistas y Contratación externa', std: ['ISO 45001'] },
+            { code: '8.1.3', title: 'GestiÃ³n del cambio operacional', std: ['ISO 45001'] },
+            { code: '8.1.4', title: 'Compras, Contratistas y ContrataciÃ³n externa', std: ['ISO 45001'] },
             { code: '8.2', title: 'Requisitos productos y servicios / Emergencias', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '8.3', title: 'Diseño y desarrollo de productos y servicios', std: ['ISO 9001'] },
+            { code: '8.3', title: 'DiseÃ±o y desarrollo de productos y servicios', std: ['ISO 9001'] },
             { code: '8.4', title: 'Control de procesos, productos y servicios externos', std: ['ISO 9001'] },
-            { code: '8.5', title: 'Producción y provisión del servicio / Montaje', std: ['ISO 9001'] },
-            { code: '8.6', title: 'Liberación de productos y servicios', std: ['ISO 9001'] },
+            { code: '8.5', title: 'ProducciÃ³n y provisiÃ³n del servicio / Montaje', std: ['ISO 9001'] },
+            { code: '8.6', title: 'LiberaciÃ³n de productos y servicios', std: ['ISO 9001'] },
             { code: '8.7', title: 'Control de las salidas no conformes', std: ['ISO 9001'] },
-            { code: '9.1', title: 'Seguimiento, medición, análisis y evaluación', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '9.1.2', title: 'Evaluación del cumplimiento legal / Satisfacción', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '9.2', title: 'Auditoría interna', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
-            { code: '9.3', title: 'Revisión por la dirección', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '9.1', title: 'Seguimiento, mediciÃ³n, anÃ¡lisis y evaluaciÃ³n', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '9.1.2', title: 'EvaluaciÃ³n del cumplimiento legal / SatisfacciÃ³n', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '9.2', title: 'AuditorÃ­a interna', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
+            { code: '9.3', title: 'RevisiÃ³n por la direcciÃ³n', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '10.2', title: 'Incidentes, no conformidades y acciones correctivas', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] },
             { code: '10.3', title: 'Mejora continua del SGI', std: ['ISO 9001', 'ISO 14001', 'ISO 45001'] }
         ];
 
         const INITIAL_PARTICIPANTS_LIST = [
-            // DIRECCIÓN (Gerencia)
-            { name: 'Marcelo Piccione', role: 'Presidente / Gte Adm y RRHH', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Alta Dirección), 17:00 (Cierre)' },
-            { name: 'Martín Diamanti', role: 'Gerente de Ingeniería', area: 'Dirección', day1: '08:00 (Apertura), 08:15 (Diseño CABA), 11:00 (Sistemas)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
-            { name: 'Oscar Schmuth', role: 'Gerente de Producción', area: 'Dirección', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
-            { name: 'Hernán Giacobbe', role: 'Gerente de Obras', area: 'Dirección', day1: '08:00 (Apertura)', day2: '08:00 (Apertura ST), 13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
+            // DIRECCIÃ“N (Gerencia)
+            { name: 'Marcelo Piccione', role: 'Presidente / Gte Adm y RRHH', area: 'DirecciÃ³n', day1: '08:00 (Apertura)', day2: '08:00 (Alta DirecciÃ³n), 17:00 (Cierre)' },
+            { name: 'MartÃ­n Diamanti', role: 'Gerente de IngenierÃ­a', area: 'DirecciÃ³n', day1: '08:00 (Apertura), 08:15 (DiseÃ±o CABA), 11:00 (Sistemas)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
+            { name: 'Oscar Schmuth', role: 'Gerente de ProducciÃ³n', area: 'DirecciÃ³n', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            { name: 'HernÃ¡n Giacobbe', role: 'Gerente de Obras', area: 'DirecciÃ³n', day1: '08:00 (Apertura)', day2: '08:00 (Apertura ST), 13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
 
-            // INGENIERÍA
-            { name: 'Juan Monti', role: 'Líder de Ingeniería (Santo Tomé)', area: 'Ingeniería', day1: '08:00 (Apertura), 08:15 (Diseño CABA)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
-            { name: 'Miguel Ángel Citta', role: 'Ingeniería Santo Tomé', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Facundo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Pablo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Francisco', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Sebastián', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
-            { name: 'Gonzalo', role: 'Ingeniería', area: 'Ingeniería', day1: '08:15 (Diseño CABA)', day2: '-' },
+            // INGENIERÃA
+            { name: 'Juan Monti', role: 'LÃ­der de IngenierÃ­a (Santo TomÃ©)', area: 'IngenierÃ­a', day1: '08:00 (Apertura), 08:15 (DiseÃ±o CABA)', day2: '08:00 (Apertura ST Virtual), 17:00 (Cierre)' },
+            { name: 'Miguel Ãngel Citta', role: 'IngenierÃ­a Santo TomÃ©', area: 'IngenierÃ­a', day1: '08:15 (DiseÃ±o CABA)', day2: '-' },
+            { name: 'Facundo', role: 'IngenierÃ­a', area: 'IngenierÃ­a', day1: '08:15 (DiseÃ±o CABA)', day2: '-' },
+            { name: 'Pablo', role: 'IngenierÃ­a', area: 'IngenierÃ­a', day1: '08:15 (DiseÃ±o CABA)', day2: '-' },
+            { name: 'Francisco', role: 'IngenierÃ­a', area: 'IngenierÃ­a', day1: '08:15 (DiseÃ±o CABA)', day2: '-' },
+            { name: 'SebastiÃ¡n', role: 'IngenierÃ­a', area: 'IngenierÃ­a', day1: '08:15 (DiseÃ±o CABA)', day2: '-' },
+            { name: 'Gonzalo', role: 'IngenierÃ­a', area: 'IngenierÃ­a', day1: '08:15 (DiseÃ±o CABA)', day2: '-' },
 
-            // PRODUCCIÓN / TALLER (sin Iestra)
-            { name: 'Hernan Giorgietti', role: 'Líder de Producción', area: 'Producción', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
-            { name: 'Sergio Donda', role: 'Responsable / Jefe de Taller', area: 'Producción', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
-            { name: 'Claudio Salazar', role: 'Oficial Electricista', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
-            { name: 'Mariano Prieto', role: 'Responsable SySO', area: 'Producción', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            // PRODUCCIÃ“N / TALLER (sin Iestra)
+            { name: 'Hernan Giorgietti', role: 'LÃ­der de ProducciÃ³n', area: 'ProducciÃ³n', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Sergio Donda', role: 'Responsable / Jefe de Taller', area: 'ProducciÃ³n', day1: '08:00 (Apertura), 13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
+            { name: 'Claudio Salazar', role: 'Oficial Electricista', area: 'ProducciÃ³n', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
+            { name: 'Mariano Prieto', role: 'Responsable SySO', area: 'ProducciÃ³n', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '17:00 (Cierre)' },
 
             // OBRAS (Jefes de Obra)
             { name: 'Daniel Carena', role: 'Jefe de Obra PANALAB', area: 'Obras', day1: '08:00 (Apertura)', day2: '13:30 (Obra PANALAB Presencial), 17:00 (Cierre)' },
@@ -1397,35 +1405,35 @@
             { name: 'Romina Nievas', role: 'Jefe de Obra', area: 'Obras', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
 
             // RRHH, SGI & SySO (con Bautista Iestra)
-            { name: 'Clarisa Piccione', role: 'Líder de Admin y RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
-            { name: 'Patricia Rodríguez', role: 'Responsable de RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre)' },
-            { name: 'Mercedes Nahas', role: 'Responsable de Comunicación y Cultura', area: 'RRHH', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
-            { name: 'Thiago Baira', role: 'Aux. Gestión Procesos / Resp. SGI', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 17:00 (Cierre)' },
+            { name: 'Clarisa Piccione', role: 'LÃ­der de Admin y RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. MÃ©dico)', day2: '17:00 (Cierre)' },
+            { name: 'Patricia RodrÃ­guez', role: 'Responsable de RRHH', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (RRHH y Serv. MÃ©dico)', day2: '17:00 (Cierre)' },
+            { name: 'Mercedes Nahas', role: 'Responsable de ComunicaciÃ³n y Cultura', area: 'RRHH', day1: '08:00 (Apertura)', day2: '17:00 (Cierre)' },
+            { name: 'Thiago Baira', role: 'Aux. GestiÃ³n Procesos / Resp. SGI', area: 'RRHH', day1: '08:00 (Apertura), 11:00 (Sistemas)', day2: '09:00 - 15:00 (SGI Parte 1 & 2), 17:00 (Cierre)' },
             { name: 'Bautista Iestra', role: 'Asistente SySO', area: 'RRHH', day1: '13:00 (Taller Tableros), 16:00 (Mantenimiento)', day2: '-' },
-            { name: 'Servicio Médico SUMO', role: 'Vigilancia de Salud / SST External', area: 'RRHH', day1: '11:00 (RRHH y Serv. Médico)', day2: '17:00 (Cierre Requerido ENAC)' },
+            { name: 'Servicio MÃ©dico SUMO', role: 'Vigilancia de Salud / SST External', area: 'RRHH', day1: '11:00 (RRHH y Serv. MÃ©dico)', day2: '17:00 (Cierre Requerido ENAC)' },
 
-            // ADMINISTRACIÓN
-            { name: 'Andrea Chávez', role: 'Responsable de Administración', area: 'Administración', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
-            { name: 'Marisa Cercos', role: 'Administrativa Santo Tomé', area: 'Administración', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            // ADMINISTRACIÃ“N
+            { name: 'Andrea ChÃ¡vez', role: 'Responsable de AdministraciÃ³n', area: 'AdministraciÃ³n', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
+            { name: 'Marisa Cercos', role: 'Administrativa Santo TomÃ©', area: 'AdministraciÃ³n', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
 
             // COMERCIAL
             { name: 'Lisandro Fissolo', role: 'Responsable Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST), 17:00 (Cierre)' },
             { name: 'Nahuel', role: 'Comercial', area: 'Comercial', day1: '08:00 (Apertura)', day2: '11:00 (Admin & Comercial ST)' },
 
             // COMPRAS & ABASTECIMIENTO SEPARADOS
-            { name: 'Daniel Lértora', role: 'Responsable de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
-            { name: 'Tomás', role: 'Asistente de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '-' },
-            { name: 'José Luis Casares', role: 'Responsable Abastecimiento', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
-            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / Pañol', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '08:30 (Pañol ST Virtual), 17:00 (Cierre)' }
+            { name: 'Daniel LÃ©rtora', role: 'Responsable de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
+            { name: 'TomÃ¡s', role: 'Asistente de Compras', area: 'Compras', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '-' },
+            { name: 'JosÃ© Luis Casares', role: 'Responsable Abastecimiento', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '17:00 (Cierre)' },
+            { name: 'Carlos de Abrantes', role: 'Resp. Abastecimiento / PaÃ±ol', area: 'Abastecimiento', day1: '08:00 (Apertura), 08:15 (Compras)', day2: '08:30 (PaÃ±ol ST Virtual), 17:00 (Cierre)' }
         ];
 
         const DEFAULT_CHECKLIST = [
-            { id: 'c1', text: 'Confirmar salas físicas en HQ Remedios Escalada y enlace de videollamada para Sitio Santo Tomé (Virtual)', done: false },
-            { id: 'c2', text: 'Verificar celulares institucionales con cámara y plan de datos para recorridas de taller y Obra PANALAB (Presencial)', done: false },
+            { id: 'c1', text: 'Confirmar salas fÃ­sicas en HQ Remedios Escalada y enlace de videollamada para Sitio Santo TomÃ© (Virtual)', done: false },
+            { id: 'c2', text: 'Verificar celulares institucionales con cÃ¡mara y plan de datos para recorridas de taller y Obra PANALAB (Presencial)', done: false },
             { id: 'c3', text: 'Cargar enlaces de llamadas Teams/Meet en cada bloque del dashboard para acceso remoto', done: false },
-            { id: 'c4', text: 'Disponibilizar documentación del SGI en formato digital accesible para auditores', done: false },
-            { id: 'c5', text: 'Convocar al Servicio Médico (SUMO) y delegados de SST para la reunión de cierre del Día 2 (Req. ENAC)', done: false },
-            { id: 'c6', text: 'Asegurar la presencia del Jefe de Obra PANALAB (Daniel Carena) In Situ a las 13:30 hs del Día 2', done: false }
+            { id: 'c4', text: 'Disponibilizar documentaciÃ³n del SGI en formato digital accesible para auditores', done: false },
+            { id: 'c5', text: 'Convocar al Servicio MÃ©dico (SUMO) y delegados de SST para la reuniÃ³n de cierre del DÃ­a 2 (Req. ENAC)', done: false },
+            { id: 'c6', text: 'Asegurar la presencia del Jefe de Obra PANALAB (Daniel Carena) In Situ a las 13:30 hs del DÃ­a 2', done: false }
         ];
 
         // UI State
@@ -1459,7 +1467,7 @@
                 const now = new Date().getTime();
                 const diff = auditDate - now;
                 if (diff <= 0) {
-                    document.getElementById('countdown').innerText = "¡En curso / Finalizada!";
+                    document.getElementById('countdown').innerText = "Â¡En curso / Finalizada!";
                     return;
                 }
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -1656,7 +1664,7 @@
             tbody.innerHTML = '';
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">No hay sesiones que coincidan con la búsqueda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">No hay sesiones que coincidan con la bÃºsqueda.</td></tr>`;
                 return;
             }
 
@@ -1668,7 +1676,7 @@
 
                 tr.innerHTML = `
                     <td class="p-3 font-mono font-bold text-sky-700 whitespace-nowrap">
-                        D${item.day} • ${item.time}
+                        D${item.day} â€¢ ${item.time}
                     </td>
                     <td class="p-3 font-semibold text-slate-900">${item.title}</td>
                     <td class="p-3 text-slate-700 whitespace-nowrap">${item.auditorCode}</td>
@@ -1696,10 +1704,10 @@
             selectedSessionForModal = item;
 
             document.getElementById('modal-title').innerText = item.title;
-            document.getElementById('modal-time').innerText = `Día ${item.day} (${item.date}) • ${item.time} hs`;
+            document.getElementById('modal-time').innerText = `DÃ­a ${item.day} (${item.date}) â€¢ ${item.time} hs`;
             
             const tag = document.getElementById('modal-day-tag');
-            tag.innerText = item.day === '1' ? 'DÍA 1' : 'DÍA 2';
+            tag.innerText = item.day === '1' ? 'DÃA 1' : 'DÃA 2';
             tag.className = item.day === '1' 
                 ? 'px-2.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300'
                 : 'px-2.5 py-0.5 rounded text-xs font-bold bg-sky-100 text-sky-800 border border-sky-300';
@@ -1735,7 +1743,7 @@
                     </button>
                 `;
             } else {
-                linkActions.innerHTML = `<span class="text-xs text-slate-400 italic">Sin enlace configurado aún</span>`;
+                linkActions.innerHTML = `<span class="text-xs text-slate-400 italic">Sin enlace configurado aÃºn</span>`;
             }
 
             document.getElementById('activity-modal').classList.remove('hidden');
@@ -1831,7 +1839,7 @@
         }
 
         function deleteParticipant(index) {
-            if (confirm("¿Desea eliminar a este auditado del directorio?")) {
+            if (confirm("Â¿Desea eliminar a este auditado del directorio?")) {
                 participantsList.splice(index, 1);
                 if (window.saveToCloud) window.saveToCloud();
                 showToast("Auditado eliminado");
@@ -1852,22 +1860,23 @@
         }
     </script>
 
-<!-- ── PANEL CROSS-LINK: Hallazgos de la auditoría ── -->
+<!-- â”€â”€ PANEL CROSS-LINK: Hallazgos de la auditorÃ­a â”€â”€ -->
 <div id="auditoria-crosslink" style="position:fixed;bottom:20px;right:20px;z-index:1000;max-width:280px">
   <div style="background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4)">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#475569;text-transform:uppercase;margin-bottom:8px">📋 Auditoría P2 · DNV</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#475569;text-transform:uppercase;margin-bottom:8px">ðŸ“‹ AuditorÃ­a P2 Â· DNV</div>
     <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px">5 hallazgos registrados</div>
-    <div style="font-size:11px;color:#64748b;margin-bottom:12px">27–28 Ago 2026 · Dirección Nacional de Vialidad</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px">27â€“28 Ago 2026 Â· DirecciÃ³n Nacional de Vialidad</div>
     <a href="hallazgos.html" style="display:flex;align-items:center;justify-content:space-between;background:#1e3a5f;border:1px solid #2563eb40;border-radius:8px;padding:8px 12px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#1e3a5f'">
       <span style="font-size:12px;font-weight:600;color:#60a5fa">Ver hallazgos DNV en registro</span>
-      <span style="color:#3b82f6;font-size:16px">→</span>
+      <span style="color:#3b82f6;font-size:16px">â†’</span>
     </a>
     <button onclick="document.getElementById('auditoria-crosslink').style.display='none'" style="margin-top:8px;width:100%;background:none;border:none;font-size:10px;color:#334155;cursor:pointer;text-align:center">Ocultar</button>
   </div>
 </div>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
+<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">ðŸ”’</div><div class="sgi-title">SGI Â· ESINEL</div><div class="sgi-sub">Acceso restringido<br>IniciÃ¡ sesiÃ³n con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
 <script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')=== '1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
 </body>
 </html>
+
