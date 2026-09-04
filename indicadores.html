@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -8,49 +8,14 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}body{height:100%;overflow:hidden;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:13px}
 
-/* TEMA OSCURO (Default) */
-:root {
-  --mg: #0ea5e9; 
-  --bg: #0b0f19;
-  --sb: #111827;
-  --surf: #1f2937;
-  --bdr: #374151;
-  --mut: #6b7280;
-  --sub: #9ca3af;
-  --tx: #f3f4f6;
-  --tx2: #e5e7eb;
-  --grid: #374151;
-  --tick: #9ca3af;
-  --row: #111827;
-  --top: #0b0f19;
-  --bf: #374151;
-  --cg-bg: rgba(16, 185, 129, 0.15);
-  --cg: #34d399;
-  --cr-bg: rgba(244, 63, 94, 0.15);
-  --cr: #fb7185;
+
+:root{
+  --mg:#0284c7;--bg:#f8fafc;--sb:#ffffff;--surf:#ffffff;--bdr:#e2e8f0;--mut:#94a3b8;--sub:#64748b;--tx:#0f172a;--tx2:#334155;--grid:#e2e8f0;--tick:#94a3b8;--row:#f1f5f9;--top:#ffffff;--bf:#e2e8f0;--cg-bg:#dcfce7;--cg:#166534;--cr-bg:#fee2e2;--cr:#991b1b
 }
 
-/* TEMA CLARO */
-[data-theme=light] {
-  --mg: #0284c7;
-  --bg: #f8fafc;
-  --sb: #ffffff;
-  --surf: #ffffff;
-  --bdr: #e2e8f0;
-  --mut: #94a3b8;
-  --sub: #64748b;
-  --tx: #0f172a;
-  --tx2: #334155;
-  --grid: #e2e8f0;
-  --tick: #94a3b8;
-  --row: #f1f5f9;
-  --top: #ffffff;
-  --bf: #e2e8f0;
-  --cg-bg: #dcfce7;
-  --cg: #166534;
-  --cr-bg: #fee2e2;
-  --cr: #991b1b;
-}
+@media(prefers-color-scheme:dark){:root{
+  --mg:#0ea5e9;--bg:#0b0f19;--sb:#111827;--surf:#1f2937;--bdr:#374151;--mut:#6b7280;--sub:#9ca3af;--tx:#f3f4f6;--tx2:#e5e7eb;--grid:#374151;--tick:#9ca3af;--row:#111827;--top:#0b0f19;--bf:#374151;--cg-bg:rgba(16,185,129,.15);--cg:#34d399;--cr-bg:rgba(244,63,94,.15);--cr:#fb7185
+}}
 
 body { background: var(--bg); color: var(--tx); transition: background 0.3s, color 0.3s; }
 .shell { display: flex; flex: 1; width: 100%; min-height: 0; }
@@ -227,7 +192,7 @@ canvas { display: block; max-width: 100%; }
 #chart-tooltip .tt-lbl { color: #94a3b8; font-size: 10.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
 #chart-tooltip .tt-val { font-size: 15px; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 6px; }
 #chart-tooltip .tt-obj { font-size: 11px; color: #fbbf24; font-weight: 500; }
-[data-theme=light] #chart-tooltip { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: #e2e8f0; }
+:root #chart-tooltip { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: #e2e8f0; }
 
 @media (max-width: 1100px) { .hg, .kr, .dkr { grid-template-columns: repeat(2, 1fr); } .acards { grid-template-columns: 1fr; } }
 @media (max-width: 768px) { .sb { width: 180px; } .hg, .kr, .dkr { grid-template-columns: 1fr; } .ig { grid-template-columns: 1fr; } }
@@ -558,11 +523,11 @@ let currentGlobalEj = 35;
 const AC = { "Comercial":"#3b82f6", "Ingeniería":"#8b5cf6", "Compras":"#f59e0b", "Producción":"#10b981", "Obra":"#06b6d4", "RRHH":"#e91e8c", "Medio Ambiente":"#84cc16", "Seguridad e Higiene":"#f97316" };
 const AREAS = Object.keys(AC);
 
-document.documentElement.setAttribute('data-theme', 'dark');
+/* auto dark */
 
 function toggleTheme() {
   dark = !dark;
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  /* auto dark via prefers-color-scheme */
   redrawActive();
 }
 
@@ -1248,7 +1213,7 @@ window.onload = () => {
 </div>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
+<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div></div></div>
 <script id="sgi-js">(function(){if(sessionStorage.getItem('sgi_ok')=== '1'){document.getElementById('sgi-auth-overlay').remove();return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');document.getElementById('sgi-auth-overlay').remove();}}window.sgiCb=sgiCb;})();</script>
 </body>
 </html>
