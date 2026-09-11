@@ -275,23 +275,19 @@
                         <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center space-x-2"><i class="fa-solid fa-table-list text-sky-600 dark:text-sky-400"></i><span>Listado Oficial de Registros de Hallazgos</span></h3>
                         <button onclick="exportToCSV()" class="text-xs bg-sky-600 hover:bg-sky-500 text-white font-medium px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-file-excel mr-1"></i>Exportar CSV</button>
                     </div>
-                    <div class="overflow-x-auto custom-scrollbar max-h-[650px]">
+                    <div class="overflow-x-auto custom-scrollbar max-h-[380px]">
                         <table class="w-full text-left border-collapse text-xs" id="planillaTable">
                             <thead class="bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800">
                                 <tr>
-                                    <th onclick="sortTable('numHallazgo')" class="p-3 font-bold sortable-header">N° Hallazgo <span id="sortIcon_numHallazgo">↕</span></th>
-                                    <th onclick="sortTable('tipoHallazgo')" class="p-3 font-bold sortable-header">Tipo <span id="sortIcon_tipoHallazgo">↕</span></th>
-                                    <th onclick="sortTable('fechaDetection')" class="p-3 font-bold sortable-header">Detección <span id="sortIcon_fechaDetection">↕</span></th>
-                                    <th onclick="sortTable('quienDetecto')" class="p-3 font-bold sortable-header">Quién Detectó <span id="sortIcon_quienDetecto">↕</span></th>
-                                    <th onclick="sortTable('sectorResponsable')" class="p-3 font-bold sortable-header">Sector <span id="sortIcon_sectorResponsable">↕</span></th>
-                                    <th onclick="sortTable('numAccion')" class="p-3 font-bold sortable-header">N° Acción <span id="sortIcon_numAccion">↕</span></th>
-                                    <th onclick="sortTable('tipoAccion')" class="p-3 font-bold sortable-header">Tipo Acción <span id="sortIcon_tipoAccion">↕</span></th>
-                                    <th onclick="sortTable('responsableAccion')" class="p-3 font-bold sortable-header">Resp. Cierre <span id="sortIcon_responsableAccion">↕</span></th>
-                                    <th onclick="sortTable('responsableVerificacion')" class="p-3 font-bold sortable-header">Resp. Verificación <span id="sortIcon_responsableVerificacion">↕</span></th>
-                                    <th onclick="sortTable('fechaLimite')" class="p-3 font-bold sortable-header">Fecha Límite <span id="sortIcon_fechaLimite">↕</span></th>
-                                    <th class="p-3 font-bold text-center">Estado Plazo / Días</th>
-                                    <th onclick="sortTable('resultadoEficacia')" class="p-3 font-bold text-center sortable-header">Resultado <span id="sortIcon_resultadoEficacia">↕</span></th>
-                                    <th class="p-3 font-bold text-center">Detalle</th>
+                                    <th onclick="sortTable('numHallazgo')" class="p-2 font-bold sortable-header w-20">N° <span id="sortIcon_numHallazgo">↕</span></th>
+                                    <th onclick="sortTable('tipoHallazgo')" class="p-2 font-bold sortable-header w-14">Tipo <span id="sortIcon_tipoHallazgo">↕</span></th>
+                                    <th onclick="sortTable('fechaDetection')" class="p-2 font-bold sortable-header w-24">Detec. <span id="sortIcon_fechaDetection">↕</span></th>
+                                    <th onclick="sortTable('sectorResponsable')" class="p-2 font-bold sortable-header w-32">Sector <span id="sortIcon_sectorResponsable">↕</span></th>
+                                    <th onclick="sortTable('responsableAccion')" class="p-2 font-bold sortable-header w-28">Resp. Cierre <span id="sortIcon_responsableAccion">↕</span></th>
+                                    <th onclick="sortTable('fechaLimite')" class="p-2 font-bold sortable-header w-24">Vence <span id="sortIcon_fechaLimite">↕</span></th>
+                                    <th class="p-2 font-bold text-center w-36">Estado / Días</th>
+                                    <th onclick="sortTable('resultadoEficacia')" class="p-2 font-bold text-center sortable-header w-24">Resultado <span id="sortIcon_resultadoEficacia">↕</span></th>
+                                    <th class="p-2 font-bold text-center w-12">Ver</th>
                                 </tr>
                             </thead>
                             <tbody id="planillaTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
@@ -915,21 +911,16 @@
             const rowsHTML = items.map(item => {
                 const originalIndex = dataset.indexOf(item);
                 return `
-                    <tr onclick="viewDetails(${originalIndex})" class="${(()=>{const r=(item.resultadoEficacia||"").toUpperCase().trim();return r==="OK"?"bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30":r==="NO"?"bg-rose-50 dark:bg-rose-950/20 hover:bg-rose-100 dark:hover:bg-rose-900/30":"bg-white dark:bg-transparent hover:bg-sky-50 dark:hover:bg-slate-800/50"})()}" style="border-bottom:1px solid #cbd5e1">
-                        <td class="p-3 font-bold text-sky-700 dark:text-sky-400 whitespace-nowrap">${item.numHallazgo || '-'}</td>
-                        <td class="p-3 whitespace-nowrap font-medium text-slate-600 dark:text-slate-300">${item.tipoHallazgo || '-'}</td>
-                        <td class="p-3 whitespace-nowrap text-slate-500 dark:text-slate-400">${item.fechaDetection || '-'}</td>
-                        <td class="p-3 whitespace-nowrap text-slate-700 dark:text-slate-300 font-medium">${item.quienDetecto || '-'}</td>
-                        <td class="p-3 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">${item.sectorResponsable || 'Sin Asignar'}</td>
-                        <td class="p-3 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${item.numAccion || '-'}</td>
-                        <td class="p-3 whitespace-nowrap text-slate-600 dark:text-slate-400">${item.tipoAccion || '-'}</td>
-                        <td class="p-3 whitespace-nowrap font-medium text-slate-700 dark:text-slate-300">${item.responsableAccion || 'Sin Asignar'}</td>
-                        <td class="p-3 whitespace-nowrap font-medium text-slate-700 dark:text-slate-300">${item.responsableVerificacion || 'Sin Asignar'}</td>
-                        <td class="p-3 whitespace-nowrap font-semibold ${isFindingOpen(item) && item.fechaLimite < todayStr ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'}">${item.fechaLimite || '-'}</td>
-                        <td class="p-3 text-center whitespace-nowrap text-xs">${calculateDeadlineStatus(item)}</td>
-                        <td class="p-3 text-center whitespace-nowrap">${getStatusBadge(item)}</td>
-                        <td class="p-3 text-center whitespace-nowrap">
-                            <button onclick="event.stopPropagation(); viewDetails(${originalIndex})" class="p-1.5 bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/60 transition"><i class="fa-solid fa-eye"></i></button>
+                    <tr onclick="viewDetails(${originalIndex})" class="${(()=>{const r=(item.resultadoEficacia||"").toUpperCase().trim();return r==="OK"?"bg-emerald-100 dark:bg-emerald-900/40 hover:bg-emerald-200 dark:hover:bg-emerald-800/50":r==="NO"?"bg-rose-100 dark:bg-rose-900/40 hover:bg-rose-200 dark:hover:bg-rose-800/50":"bg-white dark:bg-transparent hover:bg-sky-50 dark:hover:bg-slate-800/50"})()}" style="border-bottom:1px solid #cbd5e1">
+                        <td class="p-2 font-bold text-sky-700 dark:text-sky-400 whitespace-nowrap text-xs">${item.numHallazgo || '-'}</td>
+                        <td class="p-2 whitespace-nowrap font-bold text-slate-600 dark:text-slate-300 text-xs">${item.tipoHallazgo || '-'}</td>
+                        <td class="p-2 whitespace-nowrap text-slate-500 dark:text-slate-400 text-xs">${item.fechaDetection || '-'}</td>
+                        <td class="p-2 font-semibold text-slate-800 dark:text-slate-200 text-xs max-w-[120px] truncate" title="${item.responsableAccion || ''}">${item.responsableAccion || 'Sin Asignar'}</td>
+                        <td class="p-2 whitespace-nowrap font-semibold text-xs ${isFindingOpen(item) && item.fechaLimite < todayStr ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'}">${item.fechaLimite || '-'}</td>
+                        <td class="p-2 text-center whitespace-nowrap text-xs">${calculateDeadlineStatus(item)}</td>
+                        <td class="p-2 text-center whitespace-nowrap">${getStatusBadge(item)}</td>
+                        <td class="p-2 text-center whitespace-nowrap">
+                            <button onclick="event.stopPropagation(); viewDetails(${originalIndex})" class="p-1 bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/60 transition text-xs"><i class="fa-solid fa-eye"></i></button>
                         </td>
                     </tr>`;
             });
