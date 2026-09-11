@@ -210,6 +210,7 @@
                         <option value="OK">Cerrados OK (Eficaces)</option>
                         <option value="NO">Cerrados NO (Ineficaces)</option>
                         <option value="VENCIDO">Vencidos en Fecha</option>
+                        <option value="POR_VENCER">Por Vencer (próx. 30 días)</option>
                     </select>
                 </div>
                 <div class="pt-3 border-t border-slate-200 dark:border-slate-800/80 text-[11px] space-y-2">
@@ -772,6 +773,13 @@
                     if (statusFilter === 'OK' && res !== 'OK') return false;
                     if (statusFilter === 'NO' && res !== 'NO') return false;
                     if (statusFilter === 'VENCIDO' && (!open || !item.fechaLimite || item.fechaLimite >= todayStr)) return false;
+                    if (statusFilter === 'POR_VENCER') {
+                        if (!open || !item.fechaLimite) return false;
+                        const lim = parseDate(item.fechaLimite); const tod = new Date(); tod.setHours(0,0,0,0);
+                        if (!lim) return false;
+                        const diff = Math.ceil((lim - tod) / (1000*60*60*24));
+                        if (diff < 0 || diff > 30) return false;
+                    }
                 }
                 if (searchVal) {
                     const matchText = [
