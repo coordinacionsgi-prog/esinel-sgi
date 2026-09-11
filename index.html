@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -462,22 +462,25 @@
     <a href="hallazgos.html" class="metric-card" id="ec-hallazgos">
       <div class="metric-tag"><i class="ti ti-alert-triangle"></i> Hallazgos</div>
       <div class="metric-val" id="en-abiertos">—</div>
-      <div class="metric-desc">abiertos este ejercicio</div>
-      <div class="metric-hint" id="es-total-h">conectando…</div>
+      <div class="metric-desc">abiertos en total (todos los ejercicios)</div>
+      <div class="metric-hint" id="es-total-h">de — hallazgos totales</div>
+      <div class="metric-hint" id="es-vencer-h" style="margin-top:4px;color:#ef4444;font-weight:700"></div>
     </a>
 
     <a href="indicadores.html" class="metric-card" id="ec-indicadores">
-      <div class="metric-tag"><i class="ti ti-chart-arrows"></i> Indicadores</div>
+      <div class="metric-tag"><i class="ti ti-chart-arrows"></i> Indicadores · Ej. 35</div>
       <div class="metric-val" id="en-desvios">—</div>
-      <div class="metric-desc">indicadores en desvío</div>
-      <div class="metric-hint" id="es-total-i">de — totales</div>
+      <div class="metric-desc">en desvío vs. objetivo anual</div>
+      <div class="metric-hint" id="es-total-i">de — indicadores</div>
+      <div class="metric-hint" id="es-ej34-i" style="margin-top:4px"></div>
     </a>
 
-    <a href="agenda-auditoria.html" class="metric-card info">
-      <div class="metric-tag"><i class="ti ti-calendar-check"></i> Auditoría</div>
-      <div class="metric-val" style="font-size:22px; margin-top: 4px;">P2 DNV ✓</div>
-      <div class="metric-desc">última auditoría</div>
+    <a href="hallazgos.html" class="metric-card info" id="ec-auditoria">
+      <div class="metric-tag"><i class="ti ti-calendar-check"></i> Última Auditoría · P2 DNV</div>
+      <div class="metric-val" id="en-audit-hall" style="font-size:28px; margin-top:4px;">5</div>
+      <div class="metric-desc">hallazgos detectados</div>
       <div class="metric-hint">27–28 Ago 2026 · Finalizada</div>
+      <div class="metric-hint" id="es-audit-estado" style="margin-top:4px;font-weight:700;color:#f59e0b">5 abiertos · 0 cerrados</div>
     </a>
 
     <a href="contexto.html" class="metric-card info">
@@ -730,23 +733,53 @@
   });
 
   // Valores de referencia (última medición conocida) — se actualizan al visitar cada módulo
+  // Valores de referencia fijos (se actualizan cuando el usuario visita cada módulo)
   const DEFAULTS = {
-    hallazgos: { total: 638, abiertos: 43 },
-    indicadores: { total: 28, desvios: 5 }
+    hallazgos: { total: 638, abiertos: 185, vencidos: 12, porVencer: 8 },
+    indicadores: { total: 28, desvios: 5, desviosEj34: 3 }
   };
 
   try {
     const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
-    document.getElementById('en-abiertos').textContent = h.abiertos ?? '—';
-    document.getElementById('es-total-h').textContent = `de ${h.total} hallazgos totales`;
-    document.getElementById('ec-hallazgos').classList.add(h.abiertos > 30 ? 'alerta' : 'ok');
+    const abiertos = h.abiertos ?? DEFAULTS.hallazgos.abiertos;
+    const total    = h.total    ?? DEFAULTS.hallazgos.total;
+    const vencidos = h.vencidos ?? DEFAULTS.hallazgos.vencidos;
+    const porVencer= h.porVencer?? DEFAULTS.hallazgos.porVencer;
+    document.getElementById('en-abiertos').textContent = abiertos;
+    document.getElementById('es-total-h').textContent = `de ${total} hallazgos totales`;
+    const vEl = document.getElementById('es-vencer-h');
+    if (vencidos > 0 || porVencer > 0)
+      vEl.textContent = `${vencidos} vencidos · ${porVencer} por vencer`;
+    document.getElementById('ec-hallazgos').classList.add(abiertos > 50 ? 'alerta' : 'ok');
   } catch(e) {}
 
   try {
     const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
-    document.getElementById('en-desvios').textContent = i.desvios;
-    document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
-    document.getElementById('ec-indicadores').classList.add(i.desvios > 3 ? 'alerta' : 'ok');
+    const desvios   = i.desvios    ?? DEFAULTS.indicadores.desvios;
+    const total     = i.total      ?? DEFAULTS.indicadores.total;
+    const desvEj34  = i.desviosEj34?? DEFAULTS.indicadores.desviosEj34;
+    document.getElementById('en-desvios').textContent = desvios;
+    document.getElementById('es-total-i').textContent = `de ${total} indicadores`;
+    document.getElementById('es-ej34-i').textContent = `Ej. 34: ${desvEj34} en desvío (ejercicio anterior)`;
+    document.getElementById('ec-indicadores').classList.add(desvios > 3 ? 'alerta' : 'ok');
+  } catch(e) {}
+
+  // Auditoría P2 DNV: datos cruzados con hallazgos (5 hallazgos, todos abiertos)
+  try {
+    const auditTotal  = 5;
+    const auditAbiertos = 5;
+    const auditCerrados = auditTotal - auditAbiertos;
+    document.getElementById('en-audit-hall').textContent = auditTotal;
+    const estadoEl = document.getElementById('es-audit-estado');
+    if (auditAbiertos > 0) {
+      estadoEl.textContent = `${auditAbiertos} abiertos · ${auditCerrados} cerrados`;
+      estadoEl.style.color = '#f59e0b';
+    } else {
+      estadoEl.textContent = `${auditCerrados} cerrados · todos OK`;
+      estadoEl.style.color = '#10b981';
+    }
+    document.getElementById('ec-auditoria').classList.remove('info');
+    document.getElementById('ec-auditoria').classList.add(auditAbiertos > 0 ? 'alerta' : 'ok');
   } catch(e) {}
 </script>
 
