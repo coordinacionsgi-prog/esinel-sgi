@@ -282,8 +282,11 @@
                                     <th onclick="sortTable('numHallazgo')" class="p-2 font-bold sortable-header w-20">N° <span id="sortIcon_numHallazgo">↕</span></th>
                                     <th onclick="sortTable('tipoHallazgo')" class="p-2 font-bold sortable-header w-14">Tipo <span id="sortIcon_tipoHallazgo">↕</span></th>
                                     <th onclick="sortTable('fechaDetection')" class="p-2 font-bold sortable-header w-24">Detec. <span id="sortIcon_fechaDetection">↕</span></th>
-                                    <th onclick="sortTable('sectorResponsable')" class="p-2 font-bold sortable-header w-32">Sector <span id="sortIcon_sectorResponsable">↕</span></th>
+                                    <th onclick="sortTable('quienDetecto')" class="p-2 font-bold sortable-header w-28">Quién Detectó <span id="sortIcon_quienDetecto">↕</span></th>
+                                    <th onclick="sortTable('numAccion')" class="p-2 font-bold sortable-header w-20">N° Acción <span id="sortIcon_numAccion">↕</span></th>
+                                    <th onclick="sortTable('tipoAccion')" class="p-2 font-bold sortable-header w-20">T. Acción <span id="sortIcon_tipoAccion">↕</span></th>
                                     <th onclick="sortTable('responsableAccion')" class="p-2 font-bold sortable-header w-28">Resp. Cierre <span id="sortIcon_responsableAccion">↕</span></th>
+                                    <th onclick="sortTable('responsableVerificacion')" class="p-2 font-bold sortable-header w-28">Resp. Verif. <span id="sortIcon_responsableVerificacion">↕</span></th>
                                     <th onclick="sortTable('fechaLimite')" class="p-2 font-bold sortable-header w-24">Vence <span id="sortIcon_fechaLimite">↕</span></th>
                                     <th class="p-2 font-bold text-center w-36">Estado / Días</th>
                                     <th onclick="sortTable('resultadoEficacia')" class="p-2 font-bold text-center sortable-header w-24">Resultado <span id="sortIcon_resultadoEficacia">↕</span></th>
@@ -915,7 +918,11 @@
                         <td class="p-2 font-bold text-sky-700 dark:text-sky-400 whitespace-nowrap text-xs">${item.numHallazgo || '-'}</td>
                         <td class="p-2 whitespace-nowrap font-bold text-slate-600 dark:text-slate-300 text-xs">${item.tipoHallazgo || '-'}</td>
                         <td class="p-2 whitespace-nowrap text-slate-500 dark:text-slate-400 text-xs">${item.fechaDetection || '-'}</td>
-                        <td class="p-2 font-semibold text-slate-800 dark:text-slate-200 text-xs max-w-[120px] truncate" title="${item.responsableAccion || ''}">${item.responsableAccion || 'Sin Asignar'}</td>
+                        <td class="p-2 text-slate-700 dark:text-slate-300 text-xs max-w-[110px] truncate" title="${item.quienDetecto || ''}">${item.quienDetecto || '-'}</td>
+                        <td class="p-2 whitespace-nowrap text-slate-600 dark:text-slate-400 text-xs">${item.numAccion || '-'}</td>
+                        <td class="p-2 whitespace-nowrap font-medium text-slate-600 dark:text-slate-400 text-xs">${item.tipoAccion || '-'}</td>
+                        <td class="p-2 text-slate-800 dark:text-slate-200 text-xs max-w-[110px] truncate" title="${item.responsableAccion || ''}">${item.responsableAccion || 'Sin Asignar'}</td>
+                        <td class="p-2 text-slate-700 dark:text-slate-300 text-xs max-w-[110px] truncate" title="${item.responsableVerificacion || ''}">${item.responsableVerificacion || 'Sin Asignar'}</td>
                         <td class="p-2 whitespace-nowrap font-semibold text-xs ${isFindingOpen(item) && item.fechaLimite < todayStr ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'}">${item.fechaLimite || '-'}</td>
                         <td class="p-2 text-center whitespace-nowrap text-xs">${calculateDeadlineStatus(item)}</td>
                         <td class="p-2 text-center whitespace-nowrap">${getStatusBadge(item)}</td>
