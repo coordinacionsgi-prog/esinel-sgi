@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -52,9 +52,80 @@
     </style>
 </head>
 <body class="text-slate-800 bg-slate-100 dark:bg-[#090d16] dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200" id="appBody">
+<!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
+<style>
+.esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
+.esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
+.esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.esinel-logo-name{font-size:21px;font-weight:800;color:#fff;letter-spacing:2.5px;line-height:1;text-transform:uppercase}
+.esinel-logo-tagline{font-size:8.5px;font-weight:600;color:#475569;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px}
+.esinel-logo-certs{font-size:8px;font-weight:600;letter-spacing:.8px;margin-top:2px}
+.esinel-iso9{color:#94a3b8}.esinel-iso14{color:#4caf72;margin-left:5px}.esinel-iso45{color:#ef5350;margin-left:5px}
+.esinel-badge{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);padding:4px 10px;border-radius:4px;border:1px solid rgba(59,130,246,.2)}
+.esinel-nav{display:flex;align-items:center;border-top:1px solid #1e293b;padding:0 16px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.esinel-nav::-webkit-scrollbar{display:none}
+.esinel-nav-item{display:flex;align-items:center;gap:5px;padding:8px 12px;font-size:12px;font-weight:500;color:#64748b;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s}
+.esinel-nav-item:hover{color:#e2e8f0;border-bottom-color:#334155}
+.esinel-nav-item.esinel-active{color:#60a5fa;border-bottom-color:#3b82f6;font-weight:600}
+.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle}
+.esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
+.esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
+</style>
+<div class="esinel-hdr">
+  <div class="esinel-hdr-top">
+    <a class="esinel-logo" href="index.html">
+      <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
+  <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
+  <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
+  <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
+  <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+  <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
+  <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
+  <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+  <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
+  <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+</svg>
+      <div>
+        <div class="esinel-logo-name">ESINEL</div>
+        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
+        <div class="esinel-logo-certs">
+          <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
+        </div>
+      </div>
+    </a>
+    <div class="esinel-badge">SGI · Gestión Integrada</div>
+  </div>
+  <nav class="esinel-nav">
+    <a class="esinel-nav-item" href="index.html">🏠 Inicio</a>
+    <a class="esinel-nav-item esinel-active" href="hallazgos.html">⚠️ Hallazgos</a>
+    <a class="esinel-nav-item" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
+    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
+    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
+    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
+    <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
+    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
+    <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
+  </nav>
+</div>
+<script>(function(){try{
+  var h=JSON.parse(localStorage.getItem('esinel_hallazgos_stats')||'null');
+  var i=JSON.parse(localStorage.getItem('esinel_ind_stats')||'null');
+  document.querySelectorAll('.esinel-nav-item').forEach(function(a){
+    var href=a.getAttribute('href')||'';
+    if(h&&h.abiertos>0&&href.includes('hallazgos'))
+      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-warn">'+h.abiertos+'</span>');
+    if(i&&i.desvios>0&&href.includes('indicadores'))
+      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
+  });
+}catch(e){}})()</script>
+<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
     <!-- NAVBAR HEADER -->
-    <header class="bg-slate-900 dark:bg-[#0f172a] text-white shadow-xl sticky top-0 z-30 print:hidden border-b border-slate-800 dark:border-slate-800/80">
+    <header class="bg-slate-900 dark:bg-[#0f172a] text-white shadow-xl sticky top-[88px] z-30 print:hidden border-b border-slate-800 dark:border-slate-800/80">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-3">
