@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mi Panel — SGI Esinel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 :root{
-  --bg:#F8FAFC;--bg2:#FFFFFF;--bg3:#F1F5F9;
+  --bg:#F0F4F8;--bg2:#FFFFFF;--bg3:#F1F5F9;--bg4:#E8EEF5;
   --border:#E2E8F0;--border2:#CBD5E1;
   --text:#0F172A;--text2:#64748B;--text3:#94A3B8;
   --indigo:#4F46E5;--indigo-dim:#EEF2FF;--indigo-border:#C7D2FE;--indigo-text:#3730A3;
@@ -17,114 +17,176 @@
   --amber:#D97706;--amber-dim:#FFFBEB;--amber-border:#FDE68A;--amber-text:#92400E;
   --red:#DC2626;--red-dim:#FEF2F2;--red-border:#FECACA;--red-text:#991B1B;
   --violet:#7C3AED;--violet-dim:#F5F3FF;--violet-border:#DDD6FE;--violet-text:#5B21B6;
+  --cyan:#0891B2;--cyan-dim:#ECFEFF;--cyan-border:#A5F3FC;--cyan-text:#155E75;
   --r:8px;--r2:12px;
 }
 [data-theme=dark]{
-  --bg:#0F1117;--bg2:#161B27;--bg3:#1E2536;
-  --border:#2A3347;--border2:#334060;
-  --text:#F1F5FF;--text2:#8B9BB8;--text3:#4A5568;
-  --indigo:#6366F1;--indigo-dim:rgba(99,102,241,.12);--indigo-border:rgba(99,102,241,.3);--indigo-text:#A5B4FC;
-  --green:#10B981;--green-dim:rgba(16,185,129,.1);--green-border:rgba(16,185,129,.25);--green-text:#6EE7B7;
-  --amber:#F59E0B;--amber-dim:rgba(245,158,11,.1);--amber-border:rgba(245,158,11,.25);--amber-text:#FDE68A;
-  --red:#F43F5E;--red-dim:rgba(244,63,94,.1);--red-border:rgba(244,63,94,.25);--red-text:#FCA5A5;
-  --violet:#A78BFA;--violet-dim:rgba(167,139,250,.1);--violet-border:rgba(167,139,250,.25);--violet-text:#C4B5FD;
+  --bg:#0B111E;--bg2:#131929;--bg3:#1A2236;--bg4:#1E2840;
+  --border:#1E2D47;--border2:#263552;
+  --text:#EDF2FF;--text2:#7B8DB0;--text3:#3D4F6B;
+  --indigo:#6366F1;--indigo-dim:rgba(99,102,241,.13);--indigo-border:rgba(99,102,241,.28);--indigo-text:#A5B4FC;
+  --green:#10B981;--green-dim:rgba(16,185,129,.1);--green-border:rgba(16,185,129,.22);--green-text:#6EE7B7;
+  --amber:#F59E0B;--amber-dim:rgba(245,158,11,.1);--amber-border:rgba(245,158,11,.22);--amber-text:#FDE68A;
+  --red:#F43F5E;--red-dim:rgba(244,63,94,.1);--red-border:rgba(244,63,94,.22);--red-text:#FCA5A5;
+  --violet:#A78BFA;--violet-dim:rgba(167,139,250,.1);--violet-border:rgba(167,139,250,.22);--violet-text:#C4B5FD;
+  --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,.1);--cyan-border:rgba(34,211,238,.22);--cyan-text:#A5F3FC;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;transition:background .2s,color .2s}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
 
-/* AUTH */
+/* ── AUTH ── */
 #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center}
-.auth-logo{width:48px;height:48px;border-radius:12px;background:var(--indigo-dim);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:22px}
-.auth-card h1{font-size:20px;font-weight:700;margin-bottom:6px}
-.auth-card p{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.5}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:44px 40px;max-width:380px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.auth-logo{width:52px;height:52px;border-radius:14px;background:var(--indigo-dim);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:24px}
+.auth-card h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px}
+.auth-card p{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.6}
 .auth-error{font-size:12px;color:var(--red-text);background:var(--red-dim);border:1px solid var(--red-border);border-radius:var(--r);padding:8px 12px;margin-top:14px;display:none}
 
-/* TOPBAR */
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;transition:background .2s}
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
 .app-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;text-decoration:none;color:var(--text)}
-.app-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--indigo)}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.user-chip{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 4px;cursor:pointer;transition:.15s}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--indigo)}
+.topbar-center{display:flex;align-items:center;gap:6px}
+.ejercicio-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border);letter-spacing:.02em}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.user-chip{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer;transition:.15s}
 .user-chip:hover{border-color:var(--border2)}
-.avatar{width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;background:var(--indigo-dim);color:var(--indigo);flex-shrink:0}
-.user-name{font-size:12px;color:var(--text2)}
-.btn-icon{width:32px;height:32px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-size:15px}
+.avatar{width:28px;height:28px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--indigo-dim);color:var(--indigo);flex-shrink:0;letter-spacing:.02em}
+.user-name{font-size:12px;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-icon{width:32px;height:32px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-size:15px}
 .btn-icon:hover{background:var(--bg3);color:var(--text)}
 
-/* LAYOUT */
-.main{max-width:900px;margin:0 auto;padding:24px 20px}
-.page-title{font-size:20px;font-weight:700;margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+/* ── LAYOUT ── */
+.main{max-width:1120px;margin:0 auto;padding:28px 24px 48px}
 
-/* TABS */
-.tabs{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:24px;width:fit-content}
-.tab{padding:6px 16px;border-radius:7px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:.15s;border:none;background:none;font-family:inherit;display:flex;align-items:center;gap:5px}
-.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--border)}
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:24px}
+.page-title{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:3px}
+.page-sub{font-size:13px;color:var(--text2)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:24px;width:fit-content;max-width:100%}
+.tab{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:.15s;border:none;background:none;font-family:inherit;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.09);border:1px solid var(--border)}
 .tab-pane{display:none}.tab-pane.active{display:block}
+.tab .badge-count{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
 
-/* CARDS */
-.section-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+/* ── SPLIT LAYOUT (list + sidebar) ── */
+.split{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+@media(max-width:860px){.split{grid-template-columns:1fr}}
+
+/* ── STATS SIDEBAR ── */
+.stats-sidebar{display:flex;flex-direction:column;gap:12px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px}
+.stat-card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.donut-legend{display:flex;flex-direction:column;gap:6px;width:100%}
+.leg-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-right:7px}
+.leg-label{display:flex;align-items:center;color:var(--text2)}
+.leg-val{font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi-row-2{grid-template-columns:repeat(2,1fr)}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--r2) var(--r2)}
+.kpi.kpi-indigo::before{background:var(--indigo)}.kpi.kpi-green::before{background:var(--green)}
+.kpi.kpi-amber::before{background:var(--amber)}.kpi.kpi-red::before{background:var(--red)}
+.kpi.kpi-violet::before{background:var(--violet)}.kpi.kpi-cyan::before{background:var(--cyan)}
+.kpi-label{font-size:11px;color:var(--text2);font-weight:500;margin-bottom:6px;line-height:1.3}
+.kpi-val{font-family:'Sora',sans-serif;font-size:30px;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* ── ROW CARDS ── */
 .row-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;transition:.15s;cursor:pointer}
-.row-card:hover{border-color:var(--border2);background:var(--bg3)}
+.row-card:hover{border-color:var(--border2);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .row-card.left-green{border-left:3px solid var(--green)}
 .row-card.left-amber{border-left:3px solid var(--amber)}
 .row-card.left-red{border-left:3px solid var(--red)}
 .row-card.left-indigo{border-left:3px solid var(--indigo)}
-.empty{text-align:center;padding:32px;color:var(--text3);font-size:13px;background:var(--bg3);border:1px dashed var(--border2);border-radius:var(--r2)}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.row-card.left-violet{border-left:3px solid var(--violet)}
+.row-card.left-cyan{border-left:3px solid var(--cyan)}
+
+/* ── VALIDATE CARD (special style) ── */
+.validate-card{background:var(--bg2);border:1.5px dashed var(--amber-border);border-radius:var(--r2);padding:16px;margin-bottom:10px;background:var(--amber-dim)}
+.validate-card .vc-meta{font-size:11px;color:var(--amber-text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.validate-card .vc-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.validate-card .vc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.validate-card .vc-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── PERSONA ROW ── */
+.persona-row{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.persona-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.persona-email{font-size:11px;color:var(--text3)}
+.persona-stats{display:flex;gap:10px;align-items:center}
+.pstat{text-align:center}
+.pstat-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.pstat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.pstat-sep{width:1px;height:28px;background:var(--border)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:36px 20px;color:var(--text3);font-size:13px;background:var(--bg3);border:1px dashed var(--border2);border-radius:var(--r2)}
+.empty i{font-size:28px;display:block;margin-bottom:10px;opacity:.5}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
 .b-indigo{background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border)}
 .b-green{background:var(--green-dim);color:var(--green-text);border:1px solid var(--green-border)}
 .b-amber{background:var(--amber-dim);color:var(--amber-text);border:1px solid var(--amber-border)}
 .b-red{background:var(--red-dim);color:var(--red-text);border:1px solid var(--red-border)}
 .b-violet{background:var(--violet-dim);color:var(--violet-text);border:1px solid var(--violet-border)}
+.b-cyan{background:var(--cyan-dim);color:var(--cyan-text);border:1px solid var(--cyan-border)}
 .b-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transition:background .2s}
-.modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2)}
-.modal-header h3{font-size:15px;font-weight:600}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.modal-header h3{font-family:'Sora',sans-serif;font-size:15px;font-weight:700}
 .modal-body{padding:18px 20px}
 .field-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
-.field{width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg2);font-family:inherit;margin-bottom:12px;transition:.15s}
-.field:focus{outline:none;border-color:var(--indigo)}
-textarea.field{resize:none}
+.field{width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg2);font-family:inherit;margin-bottom:14px;transition:.15s}
+.field:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-dim)}
+textarea.field{resize:none;line-height:1.5}
 .btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:7px 15px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:inherit;transition:.12s}
 .btn:hover{background:var(--bg3);color:var(--text)}
 .btn-primary{background:var(--indigo);color:#fff;border-color:var(--indigo)}
-.btn-primary:hover{opacity:.9}
+.btn-primary:hover{opacity:.88}
 .btn-green{background:var(--green-dim);color:var(--green-text);border-color:var(--green-border)}
+.btn-green:hover{background:var(--green);color:#fff}
 .btn-red{background:var(--red-dim);color:var(--red-text);border-color:var(--red-border)}
+.btn-red:hover{background:var(--red);color:#fff}
+.btn-amber{background:var(--amber-dim);color:var(--amber-text);border-color:var(--amber-border)}
 .btn-sm{padding:5px 11px;font-size:11px}
-.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--bg2);position:sticky;bottom:0}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--bg2);position:sticky;bottom:0;border-radius:0 0 16px 16px}
 
-/* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-.kpi{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px}
-.kpi.accent{background:var(--indigo-dim);border-color:var(--indigo-border)}
-.kpi.warn{background:var(--amber-dim);border-color:var(--amber-border)}
-.kpi-label{font-size:11px;color:var(--text2);font-weight:500;margin-bottom:4px}
-.kpi.accent .kpi-label{color:var(--indigo-text)}
-.kpi.warn .kpi-label{color:var(--amber-text)}
-.kpi-val{font-size:26px;font-weight:700;color:var(--text);line-height:1}
-.kpi.accent .kpi-val{color:var(--indigo-text)}
-.kpi.warn .kpi-val{color:var(--amber-text)}
+/* ── COORD SUBTABS ── */
+.subtabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
+.subtab{padding:8px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;display:flex;align-items:center;gap:5px}
+.subtab:hover{color:var(--text)}
+.subtab.active{color:var(--indigo);border-bottom-color:var(--indigo);font-weight:600}
+.subtab-pane{display:none}.subtab-pane.active{display:block}
 
-/* SPINNER */
-.spinner{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text3)}
-.spin{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--indigo);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
+/* ── SPINNER ── */
+.spinner{display:flex;align-items:center;justify-content:center;padding:48px;color:var(--text3)}
+.spin{width:22px;height:22px;border:2px solid var(--border2);border-top-color:var(--indigo);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;z-index:300}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;z-index:300;max-width:320px}
 .toast.show{opacity:1;transform:none}
 
 @media(max-width:600px){
   .kpi-row{grid-template-columns:1fr 1fr}
-  .tabs{flex-wrap:wrap}
-  .modal{max-height:95vh}
+  .tabs{flex-wrap:wrap;width:100%}
+  .main{padding:16px 14px 40px}
+  .topbar{padding:0 16px}
+  .persona-row{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -139,27 +201,22 @@ textarea.field{resize:none}
     <div id="g_id_onload"
       data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
       data-callback="sgiCb"
-      data-auto_prompt="true">
-    </div>
+      data-auto_prompt="true"></div>
     <div class="g_id_signin"
-      data-type="standard"
-      data-size="large"
-      data-theme="outline"
-      data-text="sign_in_with"
-      data-shape="rectangular"
-      data-logo_alignment="left"
-      data-width="280">
-    </div>
-    <div class="auth-error" id="auth-error">
-      Solo cuentas @esinel.com.ar pueden acceder.
-    </div>
+      data-type="standard" data-size="large" data-theme="outline"
+      data-text="sign_in_with" data-shape="rectangular"
+      data-logo_alignment="left" data-width="280"></div>
+    <div class="auth-error" id="auth-error">Solo cuentas @esinel.com.ar pueden acceder.</div>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app" style="display:none">
   <div class="topbar">
-    <a href="index.html" class="app-logo"><div class="dot"></div>Esinel SGI</a>
+    <a href="index.html" class="app-logo"><div class="logo-dot"></div>Esinel SGI</a>
+    <div class="topbar-center">
+      <span class="ejercicio-badge" id="ejercicio-badge">Ejercicio 35</span>
+    </div>
     <div class="topbar-right">
       <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema"><i class="ti ti-moon" id="theme-icon"></i></button>
       <div class="user-chip" onclick="logout()" title="Cerrar sesión">
@@ -170,8 +227,10 @@ textarea.field{resize:none}
   </div>
 
   <div class="main">
-    <div class="page-title">Mi panel</div>
-    <div class="page-sub" id="page-sub">Hallazgos que te involucran</div>
+    <div class="page-header">
+      <div class="page-title" id="page-title">Mi Panel</div>
+      <div class="page-sub" id="page-sub">Hallazgos que te involucran · desde el 1 Abr 2026</div>
+    </div>
 
     <div class="tabs" id="tabs-container">
       <button class="tab active" onclick="showTab('asignados')" id="tab-asignados">
@@ -192,9 +251,9 @@ textarea.field{resize:none}
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL ACCIÓN -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)cerrarModal()">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-header">
       <h3 id="modal-title">Detalle del hallazgo</h3>
       <button class="btn-icon" onclick="cerrarModal()"><i class="ti ti-x"></i></button>
@@ -208,12 +267,28 @@ textarea.field{resize:none}
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
+// ── IFRAME EMBED AUTH (postMessage desde index.html) ──────────────────────
+window.addEventListener('message', function(e) {
+  if (e.origin !== window.location.origin) return;
+  if (e.data && e.data.type === 'sgi-auth' && e.data.email) {
+    userEmail = e.data.email;
+    userName = e.data.name || e.data.email.split('@')[0];
+    userInitials = userName.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+    sessionStorage.setItem('sgi_ok','1');
+    sessionStorage.setItem('sgi_email', userEmail);
+    sessionStorage.setItem('sgi_name', userName);
+    iniciarApp();
+  }
+});
+
 // ── CONFIG ─────────────────────────────────────────────────────────────────
-// Reemplazar con la URL del web app GAS después de deployar el script de RG-06-02
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwjR1nLOrmFVDykGlPWeZw66fQAt1l6CpIB-26Rq_jeG_2Bn4yIztUfckFyiocrXWyp9Q/exec';
 
+// Ejercicio 35: del 1 Abr 2026 al 31 Mar 2027
+const INICIO_EJ35 = new Date('2026-04-01');
+
 // ── AUTH ───────────────────────────────────────────────────────────────────
-let userEmail = '', userName = '', userInitials = '';
+let userEmail = '', userName = '', userInitials = '', esCoord = false;
 
 function sgiCb(resp) {
   try {
@@ -239,10 +314,16 @@ function iniciarApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-avatar').textContent = userInitials;
   document.getElementById('user-name').textContent = userName;
+  // Ocultar topbar si estamos embebidos en el overlay de index.html
+  if (window.parent !== window) {
+    const tb = document.querySelector('.topbar');
+    if (tb) tb.style.display = 'none';
+  }
 
-  const esCoord = userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com';
+  esCoord = userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com';
   if (esCoord) {
-    document.getElementById('page-sub').textContent = 'Panel de coordinación SGI';
+    document.getElementById('page-title').textContent = 'Panel SGI';
+    document.getElementById('page-sub').textContent = 'Coordinación · Ejercicio 35 · desde 1 Abr 2026';
     const tabCoord = document.createElement('button');
     tabCoord.className = 'tab';
     tabCoord.id = 'tab-coord';
@@ -251,13 +332,19 @@ function iniciarApp() {
     document.getElementById('tabs-container').appendChild(tabCoord);
   }
 
+  updateEjercicioBadge();
   cargarDatos();
 }
 
-function logout() {
-  sessionStorage.clear();
-  location.reload();
+function updateEjercicioBadge() {
+  const hoy = new Date();
+  const mesAbr = hoy >= INICIO_EJ35 ? 35 : 34;
+  const desde = hoy >= INICIO_EJ35 ? 'Abr 2026' : 'Abr 2025';
+  const hasta = hoy >= INICIO_EJ35 ? 'Mar 2027' : 'Mar 2026';
+  document.getElementById('ejercicio-badge').textContent = `Ejercicio ${mesAbr} · ${desde}–${hasta}`;
 }
+
+function logout() { sessionStorage.clear(); location.reload(); }
 
 window.addEventListener('load', () => {
   if (sessionStorage.getItem('sgi_ok') === '1') {
@@ -265,6 +352,10 @@ window.addEventListener('load', () => {
     userName = sessionStorage.getItem('sgi_name') || '';
     userInitials = userName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
     iniciarApp();
+  }
+  // Dark mode system preference
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    activateDark();
   }
 });
 
@@ -276,111 +367,359 @@ async function cargarDatos() {
     const url = GAS_URL + '?accion=panel&email=' + encodeURIComponent(userEmail);
     const resp = await fetch(url);
     datosPanel = await resp.json();
-    renderAsignados(datosPanel.asignados || []);
-    renderDeclarados(datosPanel.declarados || []);
+    const asignados = filtrarEj35(datosPanel.asignados || []);
+    const declarados = filtrarEj35(datosPanel.declarados || []);
+    renderAsignados(asignados);
+    renderDeclarados(declarados);
     if (datosPanel.paraCoord) renderCoord(datosPanel.paraCoord);
+    // Badge count para pestaña validar
+    const nValidar = (datosPanel.paraCoord?.validar || []).length;
+    if (nValidar > 0 && esCoord) {
+      const tabCoord = document.getElementById('tab-coord');
+      if (tabCoord) tabCoord.innerHTML += ` <span class="badge-count">${nValidar}</span>`;
+    }
   } catch(e) {
     document.getElementById('pane-asignados').innerHTML =
-      '<div class="empty" style="color:var(--red-text)">No se pudieron cargar los datos. Revisá tu conexión o que el GAS esté configurado.</div>';
+      '<div class="empty"><i class="ti ti-wifi-off"></i>No se pudieron cargar los datos.<br><small>Revisá tu conexión o el estado del GAS.</small></div>';
   }
+}
+
+// Filtrar solo hallazgos del ejercicio 35 (desde 1 Abr 2026)
+function filtrarEj35(lista) {
+  return lista.filter(h => {
+    if (!h.fecha && !h.fechaDecl) return true; // si no hay fecha, incluir
+    const d = new Date(h.fechaDecl || h.fecha || '');
+    if (isNaN(d)) return true;
+    return d >= INICIO_EJ35;
+  });
+}
+
+// ── DONUT CHART ────────────────────────────────────────────────────────────
+function dibujarDonut(canvasId, segmentos, total) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const r = Math.min(cx, cy) - 4;
+  const ri = r * 0.58;
+  ctx.clearRect(0, 0, W, H);
+  if (!total) {
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#E2E8F0';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
+    ctx.beginPath(); ctx.arc(cx, cy, ri, 0, Math.PI * 2); ctx.fill();
+    return;
+  }
+  let ang = -Math.PI / 2;
+  segmentos.forEach(s => {
+    const sweep = (s.val / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, ang, ang + sweep);
+    ctx.closePath();
+    ctx.fillStyle = s.color;
+    ctx.fill();
+    ang += sweep;
+  });
+  // Inner circle (donut hole)
+  ctx.beginPath();
+  ctx.arc(cx, cy, ri, 0, Math.PI * 2);
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
+  ctx.fill();
+  // Center label
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#0F172A';
+  ctx.textAlign = 'center';
+  ctx.font = `700 ${Math.round(r * 0.38)}px Sora, sans-serif`;
+  ctx.fillText(total, cx, cy + 3);
+  ctx.font = `500 ${Math.round(r * 0.22)}px Inter, sans-serif`;
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text2').trim() || '#64748B';
+  ctx.fillText('total', cx, cy + r * 0.28);
 }
 
 // ── RENDER ASIGNADOS ───────────────────────────────────────────────────────
 function renderAsignados(lista) {
   const pane = document.getElementById('pane-asignados');
+  const abiertos = lista.filter(h => !h.resultado);
+  const cerrados = lista.filter(h => h.resultado);
+  const cerradosOK = cerrados.filter(h => h.resultado === 'OK').length;
+  const cerradosNO = cerrados.filter(h => h.resultado === 'NO').length;
+  const vencidos = abiertos.filter(h => {
+    if (!h.fechaLim) return false;
+    return new Date(h.fechaLim) < new Date();
+  }).length;
+
   if (!lista.length) {
-    pane.innerHTML = '<div class="empty"><i class="ti ti-circle-check" style="font-size:24px;display:block;margin-bottom:8px"></i>No tenés hallazgos asignados activos</div>';
+    pane.innerHTML = `<div class="empty"><i class="ti ti-circle-check"></i>No tenés hallazgos asignados en este ejercicio</div>`;
     return;
   }
-  pane.innerHTML = lista.map(h => {
-    const accion = h.accionAC || h.accionAP || h.accionAM || '';
-    const badge = estadoBadge(h.estado, h.resultado, h.fechaLim);
-    const cls = cardClass(h.estado, h.resultado, h.fechaLim);
-    return `<div class="row-card ${cls}" onclick="abrirModalAsignado(${h.fila})">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px">
-        <div>
-          <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
-          <span style="font-size:11px;color:var(--text2);margin-left:8px">${h.sector}</span>
-        </div>
-        <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-          ${badge}
-          ${h.fechaLim ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaLim}</span>` : ''}
+
+  pane.innerHTML = `<div class="split">
+    <div class="list-col">
+      ${abiertos.length ? `<div class="section-title"><i class="ti ti-clock" style="color:var(--amber)"></i>Abiertos (${abiertos.length})</div>
+      ${abiertos.map(h => rowCard(h, true)).join('')}` : ''}
+      ${cerrados.length ? `<div class="section-title" style="margin-top:${abiertos.length?'20px':'0'}"><i class="ti ti-check" style="color:var(--green)"></i>Cerrados (${cerrados.length})</div>
+      ${cerrados.map(h => rowCard(h, true)).join('')}` : ''}
+    </div>
+    <div class="stats-sidebar">
+      <div class="stat-card">
+        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Estado general</div>
+        <div class="donut-wrap">
+          <canvas id="donut-asig" width="130" height="130"></canvas>
+          <div class="donut-legend">
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>Abiertos</span><span class="leg-val">${abiertos.length}</span></div>
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados OK</span><span class="leg-val">${cerradosOK}</span></div>
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#DC2626"></span>Cerrados NO</span><span class="leg-val">${cerradosNO}</span></div>
+          </div>
         </div>
       </div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.5">${h.desc}</div>
-      ${accion ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">Acción: ${accion}</div>` : ''}
-    </div>`;
-  }).join('');
+      <div class="kpi-row kpi-row-2">
+        <div class="kpi kpi-amber"><div class="kpi-label">Abiertos</div><div class="kpi-val">${abiertos.length}</div></div>
+        <div class="kpi kpi-red"><div class="kpi-label">Vencidos</div><div class="kpi-val">${vencidos}</div></div>
+        <div class="kpi kpi-green"><div class="kpi-label">Cerrados OK</div><div class="kpi-val">${cerradosOK}</div></div>
+        <div class="kpi kpi-red"><div class="kpi-label">Cerrados NO</div><div class="kpi-val">${cerradosNO}</div></div>
+      </div>
+    </div>
+  </div>`;
+
+  requestAnimationFrame(() => {
+    dibujarDonut('donut-asig',
+      [{val: abiertos.length, color: '#D97706'}, {val: cerradosOK, color: '#059669'}, {val: cerradosNO, color: '#DC2626'}],
+      lista.length);
+  });
 }
 
 // ── RENDER DECLARADOS ──────────────────────────────────────────────────────
 function renderDeclarados(lista) {
   const pane = document.getElementById('pane-declarados');
+  const pendVal = lista.filter(h => h.estado === 'En revisión' || !h.numGenerado).length;
+  const procesando = lista.filter(h => h.numGenerado && !h.cerrado).length;
+  const cerrados = lista.filter(h => h.cerrado).length;
+
   if (!lista.length) {
-    pane.innerHTML = '<div class="empty"><i class="ti ti-send" style="font-size:24px;display:block;margin-bottom:8px"></i>Todavía no declaraste ningún hallazgo</div>';
+    pane.innerHTML = `<div class="empty"><i class="ti ti-send"></i>Todavía no declaraste ningún hallazgo en este ejercicio</div>`;
     return;
   }
-  pane.innerHTML = lista.map(h => `
-    <div class="row-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px">
-        <span style="font-size:12px;font-weight:600;color:var(--text2)">${h.fecha} · ${h.tipo}</span>
-        <span class="badge ${h.numGenerado ? 'b-green' : 'b-gray'}">${h.numGenerado || h.estado}</span>
+
+  pane.innerHTML = `<div class="split">
+    <div class="list-col">
+      ${lista.map(h => `
+      <div class="row-card ${h.cerrado ? 'left-green' : (h.numGenerado ? 'left-indigo' : 'left-amber')}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+          <div>
+            <span style="font-size:13px;font-weight:600">${h.numGenerado || '—'}</span>
+            <span style="font-size:11px;color:var(--text2);margin-left:8px">${h.tipo || ''}</span>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+            ${h.cerrado ? '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado</span>' :
+              h.numGenerado ? '<span class="badge b-indigo">En proceso</span>' :
+              '<span class="badge b-amber"><i class="ti ti-clock"></i>En revisión</span>'}
+            ${h.fechaDecl ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaDecl}</span>` : ''}
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">${h.descripcion || h.desc || ''}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">${h.sector || ''}</div>
+      </div>`).join('')}
+    </div>
+    <div class="stats-sidebar">
+      <div class="stat-card">
+        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Mis declaraciones</div>
+        <div class="donut-wrap">
+          <canvas id="donut-decl" width="130" height="130"></canvas>
+          <div class="donut-legend">
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>En revisión</span><span class="leg-val">${pendVal}</span></div>
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#4F46E5"></span>En proceso</span><span class="leg-val">${procesando}</span></div>
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados</span><span class="leg-val">${cerrados}</span></div>
+          </div>
+        </div>
       </div>
-      <div style="font-size:12px;color:var(--text);line-height:1.5">${h.descripcion}</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:4px">${h.sector}</div>
-    </div>`).join('');
+      <div class="kpi kpi-indigo" style="margin-top:0"><div class="kpi-label">Total declarados Ej. 35</div><div class="kpi-val">${lista.length}</div><div class="kpi-sub">RG-06-02</div></div>
+    </div>
+  </div>`;
+
+  requestAnimationFrame(() => {
+    dibujarDonut('donut-decl',
+      [{val: pendVal, color:'#D97706'},{val: procesando, color:'#4F46E5'},{val: cerrados, color:'#059669'}],
+      lista.length);
+  });
 }
 
 // ── RENDER COORDINADOR ─────────────────────────────────────────────────────
 function renderCoord(coord) {
   const pane = document.getElementById('pane-coord');
+  const validar = coord.validar || [];
   const listos = coord.listos || [];
   const eficacia = coord.eficacia || [];
+  const personas = coord.resumenPersonas || [];
 
-  let html = `<div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Listos para cerrar</div><div class="kpi-val">${listos.length}</div></div>
-    <div class="kpi warn"><div class="kpi-label">Eficacia pendiente</div><div class="kpi-val">${eficacia.length}</div></div>
-    <div class="kpi accent"><div class="kpi-label">Mi rol</div><div class="kpi-val" style="font-size:14px;padding-top:4px">Coordinador</div></div>
+  const totalAbiertos = listos.length + validar.length;
+  const totalEficacia = eficacia.length;
+
+  pane.innerHTML = `
+  <div class="kpi-row" style="margin-bottom:20px">
+    <div class="kpi kpi-amber"><div class="kpi-label">Para validar</div><div class="kpi-val">${validar.length}</div><div class="kpi-sub">Nuevos hallazgos</div></div>
+    <div class="kpi kpi-violet"><div class="kpi-label">Para cerrar</div><div class="kpi-val">${listos.length}</div><div class="kpi-sub">Con acción enviada</div></div>
+    <div class="kpi kpi-cyan"><div class="kpi-label">Verificar eficacia</div><div class="kpi-val">${eficacia.length}</div><div class="kpi-sub">Pendiente control</div></div>
+  </div>
+
+  <div class="subtabs" id="coord-subtabs">
+    <button class="subtab active" onclick="showSubtab('validar')">
+      <i class="ti ti-filter"></i> Validar nuevos ${validar.length ? `<span class="badge-count">${validar.length}</span>` : ''}
+    </button>
+    <button class="subtab" onclick="showSubtab('cerrar')">
+      <i class="ti ti-circle-check"></i> Cerrar (${listos.length})
+    </button>
+    <button class="subtab" onclick="showSubtab('eficacia')">
+      <i class="ti ti-clock"></i> Eficacia (${eficacia.length})
+    </button>
+    <button class="subtab" onclick="showSubtab('resumen')">
+      <i class="ti ti-users"></i> Por persona
+    </button>
+  </div>
+
+  <div id="subtab-validar" class="subtab-pane active">${renderValidar(validar)}</div>
+  <div id="subtab-cerrar" class="subtab-pane">${renderLisTosCerrar(listos)}</div>
+  <div id="subtab-eficacia" class="subtab-pane">${renderEficacia(eficacia)}</div>
+  <div id="subtab-resumen" class="subtab-pane">${renderResumen(personas, coord)}</div>`;
+}
+
+function renderValidar(validar) {
+  if (!validar.length) return `<div class="empty"><i class="ti ti-check"></i>No hay hallazgos esperando validación</div>`;
+  return validar.map(h => `
+    <div class="validate-card">
+      <div class="vc-meta">
+        <i class="ti ti-clock-hour-4"></i>
+        Declarado por <strong>${h.declarante || '—'}</strong>
+        ${h.sector ? `· ${h.sector}` : ''}
+        ${h.fechaDecl ? `· ${h.fechaDecl}` : ''}
+        ${h.esGerente ? `<span class="badge b-violet" style="margin-left:4px"><i class="ti ti-crown"></i>Gerente</span>` : ''}
+      </div>
+      <div class="vc-title">${h.tipo || 'Hallazgo'} — ${h.desc || h.descripcion || ''}</div>
+      ${h.personasInv ? `<div style="font-size:11px;color:var(--amber-text);margin-bottom:6px"><i class="ti ti-users" style="margin-right:3px"></i>Involucra: ${h.personasInv}</div>` : ''}
+      <div class="vc-actions">
+        <button class="btn btn-green btn-sm" onclick="validarHallazgo(${h.fila},'VALIDAR')">
+          <i class="ti ti-check"></i> Validar y asignar
+        </button>
+        <button class="btn btn-red btn-sm" onclick="validarHallazgo(${h.fila},'DESESTIMAR')">
+          <i class="ti ti-x"></i> Desestimar
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function renderLisTosCerrar(listos) {
+  if (!listos.length) return `<div class="empty"><i class="ti ti-circle-check"></i>No hay hallazgos listos para cerrar</div>`;
+  return listos.map(h => `
+    <div class="row-card left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+        <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
+        <span class="badge b-green"><i class="ti ti-check"></i>Evidencia lista</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${h.desc}</div>
+      ${h.linkDrive ? `<a href="${h.linkDrive}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;color:var(--indigo);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:10px"><i class="ti ti-folder"></i>Ver evidencia en Drive</a><br>` : ''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn btn-green btn-sm" onclick="accionCoord(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Cerrar OK</button>
+        <button class="btn btn-red btn-sm" onclick="accionCoord(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>Devolver</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderEficacia(eficacia) {
+  if (!eficacia.length) return `<div class="empty"><i class="ti ti-chart-line"></i>No hay verificaciones de eficacia pendientes</div>`;
+  return eficacia.map(h => `
+    <div class="row-card left-amber">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+        <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
+        <span class="badge b-amber"><i class="ti ti-clock"></i>${h.diasDesde} días desde cierre</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${h.desc}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-green btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Fue eficaz</button>
+        <button class="btn btn-red btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>No fue eficaz</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderResumen(personas, coord) {
+  const todosAbiertos = [...(coord.listos||[]), ...(coord.validar||[])];
+  const totalAbiertos = todosAbiertos.length;
+  const totalEficacia = (coord.eficacia||[]).length;
+
+  let html = `<div class="split">
+    <div>`;
+
+  if (!personas.length) {
+    // Si el GAS todavía no devuelve resumenPersonas, mostrar un placeholder con los datos que tenemos
+    html += `<div class="empty" style="text-align:left;padding:20px">
+      <i class="ti ti-users" style="font-size:20px;display:block;margin-bottom:8px"></i>
+      <strong>Resumen por persona</strong><br>
+      <span style="font-size:12px">El GAS todavía no devuelve el resumen por persona.<br>Se mostrará aquí cuando se agregue <code>resumenPersonas</code> al endpoint <code>obtenerDatosPanel</code>.</span>
+    </div>`;
+  } else {
+    html += `<div class="section-title"><i class="ti ti-users"></i>Involucrados — Ejercicio 35</div>`;
+    html += personas.map(p => `
+      <div class="persona-row">
+        <div>
+          <div class="persona-name">${p.nombre}</div>
+          <div class="persona-email">${p.email || ''}</div>
+        </div>
+        <div class="persona-stats">
+          <div class="pstat"><div class="pstat-val" style="color:var(--amber)">${p.abiertos||0}</div><div class="pstat-lbl">Abiertos</div></div>
+          <div class="pstat-sep"></div>
+          <div class="pstat"><div class="pstat-val" style="color:var(--green)">${p.cerrados||0}</div><div class="pstat-lbl">Cerrados</div></div>
+          <div class="pstat-sep"></div>
+          <div class="pstat"><div class="pstat-val" style="color:var(--text2)">${p.declarados||0}</div><div class="pstat-lbl">Declaró</div></div>
+        </div>
+      </div>`).join('');
+  }
+
+  html += `</div>
+    <div class="stats-sidebar">
+      <div class="stat-card">
+        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Vista global Ej. 35</div>
+        <div class="donut-wrap">
+          <canvas id="donut-coord" width="130" height="130"></canvas>
+          <div class="donut-legend">
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>En revisión</span><span class="leg-val">${(coord.validar||[]).length}</span></div>
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#7C3AED"></span>Para cerrar</span><span class="leg-val">${(coord.listos||[]).length}</span></div>
+            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#0891B2"></span>Verif. eficacia</span><span class="leg-val">${totalEficacia}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="kpi kpi-indigo"><div class="kpi-label">Total activos</div><div class="kpi-val">${totalAbiertos + totalEficacia}</div><div class="kpi-sub">Ejercicio 35</div></div>
+    </div>
   </div>`;
 
-  if (listos.length) {
-    html += `<div class="section-title"><i class="ti ti-circle-check" style="color:var(--green)"></i>Listos para cerrar</div>`;
-    html += listos.map(h => `
-      <div class="row-card left-green">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-          <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
-          <span class="badge b-green"><i class="ti ti-check"></i>Evidencia lista</span>
-        </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${h.desc}</div>
-        ${h.linkDrive ? `<a href="${h.linkDrive}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;color:var(--indigo);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:10px"><i class="ti ti-folder"></i>Ver evidencia en Drive</a><br>` : ''}
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-          <button class="btn btn-green btn-sm" onclick="accionCoord(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Cerrar OK</button>
-          <button class="btn btn-red btn-sm" onclick="accionCoord(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>Cerrar NO</button>
-        </div>
-      </div>`).join('');
-  }
+  setTimeout(() => {
+    const total = (coord.validar||[]).length + (coord.listos||[]).length + totalEficacia;
+    dibujarDonut('donut-coord',
+      [{val:(coord.validar||[]).length,color:'#D97706'},{val:(coord.listos||[]).length,color:'#7C3AED'},{val:totalEficacia,color:'#0891B2'}],
+      total);
+  }, 50);
 
-  if (eficacia.length) {
-    html += `<div class="section-title" style="margin-top:20px"><i class="ti ti-clock" style="color:var(--amber)"></i>Verificación de eficacia</div>`;
-    html += eficacia.map(h => `
-      <div class="row-card left-amber">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-          <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
-          <span class="badge b-amber"><i class="ti ti-clock"></i>${h.diasDesde} días desde cierre</span>
-        </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${h.desc}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-green btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Sí, fue eficaz</button>
-          <button class="btn btn-red btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>No fue eficaz</button>
-        </div>
-      </div>`).join('');
-  }
+  return html;
+}
 
-  if (!listos.length && !eficacia.length) {
-    html += `<div class="empty"><i class="ti ti-circle-check" style="font-size:24px;display:block;margin-bottom:8px"></i>Todo al día — no hay hallazgos pendientes de tu acción</div>`;
-  }
-
-  pane.innerHTML = html;
+// ── ROW CARD helper ────────────────────────────────────────────────────────
+function rowCard(h, clickable) {
+  const accion = h.accionAC || h.accionAP || h.accionAM || '';
+  const badge = estadoBadge(h.estado, h.resultado, h.fechaLim);
+  const cls = cardClass(h.estado, h.resultado, h.fechaLim);
+  const onclick = clickable ? `onclick="abrirModalAsignado(${h.fila})"` : '';
+  return `<div class="row-card ${cls}" ${onclick}>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px">
+      <div>
+        <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
+        <span style="font-size:11px;color:var(--text2);margin-left:8px">${h.sector || ''}</span>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+        ${badge}
+        ${h.fechaLim ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaLim}</span>` : ''}
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.5">${h.desc || ''}</div>
+    ${accion ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">Acción: ${accion}</div>` : ''}
+  </div>`;
 }
 
 // ── MODAL ASIGNADO ─────────────────────────────────────────────────────────
@@ -395,7 +734,7 @@ function abrirModalAsignado(fila) {
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:14px">${h.desc}</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
       <span class="badge b-indigo">${h.tipo}</span>
-      <span class="badge b-gray">${h.sector}</span>
+      ${h.sector ? `<span class="badge b-gray">${h.sector}</span>` : ''}
       ${h.fechaLim ? `<span class="badge b-amber"><i class="ti ti-calendar"></i>${h.fechaLim}</span>` : ''}
     </div>
     <div class="field-label">Tipo de acción</div>
@@ -410,12 +749,12 @@ function abrirModalAsignado(fila) {
     <input class="field" type="date" id="m-fecha" value="${h.fechaCierre || ''}">
     <div class="field-label">Link carpeta Drive (evidencia)</div>
     <input class="field" type="url" id="m-drive" value="${h.linkDrive || ''}" placeholder="https://drive.google.com/drive/folders/...">
-    <p style="font-size:11px;color:var(--text3)">Subí la evidencia directamente a Drive y pegá el link de la carpeta acá.</p>`;
+    <p style="font-size:11px;color:var(--text3)">Subí la evidencia a Drive y pegá el link de la carpeta.</p>`;
 
   document.getElementById('modal-footer').innerHTML = `
     <button class="btn" onclick="cerrarModal()">Cancelar</button>
     <button class="btn btn-primary" onclick="guardarAccion(${fila},'${h.num}','${h.tipo}')">
-      <i class="ti ti-send"></i> Enviar a SGI
+      <i class="ti ti-send"></i> Enviar a coordinación SGI
     </button>`;
 
   document.getElementById('modal-overlay').classList.add('open');
@@ -432,74 +771,81 @@ async function guardarAccion(fila, num, tipo) {
   const drive = document.getElementById('m-drive').value.trim();
   const tipoAccion = document.getElementById('m-tipo-accion').value;
   if (!accionTexto) { mostrarToast('Describí la acción tomada antes de enviar'); return; }
-
   const params = new URLSearchParams({
-    accion: 'submitAccion',
-    email: userEmail,
-    fila: String(fila),
-    num: num,
-    tipoAccion: tipoAccion,
-    accionTexto: accionTexto,
-    fechaCierre: fecha,
-    linkDrive: drive,
-    estado: 'Evidencia subida'
+    accion:'submitAccion', email:userEmail, fila:String(fila),
+    num, tipoAccion, accionTexto, fechaCierre:fecha, linkDrive:drive, estado:'Evidencia subida'
   });
   try {
     await fetch(GAS_URL + '?' + params.toString());
     cerrarModal();
     mostrarToast('✓ Acción enviada al coordinador SGI');
     setTimeout(cargarDatos, 1500);
-  } catch(e) {
-    mostrarToast('Error al enviar — revisá tu conexión');
-  }
+  } catch(e) { mostrarToast('Error al enviar — revisá tu conexión'); }
+}
+
+async function validarHallazgo(fila, decision) {
+  const obs = decision === 'DESESTIMAR'
+    ? (prompt('Motivo para desestimar este hallazgo:') ?? '')
+    : '';
+  if (decision === 'DESESTIMAR' && !obs) return;
+  const params = new URLSearchParams({
+    accion:'validarHallazgo', email:userEmail, fila:String(fila), decision, obs
+  });
+  try {
+    await fetch(GAS_URL + '?' + params.toString());
+    mostrarToast(decision === 'VALIDAR' ? '✓ Hallazgo validado y asignado' : '✓ Hallazgo desestimado');
+    setTimeout(cargarDatos, 1200);
+  } catch(e) { mostrarToast('Error al procesar'); }
 }
 
 async function accionCoord(fila, num, resultado) {
   const obs = prompt(resultado === 'NO'
-    ? 'Observaciones para el cierre NO (se abrirá un nuevo hallazgo automáticamente):'
+    ? 'Observaciones para devolver al involucrado:'
     : 'Observaciones opcionales para el cierre OK:') ?? '';
   const params = new URLSearchParams({
-    accion: 'cerrarHallazgo',
-    email: userEmail,
-    fila: String(fila),
-    num: num,
-    resultado: resultado,
-    obs: obs
+    accion:'cerrarHallazgo', email:userEmail, fila:String(fila), num, resultado, obs
   });
   try {
     await fetch(GAS_URL + '?' + params.toString());
     mostrarToast('✓ Hallazgo cerrado ' + resultado);
-    setTimeout(cargarDatos, 1500);
-  } catch(e) {
-    mostrarToast('Error al cerrar');
-  }
+    setTimeout(cargarDatos, 1200);
+  } catch(e) { mostrarToast('Error al cerrar'); }
 }
 
 async function accionEficacia(fila, num, resultado) {
   const obs = prompt('Observaciones de la verificación de eficacia:') ?? '';
   const params = new URLSearchParams({
-    accion: 'eficacia',
-    email: userEmail,
-    fila: String(fila),
-    num: num,
-    resultado: resultado,
-    obs: obs
+    accion:'eficacia', email:userEmail, fila:String(fila), num, resultado, obs
   });
   try {
     await fetch(GAS_URL + '?' + params.toString());
     mostrarToast('✓ Eficacia registrada');
-    setTimeout(cargarDatos, 1500);
-  } catch(e) {
-    mostrarToast('Error al registrar');
-  }
+    setTimeout(cargarDatos, 1200);
+  } catch(e) { mostrarToast('Error al registrar'); }
 }
 
 // ── UI HELPERS ─────────────────────────────────────────────────────────────
 function showTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('pane-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab)?.classList.add('active');
+  document.getElementById('pane-' + tab)?.classList.add('active');
+}
+
+function showSubtab(tab) {
+  document.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.subtab-pane').forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector(`.subtab[onclick*="${tab}"]`);
+  if (btn) btn.classList.add('active');
+  document.getElementById('subtab-' + tab)?.classList.add('active');
+  // Redibujar donut si es resumen
+  if (tab === 'resumen' && datosPanel?.paraCoord) {
+    const coord = datosPanel.paraCoord;
+    const total = (coord.validar||[]).length + (coord.listos||[]).length + (coord.eficacia||[]).length;
+    setTimeout(() => dibujarDonut('donut-coord',
+      [{val:(coord.validar||[]).length,color:'#D97706'},{val:(coord.listos||[]).length,color:'#7C3AED'},{val:(coord.eficacia||[]).length,color:'#0891B2'}],
+      total), 50);
+  }
 }
 
 function estadoBadge(estado, resultado, fechaLim) {
@@ -536,10 +882,31 @@ function mostrarToast(msg) {
 }
 
 let dark = false;
+function activateDark() {
+  dark = true;
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.getElementById('theme-icon').className = 'ti ti-sun';
+}
 function toggleTheme() {
   dark = !dark;
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
   document.getElementById('theme-icon').className = dark ? 'ti ti-sun' : 'ti ti-moon';
+  // Redibujar donuts con nuevos colores de fondo
+  if (datosPanel) {
+    setTimeout(() => {
+      if (datosPanel.asignados) {
+        const a = filtrarEj35(datosPanel.asignados || []);
+        const ab = a.filter(h => !h.resultado);
+        const ok = a.filter(h => h.resultado === 'OK').length;
+        const no = a.filter(h => h.resultado === 'NO').length;
+        dibujarDonut('donut-asig',[{val:ab.length,color:'#D97706'},{val:ok,color:'#059669'},{val:no,color:'#DC2626'}],a.length);
+      }
+      if (datosPanel.declarados) {
+        const d = filtrarEj35(datosPanel.declarados || []);
+        dibujarDonut('donut-decl',[{val:d.filter(h=>!h.numGenerado).length,color:'#D97706'},{val:d.filter(h=>h.numGenerado&&!h.cerrado).length,color:'#4F46E5'},{val:d.filter(h=>h.cerrado).length,color:'#059669'}],d.length);
+      }
+    }, 50);
+  }
 }
 </script>
 </body>
