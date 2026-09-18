@@ -268,9 +268,11 @@ textarea.field{resize:none;line-height:1.5}
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 // ── IFRAME EMBED AUTH (postMessage desde index.html) ──────────────────────
+var _appIniciada = false;
 window.addEventListener('message', function(e) {
   if (e.origin !== window.location.origin) return;
-  if (e.data && e.data.type === 'sgi-auth' && e.data.email) {
+  if (e.data && e.data.type === 'sgi-auth' && e.data.email && !_appIniciada) {
+    _appIniciada = true;
     userEmail = e.data.email;
     userName = e.data.name || e.data.email.split('@')[0];
     userInitials = userName.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
@@ -351,7 +353,8 @@ function updateEjercicioBadge() {
 function logout() { sessionStorage.clear(); location.reload(); }
 
 window.addEventListener('load', () => {
-  if (sessionStorage.getItem('sgi_ok') === '1') {
+  if (sessionStorage.getItem('sgi_ok') === '1' && !_appIniciada) {
+    _appIniciada = true;
     userEmail = sessionStorage.getItem('sgi_email') || '';
     userName = sessionStorage.getItem('sgi_name') || '';
     userInitials = userName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
