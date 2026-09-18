@@ -314,10 +314,14 @@ function iniciarApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-avatar').textContent = userInitials;
   document.getElementById('user-name').textContent = userName;
-  // Ocultar topbar si estamos embebidos en el overlay de index.html
+  // Si estamos embebidos, el topbar del panel muestra "← Dashboard" en vez del logo
   if (window.parent !== window) {
-    const tb = document.querySelector('.topbar');
-    if (tb) tb.style.display = 'none';
+    const logo = document.querySelector('.app-logo');
+    if (logo) {
+      logo.href = '#';
+      logo.onclick = function(){ window.parent.cerrarPanel(); return false; };
+      logo.innerHTML = '<span style="font-size:14px;margin-right:4px">←</span> Dashboard';
+    }
   }
 
   esCoord = userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com';

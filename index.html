@@ -823,25 +823,18 @@
   </div>
 </div>
 
-<!-- PANEL OVERLAY -->
-<div id="panel-overlay" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;background:#0B111E;animation:slideUp .22s ease">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#131929;border-bottom:1px solid #1E2D47;flex-shrink:0">
-    <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#EDF2FF">
-      <span style="width:7px;height:7px;border-radius:50%;background:#4F46E5;display:inline-block"></span>
-      Mi Panel · SGI Esinel
-    </div>
-    <button onclick="cerrarPanel()" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#7B8DB0;background:transparent;border:1px solid #1E2D47;border-radius:7px;padding:5px 12px;cursor:pointer;font-family:inherit;transition:.15s" onmouseover="this.style.color='#EDF2FF'" onmouseout="this.style.color='#7B8DB0'">
-      <span style="font-size:14px">←</span> Volver al dashboard
-    </button>
-  </div>
+<!-- PANEL OVERLAY (arranca debajo del header ESINEL, el nav queda visible) -->
+<div id="panel-overlay" style="position:fixed;left:0;right:0;bottom:0;z-index:400;display:none;flex-direction:column;background:#0B111E">
   <iframe id="panel-iframe" src="" style="flex:1;border:none;width:100%;background:#0B111E"></iframe>
 </div>
-<style>@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}</style>
 
 <script id="sgi-js">(function(){function injectChip(n){var h=document.querySelector('.esinel-hdr-top');if(!h)return;var ini=n.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();var c=document.createElement('div');c.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;margin-left:auto;';c.title='Cerrar sesi\u00f3n';c.onclick=function(){sessionStorage.clear();location.reload();};c.innerHTML='<div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">'+ini+'</div><span style="font-size:11px;color:#94a3b8;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+n+'</span>';h.appendChild(c);}if(sessionStorage.getItem('sgi_ok')==='1'){var ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();var _n=sessionStorage.getItem('sgi_name')||'';if(_n)injectChip(_n);return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');sessionStorage.setItem('sgi_email',p.email);var nm=p.name||p.email.split('@')[0];sessionStorage.setItem('sgi_name',nm);var ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();injectChip(nm);}};window.sgiCb=sgiCb;
 window.abrirPanel=function(){
   var ov=document.getElementById('panel-overlay');
   var fr=document.getElementById('panel-iframe');
+  // Posicionar el overlay exactamente debajo del header ESINEL
+  var hdr=document.querySelector('.esinel-hdr');
+  ov.style.top=(hdr?hdr.offsetHeight:52)+'px';
   ov.style.display='flex';
   document.body.style.overflow='hidden';
   if(!fr.src||!fr.src.includes('mi-panel.html')){fr.src='mi-panel.html';}
