@@ -1,856 +1,903 @@
-﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50 text-slate-800 antialiased">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESINEL SGI — Sistema de Gestión Integrado</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            esinel: {
+              dark: '#0f172a',
+              navy: '#1B3A8C',
+              slate: '#9BA4B0'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* Efecto de cuadrícula sutil para fondo claro SaaS */
+    .bg-grid-pattern-light {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Contenedor principal */
-    .main-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 24px 60px;
-      width: 100%;
-    }
-
-    /* Encabezado del dashboard */
-    .dash-header {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 28px;
-    }
-
-    .dash-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .dash-title {
-      font-size: 26px;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.02em;
-    }
-
-    .dash-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #0369a1;
-      background: #e0f2fe;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      border: 1px solid #bae6fd;
-    }
-
-    .dash-sub {
-      font-size: 14px;
-      color: #64748b;
-    }
-
-    /* Métricas / Estado del Sistema */
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 36px;
-    }
-
-    .metric-card {
+    /* Tarjetas elevadas estilo Modern SaaS */
+    .card-clean {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 20px;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    .metric-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px -3px rgba(15, 23, 42, 0.08);
+    .card-clean:hover {
       border-color: #cbd5e1;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.07), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+      transform: translateY(-2px);
     }
 
-    .metric-card::before {
+    /* Borde superior de acento para tarjetas de métricas */
+    .metric-card-accent::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
+      height: 3.5px;
       background: #e2e8f0;
+      transition: background-color 0.2s;
+    }
+    .metric-card-accent.alerta::before { background: #f59e0b; }
+    .metric-card-accent.alerta .metric-val-color { color: #d97706; }
+
+    .metric-card-accent.ok::before { background: #10b981; }
+    .metric-card-accent.ok .metric-val-color { color: #059669; }
+
+    .metric-card-accent.info::before { background: #3b82f6; }
+    .metric-card-accent.info .metric-val-color { color: #2563eb; }
+
+    /* Scrollbar sutil */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
 
-    .metric-card.alerta::before { background: #f59e0b; }
-    .metric-card.alerta .metric-val { color: #d97706; }
-
-    .metric-card.ok::before { background: #10b981; }
-    .metric-card.ok .metric-val { color: #059669; }
-
-    .metric-card.info::before { background: #3b82f6; }
-    .metric-card.info .metric-val { color: #2563eb; }
-
-    .metric-tag {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #64748b;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
+    /* Animación dropdown */
+    @keyframes dropdownSlideFade {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
-
-    .metric-val {
-      font-size: 32px;
-      font-weight: 800;
-      color: #0f172a;
-      line-height: 1.1;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .metric-desc {
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      margin-top: 4px;
-    }
-
-    .metric-hint {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 2px;
-    }
-
-    /* Secciones de módulos */
-    .module-section {
-      margin-bottom: 36px;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #64748b;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 8px;
-    }
-
-    .section-heading i {
-      font-size: 15px;
-      color: #94a3b8;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-
-    /* Tarjetas estándar */
-    .card-box {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 20px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-decoration: none;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .card-box:hover {
-      border-color: #93c5fd;
-      box-shadow: 0 10px 24px -5px rgba(15, 23, 42, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .card-header-line {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .card-icon-wrap {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
-    /* Paletas de íconos */
-    .ic-blue { background: #eff6ff; color: #2563eb; }
-    .ic-purple { background: #faf5ff; color: #7c3aed; }
-    .ic-orange { background: #fff7ed; color: #ea580c; }
-    .ic-emerald { background: #ecfdf5; color: #059669; }
-    .ic-teal { background: #f0fdfa; color: #0d9488; }
-    .ic-amber { background: #fefce8; color: #b45309; }
-    .ic-indigo { background: #e0e7ff; color: #4338ca; }
-
-    .card-content {
-      flex-grow: 1;
-      margin-bottom: 16px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .card-text {
-      font-size: 12.5px;
-      color: #64748b;
-      line-height: 1.45;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 12px;
-      border-top: 1px solid #f1f5f9;
-    }
-
-    .badge-code {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: #eff6ff;
-      color: #2563eb;
-      letter-spacing: 0.02em;
-    }
-
-    .badge-code.green { background: #ecfdf5; color: #059669; }
-    .badge-code.orange { background: #fff7ed; color: #ea580c; }
-    .badge-code.purple { background: #faf5ff; color: #7c3aed; }
-    .badge-code.gray { background: #f1f5f9; color: #475569; }
-
-    .action-arrow {
-      color: #94a3b8;
-      font-size: 16px;
-      transition: transform 0.15s ease, color 0.15s ease;
-    }
-
-    .card-box:hover .action-arrow {
-      color: #2563eb;
-      transform: translateX(3px);
-    }
-
-    /* ── Dropdown interactivo para Vehículos y Auditorías ── */
-    .dropdown-group {
-      position: relative;
-    }
-
-    .dropdown-btn {
-      width: 100%;
-      background: transparent;
-      border: none;
-      text-align: left;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .dropdown-menu-list {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
-      z-index: 100;
-      padding: 6px;
-      animation: fadeInDropdown 0.15s ease-out;
-    }
-
     .dropdown-group.open .dropdown-menu-list {
       display: block;
+      animation: dropdownSlideFade 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
-    @keyframes fadeInDropdown {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 12.5px;
-      font-weight: 500;
-      color: #334155;
-      transition: background 0.12s, color 0.12s;
-    }
-
-    .dropdown-item:hover {
-      background: #f1f5f9;
-      color: #0f172a;
-    }
-
-    .dropdown-item.active-item {
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-weight: 600;
-    }
-
-    .dropdown-item i {
-      font-size: 14px;
-      color: #94a3b8;
-    }
-
-    .dropdown-item:hover i {
-      color: #2563eb;
-    }
-
-    .dropdown-subtag {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #e2e8f0;
-      color: #475569;
-      font-weight: 600;
-    }
-
-    .dropdown-caret {
-      transition: transform 0.2s ease;
-    }
-
     .dropdown-group.open .dropdown-caret {
       transform: rotate(180deg);
     }
   </style>
 </head>
-<body>
+<body class="min-h-full bg-slate-50 bg-grid-pattern-light text-slate-800 flex flex-col font-sans">
 
-<!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
-<style>
-.esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
-.esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
-.esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
-.esinel-logo-name{font-size:21px;font-weight:800;color:#fff;letter-spacing:2.5px;line-height:1;text-transform:uppercase}
-.esinel-logo-tagline{font-size:8.5px;font-weight:600;color:#475569;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px}
-.esinel-logo-certs{font-size:8px;font-weight:600;letter-spacing:.8px;margin-top:2px}
-.esinel-iso9{color:#94a3b8}.esinel-iso14{color:#4caf72;margin-left:5px}.esinel-iso45{color:#ef5350;margin-left:5px}
-.esinel-badge{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);padding:4px 10px;border-radius:4px;border:1px solid rgba(59,130,246,.2)}
-.esinel-nav{display:flex;align-items:center;border-top:1px solid #1e293b;padding:0 16px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
-.esinel-nav::-webkit-scrollbar{display:none}
-.esinel-nav-item{display:flex;align-items:center;gap:5px;padding:8px 12px;font-size:12px;font-weight:500;color:#64748b;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s}
-.esinel-nav-item:hover{color:#e2e8f0;border-bottom-color:#334155}
-.esinel-nav-item.esinel-active{color:#60a5fa;border-bottom-color:#3b82f6;font-weight:600}
-.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle}
-.esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
-.esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
-</style>
-<div class="esinel-hdr">
-  <div class="esinel-hdr-top">
-    <a class="esinel-logo" href="index.html">
-      <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
-        <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
-        <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
-        <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
-        <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
-        <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
-      </svg>
-      <div>
-        <div class="esinel-logo-name">ESINEL</div>
-        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
-        <div class="esinel-logo-certs">
-          <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
-        </div>
-      </div>
-    </a>
-    <div class="esinel-badge">SGI · Gestión Integrada</div>
-  </div>
-  <nav class="esinel-nav">
-    <a class="esinel-nav-item esinel-active" href="index.html">🏠 Inicio</a>
-    <a class="esinel-nav-item" href="hallazgos.html">⚠️ Hallazgos</a>
-    <a class="esinel-nav-item" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
-    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
-    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
-    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
-    <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
-    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
-    <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
-    <a class="esinel-nav-item" href="#" onclick="abrirPanel();return false">🔔 Mi Panel</a>
-    <a class="esinel-nav-item" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">💼 Comercial</a>
-  </nav>
-</div>
-<script>(function(){try{
-  var h=JSON.parse(localStorage.getItem('esinel_hallazgos_stats')||'null');
-  var i=JSON.parse(localStorage.getItem('esinel_ind_stats')||'null');
-  document.querySelectorAll('.esinel-nav-item').forEach(function(a){
-    var href=a.getAttribute('href')||'';
-    if(h&&h.abiertos>0&&href.includes('hallazgos'))
-      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-warn">'+h.abiertos+'</span>');
-    if(i&&i.desvios>0&&href.includes('indicadores'))
-      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
-  });
-}catch(e){}})()</script>
-<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
-
-<main class="main-container">
-  <!-- Cabecera principal -->
-  <header class="dash-header">
-    <div class="dash-title-row">
-      <h1 class="dash-title">Sistema de Gestión Integrado</h1>
-      <span class="dash-pill"><i class="ti ti-shield-check"></i> ISO 9001 · 14001 · 45001</span>
-    </div>
-    <p class="dash-sub">Panel de control unificado y acceso a módulos operativos · ESINEL S.R.L. · Ejercicio fiscal 35</p>
-  </header>
-
-  <!-- ── Estado del Sistema (Métricas en vivo) ── -->
-  <div class="metric-grid">
-    <a href="hallazgos.html" class="metric-card" id="ec-hallazgos">
-      <div class="metric-tag"><i class="ti ti-alert-triangle"></i> Hallazgos</div>
-      <div class="metric-val" id="en-abiertos">—</div>
-      <div class="metric-desc">abiertos en total (todos los ejercicios)</div>
-      <div class="metric-hint" id="es-total-h">de — hallazgos totales</div>
-      <div class="metric-hint" id="es-vencer-h" style="margin-top:4px;color:#ef4444;font-weight:700"></div>
-    </a>
-
-    <a href="indicadores.html" class="metric-card" id="ec-indicadores">
-      <div class="metric-tag"><i class="ti ti-chart-arrows"></i> Indicadores · Ej. 35</div>
-      <div class="metric-val" id="en-desvios">—</div>
-      <div class="metric-desc">en desvío vs. objetivo anual</div>
-      <div class="metric-hint" id="es-total-i">de — indicadores</div>
-      <div class="metric-hint" id="es-ej34-i" style="margin-top:4px"></div>
-    </a>
-
-    <a href="hallazgos.html" class="metric-card info" id="ec-auditoria">
-      <div class="metric-tag"><i class="ti ti-calendar-check"></i> Última Auditoría · P2 DNV</div>
-      <div class="metric-val" id="en-audit-hall" style="font-size:28px; margin-top:4px;">5</div>
-      <div class="metric-desc">hallazgos detectados</div>
-      <div class="metric-hint">27–28 Ago 2026 · Finalizada</div>
-      <div class="metric-hint" id="es-audit-estado" style="margin-top:4px;font-weight:700;color:#f59e0b">5 abiertos · 0 cerrados</div>
-    </a>
-
-    <a href="contexto.html" class="metric-card info">
-      <div class="metric-tag"><i class="ti ti-world"></i> Contexto</div>
-      <div class="metric-val" style="font-size:22px; margin-top: 4px;">Abr 2026</div>
-      <div class="metric-desc">última revisión estratégica</div>
-      <div class="metric-hint">Próxima revisión: Oct 2026</div>
-    </a>
-  </div>
-
-  <!-- ── SECCIÓN 1: SISTEMA DE GESTIÓN INTEGRADO (SGI) ── -->
-  <section class="module-section">
-    <div class="section-heading">
-      <i class="ti ti-folders"></i> Módulos Centrales del SGI
-    </div>
-    
-    <div class="cards-grid">
+  <!-- ▼▼▼ ESINEL GLOBAL HEADER (Restilizado Modern SaaS) ▼▼▼ -->
+  <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <!-- 1. Auditorías Agrupadas (con desplegable para Agenda o Informes) -->
-      <div class="dropdown-group" id="group-auditorias">
-        <div class="card-box">
-          <button type="button" class="dropdown-btn" onclick="toggleDropdown('group-auditorias', event)">
-            <div class="card-header-line">
-              <div class="card-icon-wrap ic-purple">
-                <i class="ti ti-checklist"></i>
-              </div>
-              <i class="ti ti-chevron-down action-arrow dropdown-caret"></i>
-            </div>
-            <div class="card-content">
-              <div class="card-title">Auditorías SGI</div>
-              <p class="card-text">Planificación, cronograma de auditorías internas e informes de desempeño por auditor.</p>
-            </div>
-          </button>
-          
-          <div class="card-footer">
-            <span class="badge-code purple">RG-06-02</span>
-            <span style="font-size: 11px; color:#7c3aed; font-weight:600; cursor:pointer;" onclick="toggleDropdown('group-auditorias', event)">Ver opciones ▾</span>
+      <!-- Fila superior de marca y certificados -->
+      <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
+        <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
+          <!-- Logotipo ESINEL Matriz de Puntos -->
+          <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
+            <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="5" fill="#9BA4B0"/>
+              <circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="9" cy="35" r="5" fill="#9BA4B0"/>
+              <circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="9" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="35" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+              <circle cx="35" cy="9" r="5" fill="#9BA4B0"/>
+              <circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+              <circle cx="48" cy="9" r="5" fill="#3b82f6"/>
+              <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+            </svg>
           </div>
-        </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+              <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">
+                SGI Calidad
+              </span>
+            </div>
+            <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
+            <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+              <span class="text-slate-400">ISO 9001</span>
+              <span class="text-emerald-400">ISO 14001</span>
+              <span class="text-rose-400">ISO 45001</span>
+            </div>
+          </div>
+        </a>
 
-        <!-- Menú desplegable Auditorías -->
-        <div class="dropdown-menu-list">
-          <a href="agenda-auditoria.html" class="dropdown-item">
-            <span><i class="ti ti-calendar-event"></i> Agenda de Auditorías</span>
-            <span class="dropdown-subtag">Programa</span>
-          </a>
-          <a href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html" class="dropdown-item">
-            <span><i class="ti ti-report-analytics"></i> Informe y Hallazgos</span>
-            <span class="dropdown-subtag">Dashboard</span>
-          </a>
+        <!-- Badge distintivo a la derecha + Chip de usuario inyectado -->
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+            <i class="ti ti-shield-check text-sky-400 text-sm"></i>
+            <span>SGI · Gestión Integrada</span>
+          </div>
         </div>
       </div>
 
-      <!-- 2. Hallazgos -->
-      <a href="hallazgos.html" class="card-box">
-        <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-blue">
-              <i class="ti ti-alert-circle"></i>
-            </div>
-            <i class="ti ti-arrow-right action-arrow"></i>
-          </div>
-          <div class="card-content">
-            <div class="card-title">Hallazgos y Acciones</div>
-            <p class="card-text">Registro, tratamiento y seguimiento de No Conformidades, desvíos y oportunidades de mejora.</p>
-          </div>
-        </div>
-        <div class="card-footer">
-          <span class="badge-code">RG-06-01</span>
-          <span style="font-size: 11px; color:#64748b;">Acceder</span>
-        </div>
-      </a>
-
-      <!-- 3. Mi Panel -->
-      <a href="#" onclick="abrirPanel();return false" class="card-box">
-        <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-indigo">
-              <i class="ti ti-bell"></i>
-            </div>
-            <i class="ti ti-arrow-right action-arrow"></i>
-          </div>
-          <div class="card-content">
-            <div class="card-title">Mi Panel</div>
-            <p class="card-text">Panel personal de seguimiento: hallazgos asignados, envío de correos y gestión de acciones correctivas.</p>
-          </div>
-        </div>
-        <div class="card-footer">
-          <span class="badge-code purple">RG-06-02</span>
-          <span style="font-size: 11px; color:#64748b;">Abrir panel</span>
-        </div>
-      </a>
-
-      <!-- 4. Indicadores -->
-      <a href="indicadores.html" class="card-box">
-        <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-emerald">
-              <i class="ti ti-chart-line"></i>
-            </div>
-            <i class="ti ti-arrow-right action-arrow"></i>
-          </div>
-          <div class="card-content">
-            <div class="card-title">Indicadores SGI</div>
-            <p class="card-text">Tablero de KPIs de calidad, medio ambiente y seguridad con control de metas y desvíos.</p>
-          </div>
-        </div>
-        <div class="card-footer">
-          <span class="badge-code green">Indicadores</span>
-          <span style="font-size: 11px; color:#64748b;">Monitorear</span>
-        </div>
-      </a>
-
-      <!-- 4. Contexto y Partes Interesadas -->
-      <a href="contexto.html" class="card-box">
-        <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-teal">
-              <i class="ti ti-building"></i>
-            </div>
-            <i class="ti ti-arrow-right action-arrow"></i>
-          </div>
-          <div class="card-content">
-            <div class="card-title">Contexto y Partes Interesadas</div>
-            <p class="card-text">Matrices FODA, PESTEL, análisis de riesgos estratégicos y expectativas de las partes interesadas.</p>
-          </div>
-        </div>
-        <div class="card-footer">
-          <span class="badge-code green">RG-02-01/02</span>
-          <span style="font-size: 11px; color:#64748b;">Explorar</span>
-        </div>
-      </a>
-
-      <!-- 5. Listado de Documentos del SGI -->
-      <a href="documentos.html" class="card-box">
-        <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-amber">
-              <i class="ti ti-files"></i>
-            </div>
-            <i class="ti ti-arrow-right action-arrow"></i>
-          </div>
-          <div class="card-content">
-            <div class="card-title">Listado de Documentos</div>
-            <p class="card-text">Control de información documentada, procedimientos operativos y registros vigentes del sistema.</p>
-          </div>
-        </div>
-        <div class="card-footer">
-          <span class="badge-code orange">Control Doc.</span>
-          <span style="font-size: 11px; color:#64748b;">Consultar</span>
-        </div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ── SECCIÓN 2: OPERACIONES Y GESTIÓN DE FLOTA ── -->
-  <section class="module-section">
-    <div class="section-heading">
-      <i class="ti ti-truck"></i> Operaciones y Recursos
     </div>
 
-    <div class="cards-grid">
+    <!-- Barra de Navegación Horizontal Desplazable -->
+    <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+          <a class="esinel-nav-item esinel-active px-3 py-2 rounded-lg font-semibold text-blue-400 bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html">
+            <i class="ti ti-home text-sm"></i> Inicio
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html">
+            <i class="ti ti-alert-triangle text-sm"></i> Hallazgos
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html">
+            <i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">
+            <i class="ti ti-chart-bar text-sm"></i> Informe
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html">
+            <i class="ti ti-world text-sm"></i> Contexto
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html">
+            <i class="ti ti-chart-line text-sm"></i> Indicadores
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html">
+            <i class="ti ti-car text-sm"></i> Vehículos
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html">
+            <i class="ti ti-file-text text-sm"></i> Documentos
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html">
+            <i class="ti ti-users text-sm"></i> Personal
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="#" onclick="abrirPanel();return false">
+            <i class="ti ti-bell text-sm"></i> Mi Panel
+          </a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">
+            <i class="ti ti-briefcase text-sm"></i> Comercial
+          </a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-      <!-- Vehículos agrupado con desplegables -->
-      <div class="dropdown-group" id="group-vehiculos">
-        <div class="card-box">
-          <button type="button" class="dropdown-btn" onclick="toggleDropdown('group-vehiculos', event)">
-            <div class="card-header-line">
-              <div class="card-icon-wrap ic-orange">
-                <i class="ti ti-car"></i>
-              </div>
-              <i class="ti ti-chevron-down action-arrow dropdown-caret"></i>
-            </div>
-            <div class="card-content">
-              <div class="card-title">Flota de Vehículos</div>
-              <p class="card-text">Gestión operativa, mantenimientos, ITV/VTV y asignación de unidades. Selecciona el período:</p>
-            </div>
-          </button>
-          
-          <div class="card-footer">
-            <span class="badge-code orange">Flota</span>
-            <span style="font-size: 11px; color:#ea580c; font-weight:600; cursor:pointer;" onclick="toggleDropdown('group-vehiculos', event)">Elegir período ▾</span>
-          </div>
-        </div>
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-        <!-- Menú Desplegable con todos los períodos -->
-        <div class="dropdown-menu-list">
-          <a href="vehiculos.html" class="dropdown-item active-item">
-            <span><i class="ti ti-car-suv"></i> Vehículos (Período Actual)</span>
-            <span class="dropdown-subtag" style="background:#dbeafe; color:#1d4ed8;">Vigente</span>
-          </a>
-          <a href="vehiculos-1-2026.html" class="dropdown-item">
-            <span><i class="ti ti-history"></i> Vehículos 1-2026</span>
-            <span class="dropdown-subtag">2026 / P1</span>
-          </a>
-          <a href="vehiculos-2-2025.html" class="dropdown-item">
-            <span><i class="ti ti-archive"></i> Vehículos 2-2025</span>
-            <span class="dropdown-subtag">Histórico</span>
-          </a>
+    <!-- Encabezado de la página -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Sistema de Gestión Integrado
+          </h1>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200">
+            <i class="ti ti-shield-check text-sky-600"></i>
+            ISO 9001 · 14001 · 45001
+          </span>
         </div>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+          Panel de control unificado y acceso a módulos operativos · ESINEL S.R.L. · <span class="font-semibold text-slate-700">Ejercicio fiscal 35</span>
+        </p>
       </div>
 
-      <!-- Personal -->
-      <a href="personal.html" class="card-box">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Sistema en Línea
+        </span>
+      </div>
+    </div>
+
+    <!-- ── Estado del Sistema (Métricas en vivo estilo Modern SaaS) ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      
+      <!-- Métrica 1: Hallazgos -->
+      <a href="hallazgos.html" class="card-clean rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group metric-card-accent" id="ec-hallazgos">
         <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-indigo">
-              <i class="ti ti-users"></i>
-            </div>
-            <i class="ti ti-arrow-right action-arrow"></i>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold tracking-wider uppercase text-slate-500 flex items-center gap-1.5">
+              <i class="ti ti-alert-triangle text-amber-500 text-base"></i> Hallazgos
+            </span>
+            <i class="ti ti-arrow-up-right text-slate-400 group-hover:text-brand-600 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
           </div>
-          <div class="card-content">
-            <div class="card-title">Gestión de Personal</div>
-            <p class="card-text">Competencias, inducciones, capacitaciones y registros del personal operativo y técnico.</p>
+          
+          <div class="mt-4 flex items-baseline gap-2">
+            <span class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-mono metric-val-color" id="en-abiertos">—</span>
+            <span class="text-xs font-semibold text-slate-500">abiertos</span>
           </div>
+          
+          <p class="text-xs font-medium text-slate-600 mt-1">Total acumulado en ejercicios</p>
         </div>
-        <div class="card-footer">
-          <span class="badge-code gray">Recursos</span>
-          <span style="font-size: 11px; color:#64748b;">Ver legajos</span>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
+          <span class="text-slate-500" id="es-total-h">de — hallazgos totales</span>
+          <span id="es-vencer-h" class="font-bold text-rose-600 min-h-[16px]"></span>
         </div>
       </a>
 
-      <!-- CRM Comercial -->
-      <a href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener" class="card-box">
+      <!-- Métrica 2: Indicadores Ej. 35 -->
+      <a href="indicadores.html" class="card-clean rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group metric-card-accent" id="ec-indicadores">
         <div>
-          <div class="card-header-line">
-            <div class="card-icon-wrap ic-emerald">
-              <i class="ti ti-building-store"></i>
-            </div>
-            <i class="ti ti-external-link action-arrow"></i>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold tracking-wider uppercase text-slate-500 flex items-center gap-1.5">
+              <i class="ti ti-chart-arrows text-blue-500 text-base"></i> Indicadores · Ej. 35
+            </span>
+            <i class="ti ti-arrow-up-right text-slate-400 group-hover:text-brand-600 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
           </div>
-          <div class="card-content">
-            <div class="card-title">CRM Comercial</div>
-            <p class="card-text">Gestión integral de clientes, cotizaciones, obras en curso y seguimiento de oportunidades.</p>
+          
+          <div class="mt-4 flex items-baseline gap-2">
+            <span class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-mono metric-val-color" id="en-desvios">—</span>
+            <span class="text-xs font-semibold text-slate-500">en desvío</span>
           </div>
+          
+          <p class="text-xs font-medium text-slate-600 mt-1">Comparativa vs. objetivo anual</p>
         </div>
-        <div class="card-footer">
-          <span class="badge-code green">Comercial</span>
-          <span style="font-size: 11px; color:#059669;">Abrir aplicación</span>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
+          <span class="text-slate-500" id="es-total-i">de — indicadores</span>
+          <span id="es-ej34-i" class="text-slate-400 font-medium min-h-[16px]"></span>
+        </div>
+      </a>
+
+      <!-- Métrica 3: Última Auditoría P2 DNV -->
+      <a href="hallazgos.html" class="card-clean rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group metric-card-accent info" id="ec-auditoria">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold tracking-wider uppercase text-slate-500 flex items-center gap-1.5">
+              <i class="ti ti-calendar-check text-indigo-500 text-base"></i> Última Auditoría · P2 DNV
+            </span>
+            <i class="ti ti-arrow-up-right text-slate-400 group-hover:text-brand-600 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          </div>
+          
+          <div class="mt-4 flex items-baseline gap-2">
+            <span class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-mono metric-val-color" id="en-audit-hall">5</span>
+            <span class="text-xs font-semibold text-slate-500">hallazgos</span>
+          </div>
+          
+          <p class="text-xs font-medium text-slate-600 mt-1">27–28 Ago 2026 · Finalizada</p>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
+          <span id="es-audit-estado" class="font-bold text-amber-600">5 abiertos · 0 cerrados</span>
+          <span class="text-slate-400">Certificación DNV en curso</span>
+        </div>
+      </a>
+
+      <!-- Métrica 4: Contexto Estratégico -->
+      <a href="contexto.html" class="card-clean rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group metric-card-accent info">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold tracking-wider uppercase text-slate-500 flex items-center gap-1.5">
+              <i class="ti ti-world text-teal-600 text-base"></i> Contexto Estratégico
+            </span>
+            <i class="ti ti-arrow-up-right text-slate-400 group-hover:text-brand-600 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          </div>
+          
+          <div class="mt-4 flex items-baseline gap-2">
+            <span class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-mono metric-val-color">Abr 2026</span>
+          </div>
+          
+          <p class="text-xs font-medium text-slate-600 mt-1">Última revisión estratégica</p>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
+          <span class="text-slate-500">Próxima revisión: <strong class="text-slate-700">Oct 2026</strong></span>
+          <span class="text-emerald-600 font-semibold">Matrices FODA/PESTEL al día</span>
         </div>
       </a>
 
     </div>
-  </section>
-</main>
 
-<script>
-  // Manejador de apertura y cierre de dropdowns interactivos
-  function toggleDropdown(groupId, event) {
-    if (event) {
-      event.stopPropagation();
-    }
-    const group = document.getElementById(groupId);
-    const isOpen = group.classList.contains('open');
+    <!-- ── SECCIÓN 1: SISTEMA DE GESTIÓN INTEGRADO (SGI) ── -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200">
+        <div class="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 text-brand-600 flex items-center justify-center">
+          <i class="ti ti-folders text-base"></i>
+        </div>
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-600">
+          Módulos Centrales del SGI
+        </h2>
+      </div>
 
-    // Cerrar otros dropdowns abiertos
-    document.querySelectorAll('.dropdown-group').forEach(el => el.classList.remove('open'));
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
-    if (!isOpen) {
-      group.classList.add('open');
-    }
-  }
+        <!-- 1. Auditorías Agrupadas (Dropdown Agenda / Informes) -->
+        <div class="dropdown-group relative" id="group-auditorias">
+          <div class="card-clean rounded-2xl p-5 flex flex-col justify-between h-full group">
+            <button type="button" class="w-full text-left bg-transparent border-0 cursor-pointer p-0" onclick="toggleDropdown('group-auditorias', event)">
+              <div class="flex items-start justify-between mb-3.5">
+                <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center text-xl shadow-sm">
+                  <i class="ti ti-checklist"></i>
+                </div>
+                <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 text-xs">
+                  <span>Opciones</span>
+                  <i class="ti ti-chevron-down dropdown-caret transition-transform duration-200"></i>
+                </div>
+              </div>
 
-  // Cerrar menús desplegables al hacer clic fuera
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.dropdown-group')) {
-      document.querySelectorAll('.dropdown-group').forEach(el => el.classList.remove('open'));
-    }
-  });
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 group-hover:text-purple-700 transition">Auditorías SGI</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Planificación, cronograma de auditorías internas e informes de desempeño por auditor líder.
+                </p>
+              </div>
+            </button>
 
-  // Valores de referencia (última medición conocida) — se actualizan al visitar cada módulo
-  // Valores de referencia fijos (se actualizan cuando el usuario visita cada módulo)
-  const DEFAULTS = {
-    hallazgos: { total: 638, abiertos: 185, vencidos: 12, porVencer: 8 },
-    indicadores: { total: 28, desvios: 5, desviosEj34: 3 }
-  };
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
+                RG-06-02
+              </span>
+              <span class="text-xs font-semibold text-purple-700 hover:text-purple-900 cursor-pointer flex items-center gap-1" onclick="toggleDropdown('group-auditorias', event)">
+                Ver opciones <i class="ti ti-caret-down-filled text-[10px]"></i>
+              </span>
+            </div>
+          </div>
 
-  try {
-    const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
-    const abiertos = h.abiertos ?? DEFAULTS.hallazgos.abiertos;
-    const total    = h.total    ?? DEFAULTS.hallazgos.total;
-    const vencidos = h.vencidos ?? DEFAULTS.hallazgos.vencidos;
-    const porVencer= h.porVencer?? DEFAULTS.hallazgos.porVencer;
-    document.getElementById('en-abiertos').textContent = abiertos;
-    document.getElementById('es-total-h').textContent = `de ${total} hallazgos totales`;
-    const vEl = document.getElementById('es-vencer-h');
-    if (vencidos > 0 || porVencer > 0)
-      vEl.textContent = `${vencidos} vencidos · ${porVencer} por vencer`;
-    document.getElementById('ec-hallazgos').classList.add(abiertos > 50 ? 'alerta' : 'ok');
-  } catch(e) {}
+          <!-- Menú desplegable Auditorías -->
+          <div class="dropdown-menu-list hidden absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-2 space-y-1">
+            <a href="agenda-auditoria.html" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition">
+              <span class="flex items-center gap-2">
+                <i class="ti ti-calendar-event text-purple-600 text-sm"></i> Agenda de Auditorías
+              </span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">Programa</span>
+            </a>
+            <a href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition">
+              <span class="flex items-center gap-2">
+                <i class="ti ti-report-analytics text-purple-600 text-sm"></i> Informe y Hallazgos
+              </span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">Dashboard</span>
+            </a>
+          </div>
+        </div>
 
-  try {
-    const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
-    const desvios   = i.desvios    ?? DEFAULTS.indicadores.desvios;
-    const total     = i.total      ?? DEFAULTS.indicadores.total;
-    const desvEj34  = i.desviosEj34?? DEFAULTS.indicadores.desviosEj34;
-    document.getElementById('en-desvios').textContent = desvios;
-    document.getElementById('es-total-i').textContent = `de ${total} indicadores`;
-    document.getElementById('es-ej34-i').textContent = `Ej. 34: ${desvEj34} en desvío (ejercicio anterior)`;
-    document.getElementById('ec-indicadores').classList.add(desvios > 3 ? 'alerta' : 'ok');
-  } catch(e) {}
+        <!-- 2. Hallazgos y Acciones -->
+        <a href="hallazgos.html" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-alert-circle"></i>
+              </div>
+              <i class="ti ti-arrow-right text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition">Hallazgos y Acciones</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Registro, tratamiento y seguimiento de No Conformidades, desvíos y oportunidades de mejora continua.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+              RG-06-01
+            </span>
+            <span class="text-xs font-semibold text-slate-600 group-hover:text-blue-600 transition flex items-center gap-1">
+              Acceder <i class="ti ti-arrow-narrow-right"></i>
+            </span>
+          </div>
+        </a>
 
-  // Auditoría P2 DNV: datos cruzados con hallazgos (5 hallazgos, todos abiertos)
-  try {
-    const auditTotal  = 5;
-    const auditAbiertos = 5;
-    const auditCerrados = auditTotal - auditAbiertos;
-    document.getElementById('en-audit-hall').textContent = auditTotal;
-    const estadoEl = document.getElementById('es-audit-estado');
-    if (auditAbiertos > 0) {
-      estadoEl.textContent = `${auditAbiertos} abiertos · ${auditCerrados} cerrados`;
-      estadoEl.style.color = '#f59e0b';
-    } else {
-      estadoEl.textContent = `${auditCerrados} cerrados · todos OK`;
-      estadoEl.style.color = '#10b981';
-    }
-    document.getElementById('ec-auditoria').classList.remove('info');
-    document.getElementById('ec-auditoria').classList.add(auditAbiertos > 0 ? 'alerta' : 'ok');
-  } catch(e) {}
-</script>
+        <!-- 3. Mi Panel -->
+        <a href="#" onclick="abrirPanel();return false" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-indigo-50 text-brand-600 border border-indigo-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-bell"></i>
+              </div>
+              <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                Interactivo
+              </span>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-brand-600 transition">Mi Panel Personal</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Gestión directa de hallazgos asignados a tu usuario, carga rápida de evidencias y cierre de observaciones.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-indigo-50 text-brand-700 border border-indigo-200">
+              RG-06-02
+            </span>
+            <span class="text-xs font-semibold text-brand-600 group-hover:text-brand-700 transition flex items-center gap-1">
+              Abrir panel <i class="ti ti-layout-sidebar-right-expand"></i>
+            </span>
+          </div>
+        </a>
 
-<script src="https://accounts.google.com/gsi/client" async></script>
-<style id="sgi-s">
-  #sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}
-  .sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}
-  .sgi-icon{font-size:2.5rem;margin-bottom:.75rem}
-  .sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}
-  .sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}
-</style>
+        <!-- 4. Indicadores SGI -->
+        <a href="indicadores.html" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-chart-line"></i>
+              </div>
+              <i class="ti ti-arrow-right text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition">Indicadores SGI</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Tablero de KPIs de calidad, medio ambiente y seguridad con control exhaustivo de metas y desvíos.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Indicadores
+            </span>
+            <span class="text-xs font-semibold text-slate-600 group-hover:text-emerald-600 transition flex items-center gap-1">
+              Monitorear <i class="ti ti-arrow-narrow-right"></i>
+            </span>
+          </div>
+        </a>
 
-<div id="sgi-auth-overlay">
-  <div class="sgi-card">
-    <div class="sgi-icon">🔒</div>
-    <div class="sgi-title">SGI · ESINEL</div>
-    <div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div>
-    <div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div>
-    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div>
+        <!-- 5. Contexto y Partes Interesadas -->
+        <a href="contexto.html" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-building"></i>
+              </div>
+              <i class="ti ti-arrow-right text-slate-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-teal-700 transition">Contexto y Partes Interesadas</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Matrices FODA, PESTEL, análisis de riesgos estratégicos y mapeo de expectativas de partes interesadas.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200">
+              RG-02-01/02
+            </span>
+            <span class="text-xs font-semibold text-slate-600 group-hover:text-teal-600 transition flex items-center gap-1">
+              Explorar <i class="ti ti-arrow-narrow-right"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- 6. Listado de Documentos del SGI -->
+        <a href="documentos.html" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-files"></i>
+              </div>
+              <i class="ti ti-arrow-right text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition-all"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition">Listado de Documentos</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Control de información documentada, procedimientos operativos, manuales y registros vigentes del sistema.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+              Control Doc.
+            </span>
+            <span class="text-xs font-semibold text-slate-600 group-hover:text-amber-600 transition flex items-center gap-1">
+              Consultar <i class="ti ti-arrow-narrow-right"></i>
+            </span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ── SECCIÓN 2: OPERACIONES Y GESTIÓN DE FLOTA ── -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200">
+        <div class="w-7 h-7 rounded-lg bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center">
+          <i class="ti ti-truck text-base"></i>
+        </div>
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-600">
+          Operaciones y Recursos
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <!-- Vehículos Agrupados con Desplegable -->
+        <div class="dropdown-group relative" id="group-vehiculos">
+          <div class="card-clean rounded-2xl p-5 flex flex-col justify-between h-full group">
+            <button type="button" class="w-full text-left bg-transparent border-0 cursor-pointer p-0" onclick="toggleDropdown('group-vehiculos', event)">
+              <div class="flex items-start justify-between mb-3.5">
+                <div class="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center text-xl shadow-sm">
+                  <i class="ti ti-car"></i>
+                </div>
+                <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 text-xs">
+                  <span>Períodos</span>
+                  <i class="ti ti-chevron-down dropdown-caret transition-transform duration-200"></i>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 group-hover:text-orange-600 transition">Flota de Vehículos</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Gestión operativa, mantenimiento preventivo/correctivo, VTV/ITV e historiales por unidad.
+                </p>
+              </div>
+            </button>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200">
+                Flota
+              </span>
+              <span class="text-xs font-semibold text-orange-600 hover:text-orange-800 cursor-pointer flex items-center gap-1" onclick="toggleDropdown('group-vehiculos', event)">
+                Elegir período <i class="ti ti-caret-down-filled text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Menú Desplegable con todos los períodos -->
+          <div class="dropdown-menu-list hidden absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-2 space-y-1">
+            <a href="vehiculos.html" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-blue-700 bg-blue-50 transition">
+              <span class="flex items-center gap-2">
+                <i class="ti ti-car-suv text-blue-600 text-sm"></i> Vehículos (Período Actual)
+              </span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-200/80 text-blue-800 font-bold">Vigente</span>
+            </a>
+            <a href="vehiculos-1-2026.html" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-900 transition">
+              <span class="flex items-center gap-2">
+                <i class="ti ti-history text-orange-600 text-sm"></i> Vehículos 1-2026
+              </span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">2026 / P1</span>
+            </a>
+            <a href="vehiculos-2-2025.html" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-900 transition">
+              <span class="flex items-center gap-2">
+                <i class="ti ti-archive text-slate-500 text-sm"></i> Vehículos 2-2025
+              </span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">Histórico</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Personal -->
+        <a href="personal.html" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-users"></i>
+              </div>
+              <i class="ti ti-arrow-right text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-indigo-700 transition">Gestión de Personal</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Competencias profesionales, capacitaciones de seguridad e higiene, legajos técnicos e inducciones.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+              Recursos
+            </span>
+            <span class="text-xs font-semibold text-slate-600 group-hover:text-indigo-600 transition flex items-center gap-1">
+              Ver legajos <i class="ti ti-arrow-narrow-right"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- CRM Comercial -->
+        <a href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener" class="card-clean rounded-2xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-start justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-xl shadow-sm">
+                <i class="ti ti-building-store"></i>
+              </div>
+              <i class="ti ti-external-link text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition">CRM Comercial</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Gestión integral de clientes, cotizaciones de obra, proyectos en ejecución y seguimiento de presupuestos.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Comercial
+            </span>
+            <span class="text-xs font-semibold text-emerald-600 group-hover:text-emerald-700 transition flex items-center gap-1">
+              Abrir app <i class="ti ti-arrow-narrow-right"></i>
+            </span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Auth Overlay de Google Identity Services (Diseño Modern SaaS) -->
+  <div id="sgi-auth-overlay" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl border border-slate-200 p-8 shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 text-brand-600 flex items-center justify-center mx-auto text-3xl shadow-sm mb-4">
+        <i class="ti ti-lock"></i>
+      </div>
+      <h2 class="text-xl font-bold tracking-tight text-slate-900">SGI · ESINEL</h2>
+      <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+        Acceso restringido para personal autorizado.<br>
+        Iniciá sesión con tu cuenta corporativa <strong class="text-brand-600 font-semibold">@esinel.com.ar</strong>
+      </p>
+      
+      <div class="mt-6 flex flex-col items-center justify-center">
+        <div id="g_id_onload" 
+             data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" 
+             data-callback="sgiCb" 
+             data-auto_prompt="true"></div>
+        <div class="g_id_signin" 
+             data-type="standard" 
+             data-size="large" 
+             data-theme="outline" 
+             data-shape="pill"></div>
+      </div>
+
+      <!-- Botón de acceso directo para Preview / Pruebas -->
+      <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
+        <button type="button" onclick="entrarDemo()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 transition active:scale-95">
+          <i class="ti ti-player-play text-sm text-sky-400"></i>
+          <span>Entrar en Modo Demo / Vista Previa</span>
+        </button>
+        <span class="text-[10px] text-slate-400">Simula usuario: Luan Thiago Baira</span>
+      </div>
+
+      <div class="mt-3 pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-medium">
+        Normas ISO 9001 · 14001 · 45001
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- PANEL OVERLAY (arranca debajo del header ESINEL, el nav queda visible) -->
-<div id="panel-overlay" style="position:fixed;left:0;right:0;bottom:0;z-index:400;display:none;flex-direction:column;background:#0B111E">
-  <iframe id="panel-iframe" src="" style="flex:1;border:none;width:100%;background:#0B111E"></iframe>
-</div>
+  <!-- PANEL OVERLAY para 'Mi Panel' (Desplegable superior integrado) -->
+  <div id="panel-overlay" class="fixed left-0 right-0 bottom-0 z-50 hidden flex-col bg-slate-900/40 backdrop-blur-sm">
+    <!-- Barra superior de control del iframe con botón cerrar -->
+    <div class="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></span>
+        <span class="text-xs font-bold text-slate-800">Mi Panel — Gestión Directa SGI</span>
+      </div>
+      <button onclick="cerrarPanel()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+        <i class="ti ti-x text-sm"></i>
+        <span>Cerrar Panel</span>
+      </button>
+    </div>
+    <iframe id="panel-iframe" src="" class="flex-1 w-full border-none bg-slate-50"></iframe>
+  </div>
 
-<script id="sgi-js">(function(){function injectChip(n){var h=document.querySelector('.esinel-hdr-top');if(!h)return;var ini=n.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();var c=document.createElement('div');c.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;margin-left:auto;';c.title='Cerrar sesi\u00f3n';c.onclick=function(){sessionStorage.clear();location.reload();};c.innerHTML='<div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">'+ini+'</div><span style="font-size:11px;color:#94a3b8;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+n+'</span>';h.appendChild(c);}if(sessionStorage.getItem('sgi_ok')==='1'){var ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();var _n=sessionStorage.getItem('sgi_name')||'';if(_n)injectChip(_n);return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');sessionStorage.setItem('sgi_email',p.email);var nm=p.name||p.email.split('@')[0];sessionStorage.setItem('sgi_name',nm);var ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();injectChip(nm);}};window.sgiCb=sgiCb;
-window.abrirPanel=function(){
-  var ov=document.getElementById('panel-overlay');
-  var fr=document.getElementById('panel-iframe');
-  // Posicionar el overlay exactamente debajo del header ESINEL
-  var hdr=document.querySelector('.esinel-hdr');
-  ov.style.top=(hdr?hdr.offsetHeight:52)+'px';
-  ov.style.display='flex';
-  document.body.style.overflow='hidden';
-  if(!fr.src||!fr.src.includes('mi-panel.html')){fr.src='mi-panel.html';}
-  function enviarAuth(){
-    var em=sessionStorage.getItem('sgi_email');
-    var nm=sessionStorage.getItem('sgi_name');
-    if(em&&nm){try{fr.contentWindow.postMessage({type:'sgi-auth',email:em,name:nm},window.location.origin);}catch(e){}}
-  }
-  fr.onload=function(){setTimeout(enviarAuth,80);};
-  // Si el iframe ya estaba cargado, mandar auth directamente
-  setTimeout(function(){try{if(fr.contentDocument&&fr.contentDocument.readyState==='complete')enviarAuth();}catch(e){}},200);
-};
-window.cerrarPanel=function(){
-  document.getElementById('panel-overlay').style.display='none';
-  document.body.style.overflow='';
-};
-})();</script>
+  <!-- Google Sign-in Client SDK -->
+  <script src="https://accounts.google.com/gsi/client" async></script>
+
+  <script>
+    // ─── LÓGICA DE DROPDOWNS INTERACTIVOS ─────────────────────────
+    function toggleDropdown(groupId, event) {
+      if (event) {
+        event.stopPropagation();
+      }
+      const group = document.getElementById(groupId);
+      const isOpen = group.classList.contains('open');
+
+      // Cerrar otros dropdowns abiertos
+      document.querySelectorAll('.dropdown-group').forEach(el => el.classList.remove('open'));
+
+      if (!isOpen) {
+        group.classList.add('open');
+      }
+    }
+
+    // Cerrar menús al hacer clic afuera
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.dropdown-group')) {
+        document.querySelectorAll('.dropdown-group').forEach(el => el.classList.remove('open'));
+      }
+    });
+
+    // ─── CARGA Y CÁLCULO DE MÉTRICAS EN VIVO ────────────────────────
+    const DEFAULTS = {
+      hallazgos: { total: 638, abiertos: 185, vencidos: 12, porVencer: 8 },
+      indicadores: { total: 28, desvios: 5, desviosEj34: 3 }
+    };
+
+    try {
+      const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
+      const abiertos = h.abiertos ?? DEFAULTS.hallazgos.abiertos;
+      const total    = h.total    ?? DEFAULTS.hallazgos.total;
+      const vencidos = h.vencidos ?? DEFAULTS.hallazgos.vencidos;
+      const porVencer= h.porVencer?? DEFAULTS.hallazgos.porVencer;
+
+      document.getElementById('en-abiertos').textContent = abiertos;
+      document.getElementById('es-total-h').textContent = `de ${total} hallazgos totales`;
+
+      const vEl = document.getElementById('es-vencer-h');
+      if (vencidos > 0 || porVencer > 0) {
+        vEl.textContent = `${vencidos} vencidos · ${porVencer} por vencer`;
+      }
+      
+      const cardH = document.getElementById('ec-hallazgos');
+      cardH.classList.remove('alerta', 'ok');
+      cardH.classList.add(abiertos > 50 ? 'alerta' : 'ok');
+    } catch(e) {}
+
+    try {
+      const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
+      const desvios   = i.desvios   ?? DEFAULTS.indicadores.desvios;
+      const total     = i.total     ?? DEFAULTS.indicadores.total;
+      const desvEj34  = i.desviosEj34?? DEFAULTS.indicadores.desviosEj34;
+
+      document.getElementById('en-desvios').textContent = desvios;
+      document.getElementById('es-total-i').textContent = `de ${total} indicadores`;
+      document.getElementById('es-ej34-i').textContent = `Ej. 34: ${desvEj34} en desvío (ejercicio anterior)`;
+
+      const cardI = document.getElementById('ec-indicadores');
+      cardI.classList.remove('alerta', 'ok');
+      cardI.classList.add(desvios > 3 ? 'alerta' : 'ok');
+    } catch(e) {}
+
+    // Auditoría P2 DNV
+    try {
+      const auditTotal = 5;
+      const auditAbiertos = 5;
+      const auditCerrados = auditTotal - auditAbiertos;
+      document.getElementById('en-audit-hall').textContent = auditTotal;
+      const estadoEl = document.getElementById('es-audit-estado');
+      const cardAud = document.getElementById('ec-auditoria');
+
+      if (auditAbiertos > 0) {
+        estadoEl.textContent = `${auditAbiertos} abiertos · ${auditCerrados} cerrados`;
+        estadoEl.className = 'font-bold text-amber-600';
+      } else {
+        estadoEl.textContent = `${auditCerrados} cerrados · todos OK`;
+        estadoEl.className = 'font-bold text-emerald-600';
+      }
+
+      cardAud.classList.remove('info');
+      cardAud.classList.add(auditAbiertos > 0 ? 'alerta' : 'ok');
+    } catch(e) {}
+
+    // ─── INSIGNIAS DE NAVEGACIÓN DESDE LOCALSTORAGE ─────────────────
+    (function(){
+      try {
+        const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null');
+        const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null');
+        document.querySelectorAll('.esinel-nav-item').forEach(function(a){
+          const href = a.getAttribute('href') || '';
+          if (h && h.abiertos > 0 && href.includes('hallazgos')) {
+            a.insertAdjacentHTML('beforeend', '<span class="ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">' + h.abiertos + '</span>');
+          }
+          if (i && i.desvios > 0 && href.includes('indicadores')) {
+            a.insertAdjacentHTML('beforeend', '<span class="ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-rose-400/20 text-rose-300 border border-rose-400/30">' + i.desvios + '</span>');
+          }
+        });
+      } catch(e) {}
+    })();
+
+    // ─── AUTENTICACIÓN GOOGLE & APERTURA DE MI PANEL ────────────────
+    (function(){
+      function injectChip(n) {
+        const h = document.querySelector('.esinel-hdr-top');
+        if (!h) return;
+        const ini = n.split(' ').map(w => w[0] || '').join('').substring(0, 2).toUpperCase();
+        const c = document.createElement('div');
+        c.className = 'flex items-center gap-2.5 cursor-pointer ml-auto px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 transition';
+        c.title = 'Sesión iniciada · Clic para salir';
+        c.onclick = function(){
+          sessionStorage.clear();
+          location.reload();
+        };
+        c.innerHTML = `
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+            ${ini}
+          </div>
+          <span class="text-xs font-medium text-slate-300 max-w-[120px] truncate hidden sm:inline-block">${n}</span>
+          <i class="ti ti-logout text-slate-400 text-xs"></i>
+        `;
+        h.appendChild(c);
+      }
+
+      // Función para bypass / demo rápido en la vista previa
+      window.entrarDemo = function() {
+        sessionStorage.setItem('sgi_ok', '1');
+        sessionStorage.setItem('sgi_email', 'thiagobaira@gmail.com');
+        sessionStorage.setItem('sgi_name', 'Luan Thiago Baira');
+        const ov = document.getElementById('sgi-auth-overlay');
+        if (ov) ov.remove();
+        injectChip('Luan Thiago Baira');
+      };
+
+      if (sessionStorage.getItem('sgi_ok') === '1') {
+        const ov = document.getElementById('sgi-auth-overlay');
+        if (ov) ov.remove();
+        const _n = sessionStorage.getItem('sgi_name') || '';
+        if (_n) injectChip(_n);
+        return;
+      }
+
+      function sgiCb(r) {
+        const p = JSON.parse(atob(r.credential.split('.')[1]));
+        if (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com') {
+          sessionStorage.setItem('sgi_ok', '1');
+          sessionStorage.setItem('sgi_email', p.email);
+          const nm = p.name || p.email.split('@')[0];
+          sessionStorage.setItem('sgi_name', nm);
+          const ov = document.getElementById('sgi-auth-overlay');
+          if (ov) ov.remove();
+          injectChip(nm);
+        }
+      }
+      window.sgiCb = sgiCb;
+
+      window.abrirPanel = function(){
+        const ov = document.getElementById('panel-overlay');
+        const fr = document.getElementById('panel-iframe');
+        const hdr = document.querySelector('header');
+        ov.style.top = (hdr ? hdr.offsetHeight : 52) + 'px';
+        ov.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        if (!fr.src || !fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html')) {
+          fr.src = 'panel_sgi.html';
+        }
+
+        function enviarAuth() {
+          const em = sessionStorage.getItem('sgi_email');
+          const nm = sessionStorage.getItem('sgi_name');
+          if (em && nm) {
+            try {
+              fr.contentWindow.postMessage({ type: 'sgi-auth', email: em, name: nm }, window.location.origin);
+            } catch(e) {}
+          }
+        }
+        fr.onload = function(){ setTimeout(enviarAuth, 80); };
+        setTimeout(function(){
+          try {
+            if (fr.contentDocument && fr.contentDocument.readyState === 'complete') enviarAuth();
+          } catch(e) {}
+        }, 200);
+      };
+
+      window.cerrarPanel = function(){
+        document.getElementById('panel-overlay').style.display = 'none';
+        document.body.style.overflow = '';
+      };
+    })();
+  </script>
 </body>
 </html>
