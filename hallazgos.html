@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RG-06-01 - Registro de Hallazgos SGI (Rev 04)</title>
+  <title>RG-06-01 - Registro de Hallazgos SGI (Rev 05)</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -50,7 +50,6 @@
   </script>
 
   <style>
-    /* Efecto de cuadrícula sutil para fondo claro SaaS */
     .bg-grid-pattern-light {
       background-size: 32px 32px;
       background-image: 
@@ -58,7 +57,6 @@
         linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
     }
 
-    /* Tarjetas elevadas estilo Modern SaaS */
     .card-clean {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -70,7 +68,6 @@
       box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
     }
 
-    /* Borde superior de acento para tarjetas de métricas */
     .metric-card-accent::before {
       content: '';
       position: absolute;
@@ -86,30 +83,17 @@
     .metric-card-accent.info::before { background: #3b82f6; }
     .metric-card-accent.danger::before { background: #ef4444; }
 
-    /* Scrollbar minimalista */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
     .sortable-header {
       cursor: pointer;
       user-select: none;
       transition: background-color 0.15s ease;
     }
-    .sortable-header:hover {
-      background-color: #f1f5f9;
-    }
+    .sortable-header:hover { background-color: #f1f5f9; }
 
     @media print {
       body { background: white !important; color: black !important; font-size: 11px !important; }
@@ -124,7 +108,7 @@
 </head>
 <body class="min-h-full bg-slate-50 bg-grid-pattern-light text-slate-800 flex flex-col font-sans" id="appBody">
 
-  <!-- ▼▼▼ ESINEL GLOBAL HEADER ▼▼▼ -->
+  <!-- ESINEL GLOBAL HEADER -->
   <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
     <div class="w-full px-4 sm:px-6 lg:px-8">
       
@@ -167,14 +151,14 @@
         <div class="flex items-center gap-3">
           <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
             <i class="ti ti-shield-check text-sky-400 text-sm"></i>
-            <span>SGI · Gestión Integrada</span>
+            <span>SGI · Gestión Integrada (Rev 05)</span>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- Barra de Navegación Horizontal Desplazable -->
+    <!-- Barra de Navegación Horizontal -->
     <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
       <div class="w-full px-4 sm:px-6 lg:px-8">
         <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
@@ -215,14 +199,12 @@
       </div>
     </div>
   </header>
-  <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-  <!-- BARRA DE CONTROL DEL MÓDULO (Subheader SaaS) -->
+  <!-- BARRA DE CONTROL DEL MÓDULO -->
   <div class="bg-white border-b border-slate-200 sticky top-[88px] z-30 shadow-sm print:hidden">
     <div class="w-full px-4 sm:px-6 lg:px-8 py-3">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
         
-        <!-- Título del documento y Badge de versión -->
         <div class="flex items-center gap-3">
           <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition" title="Mostrar/ocultar filtros">
             <i class="fa-solid fa-filter text-sky-600"></i>
@@ -233,27 +215,23 @@
           <div>
             <div class="flex items-center gap-2 flex-wrap">
               <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">RG-06-01 · Registro de Hallazgos</h1>
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200">Rev 04</span>
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200">Rev 05</span>
             </div>
-            <p class="text-xs text-slate-500 font-medium">Control unificado de No Conformidades, Desvíos y Oportunidades de Mejora</p>
+            <p class="text-xs text-slate-500 font-medium">Control unificado con trazabilidad separada de Cierre y Verificación de Eficacia</p>
           </div>
         </div>
 
-        <!-- Acciones principales -->
         <div class="flex items-center gap-2 flex-wrap">
-          <!-- Conexión Sheets -->
           <button onclick="openConfigModal()" id="syncBadge" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm transition">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" id="syncStatusDot"></span>
             <span id="syncStatusText" class="hidden sm:inline">Conectado</span>
             <i class="fa-solid fa-gear text-slate-400 text-xs"></i>
           </button>
 
-          <!-- Botón recargar -->
           <button onclick="fetchFromGoogleSheets()" class="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 shadow-sm transition" title="Sincronizar Datos con Google Sheets">
             <i id="refreshIcon" class="fa-solid fa-rotate text-sm text-slate-500"></i>
           </button>
 
-          <!-- Botón nuevo hallazgo -->
           <button onclick="openFormModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs shadow-md shadow-sky-600/20 transition transform active:scale-95">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Nuevo Hallazgo</span>
@@ -262,7 +240,7 @@
 
       </div>
 
-      <!-- Navegación por pestañas horizontales con scroll horizontal suave -->
+      <!-- Navegación por pestañas horizontales -->
       <div class="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto scrollbar-none text-xs">
         <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-tab px-3.5 py-1.5 rounded-lg font-bold text-sky-700 bg-sky-50 border border-sky-200 flex items-center gap-2 whitespace-nowrap transition">
           <i class="fa-solid fa-chart-pie"></i><span>Dashboard Panel</span>
@@ -283,10 +261,10 @@
     </div>
   </div>
 
-  <!-- CONTENEDOR PRINCIPAL FLUIDO (100% DE ANCHO) -->
+  <!-- CONTENEDOR PRINCIPAL -->
   <div class="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
 
-    <!-- BARRA LATERAL DE FILTROS GLOBALES -->
+    <!-- BARRA LATERAL DE FILTROS -->
     <aside id="sidebarFilters" class="lg:w-64 flex-shrink-0 print:hidden transition-all duration-200">
       <div class="card-clean p-5 rounded-2xl space-y-4 sticky top-[170px]">
         
@@ -301,7 +279,6 @@
           </button>
         </div>
 
-        <!-- Búsqueda en vivo -->
         <div class="space-y-1.5">
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Búsqueda rápida</label>
           <div class="relative">
@@ -310,7 +287,6 @@
           </div>
         </div>
 
-        <!-- Ejercicio Fiscal -->
         <div class="space-y-1.5">
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Ejercicio Fiscal</label>
           <select id="globalEjercicioFilter" onchange="renderAllViews()" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none transition font-medium">
@@ -321,7 +297,6 @@
           </select>
         </div>
 
-        <!-- Tipo de Hallazgo -->
         <div class="space-y-1.5">
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Tipo de Hallazgo</label>
           <select id="globalTypeFilter" onchange="renderAllViews()" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none transition font-medium">
@@ -336,7 +311,6 @@
           </select>
         </div>
 
-        <!-- Estado de Gestión -->
         <div class="space-y-1.5">
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Estado de Gestión</label>
           <select id="globalStatusFilter" onchange="renderAllViews()" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none transition font-medium">
@@ -345,11 +319,9 @@
             <option value="OK">Cerrados OK (Eficaces)</option>
             <option value="NO">Cerrados NO (Ineficaces)</option>
             <option value="VENCIDO">Vencidos en Fecha</option>
-            <option value="POR_VENCER">Por Vencer (30 días)</option>
           </select>
         </div>
 
-        <!-- Contadores de filtrado -->
         <div class="pt-3 border-t border-slate-100 text-[11px] space-y-2">
           <div class="flex justify-between items-center text-slate-600">
             <span>Resultados filtrados:</span>
@@ -367,21 +339,14 @@
     <!-- ÁREA DE CONTENIDO DINÁMICO -->
     <main class="flex-1 min-w-0">
 
-      <!-- ========================================== -->
-      <!-- TAB 1: DASHBOARD PANEL                    -->
-      <!-- ========================================== -->
+      <!-- TAB 1: DASHBOARD PANEL -->
       <section id="content-dashboard" class="tab-content space-y-6">
         
-        <!-- Fila de 5 KPIs Clave con formato Modern SaaS Light -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          
-          <!-- KPI 1: Histórico Global -->
           <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent info">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Histórico</span>
-              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-sm border border-sky-100">
-                <i class="fa-solid fa-globe"></i>
-              </div>
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-sm border border-sky-100"><i class="fa-solid fa-globe"></i></div>
             </div>
             <div class="mt-4 flex items-baseline justify-between">
               <span class="text-3xl font-extrabold tracking-tight text-slate-900 font-mono" id="kpiGlobalTotal">0</span>
@@ -389,13 +354,10 @@
             </div>
           </div>
 
-          <!-- KPI 2: Ejercicio 35 -->
           <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent info">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold uppercase tracking-wider text-sky-700">Ejercicio 35</span>
-              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-sm border border-sky-100">
-                <i class="fa-solid fa-calendar-check"></i>
-              </div>
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-sm border border-sky-100"><i class="fa-solid fa-calendar-check"></i></div>
             </div>
             <div class="mt-4 flex items-baseline justify-between">
               <span class="text-3xl font-extrabold tracking-tight text-sky-600 font-mono" id="kpiEj35Total">0</span>
@@ -403,13 +365,10 @@
             </div>
           </div>
 
-          <!-- KPI 3: Abiertos -->
           <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent alerta">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Abiertos</span>
-              <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm border border-amber-100">
-                <i class="fa-solid fa-folder-open"></i>
-              </div>
+              <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm border border-amber-100"><i class="fa-solid fa-folder-open"></i></div>
             </div>
             <div class="mt-4 flex items-baseline justify-between">
               <span class="text-3xl font-extrabold tracking-tight text-amber-600 font-mono" id="kpiOpen">0</span>
@@ -417,13 +376,10 @@
             </div>
           </div>
 
-          <!-- KPI 4: Cerrados -->
           <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent ok">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Cerrados</span>
-              <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm border border-emerald-100">
-                <i class="fa-solid fa-circle-check"></i>
-              </div>
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm border border-emerald-100"><i class="fa-solid fa-circle-check"></i></div>
             </div>
             <div class="mt-4 flex items-baseline justify-between">
               <span class="text-3xl font-extrabold tracking-tight text-emerald-600 font-mono" id="kpiClosed">0</span>
@@ -431,23 +387,18 @@
             </div>
           </div>
 
-          <!-- KPI 5: Vencidos -->
           <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent danger">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold uppercase tracking-wider text-rose-700">Vencidos</span>
-              <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-sm border border-rose-100">
-                <i class="fa-solid fa-clock"></i>
-              </div>
+              <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-sm border border-rose-100"><i class="fa-solid fa-clock"></i></div>
             </div>
             <div class="mt-4 flex items-baseline justify-between">
               <span class="text-3xl font-extrabold tracking-tight text-rose-600 font-mono" id="kpiOverdue">0</span>
               <span class="text-xs font-semibold text-rose-600">Acción requerida</span>
             </div>
           </div>
-
         </div>
 
-        <!-- Desglose de hallazgos abiertos por tipo con click interactivo -->
         <div class="card-clean p-6 rounded-2xl space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
@@ -459,7 +410,6 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3" id="openFindingsByTypeGrid"></div>
         </div>
 
-        <!-- Evolución Multiejercicio -->
         <div class="card-clean p-6 rounded-2xl space-y-4">
           <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
             <i class="fa-solid fa-timeline text-indigo-600"></i>
@@ -468,66 +418,41 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="exerciseHistoricalCards"></div>
         </div>
 
-        <!-- Gráficos Interactivos de Chart.js -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <!-- Gráfico 1: Estado Global -->
           <div class="card-clean p-6 rounded-2xl flex flex-col justify-between">
             <div class="flex items-center justify-between mb-4">
               <div>
-                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <i class="fa-solid fa-chart-pie text-sky-600"></i>
-                  <span>Estado Global de Hallazgos</span>
-                </h3>
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie text-sky-600"></i><span>Estado Global de Hallazgos</span></h3>
                 <p class="text-xs text-slate-500 mt-0.5">Distribución proporcional entre abiertos y cerrados</p>
               </div>
-              <button onclick="downloadChart('chartStatus', 'Estado_Global_SGI.png')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition">
-                <i class="fa-solid fa-download"></i><span>PNG</span>
-              </button>
+              <button onclick="downloadChart('chartStatus', 'Estado_Global_SGI.png')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition"><i class="fa-solid fa-download"></i><span>PNG</span></button>
             </div>
-            <div class="relative h-64 w-full flex justify-center items-center">
-              <canvas id="chartStatus"></canvas>
-            </div>
+            <div class="relative h-64 w-full flex justify-center items-center"><canvas id="chartStatus"></canvas></div>
           </div>
 
-          <!-- Gráfico 2: Tipos de Hallazgos -->
           <div class="card-clean p-6 rounded-2xl flex flex-col justify-between">
             <div class="flex items-center justify-between mb-4">
               <div>
-                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <i class="fa-solid fa-chart-column text-indigo-600"></i>
-                  <span>Distribución por Tipo de Hallazgo</span>
-                </h3>
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-column text-indigo-600"></i><span>Distribución por Tipo de Hallazgo</span></h3>
                 <p class="text-xs text-slate-500 mt-0.5">Volumen comparativo por categoría del SGI</p>
               </div>
-              <button onclick="downloadChart('chartType', 'Tipos_Hallazgos_SGI.png')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition">
-                <i class="fa-solid fa-download"></i><span>PNG</span>
-              </button>
+              <button onclick="downloadChart('chartType', 'Tipos_Hallazgos_SGI.png')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition"><i class="fa-solid fa-download"></i><span>PNG</span></button>
             </div>
-            <div class="relative h-64 w-full">
-              <canvas id="chartType"></canvas>
-            </div>
+            <div class="relative h-64 w-full"><canvas id="chartType"></canvas></div>
           </div>
-
         </div>
 
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 2: PLANILLA DE HALLAZGOS              -->
-      <!-- ========================================== -->
+      <!-- TAB 2: PLANILLA DE HALLAZGOS (Rev 05) -->
       <section id="content-planilla" class="tab-content hidden space-y-4">
         <div class="card-clean rounded-2xl overflow-hidden shadow-sm">
-          
           <div class="p-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-white">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-table-list text-sky-600 text-sm"></i>
-              <h3 class="font-bold text-slate-900 text-sm">Planilla Oficial de Registros SGI</h3>
+              <h3 class="font-bold text-slate-900 text-sm">Planilla Oficial de Registros SGI (Rev 05)</h3>
             </div>
-            <button onclick="exportToCSV()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold transition">
-              <i class="fa-solid fa-file-excel"></i>
-              <span>Exportar CSV</span>
-            </button>
+            <button onclick="exportToCSV()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold transition"><i class="fa-solid fa-file-excel"></i><span>Exportar CSV</span></button>
           </div>
 
           <div class="overflow-x-auto max-h-[580px] scrollbar-thin">
@@ -541,7 +466,7 @@
                   <th onclick="sortTable('numAccion')" class="p-3 sortable-header w-20 whitespace-nowrap">N° Acción <span id="sortIcon_numAccion" class="text-slate-400">↕</span></th>
                   <th onclick="sortTable('tipoAccion')" class="p-3 sortable-header w-20 whitespace-nowrap">T. Acción <span id="sortIcon_tipoAccion" class="text-slate-400">↕</span></th>
                   <th onclick="sortTable('responsableAccion')" class="p-3 sortable-header w-32 whitespace-nowrap">Resp. Cierre <span id="sortIcon_responsableAccion" class="text-slate-400">↕</span></th>
-                  <th onclick="sortTable('responsableVerificacion')" class="p-3 sortable-header w-32 whitespace-nowrap">Resp. Verif. <span id="sortIcon_responsableVerificacion" class="text-slate-400">↕</span></th>
+                  <th onclick="sortTable('responsableCierre')" class="p-3 sortable-header w-32 whitespace-nowrap">Resp. Verif. <span id="sortIcon_responsableCierre" class="text-slate-400">↕</span></th>
                   <th onclick="sortTable('fechaLimite')" class="p-3 sortable-header w-24 whitespace-nowrap">Vence <span id="sortIcon_fechaLimite" class="text-slate-400">↕</span></th>
                   <th class="p-3 text-center w-36 whitespace-nowrap">Estado Plazo</th>
                   <th onclick="sortTable('resultadoEficacia')" class="p-3 text-center sortable-header w-24 whitespace-nowrap">Resultado <span id="sortIcon_resultadoEficacia" class="text-slate-400">↕</span></th>
@@ -554,274 +479,114 @@
 
           <div class="p-3.5 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500">
             <div>Mostrando <strong id="visibleCount" class="text-slate-800 font-bold">0</strong> de <strong id="totalTableCount" class="text-slate-800 font-bold">0</strong> registros</div>
-            <span class="text-[11px] text-slate-400">RG-06-01 Rev 04 · ISO 9001/14001/45001</span>
+            <span class="text-[11px] text-slate-400">RG-06-01 Rev 05 · ISO 9001/14001/45001</span>
           </div>
-
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 3: RESPONSABLES & SECTORES            -->
-      <!-- ========================================== -->
+      <!-- TAB 3: RESPONSABLES & SECTORES -->
       <section id="content-responsables" class="tab-content hidden space-y-6">
-        
-        <!-- Tabla 1: Responsable Verificación -->
         <div class="card-clean p-6 rounded-2xl space-y-4">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <i class="fa-solid fa-user-check text-sky-600"></i>
-              <span>1. Desempeño por Resp. Verificación Eficacia (Col S)</span>
-            </h3>
-            <button onclick="exportTableToCSV('responsablesTable', 'Reporte_Verificacion.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition">
-              <i class="fa-solid fa-download"></i><span>Exportar</span>
-            </button>
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-user-check text-sky-600"></i><span>1. Desempeño por Resp. Verificación Eficacia (Col S)</span></h3>
+            <button onclick="exportTableToCSV('responsablesTable', 'Reporte_Verificacion.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition"><i class="fa-solid fa-download"></i><span>Exportar</span></button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse" id="responsablesTable">
               <thead class="bg-slate-50 text-slate-700 font-semibold">
-                <tr>
-                  <th class="p-3 border-b border-slate-200">Responsable Verificación</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Total</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Abiertos</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th>
-                  <th class="p-3 border-b border-slate-200 text-center">% Cumplimiento</th>
-                </tr>
+                <tr><th class="p-3 border-b border-slate-200">Responsable Verificación</th><th class="p-3 border-b border-slate-200 text-center">Total</th><th class="p-3 border-b border-slate-200 text-center">Abiertos</th><th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th><th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th><th class="p-3 border-b border-slate-200 text-center">% Cumplimiento</th></tr>
               </thead>
               <tbody id="responsablesTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Tabla 2: Responsable Cierre -->
         <div class="card-clean p-6 rounded-2xl space-y-4">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <i class="fa-solid fa-user-gear text-indigo-600"></i>
-              <span>2. Desempeño por Responsable de Cierre de Acción (Col P)</span>
-            </h3>
-            <button onclick="exportTableToCSV('respCierreTable', 'Reporte_Cierre.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition">
-              <i class="fa-solid fa-download"></i><span>Exportar</span>
-            </button>
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-user-gear text-indigo-600"></i><span>2. Desempeño por Responsable de Cierre de Acción (Col P)</span></h3>
+            <button onclick="exportTableToCSV('respCierreTable', 'Reporte_Cierre.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition"><i class="fa-solid fa-download"></i><span>Exportar</span></button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse" id="respCierreTable">
               <thead class="bg-slate-50 text-slate-700 font-semibold">
-                <tr>
-                  <th class="p-3 border-b border-slate-200">Responsable de Cierre</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Total</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Abiertos</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th>
-                  <th class="p-3 border-b border-slate-200 text-center">% Cumplimiento</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Prom. Días</th>
-                </tr>
+                <tr><th class="p-3 border-b border-slate-200">Responsable de Cierre</th><th class="p-3 border-b border-slate-200 text-center">Total</th><th class="p-3 border-b border-slate-200 text-center">Abiertos</th><th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th><th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th><th class="p-3 border-b border-slate-200 text-center">% Cumplimiento</th><th class="p-3 border-b border-slate-200 text-center">Prom. Días</th></tr>
               </thead>
               <tbody id="respCierreTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Tabla 3: Sectores -->
         <div class="card-clean p-6 rounded-2xl space-y-4">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <i class="fa-solid fa-sitemap text-emerald-600"></i>
-              <span>3. Reporte por Sector / Área Responsable del Hallazgo (Col H)</span>
-            </h3>
-            <button onclick="exportTableToCSV('sectoresTable', 'Reporte_Sectores.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition">
-              <i class="fa-solid fa-download"></i><span>Exportar</span>
-            </button>
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-sitemap text-emerald-600"></i><span>3. Reporte por Sector / Área Responsable del Hallazgo (Col H)</span></h3>
+            <button onclick="exportTableToCSV('sectoresTable', 'Reporte_Sectores.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition"><i class="fa-solid fa-download"></i><span>Exportar</span></button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse" id="sectoresTable">
               <thead class="bg-slate-50 text-slate-700 font-semibold">
-                <tr>
-                  <th class="p-3 border-b border-slate-200">Sector / Área</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Total</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Abiertos</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th>
-                  <th class="p-3 border-b border-slate-200 text-center">% Cumplimiento</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Prom. Días</th>
-                </tr>
+                <tr><th class="p-3 border-b border-slate-200">Sector / Área</th><th class="p-3 border-b border-slate-200 text-center">Total</th><th class="p-3 border-b border-slate-200 text-center">Abiertos</th><th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th><th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th><th class="p-3 border-b border-slate-200 text-center">% Cumplimiento</th><th class="p-3 border-b border-slate-200 text-center">Prom. Días</th></tr>
               </thead>
               <tbody id="sectoresTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Tabla 4: Origen / Quién Detectó -->
         <div class="card-clean p-6 rounded-2xl space-y-4">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <i class="fa-solid fa-magnifying-glass-chart text-amber-600"></i>
-              <span>4. Hallazgos Detectados por Usuario / Auditor (Col C)</span>
-            </h3>
-            <button onclick="exportTableToCSV('detectoresTable', 'Reporte_Detectores.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition">
-              <i class="fa-solid fa-download"></i><span>Exportar</span>
-            </button>
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-magnifying-glass-chart text-amber-600"></i><span>4. Hallazgos Detectados por Usuario / Auditor (Col C)</span></h3>
+            <button onclick="exportTableToCSV('detectoresTable', 'Reporte_Detectores.csv')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition"><i class="fa-solid fa-download"></i><span>Exportar</span></button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse" id="detectoresTable">
               <thead class="bg-slate-50 text-slate-700 font-semibold">
-                <tr>
-                  <th class="p-3 border-b border-slate-200">Origen / Quién Detectó</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Cantidad</th>
-                  <th class="p-3 border-b border-slate-200 text-center">% Del Total</th>
-                </tr>
+                <tr><th class="p-3 border-b border-slate-200">Origen / Quién Detectó</th><th class="p-3 border-b border-slate-200 text-center">Cantidad</th><th class="p-3 border-b border-slate-200 text-center">% Del Total</th></tr>
               </thead>
               <tbody id="detectoresTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
             </table>
           </div>
         </div>
-
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 4: RESULTADOS & ANALYTICS             -->
-      <!-- ========================================== -->
+      <!-- TAB 4: RESULTADOS & ANALYTICS -->
       <section id="content-resultados" class="tab-content hidden space-y-6">
         <div class="card-clean p-6 rounded-2xl space-y-6">
-          
-          <div>
-            <h3 class="text-sm font-bold text-slate-900">Matriz Métricas Consolidadas SGI (Calc_Data)</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Indicadores clave de eficacia para Revisiones por la Dirección y Auditorías Externas.</p>
-          </div>
-
-          <!-- 3 Tarjetas de Eficacia Global -->
+          <div><h3 class="text-sm font-bold text-slate-900">Matriz Métricas Consolidadas SGI (Calc_Data)</h3><p class="text-xs text-slate-500 mt-0.5">Indicadores clave de eficacia para Revisiones por la Dirección e Inspecciones ISO.</p></div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-5 bg-sky-50/70 rounded-2xl border border-sky-100">
-              <h4 class="font-bold text-sky-800 text-xs uppercase tracking-wider mb-2">Tasa Cierre Efectivo</h4>
-              <div class="text-3xl font-extrabold text-sky-600 font-mono" id="globalClosureRate">0%</div>
-              <p class="text-[11px] text-sky-600/80 mt-1 font-medium">Sobre el total de acciones evaluadas</p>
-            </div>
-            <div class="p-5 bg-emerald-50/70 rounded-2xl border border-emerald-100">
-              <h4 class="font-bold text-emerald-800 text-xs uppercase tracking-wider mb-2">Eficacia Acciones Correctivas</h4>
-              <div class="text-3xl font-extrabold text-emerald-600 font-mono" id="acClosureRate">0%</div>
-              <p class="text-[11px] text-emerald-600/80 mt-1 font-medium">Acciones correctivas (AC) cerradas OK</p>
-            </div>
-            <div class="p-5 bg-indigo-50/70 rounded-2xl border border-indigo-100">
-              <h4 class="font-bold text-indigo-800 text-xs uppercase tracking-wider mb-2">Eficacia Mejora / Prevención</h4>
-              <div class="text-3xl font-extrabold text-indigo-600 font-mono" id="amClosureRate">0%</div>
-              <p class="text-[11px] text-indigo-600/80 mt-1 font-medium">Acciones de mejora y preventivas (AM/AP)</p>
-            </div>
+            <div class="p-5 bg-sky-50/70 rounded-2xl border border-sky-100"><h4 class="font-bold text-sky-800 text-xs uppercase tracking-wider mb-2">Tasa Cierre Efectivo</h4><div class="text-3xl font-extrabold text-sky-600 font-mono" id="globalClosureRate">0%</div></div>
+            <div class="p-5 bg-emerald-50/70 rounded-2xl border border-emerald-100"><h4 class="font-bold text-emerald-800 text-xs uppercase tracking-wider mb-2">Eficacia Acciones Correctivas</h4><div class="text-3xl font-extrabold text-emerald-600 font-mono" id="acClosureRate">0%</div></div>
+            <div class="p-5 bg-indigo-50/70 rounded-2xl border border-indigo-100"><h4 class="font-bold text-indigo-800 text-xs uppercase tracking-wider mb-2">Eficacia Mejora / Prevención</h4><div class="text-3xl font-extrabold text-indigo-600 font-mono" id="amClosureRate">0%</div></div>
           </div>
-
-          <!-- Matriz 1: Por Tipo de Hallazgo -->
           <div class="pt-4 border-t border-slate-100">
-            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">1. Matriz de Eficacia por Tipo de Hallazgo</h4>
-            <div class="overflow-x-auto rounded-xl border border-slate-200">
-              <table class="w-full text-left text-xs border-collapse" id="calcMatrixTable">
-                <thead class="bg-slate-50 text-slate-700 font-semibold">
-                  <tr>
-                    <th class="p-3 border-b border-slate-200">Tipo</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Abiertos</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Total</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Tasa Eficacia (%)</th>
-                  </tr>
-                </thead>
-                <tbody id="calcMatrixTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
-              </table>
-            </div>
+            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">1. Matriz por Tipo de Hallazgo</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-left text-xs border-collapse" id="calcMatrixTable"><thead class="bg-slate-50 text-slate-700 font-semibold"><tr><th class="p-3 border-b border-slate-200">Tipo</th><th class="p-3 border-b border-slate-200 text-center">Abiertos</th><th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th><th class="p-3 border-b border-slate-200 text-center">Cerrados NO</th><th class="p-3 border-b border-slate-200 text-center">Total</th><th class="p-3 border-b border-slate-200 text-center">Tasa Eficacia (%)</th></tr></thead><tbody id="calcMatrixTableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
           </div>
-
-          <!-- Matriz 2: Por Tipo de Acción -->
           <div class="pt-4 border-t border-slate-100">
-            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">2. Matriz por Tipo de Acción y Cumplimiento</h4>
-            <div class="overflow-x-auto rounded-xl border border-slate-200">
-              <table class="w-full text-left text-xs border-collapse" id="actionMatrixTable">
-                <thead class="bg-slate-50 text-slate-700 font-semibold">
-                  <tr>
-                    <th class="p-3 border-b border-slate-200">Acción</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Abiertas</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Cerradas OK</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Cerradas NO</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Total</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Tasa Eficacia (%)</th>
-                  </tr>
-                </thead>
-                <tbody id="actionMatrixTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
-              </table>
-            </div>
+            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">2. Matriz por Tipo de Acción</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-left text-xs border-collapse" id="actionMatrixTable"><thead class="bg-slate-50 text-slate-700 font-semibold"><tr><th class="p-3 border-b border-slate-200">Acción</th><th class="p-3 border-b border-slate-200 text-center">Abiertas</th><th class="p-3 border-b border-slate-200 text-center">Cerradas OK</th><th class="p-3 border-b border-slate-200 text-center">Cerradas NO</th><th class="p-3 border-b border-slate-200 text-center">Total</th><th class="p-3 border-b border-slate-200 text-center">Tasa Eficacia (%)</th></tr></thead><tbody id="actionMatrixTableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
           </div>
-
-          <!-- Matriz 3: Comparativo Multiejercicio -->
           <div class="pt-4 border-t border-slate-100">
-            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">3. Cuadro Comparativo Multiejercicio (33, 34 y 35)</h4>
-            <div class="overflow-x-auto rounded-xl border border-slate-200">
-              <table class="w-full text-left text-xs border-collapse" id="multiExerciseTable">
-                <thead class="bg-slate-50 text-slate-700 font-semibold">
-                  <tr>
-                    <th class="p-3 border-b border-slate-200">Ejercicio</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Total</th>
-                    <th class="p-3 border-b border-slate-200 text-center">NC (NCI/NCA)</th>
-                    <th class="p-3 border-b border-slate-200 text-center">OM</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Reclamos / RI</th>
-                    <th class="p-3 border-b border-slate-200 text-center">OBS</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Abiertos</th>
-                    <th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th>
-                    <th class="p-3 border-b border-slate-200 text-center">% Cierre</th>
-                  </tr>
-                </thead>
-                <tbody id="multiExerciseTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
-              </table>
-            </div>
+            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">3. Cuadro Comparativo Multiejercicio</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-left text-xs border-collapse" id="multiExerciseTable"><thead class="bg-slate-50 text-slate-700 font-semibold"><tr><th class="p-3 border-b border-slate-200">Ejercicio</th><th class="p-3 border-b border-slate-200 text-center">Total</th><th class="p-3 border-b border-slate-200 text-center">NC (NCI/NCA)</th><th class="p-3 border-b border-slate-200 text-center">OM</th><th class="p-3 border-b border-slate-200 text-center">Reclamos / RI</th><th class="p-3 border-b border-slate-200 text-center">OBS</th><th class="p-3 border-b border-slate-200 text-center">Abiertos</th><th class="p-3 border-b border-slate-200 text-center">Cerrados OK</th><th class="p-3 border-b border-slate-200 text-center">% Cierre</th></tr></thead><tbody id="multiExerciseTableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
           </div>
-
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 5: HISTORIAL DE REVISIONES            -->
-      <!-- ========================================== -->
+      <!-- TAB 5: HISTORIAL DE REVISIONES -->
       <section id="content-revisiones" class="tab-content hidden space-y-6">
         <div class="card-clean p-6 rounded-2xl space-y-4">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-clock-rotate-left text-sky-600"></i>
-            <h3 class="text-sm font-bold text-slate-900">Control de Cambios y Revisiones del Documento (RG-06-01)</h3>
-          </div>
+          <div class="flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-sky-600"></i><h3 class="text-sm font-bold text-slate-900">Control de Cambios y Revisiones del Documento (RG-06-01)</h3></div>
           <div class="overflow-x-auto rounded-xl border border-slate-200">
             <table class="w-full text-left text-xs border-collapse">
               <thead class="bg-slate-50 text-slate-700 font-semibold">
-                <tr>
-                  <th class="p-3 border-b border-slate-200">N° Revisión</th>
-                  <th class="p-3 border-b border-slate-200">Fecha Emisión</th>
-                  <th class="p-3 border-b border-slate-200">Descripción de la Modificación</th>
-                  <th class="p-3 border-b border-slate-200">Aprobado Por</th>
-                  <th class="p-3 border-b border-slate-200 text-center">Estado</th>
-                </tr>
+                <tr><th class="p-3 border-b border-slate-200">N° Revisión</th><th class="p-3 border-b border-slate-200">Fecha Emisión</th><th class="p-3 border-b border-slate-200">Descripción de la Modificación</th><th class="p-3 border-b border-slate-200">Aprobado Por</th><th class="p-3 border-b border-slate-200 text-center">Estado</th></tr>
               </thead>
               <tbody class="divide-y divide-slate-100 bg-white">
                 <tr class="bg-emerald-50/50">
-                  <td class="p-3 font-bold text-sky-700">Rev 04</td>
-                  <td class="p-3 font-medium">01/04/2026</td>
-                  <td class="p-3 text-slate-600 leading-relaxed">Inclusión de trazabilidad interactiva, correlativos numéricos puros, notificación directa por email en HTML moderno, integración con Google Sheets y diseño responsive Modern SaaS.</td>
-                  <td class="p-3 font-semibold text-slate-800">Comité SGI / Dirección</td>
-                  <td class="p-3 text-center">
-                    <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full text-[10px] border border-emerald-200">VIGENTE</span>
-                  </td>
+                  <td class="p-3 font-bold text-sky-700">Rev 05</td><td class="p-3 font-medium">01/09/2026</td><td class="p-3 text-slate-600 leading-relaxed">Inclusión de columnas separadas para Evidencia de Acción de Cierre (Col T) y Fuente de la evidencia (Col Y), adecuación según hallazgo de auditoría DNV (OBS 80 / Rev 05).</td><td class="p-3 font-semibold text-slate-800">Comité SGI / Dirección</td>
+                  <td class="p-3 text-center"><span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full text-[10px] border border-emerald-200">VIGENTE</span></td>
                 </tr>
-                <tr>
-                  <td class="p-3 font-bold text-slate-700">Rev 03</td>
-                  <td class="p-3">15/03/2025</td>
-                  <td class="p-3 text-slate-500">Integración de campos para evaluación de riesgo interno (RI) e indicadores de verificación de eficacia individualizada.</td>
-                  <td class="p-3 text-slate-600">Gerencia de Calidad</td>
-                  <td class="p-3 text-center">
-                    <span class="bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded text-[10px]">Obsoleto</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="p-3 font-bold text-slate-700">Rev 02</td>
-                  <td class="p-3">10/04/2024</td>
-                  <td class="p-3 text-slate-500">Adecuación del formato para auditorías integradas ISO 9001:2015 / ISO 14001:2015 / ISO 45001:2018.</td>
-                  <td class="p-3 text-slate-600">Responsable SGI</td>
-                  <td class="p-3 text-center">
-                    <span class="bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded text-[10px]">Obsoleto</span>
-                  </td>
-                </tr>
+                <tr><td class="p-3 font-bold text-slate-700">Rev 04</td><td class="p-3">01/04/2026</td><td class="p-3 text-slate-500">Inclusión de trazabilidad interactiva, correlativos numéricos puros y notificación directa por email.</td><td class="p-3 text-slate-600">Comité SGI / Dirección</td><td class="p-3 text-center"><span class="bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded text-[10px]">Obsoleto</span></td></tr>
+                <tr><td class="p-3 font-bold text-slate-700">Rev 03</td><td class="p-3">15/03/2025</td><td class="p-3 text-slate-500">Integración de campos para evaluación de riesgo interno (RI).</td><td class="p-3 text-slate-600">Gerencia de Calidad</td><td class="p-3 text-center"><span class="bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded text-[10px]">Obsoleto</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -839,58 +604,34 @@
   <!-- MODAL 1: CONFIGURACIÓN GAS -->
   <div id="configModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="card-clean rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
-        <h3 class="font-bold text-sm flex items-center gap-2">
-          <i class="fa-solid fa-cloud text-sky-400"></i>
-          <span>Conexión con Google Sheets</span>
-        </h3>
-        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-base"></i>
-        </button>
-      </div>
+      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center"><h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-cloud text-sky-400"></i><span>Conexión con Google Sheets</span></h3><button onclick="closeConfigModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-base"></i></button></div>
       <div class="p-6 space-y-4 text-xs text-slate-600">
         <p>Ingresá la URL del Web App de Google Apps Script para sincronizar las modificaciones directamente con la planilla maestra.</p>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[11px]">URL de Apps Script Web App</label>
-          <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 border border-slate-200 bg-slate-50 text-slate-800 rounded-xl text-xs outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition">
-        </div>
+        <div><label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[11px]">URL de Apps Script Web App</label><input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 border border-slate-200 bg-slate-50 text-slate-800 rounded-xl text-xs outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition"></div>
       </div>
-      <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
-        <button onclick="closeConfigModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
-        <button onclick="saveScriptUrl()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition">Guardar y Sincronizar</button>
-      </div>
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2"><button onclick="closeConfigModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button><button onclick="saveScriptUrl()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition">Guardar y Sincronizar</button></div>
     </div>
   </div>
 
-  <!-- MODAL 2: FORMULARIO ALTA / EDICIÓN EN 3 ETAPAS -->
+  <!-- MODAL 2: FORMULARIO ALTA / EDICIÓN EN 3 ETAPAS (Rev 05 NATIVO) -->
   <div id="formModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="card-clean rounded-2xl w-full max-w-3xl my-8 overflow-hidden shadow-2xl">
-      
       <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
-        <h3 id="modalTitle" class="font-bold text-sm flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-sky-400"></i>
-          <span>Cargar Nuevo Hallazgo SGI</span>
-        </h3>
-        <button onclick="closeFormModal()" class="text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
+        <h3 id="modalTitle" class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-sky-400"></i><span>Cargar Nuevo Hallazgo SGI (Rev 05)</span></h3>
+        <button onclick="closeFormModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <form id="hallazgoForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4 max-h-[78vh] overflow-y-auto custom-scrollbar text-slate-700 text-xs">
         <input type="hidden" id="editIndex" value="-1">
         
-        <!-- Correlativos automáticos numéricos -->
         <div class="bg-sky-50 border border-sky-100 p-3 rounded-xl flex items-center justify-between text-xs text-sky-900">
-          <span class="font-semibold flex items-center gap-1.5">
-            <i class="fa-solid fa-wand-magic-sparkles text-sky-600"></i> Correlativo automático calculado:
-          </span>
+          <span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles text-sky-600"></i> Correlativo automático calculado:</span>
           <div class="flex items-center gap-3 font-semibold">
             <span class="bg-white px-2.5 py-1 rounded-lg border border-sky-200">N° Hallazgo: <strong id="previewHallazgoNum" class="text-sky-700">1</strong></span>
             <span class="bg-white px-2.5 py-1 rounded-lg border border-sky-200">N° Acción: <strong id="previewAccionNum" class="text-sky-700">1</strong></span>
           </div>
         </div>
 
-        <!-- Pestañas internas del formulario -->
         <div class="flex gap-1 border-b border-slate-200 pb-1" id="formTabs">
           <button type="button" onclick="switchFormTab('general')" id="ftab-general" class="px-3.5 py-2 text-xs font-bold border-b-2 border-sky-600 text-sky-600 transition">Datos Generales</button>
           <button type="button" onclick="switchFormTab('cierre')" id="ftab-cierre" class="px-3.5 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition">1. Cierre (Implementación)</button>
@@ -902,154 +643,64 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Hallazgo (Col A) *</label>
             <select id="formTipoHallazgo" onchange="updateAutoNumbers()" required class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-bold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-              <option value="NCI">NCI · No Conformidad Interna</option>
-              <option value="RC">RC · Reclamo Cliente</option>
-              <option value="RP">RP · Reclamo Proveedor</option>
-              <option value="OM">OM · Oportunidad de Mejora</option>
-              <option value="NCA">NCA · NC Auditoría</option>
-              <option value="OBS">OBS · Observación</option>
-              <option value="RI">RI · Riesgo Interno</option>
+              <option value="NCI">NCI · No Conformidad Interna</option><option value="RC">RC · Reclamo Cliente</option>
+              <option value="RP">RP · Reclamo Proveedor</option><option value="OM">OM · Oportunidad de Mejora</option>
+              <option value="NCA">NCA · NC Auditoría</option><option value="OBS">OBS · Observación</option><option value="RI">RI · Riesgo Interno</option>
             </select>
           </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">N° Correlativo Hallazgo (Col B) *</label>
-            <input type="text" id="formNumHallazgo" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-sky-700">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Quién Detectó (Col C)</label>
-            <input type="text" id="formQuienDetecto" list="detectorDatalist" placeholder="Nombre de quien detecta..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Fecha de Detección (Col D) *</label>
-            <input type="date" id="formFechaDetection" required class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">Descripción del Hallazgo (Col E) *</label>
-            <textarea id="formDescripcion" rows="2" required placeholder="Evidencia objetiva y situación constatada..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">Acción Inmediata si corresponde (Col F)</label>
-            <textarea id="formAccionInmediata" rows="2" placeholder="Medida precautoria tomada de inmediato..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">Análisis de Causa Raíz (Col G)</label>
-            <textarea id="formAnalisisCausa" rows="2" placeholder="5 Porqués / Causa fundamental del desvío..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">¿Corresponde Acción? (Col I)</label>
-            <select id="formCorrespondeAccion" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-bold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-              <option value="">— (Vacío)</option>
-              <option value="SI" selected>SI</option>
-              <option value="NO">NO</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Sector Responsable (Col H)</label>
-            <input type="text" id="formSectorResponsable" list="sectorDatalist" placeholder="Ej: Salud y Seguridad / Calidad..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
-
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">N° Correlativo Hallazgo (Col B) *</label><input type="text" id="formNumHallazgo" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-sky-700"></div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">Quién Detectó (Col C)</label><input type="text" id="formQuienDetecto" list="detectorDatalist" placeholder="Nombre de quien detecta..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"></div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">Fecha de Detección (Col D) *</label><input type="date" id="formFechaDetection" required class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">Descripción del Hallazgo (Col E) *</label><textarea id="formDescripcion" rows="2" required placeholder="Evidencia objetiva..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">Acción Inmediata si corresponde (Col F)</label><textarea id="formAccionInmediata" rows="2" placeholder="Medida precautoria..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">Análisis de Causa Raíz (Col G)</label><textarea id="formAnalisisCausa" rows="2" placeholder="Causa raíz..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea></div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">¿Corresponde Acción? (Col I)</label><select id="formCorrespondeAccion" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-bold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"><option value="SI" selected>SI</option><option value="NO">NO</option></select></div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">Sector Responsable (Col H)</label><input type="text" id="formSectorResponsable" list="sectorDatalist" placeholder="Ej: Salud y Seguridad..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"></div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Acción (Col J)</label>
             <select id="formTipoAccion" onchange="updateAutoNumbers()" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-bold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-              <option value="AC">AC · Acción Correctiva</option>
-              <option value="CD">CD · Corrección Directa</option>
-              <option value="AP">AP · Acción Preventiva</option>
-              <option value="AM">AM · Acción de Mejora</option>
+              <option value="AC">AC · Acción Correctiva</option><option value="CD">CD · Corrección Directa</option>
+              <option value="AP">AP · Acción Preventiva</option><option value="AM">AM · Acción de Mejora</option>
             </select>
           </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">N° Correlativo Acción (Col K)</label>
-            <input type="text" id="formNumAccion" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-sky-700">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Responsable Cierre Acción (Col P)</label>
-            <input type="text" id="formResponsableAccion" list="respCierreDatalist" placeholder="Seleccionar usuario responsable..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Fecha Límite Programada (Col Q)</label>
-            <input type="date" id="formFechaLimite" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Responsable Verificación Eficacia (Col S)</label>
-            <input type="text" id="formResponsableVerificacion" list="respVerifDatalist" placeholder="Auditor o verificador..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">Plan de Acción (Cols L, M, N)</label>
-            <textarea id="formPlanAccion" rows="2" placeholder="Detalle exhaustivo de actividades a ejecutar..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">Criterio Evaluación / Evidencia Requerida (Col O)</label>
-            <input type="text" id="formEvaluacionResultado" placeholder="Criterio para dar por eficaz la acción..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none">
-          </div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">N° Correlativo Acción (Col K)</label><input type="text" id="formNumAccion" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-sky-700"></div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">Responsable de Acción (Col P) *</label><input type="text" id="formResponsableAccion" list="respCierreDatalist" required placeholder="Seleccionar usuario..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"></div>
+          <div><label class="block text-xs font-bold text-slate-700 mb-1">Fecha Cierre Programada (Col Q) *</label><input type="date" id="formFechaLimite" required class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">Plan de Acción (Cols L, M, N)</label><textarea id="formPlanAccion" rows="2" placeholder="Detalle..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none resize-none"></textarea></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">Criterio Evaluación / Evidencia Requerida (Col O)</label><input type="text" id="formEvaluacionResultado" placeholder="Criterio..." class="w-full p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none"></div>
         </div>
 
-        <!-- SECCIÓN 2: ETAPA 1 (CIERRE / IMPLEMENTACIÓN) -->
+        <!-- SECCIÓN 2: ETAPA 1 (CIERRE IMPLEMENTACIÓN) -->
         <div id="fsec-cierre" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <div>
-            <label class="block text-xs font-bold mb-1 text-slate-700">Fecha Real Cierre (Col R)</label>
-            <input type="date" id="formFechaRealCierre" class="w-full p-2.5 border border-slate-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none">
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold mb-1 text-slate-700">Evidencia de Implementación (Col V - Etapa 1)</label>
-            <p class="text-[11px] text-slate-400 mb-1.5">Se concatenará automáticamente con la etiqueta "[1. IMPLEMENTACIÓN]"</p>
-            <textarea id="formEvidenciaImpl" rows="2" placeholder="Ej: Se dictó la capacitación a 12 personas y se adjuntó lista de firmas [Link Drive]..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none resize-none"></textarea>
-          </div>
+          <div><label class="block text-xs font-bold mb-1 text-slate-700">Fecha Real de Cierre (Col R)</label><input type="date" id="formFechaRealCierre" class="w-full p-2.5 border border-slate-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none"></div>
+          <div><label class="block text-xs font-bold mb-1 text-slate-700">Responsable de Cierre (Col S)</label><input type="text" id="formResponsableCierre" list="respVerifDatalist" placeholder="Seleccionar responsable..." class="w-full p-2.5 border border-slate-200 bg-white rounded-xl text-xs font-semibold focus:ring-2 focus:ring-sky-500 outline-none"></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold mb-1 text-slate-700">Evidencia de la Acción de Cierre (Col T - Nativa Rev 05)</label><textarea id="formEvidenciaCierre" rows="2" placeholder="Ej: Se dictó la capacitación a 12 operarios y se adjuntó lista de firmas [Link]..." oninput="autoResize(this)" class="w-full p-2.5 border border-slate-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none resize-none"></textarea></div>
         </div>
 
         <!-- SECCIÓN 3: ETAPA 2 (VERIFICACIÓN DE EFICACIA) -->
         <div id="fsec-eficacia" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 bg-sky-50/50 p-4 rounded-xl border border-sky-100">
           <div>
-            <label class="block text-xs font-bold mb-1 text-sky-900">Resultado Eficacia (Col U)</label>
+            <label class="block text-xs font-bold mb-1 text-sky-900">Resultado Eficacia (Col V - Rev 05)</label>
             <select id="formResultadoEficacia" class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs font-bold focus:ring-2 focus:ring-sky-500 outline-none">
               <option value="">Vacío (En Proceso / Período Prueba)</option>
               <option value="OK">OK (Cerrado Efectivo / Eficaz)</option>
               <option value="NO">NO (Cerrado Ineficaz / No Cumplido)</option>
             </select>
           </div>
-
+          <div><label class="block text-xs font-bold mb-1 text-sky-900">Fecha de Verificación (Col U - Rev 05)</label><input type="date" id="formFechaVerificacion" class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none"></div>
           <div>
-            <label class="block text-xs font-bold mb-1 text-sky-900">Fecha Verificación Eficacia (Col T)</label>
-            <input type="date" id="formFechaVerificacion" class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold mb-1 text-sky-900">Requiere Actualizar Documentación (Col W)</label>
+            <label class="block text-xs font-bold mb-1 text-sky-900">Requiere Actualizar (Col X)</label>
             <select id="formRequiereActualizar" class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs font-bold focus:ring-2 focus:ring-sky-500 outline-none">
-              <option value="">— (Vacío)</option>
-              <option value="NO">NO</option>
-              <option value="SI">SI</option>
+              <option value="NO" selected>NO</option><option value="SI">SI</option>
             </select>
           </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold mb-1 text-sky-900">Evidencia de Eficacia (Col V - Etapa 2)</label>
-            <p class="text-[11px] text-sky-700/80 mb-1.5">Se concatenará automáticamente con la etiqueta "[2. EFICACIA]"</p>
-            <textarea id="formEvidenciaEf" rows="2" placeholder="Ej: Se entrevistó al personal 60 días después y el conocimiento fue asimilado. No se repitió el error..." oninput="autoResize(this)" class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none resize-none"></textarea>
-          </div>
+          <div><label class="block text-xs font-bold mb-1 text-sky-900">Fuente de la Evidencia (Col Y - Nativa Rev 05)</label><input type="text" id="formFuenteEvidencia" placeholder="Ej: PO-02 Rev 06, Auditoría..." class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none"></div>
+          <div class="md:col-span-2"><label class="block text-xs font-bold mb-1 text-sky-900">Evidencia del Resultado / Eficacia (Col W - Nativa Rev 05)</label><textarea id="formEvidenciaResultado" rows="2" placeholder="Ej: Se entrevistó al personal 60 días después y el conocimiento fue asimilado. No se repitió el error..." oninput="autoResize(this)" class="w-full p-2.5 border border-sky-200 bg-white rounded-xl text-xs focus:ring-2 focus:ring-sky-500 outline-none resize-none"></textarea></div>
         </div>
 
-        <!-- Botones inferiores de formulario -->
         <div class="pt-4 flex justify-end gap-2.5 border-t border-slate-100">
           <button type="button" onclick="closeFormModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
-          <button type="submit" id="saveSubmitBtn" class="px-5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-sky-600/20 transition transform active:scale-95">
-            <i class="fa-solid fa-floppy-disk"></i>
-            <span>Guardar Hallazgo</span>
-          </button>
+          <button type="submit" id="saveSubmitBtn" class="px-5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-sky-600/20 transition transform active:scale-95"><i class="fa-solid fa-floppy-disk"></i><span>Guardar Hallazgo</span></button>
         </div>
 
       </form>
@@ -1060,32 +711,19 @@
   <div id="detailModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="card-clean rounded-2xl w-full max-w-3xl overflow-hidden max-h-[88vh] flex flex-col shadow-2xl">
       <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-file-contract text-sky-400"></i>
-          <h3 class="font-bold text-sm">Ficha Oficial RG-06-01 Rev 04 · Hallazgo SGI</h3>
-        </div>
-        <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-file-contract text-sky-400"></i><h3 class="font-bold text-sm">Ficha Oficial RG-06-01 Rev 05 · Hallazgo SGI</h3></div>
+        <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <div id="detailPrintContainer" class="flex-1 overflow-y-auto p-6 scrollbar-thin">
-        <div id="detailContent" class="space-y-4 text-xs text-slate-700"></div>
-      </div>
+      <div id="detailPrintContainer" class="flex-1 overflow-y-auto p-6 scrollbar-thin"><div id="detailContent" class="space-y-4 text-xs text-slate-700"></div></div>
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap justify-between items-center gap-2 flex-shrink-0 print:hidden">
         <div class="flex items-center gap-2">
-          <button id="detailEditBtn" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-pen"></i><span>Editar Hallazgo</span>
-          </button>
-          <button id="detailEmailBtn" onclick="openEmailNotificationModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-paper-plane"></i><span>Enviar por Mail</span>
-          </button>
+          <button id="detailEditBtn" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-pen"></i><span>Editar Hallazgo</span></button>
+          <button id="detailEmailBtn" onclick="openEmailNotificationModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-paper-plane"></i><span>Enviar por Mail</span></button>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="downloadDetailPDF()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-print text-sky-400"></i><span>Imprimir / PDF</span>
-          </button>
+          <button onclick="downloadDetailPDF()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-print text-sky-400"></i><span>Imprimir / PDF</span></button>
           <button onclick="closeDetailModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition">Cerrar</button>
         </div>
       </div>
@@ -1096,13 +734,8 @@
   <div id="emailModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="card-clean rounded-2xl w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col shadow-2xl">
       <div class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-paper-plane text-indigo-300"></i>
-          <h3 class="font-bold text-sm">Enviar Notificación por Correo</h3>
-        </div>
-        <button onclick="closeEmailModal()" class="text-slate-300 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-paper-plane text-indigo-300"></i><h3 class="font-bold text-sm">Enviar Notificación por Correo</h3></div>
+        <button onclick="closeEmailModal()" class="text-slate-300 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <div class="p-6 space-y-4 text-xs text-slate-700 overflow-y-auto custom-scrollbar flex-1">
@@ -1115,58 +748,38 @@
         </div>
 
         <div>
-          <div class="flex justify-between items-center mb-1.5">
-            <label class="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Seleccionar Destinatario(s):</label>
-            <span class="text-[10px] text-slate-400">Podés marcar uno o varios</span>
-          </div>
+          <div class="flex justify-between items-center mb-1.5"><label class="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Seleccionar Destinatario(s):</label><span class="text-[10px] text-slate-400">Podés marcar uno o varios</span></div>
           <div id="recipientQuickPills" class="flex flex-wrap gap-1.5 mb-2"></div>
           <div id="recipientCheckboxesList" class="max-h-36 overflow-y-auto custom-scrollbar p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1 text-[11px]"></div>
         </div>
 
-        <div>
-          <label class="block font-bold mb-1.5 text-slate-700 uppercase tracking-wider text-[11px]">Asunto:</label>
-          <input type="text" id="emailSubject" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl font-semibold text-slate-800">
-        </div>
-
-        <div>
-          <label class="block font-bold mb-1.5 text-slate-700 uppercase tracking-wider text-[11px]">Vista Previa del Mensaje HTML:</label>
-          <div id="emailPreviewBox" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] max-h-40 overflow-y-auto custom-scrollbar font-sans space-y-2"></div>
-        </div>
+        <div><label class="block font-bold mb-1.5 text-slate-700 uppercase tracking-wider text-[11px]">Asunto:</label><input type="text" id="emailSubject" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl font-semibold text-slate-800"></div>
+        <div><label class="block font-bold mb-1.5 text-slate-700 uppercase tracking-wider text-[11px]">Vista Previa del Mensaje HTML:</label><div id="emailPreviewBox" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] max-h-40 overflow-y-auto custom-scrollbar font-sans space-y-2"></div></div>
       </div>
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center gap-2 flex-shrink-0">
         <button onclick="closeEmailModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
-        <button id="sendEmailDirectBtn" onclick="executeDirectEmailSend()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition transform active:scale-95">
-          <i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span>
-        </button>
+        <button id="sendEmailDirectBtn" onclick="executeDirectEmailSend()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition transform active:scale-95"><i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span></button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST FLOTANTE MODERNO (Reemplaza a los alert()) -->
+  <!-- TOAST FLOTANTE MODERNO -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-800">
     <div id="toast-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
     <span id="toast-message" class="text-xs font-medium">Notificación del sistema</span>
   </div>
 
-  <!-- PANEL OVERLAY para 'Mi Panel' (Desplegable integrado con iframe) -->
+  <!-- PANEL OVERLAY para 'Mi Panel' -->
   <div id="panel-overlay" class="fixed left-0 right-0 bottom-0 z-50 hidden flex-col bg-slate-900/40 backdrop-blur-sm">
     <div class="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-sm">
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span>
-        <span class="text-xs font-bold text-slate-800">Mi Panel — Gestión Directa SGI</span>
-      </div>
-      <button onclick="cerrarPanel()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
-        <i class="ti ti-x text-sm"></i>
-        <span>Cerrar Panel</span>
-      </button>
+      <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span><span class="text-xs font-bold text-slate-800">Mi Panel — Gestión Directa SGI</span></div>
+      <button onclick="cerrarPanel()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition"><i class="ti ti-x text-sm"></i><span>Cerrar Panel</span></button>
     </div>
     <iframe id="panel-iframe" src="" class="flex-1 w-full border-none bg-slate-50"></iframe>
   </div>
 
-  <!-- ======================================================= -->
-  <!-- LÓGICA COMPLETA DE NEGOCIO Y RENDERIZADO SGI RG-06-01   -->
-  <!-- ======================================================= -->
+  <!-- LOGICA COMPLETA JS PARA Rev 05 NATIVO -->
   <script>
     let dataset = [];
     let currentActiveItem = null;
@@ -1176,7 +789,6 @@
     let sheetsUrl = '';
     let activeTabId = 'dashboard', currentSortColumn = 'fechaDetection', isSortAscending = false;
 
-    // Toast helper para no utilizar alert() bajo ninguna circunstancia
     function showToast(msg, type = 'success') {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toast-message');
@@ -1227,63 +839,39 @@
       'RI':  { name: 'Riesgo Interno (RI)', color: '#0d9488', bgLight: 'bg-teal-50', border: 'border-teal-200', text: 'text-teal-700' }
     };
 
-    function toggleSidebar() { 
-      document.getElementById('sidebarFilters').classList.toggle('hidden'); 
-    }
-
-    function debouncedSyncAndFilter() { 
-      clearTimeout(searchDebounceTimer); 
-      searchDebounceTimer = setTimeout(renderAllViews, 180); 
-    }
+    function toggleSidebar() { document.getElementById('sidebarFilters').classList.toggle('hidden'); }
+    function debouncedSyncAndFilter() { clearTimeout(searchDebounceTimer); searchDebounceTimer = setTimeout(renderAllViews, 180); }
 
     function downloadChart(chartId, fileName) {
-      const canvas = document.getElementById(chartId); 
-      if (!canvas) return;
-      const link = document.createElement('a'); 
-      link.download = fileName; 
-      link.href = canvas.toDataURL('image/png', 1.0);
-      document.body.appendChild(link); 
-      link.click(); 
-      document.body.removeChild(link);
+      const canvas = document.getElementById(chartId); if (!canvas) return;
+      const link = document.createElement('a'); link.download = fileName; link.href = canvas.toDataURL('image/png', 1.0);
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
       showToast('Gráfico exportado correctamente');
     }
 
     function exportTableToCSV(tableId, filename) {
-      const table = document.getElementById(tableId); 
-      if (!table) return;
+      const table = document.getElementById(tableId); if (!table) return;
       let csv = [];
       table.querySelectorAll('tr').forEach(r => {
         let row = [];
         r.querySelectorAll('td, th').forEach(c => row.push('"' + c.innerText.replace(/(\r\n|\n|\r)/gm, ' ').replace(/↕|↑|↓/g, '').replace(/"/g, '""').trim() + '"'));
         csv.push(row.join(','));
       });
-      const link = document.createElement('a'); 
-      link.download = filename; 
-      link.href = window.URL.createObjectURL(new Blob(["\uFEFF" + csv.join('\n')], { type: 'text/csv;charset=utf-8;' }));
-      document.body.appendChild(link); 
-      link.click(); 
-      document.body.removeChild(link);
+      const link = document.createElement('a'); link.download = filename; link.href = window.URL.createObjectURL(new Blob(["\uFEFF" + csv.join('\n')], { type: 'text/csv;charset=utf-8;' }));
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
       showToast('Planilla CSV descargada con éxito');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       window.addEventListener('message', function(e) { 
         if (e.data && e.data.type === 'hallazgosData') { 
-          dataset = e.data.data; 
-          saveDataToLocal(); 
-          populateDatalists(); 
-          renderAllViews(); 
-          updateSyncStatus(true, 'Sheets Conectado'); 
+          dataset = e.data.data; saveDataToLocal(); populateDatalists(); renderAllViews(); updateSyncStatus(true, 'Sheets Conectado'); 
         } 
       });
 
       const localData = localStorage.getItem('rg0601_data');
       if (localData) {
-        try { 
-          dataset = JSON.parse(localData); 
-          populateDatalists(); 
-          renderAllViews(); 
-        } catch(e) {}
+        try { dataset = JSON.parse(localData); populateDatalists(); renderAllViews(); } catch(e) {}
       }
 
       if (typeof google !== 'undefined' && google && google.script && google.script.run) {
@@ -1300,17 +888,14 @@
         if (item.sectorResponsable) sectors.add(item.sectorResponsable.trim());
         if (item.quienDetecto) detectors.add(item.quienDetecto.trim());
         if (item.responsableAccion) respCierres.add(item.responsableAccion.trim());
-        if (item.responsableVerificacion) respVerifs.add(item.responsableVerificacion.trim());
+        if (item.responsableCierre) respVerifs.add(item.responsableCierre.trim());
       });
-      fillDatalist('sectorDatalist', Array.from(sectors)); 
-      fillDatalist('detectorDatalist', Array.from(detectors));
-      fillDatalist('respCierreDatalist', Array.from(respCierres)); 
-      fillDatalist('respVerifDatalist', Array.from(respVerifs));
+      fillDatalist('sectorDatalist', Array.from(sectors)); fillDatalist('detectorDatalist', Array.from(detectors));
+      fillDatalist('respCierreDatalist', Array.from(respCierres)); fillDatalist('respVerifDatalist', Array.from(respVerifs));
     }
 
     function fillDatalist(elementId, values) {
-      const el = document.getElementById(elementId); 
-      if (!el) return;
+      const el = document.getElementById(elementId); if (!el) return;
       el.innerHTML = values.filter(v => v && v !== '-').map(v => `<option value="${v}"></option>`).join('');
     }
 
@@ -1328,36 +913,24 @@
       document.getElementById('syncStatusText').innerText = message || (connected ? "Sheets Conectado" : "Modo Local");
     }
 
-    function openConfigModal() { 
-      document.getElementById('scriptUrlInput').value = scriptUrl; 
-      document.getElementById('configModal').classList.remove('hidden'); 
-    }
-    function closeConfigModal() { 
-      document.getElementById('configModal').classList.add('hidden'); 
-    }
+    function openConfigModal() { document.getElementById('scriptUrlInput').value = scriptUrl; document.getElementById('configModal').classList.remove('hidden'); }
+    function closeConfigModal() { document.getElementById('configModal').classList.add('hidden'); }
 
     function saveScriptUrl() {
       scriptUrl = document.getElementById('scriptUrlInput').value.trim();
-      localStorage.setItem('rg0601_script_url', scriptUrl); 
-      closeConfigModal(); 
-      fetchFromGoogleSheets();
+      localStorage.setItem('rg0601_script_url', scriptUrl); closeConfigModal(); fetchFromGoogleSheets();
       showToast('Configuración de URL guardada');
     }
 
     async function fetchFromGoogleSheets() {
-      const icon = document.getElementById('refreshIcon'); 
-      if (icon) icon.classList.add('fa-spin');
+      const icon = document.getElementById('refreshIcon'); if (icon) icon.classList.add('fa-spin');
 
       if (typeof google !== 'undefined' && google && google.script && google.script.run) {
         google.script.run.withSuccessHandler(data => {
           if (Array.isArray(data) && data.length > 0) { 
-            dataset = data; 
-            saveDataToLocal(); 
-            populateDatalists(); 
-            renderAllViews(); 
-            updateSyncStatus(true, "Sheets Conectado"); 
+            dataset = data; saveDataToLocal(); populateDatalists(); renderAllViews(); updateSyncStatus(true, "Sheets Conectado"); 
             window.top.postMessage({ type: 'hallazgosReady', data: dataset }, '*'); 
-            showToast('Datos sincronizados con Google Sheets');
+            showToast('Datos sincronizados con Google Sheets (Rev 05)');
           }
           if (icon) icon.classList.remove('fa-spin');
         }).withFailureHandler(() => fetchViaUrl(icon)).getSheetDataRaw();
@@ -1367,49 +940,19 @@
     }
 
     async function fetchViaUrl(icon) {
-      const fetchUrl = scriptUrl || (serverWebAppUrl + '?format=json'); 
-      if (!fetchUrl) { 
-        updateSyncStatus(false, "Modo Local"); 
-        renderAllViews(); 
-        if (icon) icon.classList.remove('fa-spin'); 
-        return; 
-      }
+      const fetchUrl = scriptUrl || (serverWebAppUrl + '?format=json'); if (!fetchUrl) { updateSyncStatus(false, "Modo Local"); renderAllViews(); if (icon) icon.classList.remove('fa-spin'); return; }
       try {
-        const res = await fetch(fetchUrl); 
-        const json = await res.json();
+        const res = await fetch(fetchUrl); const json = await res.json();
         if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-          dataset = json.data; 
-          saveDataToLocal(); 
-          populateDatalists(); 
-          renderAllViews(); 
-          updateSyncStatus(true, "Sheets Conectado");
+          dataset = json.data; saveDataToLocal(); populateDatalists(); renderAllViews(); updateSyncStatus(true, "Sheets Conectado");
           window.top.postMessage({ type: 'hallazgosReady', data: dataset }, '*');
           showToast('Base de datos actualizada');
         }
-      } catch(e) { 
-        updateSyncStatus(false, "Modo Local (Caché)"); 
-        renderAllViews(); 
-      } finally { 
-        if (icon) icon.classList.remove('fa-spin'); 
-      }
+      } catch(e) { updateSyncStatus(false, "Modo Local (Caché)"); renderAllViews(); }
+      finally { if (icon) icon.classList.remove('fa-spin'); }
     }
 
-    function saveDataToLocal() { 
-      localStorage.setItem('rg0601_data', JSON.stringify(dataset)); 
-      // Guardar también stats para la portada de ESINEL SGI
-      try {
-        const valid = dataset.filter(isValidFindingRow);
-        const abiertos = valid.filter(isFindingOpen).length;
-        const todayStr = new Date().toISOString().split('T')[0];
-        const vencidos = valid.filter(d => isFindingOpen(d) && d.fechaLimite && d.fechaLimite < todayStr).length;
-        localStorage.setItem('esinel_hallazgos_stats', JSON.stringify({
-          total: valid.length,
-          abiertos: abiertos,
-          vencidos: vencidos,
-          porVencer: 8
-        }));
-      } catch(e) {}
-    }
+    function saveDataToLocal() { localStorage.setItem('rg0601_data', JSON.stringify(dataset)); }
 
     function switchTab(tabId) {
       activeTabId = tabId;
@@ -1437,17 +980,13 @@
       if (!dateStr || dateStr === '-' || dateStr === '') return null;
       if (dateStr instanceof Date) return dateStr;
       let str = String(dateStr).trim().split('T')[0];
-      let parts = str.split('-'); 
-      if (parts.length === 3 && parts[0].length === 4) return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-      parts = str.split('/'); 
-      if (parts.length === 3 && parts[2].length === 4) return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-      let d = new Date(str); 
-      return isNaN(d.getTime()) ? null : d;
+      let parts = str.split('-'); if (parts.length === 3 && parts[0].length === 4) return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      parts = str.split('/'); if (parts.length === 3 && parts[2].length === 4) return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      let d = new Date(str); return isNaN(d.getTime()) ? null : d;
     }
 
     function getEjercicioNumber(dateStr) {
-      let dt = parseDate(dateStr); 
-      if (!dt) return 35;
+      let dt = parseDate(dateStr); if (!dt) return 35;
       let startYear = (dt.getMonth() + 1 >= 4) ? dt.getFullYear() : dt.getFullYear() - 1;
       return 35 + (startYear - 2026);
     }
@@ -1484,15 +1023,6 @@
           if (statusFilter === 'OK' && res !== 'OK') return false;
           if (statusFilter === 'NO' && res !== 'NO') return false;
           if (statusFilter === 'VENCIDO' && (!open || !item.fechaLimite || item.fechaLimite >= todayStr)) return false;
-          if (statusFilter === 'POR_VENCER') {
-            if (!open || !item.fechaLimite) return false;
-            const lim = parseDate(item.fechaLimite); 
-            const tod = new Date(); 
-            tod.setHours(0,0,0,0);
-            if (!lim) return false;
-            const diff = Math.ceil((lim - tod) / (1000*60*60*24));
-            if (diff < 0 || diff > 30) return false;
-          }
         }
         if (searchVal) {
           const matchText = [
@@ -1500,7 +1030,7 @@
             item.descripcion, item.accionInmediata, item.analisisCausa, item.sectorResponsable,
             item.tipoAccion, item.numAccion, item.accionCorrectiva, item.accionPreventiva,
             item.accionMejora, item.evaluacionResultado, item.responsableAccion,
-            item.responsableVerificacion, item.resultadoEficacia, item.evidenciaResultado
+            item.responsableCierre, item.evidenciaCierre, item.resultadoEficacia, item.evidenciaResultado
           ].map(v => String(v || '').toLowerCase()).join(' ');
           if (!matchText.includes(searchVal)) return false;
         }
@@ -1554,22 +1084,10 @@
               <span class="text-[11px] font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full">${ejRate}% Cierre</span>
             </div>
             <div class="grid grid-cols-4 gap-2 mt-2 text-center text-xs">
-              <div class="bg-white p-2 rounded-lg border border-slate-200">
-                <span class="text-[10px] text-slate-400 block uppercase font-semibold">Total</span>
-                <span class="font-bold text-slate-800 text-sm">${ejTotal}</span>
-              </div>
-              <div class="bg-white p-2 rounded-lg border border-amber-200">
-                <span class="text-[10px] text-amber-600 block uppercase font-semibold">Abiertos</span>
-                <span class="font-bold text-amber-600 text-sm">${ejOpen}</span>
-              </div>
-              <div class="bg-white p-2 rounded-lg border border-emerald-200">
-                <span class="text-[10px] text-emerald-600 block uppercase font-semibold">Cerr. OK</span>
-                <span class="font-bold text-emerald-600 text-sm">${ejClosedOk}</span>
-              </div>
-              <div class="bg-white p-2 rounded-lg border border-rose-200">
-                <span class="text-[10px] text-rose-600 block uppercase font-semibold">Cerr. NO</span>
-                <span class="font-bold text-rose-600 text-sm">${ejClosedNo}</span>
-              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200"><span class="text-[10px] text-slate-400 block uppercase font-semibold">Total</span><span class="font-bold text-slate-800 text-sm">${ejTotal}</span></div>
+              <div class="bg-white p-2 rounded-lg border border-amber-200"><span class="text-[10px] text-amber-600 block uppercase font-semibold">Abiertos</span><span class="font-bold text-amber-600 text-sm">${ejOpen}</span></div>
+              <div class="bg-white p-2 rounded-lg border border-emerald-200"><span class="text-[10px] text-emerald-600 block uppercase font-semibold">Cerr. OK</span><span class="font-bold text-emerald-600 text-sm">${ejClosedOk}</span></div>
+              <div class="bg-white p-2 rounded-lg border border-rose-200"><span class="text-[10px] text-rose-600 block uppercase font-semibold">Cerr. NO</span><span class="font-bold text-rose-600 text-sm">${ejClosedNo}</span></div>
             </div>
           </div>`;
       });
@@ -1587,10 +1105,7 @@
         const conf = SGI_TYPE_COLORS[key];
         gridHTML += `
           <div onclick="filterTableByOpenType('${key}')" class="${conf.bgLight} border ${conf.border} p-3 rounded-xl cursor-pointer transition shadow-sm hover:shadow-md group">
-            <div class="flex items-center justify-between">
-              <p class="text-[11px] font-bold ${conf.text} truncate">${conf.name}</p>
-              <i class="fa-solid fa-arrow-right text-[10px] ${conf.text} opacity-60 group-hover:translate-x-0.5 transition-transform"></i>
-            </div>
+            <div class="flex items-center justify-between"><p class="text-[11px] font-bold ${conf.text} truncate">${conf.name}</p><i class="fa-solid fa-arrow-right text-[10px] ${conf.text} opacity-60"></i></div>
             <p class="text-xl font-extrabold ${conf.text} mt-2 font-mono">${openTypesCount[key] || 0}</p>
           </div>`;
       });
@@ -1617,9 +1132,7 @@
       if (!item || !isFindingOpen(item)) return `<span class="text-slate-400 italic">Acción Cerrada</span>`;
       let limitDate = parseDate(item.fechaLimite);
       if (!limitDate) return "-";
-      const today = new Date(); 
-      today.setHours(0,0,0,0); 
-      limitDate.setHours(0,0,0,0);
+      const today = new Date(); today.setHours(0,0,0,0); limitDate.setHours(0,0,0,0);
       const diffDays = Math.ceil((limitDate - today) / (1000 * 60 * 60 * 24));
       if (diffDays < 0) return `<span class="text-rose-600 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Vencido hace ${Math.abs(diffDays)}d</span>`;
       if (diffDays === 0) return `<span class="text-amber-600 font-bold"><i class="fa-solid fa-clock mr-1"></i>Vence Hoy</span>`;
@@ -1666,14 +1179,12 @@
             <td class="p-3 whitespace-nowrap text-slate-600 text-xs">${item.numAccion || '-'}</td>
             <td class="p-3 whitespace-nowrap font-medium text-slate-600 text-xs">${item.tipoAccion || '-'}</td>
             <td class="p-3 text-slate-800 text-xs max-w-[120px] truncate font-medium" title="${item.responsableAccion || ''}">${item.responsableAccion || 'Sin Asignar'}</td>
-            <td class="p-3 text-slate-600 text-xs max-w-[120px] truncate" title="${item.responsableVerificacion || ''}">${item.responsableVerificacion || 'Sin Asignar'}</td>
+            <td class="p-3 text-slate-600 text-xs max-w-[120px] truncate" title="${item.responsableCierre || ''}">${item.responsableCierre || 'Sin Asignar'}</td>
             <td class="p-3 whitespace-nowrap font-semibold text-xs ${isFindingOpen(item) && item.fechaLimite < todayStr ? 'text-rose-600 font-bold' : 'text-slate-600'}">${item.fechaLimite || '-'}</td>
             <td class="p-3 text-center whitespace-nowrap text-xs">${calculateDeadlineStatus(item)}</td>
             <td class="p-3 text-center whitespace-nowrap">${getStatusBadge(item)}</td>
             <td class="p-3 text-center whitespace-nowrap">
-              <button onclick="event.stopPropagation(); viewDetails(${originalIndex})" class="p-1.5 bg-sky-50 text-sky-600 rounded-lg hover:bg-sky-100 transition text-xs" title="Ver ficha">
-                <i class="fa-solid fa-eye"></i>
-              </button>
+              <button onclick="event.stopPropagation(); viewDetails(${originalIndex})" class="p-1.5 bg-sky-50 text-sky-600 rounded-lg hover:bg-sky-100 transition text-xs" title="Ver ficha"><i class="fa-solid fa-eye"></i></button>
             </td>
           </tr>`;
       });
@@ -1709,32 +1220,21 @@
           if (d1 && d2) resolutionDays = Math.max(0, Math.floor((d2 - d1) / (1000 * 60 * 60 * 24)));
         }
 
-        splitEntities(item.responsableVerificacion).forEach(r => {
+        splitEntities(item.responsableCierre).forEach(r => {
           if (!respVerifMap[r]) respVerifMap[r] = { total: 0, open: 0, closedOk: 0, closedNo: 0 };
-          respVerifMap[r].total++; 
-          if (open) respVerifMap[r].open++; 
-          else if (res === 'OK') respVerifMap[r].closedOk++; 
-          else if (res === 'NO') respVerifMap[r].closedNo++;
+          respVerifMap[r].total++; if (open) respVerifMap[r].open++; else if (res === 'OK') respVerifMap[r].closedOk++; else if (res === 'NO') respVerifMap[r].closedNo++;
         });
         splitEntities(item.responsableAccion).forEach(r => {
           if (!respCierreMap[r]) respCierreMap[r] = { total: 0, open: 0, closedOk: 0, closedNo: 0, daysList: [] };
-          respCierreMap[r].total++; 
-          if (open) respCierreMap[r].open++; 
-          else if (res === 'OK') respCierreMap[r].closedOk++; 
-          else if (res === 'NO') respCierreMap[r].closedNo++;
+          respCierreMap[r].total++; if (open) respCierreMap[r].open++; else if (res === 'OK') respCierreMap[r].closedOk++; else if (res === 'NO') respCierreMap[r].closedNo++;
           if (resolutionDays !== null) respCierreMap[r].daysList.push(resolutionDays);
         });
         splitEntities(item.sectorResponsable).forEach(s => {
           if (!sectorMap[s]) sectorMap[s] = { total: 0, open: 0, closedOk: 0, closedNo: 0, daysList: [] };
-          sectorMap[s].total++; 
-          if (open) sectorMap[s].open++; 
-          else if (res === 'OK') sectorMap[s].closedOk++; 
-          else if (res === 'NO') sectorMap[s].closedNo++;
+          sectorMap[s].total++; if (open) sectorMap[s].open++; else if (res === 'OK') sectorMap[s].closedOk++; else if (res === 'NO') sectorMap[s].closedNo++;
           if (resolutionDays !== null) sectorMap[s].daysList.push(resolutionDays);
         });
-        splitEntities(item.quienDetecto).forEach(d => { 
-          detectorMap[d] = (detectorMap[d] || 0) + 1; 
-        });
+        splitEntities(item.quienDetecto).forEach(d => { detectorMap[d] = (detectorMap[d] || 0) + 1; });
       });
 
       document.getElementById('responsablesTableBody').innerHTML = Object.keys(respVerifMap).sort().map(r => {
@@ -1832,26 +1332,13 @@
         type: 'doughnut',
         data: {
           labels: ['En Proceso', 'Cerrado OK', 'Cerrado NO'],
-          datasets: [{
-            data: [openCount, okCount, noCount],
-            backgroundColor: ['#f59e0b', '#10b981', '#ef4444'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
+          datasets: [{ data: [openCount, okCount, noCount], backgroundColor: ['#f59e0b', '#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
+          responsive: true, maintainAspectRatio: false,
           plugins: {
             legend: { position: 'bottom', labels: { color: textColor, font: { family: 'Inter', size: 11, weight: '600' } } },
-            datalabels: {
-              color: '#fff',
-              font: { family: 'Inter', size: 12, weight: '700' },
-              formatter: (value, ctx) => {
-                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                return total > 0 && value > 0 ? Math.round(value * 100 / total) + '%' : '';
-              }
-            }
+            datalabels: { color: '#fff', font: { family: 'Inter', size: 12, weight: '700' }, formatter: (value, ctx) => { const total = ctx.dataset.data.reduce((a, b) => a + b, 0); return total > 0 && value > 0 ? Math.round(value * 100 / total) + '%' : ''; } }
           }
         }
       });
@@ -1865,21 +1352,10 @@
       chartTypeInstance = new Chart(ctxType, {
         plugins: [ChartDataLabels],
         type: 'bar',
-        data: {
-          labels: typeDataArr.map(d => d.label),
-          datasets: [{
-            data: typeDataArr.map(d => d.val),
-            backgroundColor: typeDataArr.map(d => d.color),
-            borderRadius: 8
-          }]
-        },
+        data: { labels: typeDataArr.map(d => d.label), datasets: [{ data: typeDataArr.map(d => d.val), backgroundColor: typeDataArr.map(d => d.color), borderRadius: 8 }] },
         options: { 
-          responsive: true,
-          maintainAspectRatio: false, 
-          plugins: {
-            legend: { display: false },
-            datalabels: { anchor: 'end', align: 'top', color: textColor, font: { family: 'Inter', size: 11, weight: '600' }, formatter: v => v > 0 ? String(v) : '' }
-          }, 
+          responsive: true, maintainAspectRatio: false, 
+          plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: textColor, font: { family: 'Inter', size: 11, weight: '600' }, formatter: v => v > 0 ? String(v) : '' } }, 
           scales: { 
             x: { ticks: { color: textColor, font: { family: 'Inter', size: 11, weight: '600' } }, grid: { display: false } },
             y: { beginAtZero: true, ticks: { color: textColor, font: { family: 'Inter', size: 11 } }, grid: { color: gridColor } } 
@@ -1902,19 +1378,18 @@
 
     function openFormModal() {
       document.getElementById('editIndex').value = "-1";
-      document.getElementById('modalTitle').innerText = "Cargar Nuevo Hallazgo SGI";
+      document.getElementById('modalTitle').innerText = "Cargar Nuevo Hallazgo SGI (Rev 05)";
       document.getElementById('hallazgoForm').reset();
       document.getElementById('formFechaDetection').valueAsDate = new Date();
       updateAutoNumbers();
       switchFormTab('general');
-      document.getElementById('formEvidenciaImpl').value = '';
-      document.getElementById('formEvidenciaEf').value = '';
+      document.getElementById('formEvidenciaCierre').value = '';
+      document.getElementById('formEvidenciaResultado').value = '';
+      document.getElementById('formFuenteEvidencia').value = '';
       document.getElementById('formModal').classList.remove('hidden');
     }
 
-    function closeFormModal() { 
-      document.getElementById('formModal').classList.add('hidden'); 
-    }
+    function closeFormModal() { document.getElementById('formModal').classList.add('hidden'); }
 
     function generateAutoNumber(typeValue, typeField, itemField) {
       if (!typeValue) return '1';
@@ -1958,8 +1433,7 @@
 
     function editHallazgo(index) {
       closeDetailModal();
-      const item = dataset[index]; 
-      if (!item) return;
+      const item = dataset[index]; if (!item) return;
       document.getElementById('editIndex').value = index;
       document.getElementById('modalTitle').innerText = `Editar Hallazgo: ${item.numHallazgo}`;
 
@@ -1971,34 +1445,22 @@
       document.getElementById('formAccionInmediata').value = item.accionInmediata || '';
       document.getElementById('formAnalisisCausa').value = item.analisisCausa || '';
       document.getElementById('formSectorResponsable').value = item.sectorResponsable || '';
-      document.getElementById('formCorrespondeAccion').value = item.correspondeAccion || '';
+      document.getElementById('formCorrespondeAccion').value = item.correspondeAccion || 'SI';
       document.getElementById('formTipoAccion').value = item.tipoAccion || 'AC';
       document.getElementById('formNumAccion').value = item.numAccion;
       document.getElementById('formPlanAccion').value = item.accionCorrectiva || item.accionPreventiva || item.accionMejora || '';
       document.getElementById('formEvaluacionResultado').value = item.evaluacionResultado || '';
       document.getElementById('formResponsableAccion').value = item.responsableAccion || '';
       document.getElementById('formFechaLimite').value = item.fechaLimite || '';
-      document.getElementById('formResponsableVerificacion').value = item.responsableVerificacion || '';
+      document.getElementById('formResponsableCierre').value = item.responsableCierre || '';
       document.getElementById('formResultadoEficacia').value = (item.resultadoEficacia || '').toUpperCase().trim();
       document.getElementById('formFechaRealCierre').value = item.fechaRealCierre || '';
       document.getElementById('formFechaVerificacion').value = item.fechaVerificacion || '';
-      document.getElementById('formRequiereActualizar').value = item.requiereActualizar || '';
-      
-      let rawEvidencia = item.evidenciaResultado || '';
-      let implText = '', efText = '';
-      
-      if (rawEvidencia.includes('[2. EFICACIA]')) {
-        let parts = rawEvidencia.split('[2. EFICACIA]');
-        implText = parts[0].replace('[1. IMPLEMENTACIÓN]', '').trim();
-        efText = parts[1].replace(/^\s*-\s*/, '').trim();
-      } else if (rawEvidencia.includes('[1. IMPLEMENTACIÓN]')) {
-        implText = rawEvidencia.replace('[1. IMPLEMENTACIÓN]', '').trim();
-      } else {
-        implText = rawEvidencia;
-      }
-      
-      document.getElementById('formEvidenciaImpl').value = implText;
-      document.getElementById('formEvidenciaEf').value = efText;
+      document.getElementById('formRequiereActualizar').value = item.requiereActualizar || 'NO';
+      document.getElementById('formEvidenciaCierre').value = item.evidenciaCierre || '';
+      document.getElementById('formEvidenciaResultado').value = item.evidenciaResultado || '';
+      document.getElementById('formFuenteEvidencia').value = item.fuenteEvidencia || '';
+
       document.getElementById('previewHallazgoNum').innerText = item.numHallazgo;
       document.getElementById('previewAccionNum').innerText = item.numAccion;
       
@@ -2020,18 +1482,10 @@
       event.preventDefault();
       const editIndex = parseInt(document.getElementById('editIndex').value, 10);
       const btn = document.getElementById('saveSubmitBtn');
-      btn.disabled = true; 
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Guardando...`;
+      btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Guardando...`;
 
       const selectedTipoAccion = document.getElementById('formTipoAccion').value;
       const planText = document.getElementById('formPlanAccion').value;
-      
-      let implPart = document.getElementById('formEvidenciaImpl').value.trim();
-      let efPart = document.getElementById('formEvidenciaEf').value.trim();
-      let finalEvidencia = '';
-      
-      if (implPart) finalEvidencia += `[1. IMPLEMENTACIÓN] ${implPart}\n`;
-      if (efPart) finalEvidencia += `[2. EFICACIA] ${efPart}`;
 
       const newItem = {
         tipoHallazgo: document.getElementById('formTipoHallazgo').value,
@@ -2042,7 +1496,7 @@
         accionInmediata: document.getElementById('formAccionInmediata').value || "",
         analisisCausa: document.getElementById('formAnalisisCausa').value || "",
         sectorResponsable: document.getElementById('formSectorResponsable').value,
-        correspondeAccion: (document.getElementById('formCorrespondeAccion') ? document.getElementById('formCorrespondeAccion').value : ""),
+        correspondeAccion: (document.getElementById('formCorrespondeAccion') ? document.getElementById('formCorrespondeAccion').value : "SI"),
         tipoAccion: selectedTipoAccion,
         numAccion: document.getElementById('formNumAccion').value,
         accionCorrectiva: (selectedTipoAccion === 'AC' || selectedTipoAccion === 'CD') ? planText : "-",
@@ -2052,62 +1506,43 @@
         responsableAccion: document.getElementById('formResponsableAccion').value,
         fechaLimite: document.getElementById('formFechaLimite').value,
         fechaRealCierre: document.getElementById('formFechaRealCierre').value || "",
-        responsableVerificacion: document.getElementById('formResponsableVerificacion').value || "Sin Asignar",
+        responsableCierre: document.getElementById('formResponsableCierre').value || "Sin Asignar",
+        evidenciaCierre: document.getElementById('formEvidenciaCierre').value || "-", // Col T (Rev 05)
         fechaVerificacion: document.getElementById('formFechaVerificacion').value || "",
-        resultadoEficacia: (document.getElementById('formResultadoEficacia').value || "").toUpperCase().trim(),
-        evidenciaResultado: finalEvidencia.trim() || "-",
-        requiereActualizar: document.getElementById('formRequiereActualizar').value || "",
+        resultadoEficacia: (document.getElementById('formResultadoEficacia').value || "").toUpperCase().trim(), // Col V (Rev 05)
+        evidenciaResultado: document.getElementById('formEvidenciaResultado').value || "-", // Col W (Rev 05)
+        requiereActualizar: document.getElementById('formRequiereActualizar').value || "NO",
+        fuenteEvidencia: document.getElementById('formFuenteEvidencia').value || "-", // Col Y (Rev 05)
         estadoFormula: "", categoria: "SGI"
       };
 
-      if (editIndex >= 0) {
-        dataset[editIndex] = newItem; 
-      } else {
-        dataset.unshift(newItem); 
-      }
-      
-      saveDataToLocal(); 
-      populateDatalists(); 
-      renderAllViews();
+      if (editIndex >= 0) dataset[editIndex] = newItem; else dataset.unshift(newItem);
+      saveDataToLocal(); populateDatalists(); renderAllViews();
 
       if (typeof google !== 'undefined' && google && google.script && google.script.run) {
         google.script.run.saveFinding(newItem);
       } else if (scriptUrl) {
         try {
-          await fetch(scriptUrl, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ action: "save", item: newItem }) 
-          });
+          await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "save", item: newItem }) });
         } catch(e) {}
       }
 
-      btn.disabled = false; 
-      btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>Guardar Hallazgo</span>`;
+      btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>Guardar Hallazgo</span>`;
       closeFormModal();
       showToast(editIndex >= 0 ? 'Hallazgo actualizado correctamente' : 'Nuevo hallazgo registrado con éxito');
     }
 
     function viewDetails(index) {
-      const item = dataset[index]; 
-      if (!item) return;
+      const item = dataset[index]; if (!item) return;
       currentActiveItem = item;
       const ejNum = getEjercicioNumber(item.fechaDetection);
       const planText = extractPlanAccionText(item);
 
       document.getElementById('detailContent').innerHTML = `
         <div class="print-card-header hidden print:flex">
-          <div>
-            <h2 class="font-bold text-base text-slate-900">SGI - REGISTRO DE HALLAZGOS Y ACCIONES</h2>
-            <p class="text-xs text-slate-500">Documento Oficial RG-06-01 Rev 04</p>
-          </div>
-          <div class="text-right">
-            <strong class="text-sky-700 text-sm font-bold block">${item.numHallazgo}</strong>
-            <span class="text-xs text-slate-500">Ejercicio Fiscal ${ejNum}</span>
-          </div>
+          <div><h2 class="font-bold text-base text-slate-900">SGI - REGISTRO DE HALLAZGOS Y ACCIONES</h2><p class="text-xs text-slate-500">Documento Oficial RG-06-01 Rev 05</p></div>
+          <div class="text-right"><strong class="text-sky-700 text-sm font-bold block">${item.numHallazgo}</strong><span class="text-xs text-slate-500">Ejercicio Fiscal ${ejNum}</span></div>
         </div>
-        
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs print-border">
           <div><span class="text-slate-400">N° Hallazgo:</span> <strong class="text-sky-700 font-bold block text-sm">${item.numHallazgo}</strong></div>
           <div><span class="text-slate-400">N° Acción:</span> <strong class="font-bold block text-sm">${item.numAccion}</strong></div>
@@ -2115,12 +1550,12 @@
           <div><span class="text-slate-400">Sector Responsable (Col H):</span> <strong class="block font-bold">${item.sectorResponsable}</strong></div>
           <div><span class="text-slate-400">Quién Detectó (Col C):</span> <strong class="block font-medium">${item.quienDetecto}</strong></div>
           <div><span class="text-slate-400">Fecha Detección (Col D):</span> <strong class="block">${item.fechaDetection}</strong></div>
-          <div><span class="text-slate-400">Fecha Límite (Col Q):</span> <strong class="block font-semibold text-sky-700">${item.fechaLimite}</strong></div>
+          <div><span class="text-slate-400">Fecha Cierre Prog. (Col Q):</span> <strong class="block font-semibold text-sky-700">${item.fechaLimite}</strong></div>
           <div><span class="text-slate-400">Fecha Real Cierre (Col R):</span> <strong class="block">${item.fechaRealCierre || 'Pendiente'}</strong></div>
-          <div><span class="text-slate-400">Fecha Verificación (Col T):</span> <strong class="block">${item.fechaVerificacion || 'Pendiente'}</strong></div>
-          <div><span class="text-slate-400">Resp. Cierre Acción (Col P):</span> <strong class="block font-semibold text-slate-800">${item.responsableAccion}</strong></div>
-          <div><span class="text-slate-400">Resp. Verificación (Col S):</span> <strong class="block font-semibold text-slate-800">${item.responsableVerificacion}</strong></div>
-          <div><span class="text-slate-400">Resultado Eficacia (Col U):</span> <span class="block mt-0.5">${getStatusBadge(item)}</span></div>
+          <div><span class="text-slate-400">Fecha Verificación (Col U):</span> <strong class="block">${item.fechaVerificacion || 'Pendiente'}</strong></div>
+          <div><span class="text-slate-400">Resp. Acción (Col P):</span> <strong class="block font-semibold text-slate-800">${item.responsableAccion}</strong></div>
+          <div><span class="text-slate-400">Resp. Cierre (Col S):</span> <strong class="block font-semibold text-slate-800">${item.responsableCierre}</strong></div>
+          <div><span class="text-slate-400">Resultado Eficacia (Col V):</span> <span class="block mt-0.5">${getStatusBadge(item)}</span></div>
         </div>
 
         <div class="space-y-3.5 text-xs mt-3">
@@ -2129,19 +1564,16 @@
           <div><h5 class="font-bold uppercase text-[11px] text-slate-600 mb-1">3. Análisis de Causa Raíz (Col G):</h5><p class="p-3 bg-white border border-slate-200 rounded-xl leading-relaxed print-border whitespace-pre-wrap break-words">${item.analisisCausa || '-'}</p></div>
           <div><h5 class="font-bold uppercase text-[11px] text-slate-600 mb-1">4. Plan de Acción (${item.tipoAccion} - Cols L, M, N):</h5><p class="p-3 bg-white border border-slate-200 rounded-xl leading-relaxed print-border whitespace-pre-wrap break-words">${planText}</p></div>
           <div><h5 class="font-bold uppercase text-[11px] text-slate-600 mb-1">5. Criterio de Evaluación / Evidencia Requerida (Col O):</h5><p class="p-3 bg-white border border-slate-200 rounded-xl leading-relaxed print-border whitespace-pre-wrap break-words">${item.evaluacionResultado || '-'}</p></div>
-          ${item.evidenciaResultado ? `<div><h5 class="font-bold uppercase text-[11px] text-emerald-700 mb-1">6. Evidencia de Resultado / Cierre Presentada (Col V):</h5><p class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 font-medium print-border whitespace-pre-wrap break-words">${item.evidenciaResultado}</p></div>` : ''}
+          ${item.evidenciaCierre ? `<div><h5 class="font-bold uppercase text-[11px] text-slate-700 mb-1">6. Evidencia de la Acción de Cierre (Col T):</h5><p class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium print-border whitespace-pre-wrap break-words">${item.evidenciaCierre}</p></div>` : ''}
+          ${item.evidenciaResultado ? `<div><h5 class="font-bold uppercase text-[11px] text-emerald-700 mb-1">7. Evidencia del Resultado de la Acción / Eficacia (Col W):</h5><p class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 font-medium print-border whitespace-pre-wrap break-words">${item.evidenciaResultado}</p></div>` : ''}
         </div>`;
 
       document.getElementById('detailEditBtn').onclick = function() { editHallazgo(index); };
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
-    function closeDetailModal() { 
-      document.getElementById('detailModal').classList.add('hidden'); 
-    }
-    function downloadDetailPDF() { 
-      window.print(); 
-    }
+    function closeDetailModal() { document.getElementById('detailModal').classList.add('hidden'); }
+    function downloadDetailPDF() { window.print(); }
 
     function getEmailForPerson(personName) {
       if (!personName) return null;
@@ -2157,8 +1589,8 @@
       if (!currentActiveItem) return;
       const item = currentActiveItem;
       const possiblePeople = [
-        { role: 'Resp. Cierre (Col P)', name: item.responsableAccion },
-        { role: 'Resp. Verificación (Col S)', name: item.responsableVerificacion },
+        { role: 'Resp. Acción (Col P)', name: item.responsableAccion },
+        { role: 'Resp. Cierre (Col S)', name: item.responsableCierre },
         { role: 'Quién Detectó (Col C)', name: item.quienDetecto }
       ];
 
@@ -2205,7 +1637,7 @@
         <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background-color: #ffffff; color: #334155;">
           <div style="background-color: ${headerColor}; padding: 22px 20px; text-align: center; color: #ffffff;">
             <h2 style="margin: 0; font-size: 18px; letter-spacing: 0.5px; font-weight: 700;">${headerTitle}</h2>
-            <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.95;">RG-06-01 Rev 04 • Sistema de Gestión Integrado</p>
+            <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.95;">RG-06-01 Rev 05 • Sistema de Gestión Integrado</p>
           </div>
           <div style="padding: 24px;">
             <p style="font-size: 14px; margin-top: 0; color: #1e293b;">Hola,</p>
@@ -2215,7 +1647,7 @@
               <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; width: 38%; color: #475569;">Identificador / Código:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #0284c7; font-weight: bold; font-size: 13px;">${item.numHallazgo} (${item.tipoHallazgo})</td></tr>
               <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Sector Responsable:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">${item.sectorResponsable}</td></tr>
               <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Fecha Detección:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;">${item.fechaDetection}</td></tr>
-              <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Fecha Límite Programada:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #dc2626; font-weight: bold;">${item.fechaLimite}</td></tr>
+              <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Fecha Cierre Programada:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #dc2626; font-weight: bold;">${item.fechaLimite}</td></tr>
               ${!isNuevo ? `<tr><td style="padding: 10px 12px; font-weight: bold; color: #475569;">Resultado Eficacia:</td><td style="padding: 10px 12px; font-weight: bold; color: ${item.resultadoEficacia === 'OK' ? '#059669' : '#dc2626'};">${item.resultadoEficacia || 'CERRADO'}</td></tr>` : ''}
             </table>
 
@@ -2231,17 +1663,13 @@
 
             ${!isNuevo && item.evidenciaResultado ? `
             <div style="margin-bottom: 20px;">
-              <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin: 0 0 6px 0;">Evidencia Presentada para Cierre:</h4>
+              <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin: 0 0 6px 0;">Evidencia de Eficacia:</h4>
               <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #065f46; word-break: break-word; white-space: pre-wrap;">${item.evidenciaResultado}</div>
             </div>` : ''}
 
             <div style="margin: 28px 0 16px 0; text-align: center;">
-              <a href="${targetDashboardUrl}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold; padding: 10px 20px; border-radius: 8px; margin: 4px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                📊 Acceso al Dashboard SGI
-              </a>
-              <a href="${targetSheetsUrl}" target="_blank" style="display: inline-block; background-color: #334155; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold; padding: 10px 20px; border-radius: 8px; margin: 4px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                📗 Acceso a Google Sheets
-              </a>
+              <a href="${targetDashboardUrl}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold; padding: 10px 20px; border-radius: 8px; margin: 4px 6px;">📊 Acceso al Dashboard SGI</a>
+              <a href="${targetSheetsUrl}" target="_blank" style="display: inline-block; background-color: #334155; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold; padding: 10px 20px; border-radius: 8px; margin: 4px 6px;">📗 Acceso a Google Sheets</a>
             </div>
 
             <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center;">
@@ -2263,9 +1691,7 @@
       document.getElementById('emailPreviewBox').innerHTML = htmlBody;
     }
 
-    function closeEmailModal() { 
-      document.getElementById('emailModal').classList.add('hidden'); 
-    }
+    function closeEmailModal() { document.getElementById('emailModal').classList.add('hidden'); }
 
     async function executeDirectEmailSend() {
       if (!currentActiveItem) return;
@@ -2336,7 +1762,6 @@
       el.style.height = el.scrollHeight + 'px';
     }
 
-    // Funciones para apertura y cierre de 'Mi Panel'
     window.abrirPanel = function(){
       const ov = document.getElementById('panel-overlay');
       const fr = document.getElementById('panel-iframe');
@@ -2370,7 +1795,6 @@
       document.body.style.overflow = '';
     };
 
-    // Actualización de badges numéricos en el menú de navegación
     (function(){
       try {
         const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null');
