@@ -1015,23 +1015,6 @@
       document.body.style.overflow = '';
     };
   })();
-
-  // Insignias automáticas de la barra de navegación
-  (function(){
-    try {
-      const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null');
-      const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null');
-      document.querySelectorAll('.esinel-nav-item').forEach(function(a){
-        const href = a.getAttribute('href') || '';
-        if (h && h.abiertos > 0 && href.includes('hallazgos')) {
-          a.insertAdjacentHTML('beforeend', '<span class="ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">' + h.abiertos + '</span>');
-        }
-        if (i && i.desvios > 0 && href.includes('indicadores')) {
-          a.insertAdjacentHTML('beforeend', '<span class="ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-rose-400/20 text-rose-300 border border-rose-400/30">' + i.desvios + '</span>');
-        }
-      });
-    } catch(e) {}
-  })();
   </script>
 </body>
 </html>
