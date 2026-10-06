@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SGI - Tablero Gerencial | ESINEL</title>
 
-<!-- Tipografías y Frameworks -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,15 +20,6 @@
         fontFamily: {
           sans: ['"Plus Jakarta Sans"', 'sans-serif'],
           mono: ['"JetBrains Mono"', 'monospace'],
-        },
-        colors: {
-          brand: {
-            50: '#eff6ff',
-            100: '#dbeafe',
-            500: '#3b82f6',
-            600: '#2563eb',
-            700: '#1d4ed8',
-          }
         }
       }
     }
@@ -48,10 +38,6 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; }
   --text-main: #0f172a;
   --text-sub: #475569;
   --text-muted: #94a3b8;
-  --accent-ok: #10b981;
-  --accent-ok-bg: #ecfdf5;
-  --accent-bad: #f43f5e;
-  --accent-bad-bg: #fff1f2;
 }
 
 html.dark {
@@ -62,10 +48,6 @@ html.dark {
   --text-main: #f8fafc;
   --text-sub: #94a3b8;
   --text-muted: #64748b;
-  --accent-ok: #34d399;
-  --accent-ok-bg: rgba(16, 185, 129, 0.15);
-  --accent-bad: #fb7185;
-  --accent-bad-bg: rgba(244, 63, 94, 0.15);
 }
 
 body {
@@ -77,14 +59,11 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Scrollbar moderno */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
 html.dark ::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.45); }
-::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.7); }
 
-/* Animaciones e interacciones */
 .kpi-card {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -107,15 +86,6 @@ html.dark .kpi-card:hover {
   border-left-color: var(--area-accent);
 }
 
-.fade-in {
-  animation: fadeIn 0.22s ease-out forwards;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Estilo para los contenedores de gráficos fluidos */
 .chart-box {
   position: relative;
   width: 100%;
@@ -128,7 +98,6 @@ html.dark .kpi-card:hover {
 </head>
 <body>
 
-<!-- ▼▼▼ ESINEL GLOBAL HEADER ▼▼▼ -->
 <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white flex-shrink-0">
   <div class="w-full px-4 sm:px-6 lg:px-8">
     <div class="esinel-hdr-top py-2.5 flex items-center justify-between gap-4">
@@ -189,13 +158,10 @@ html.dark .kpi-card:hover {
     </div>
   </div>
 </header>
-<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
 <div class="flex flex-1 w-full min-h-0 overflow-hidden">
   
-  <!-- SIDEBAR LATERAL -->
   <aside class="w-64 flex-shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-20">
-    
     <div class="p-3.5 border-b border-slate-200 dark:border-slate-800">
       <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
         <i class="ti ti-layout-dashboard text-base"></i>
@@ -232,10 +198,9 @@ html.dark .kpi-card:hover {
       </button>
     </div>
 
-    <!-- Áreas Operativas Nav -->
     <div class="px-4 pt-2 pb-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
       <span>Áreas Auditadas</span>
-      <span>8 Áreas</span>
+      <span>8 Sectores</span>
     </div>
 
     <div class="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
@@ -266,15 +231,12 @@ html.dark .kpi-card:hover {
         </button>
       </div>
     </div>
-
   </aside>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <main class="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950 overflow-hidden relative">
     
     <!-- Topbar Interna con Breadcrumb, Buscador y Exportación -->
     <div class="h-14 px-4 sm:px-6 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex items-center justify-between gap-3 flex-shrink-0 z-10">
-      
       <nav class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 truncate" id="bc">
         <span class="font-bold text-slate-800 dark:text-slate-100">Vista General</span>
       </nav>
@@ -301,11 +263,10 @@ html.dark .kpi-card:hover {
           <span>CSV</span>
         </button>
       </div>
-
     </div>
 
     <!-- PÁGINA 1: RESUMEN EJECUTIVO (HOME) -->
-    <div id="pg-home" class="pg on flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+    <div id="pg-home" class="pg flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
       
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-slate-200/70 dark:border-slate-800/70">
         <div>
@@ -374,11 +335,10 @@ html.dark .kpi-card:hover {
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sectores bajo seguimiento</p>
           <div class="absolute bottom-0 left-0 right-0 h-1 bg-blue-500"></div>
         </div>
-
       </div>
 
-      <!-- Contenedor Resultados Filtro Rápido o Búsqueda -->
-      <div id="search-results" class="hidden space-y-3 fade-in">
+      <!-- Resultados Filtro Rápido o Búsqueda -->
+      <div id="search-results" class="hidden space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="ti ti-filter text-blue-500"></i>
@@ -408,20 +368,16 @@ html.dark .kpi-card:hover {
 
       <!-- Tarjetas por Área Operativa -->
       <div id="home-content" class="space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Desempeño Consolidado por Área</h3>
-            <p class="text-xs text-slate-400 dark:text-slate-500">Hacé clic en cualquier departamento para ver sus métricas detalladas</p>
-          </div>
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Desempeño Consolidado por Área</h3>
+          <p class="text-xs text-slate-400 dark:text-slate-500">Hacé clic en cualquier departamento para ver sus métricas detalladas</p>
         </div>
         <div id="acards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
-
     </div>
 
     <!-- PÁGINA 2: VISTA DETALLADA DEL ÁREA -->
     <div id="pg-area" class="pg hidden flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
-      
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
         <div class="flex items-center gap-3">
           <div id="a-dot" class="w-4 h-4 rounded-xl shadow-md"></div>
@@ -436,7 +392,7 @@ html.dark .kpi-card:hover {
         </button>
       </div>
 
-      <!-- 4 Stats Resumen del Área -->
+      <!-- Stats Resumen del Área -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
           <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Total Métricas</span>
@@ -460,7 +416,7 @@ html.dark .kpi-card:hover {
         </div>
       </div>
 
-      <!-- Gráfico Automático de Tendencia del Área -->
+      <!-- Gráfico de Tendencia del Área -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
           <div>
@@ -503,7 +459,6 @@ html.dark .kpi-card:hover {
           </table>
         </div>
       </div>
-
     </div>
 
     <!-- PÁGINA 3: VISTA INDIVIDUAL DEL INDICADOR -->
@@ -551,7 +506,7 @@ html.dark .kpi-card:hover {
         </div>
       </div>
 
-      <!-- Selector de Pestañas (Tabs) -->
+      <!-- Pestañas (Tabs) -->
       <div class="flex items-center gap-1 p-1 bg-slate-200/70 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 w-fit">
         <button id="tab-ej" onclick="switchTab('ej')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm">
           Serie Anual (Ejercicios)
@@ -564,7 +519,7 @@ html.dark .kpi-card:hover {
         </button>
       </div>
 
-      <!-- Pestaña 1: Serie Anual (Gráfico Responsivo Moderno) -->
+      <!-- Pestaña 1: Serie Anual -->
       <div id="tv-ej" class="space-y-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
@@ -590,7 +545,7 @@ html.dark .kpi-card:hover {
         </div>
       </div>
 
-      <!-- Pestaña 2: Control Periódico (Gráfico Responsivo) -->
+      <!-- Pestaña 2: Control Periódico -->
       <div id="tv-per" class="hidden space-y-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
@@ -649,18 +604,15 @@ html.dark .kpi-card:hover {
       <!-- Pestaña 3: Ficha Técnica & Acciones -->
       <div id="tv-chg" class="hidden space-y-4">
         <div id="changes-list" class="space-y-2"></div>
-        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">Definición de la Métrica</h5>
             <p id="i-que" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></p>
           </div>
-
           <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">Metodología & Responsable</h5>
             <div id="i-meta" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></div>
           </div>
-
           <div class="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">Historial de Acciones Correctivas y Planes de Mejora (SGI)</h5>
             <div id="i-acc" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800"></div>
@@ -691,19 +643,15 @@ html.dark .kpi-card:hover {
       </div>
 
     </div>
-
   </main>
 </div>
 
 <script>
-// =========================================================================
-// MOTOR DE DATOS (APPS SCRIPT / BACKUP LOCAL)
-// =========================================================================
 let INYECTADO = null;
 try {
   INYECTADO = __DATA__;
 } catch(e) {
-  console.warn("Cargando versión de datos de respaldo...");
+  // Entorno independiente sin inyección
 }
 
 const FALLBACK_DATA = [
@@ -758,19 +706,26 @@ let curInd = null;
 let activeTab = 'ej';
 let selectedEj = null;
 let currentGlobalEj = 35;
-let charts = {}; // Diccionario para instancias de Chart.js
+let charts = {};
 
 const AC = { 
-  "Comercial": "#3b82f6", 
+  "Comercial": "#000000", 
   "Ingeniería": "#8b5cf6", 
   "Compras": "#f59e0b", 
-  "Producción": "#10b981", 
+  "Producción": "#eab308", 
   "Obra": "#06b6d4", 
   "RRHH": "#ec4899", 
   "Medio Ambiente": "#84cc16", 
   "Seguridad e Higiene": "#f97316" 
 };
 const AREAS = Object.keys(AC);
+
+function getAreaColor(a) {
+  if (a === 'Comercial') {
+    return document.documentElement.classList.contains('dark') ? '#f8fafc' : '#000000';
+  }
+  return AC[a] || '#64748b';
+}
 
 function setTheme(mode) {
   const isDark = (mode === 'dark');
@@ -984,12 +939,13 @@ function initDashboard() {
     if(!inds.length) return;
     const ao = inds.filter(d => getIndStatus(d, currentGlobalEj) === 1).length;
     const ab = inds.filter(d => getIndStatus(d, currentGlobalEj) === 0).length;
+    const aColor = getAreaColor(a);
     const el = document.createElement('div');
     el.className = 'area-nav-item flex items-center justify-between px-3 py-2 rounded-xl border-l-4 border-transparent cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300';
-    el.style.setProperty('--area-accent', AC[a]);
+    el.style.setProperty('--area-accent', aColor);
     el.innerHTML = `
       <div class="flex items-center gap-2.5 truncate">
-        <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${AC[a]}"></div>
+        <div class="w-2.5 h-2.5 rounded-full flex-shrink-0 border border-slate-300 dark:border-slate-600" style="background:${aColor}"></div>
         <span class="truncate">${a}</span>
       </div>
       <div class="flex items-center gap-1 font-mono text-[10px]">
@@ -1009,6 +965,7 @@ function initDashboard() {
     const ao = inds.filter(d => getIndStatus(d, currentGlobalEj) === 1).length;
     const ab = inds.filter(d => getIndStatus(d, currentGlobalEj) === 0).length;
     const pct = Math.round(ao / inds.length * 100) || 0;
+    const aColor = getAreaColor(a);
     
     const wCur = inds.filter(d => { const e = d[8].find(p => p[0] === currentGlobalEj); return e && e[1] !== null; });
     const avgCur = wCur.length ? (wCur.reduce((s,d) => s + d[8].find(p => p[0]===currentGlobalEj)[1], 0) / wCur.length).toFixed(1) : '—';
@@ -1016,12 +973,12 @@ function initDashboard() {
     
     const el = document.createElement('div'); 
     el.className = 'kpi-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer shadow-sm relative overflow-hidden';
-    el.style.borderTop = `3.5px solid ${AC[a]}`;
+    el.style.borderTop = `3.5px solid ${aColor}`;
     el.innerHTML = `
       <div class="flex items-start justify-between mb-4">
         <div>
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full" style="background:${AC[a]}"></span>
+            <span class="w-2.5 h-2.5 rounded-full border border-slate-300 dark:border-slate-600" style="background:${aColor}"></span>
             <span class="text-base font-bold text-slate-900 dark:text-white">${a}</span>
           </div>
           <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 block">${inds.length} métricas auditadas</span>
@@ -1032,7 +989,7 @@ function initDashboard() {
         </div>
       </div>
       <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden mb-3">
-        <div class="h-full rounded-full transition-all duration-500" style="width:${pct}%; background:${hasBad ? AC[a] : '#10b981'}"></div>
+        <div class="h-full rounded-full transition-all duration-500" style="width:${pct}%; background:${hasBad ? aColor : '#10b981'}"></div>
       </div>
       <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <span class="flex items-center gap-2">
@@ -1106,7 +1063,7 @@ function goArea(area) {
   setSel(area);
   setBC([{label:'Vista General', fn:goHome}, {label:area}]);
   
-  const color = AC[area];
+  const color = getAreaColor(area);
   const allInds = D.filter(d => d[2] === area);
   const activeInds = allInds.filter(d => getIndStatus(d, currentGlobalEj) !== -2);
   
@@ -1179,7 +1136,7 @@ function goInd(d) {
   setSel(d[2]);
   setBC([{label:'Vista General', fn:goHome}, {label:d[2], fn:()=>goArea(d[2])}, {label:d[0]}]);
   
-  const color = AC[d[2]];
+  const color = getAreaColor(d[2]);
   document.getElementById('i-dot').style.background = color;
   document.getElementById('i-area').textContent = d[2];
   document.getElementById('i-t').textContent = d[1];
@@ -1272,11 +1229,10 @@ function switchTab(t) {
   if(t === 'chg') hist.classList.add('hidden');
   else hist.classList.remove('hidden');
   
-  // Garantizar que el contenedor esté visible en el DOM antes de renderizar Chart.js
   requestAnimationFrame(() => {
     setTimeout(() => {
-      if(t === 'per' && curInd) drawPeriod(curInd, AC[curInd[2]]);
-      if(t === 'ej' && curInd) drawInd(curInd, AC[curInd[2]]);
+      if(t === 'per' && curInd) drawPeriod(curInd, getAreaColor(curInd[2]));
+      if(t === 'ej' && curInd) drawInd(curInd, getAreaColor(curInd[2]));
     }, 40);
   });
 }
@@ -1314,10 +1270,8 @@ function buildPeriodSelector(d) {
   const ejList = Array.from(ejSet).sort((a,b) => a - b);
   if(!ejList.length) { selectedEj = null; return; }
   
-  // Priorizar el ejercicio activo global si contiene datos; si no, el más reciente
   selectedEj = ejList.includes(currentGlobalEj) ? currentGlobalEj : ejList[ejList.length-1];
 
-  // Botón Histórico Completo
   const btnAll = document.createElement('button');
   btnAll.className = 'px-3 py-1 rounded-lg text-xs font-bold transition border bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500';
   btnAll.textContent = 'Histórico Completo';
@@ -1437,7 +1391,6 @@ function drawArea(area, color, inds) {
   const cColors = getChartColors();
   const ctx = canvas.getContext('2d');
   
-  // Gradiente suave de fondo
   const grad = ctx.createLinearGradient(0, 0, 0, 240);
   grad.addColorStop(0, color + '33');
   grad.addColorStop(1, color + '00');
@@ -1520,7 +1473,7 @@ function drawArea(area, color, inds) {
   });
 }
 
-// 2. Gráfico Individual de Serie Anual (Ejercicios)
+// 2. Gráfico Individual de Serie Anual (type: 'bar' declarado en la raíz)
 function drawInd(d, color) {
   destroyChart('iChart');
   const canvas = document.getElementById('iChart');
@@ -1542,6 +1495,7 @@ function drawInd(d, color) {
   const ctx = canvas.getContext('2d');
 
   charts['iChart'] = new Chart(ctx, {
+    type: 'bar', // Tipo principal declarado para evitar error de controlador
     data: {
       labels: labels,
       datasets: [
@@ -1618,7 +1572,7 @@ function drawInd(d, color) {
   });
 }
 
-// 3. Gráfico Individual Periódico con Tabla Detallada
+// 3. Gráfico Individual Periódico con Tabla Detallada (type: 'bar' declarado en la raíz)
 function drawPeriod(d, color) {
   destroyChart('perChart');
   const canvas = document.getElementById('perChart');
@@ -1648,7 +1602,6 @@ function drawPeriod(d, color) {
   document.getElementById('per-empty').classList.add('hidden'); 
   canvas.classList.remove('hidden');
 
-  // Renderizar la tabla de detalle periódico
   if (tableWrap && tableBody) {
     tableWrap.classList.remove('hidden');
     tableBody.innerHTML = '';
@@ -1691,6 +1644,7 @@ function drawPeriod(d, color) {
   const ctx = canvas.getContext('2d');
 
   charts['perChart'] = new Chart(ctx, {
+    type: 'bar', // Tipo principal declarado para evitar error de controlador
     data: {
       labels: labels,
       datasets: [
@@ -1769,11 +1723,11 @@ function drawPeriod(d, color) {
 
 function redrawActive() {
   if(document.getElementById('pg-area').classList.contains('on') && curArea) {
-    drawArea(curArea, AC[curArea], D.filter(d => d[2] === curArea));
+    drawArea(curArea, getAreaColor(curArea), D.filter(d => d[2] === curArea));
   }
   if(document.getElementById('pg-ind').classList.contains('on') && curInd) {
-    if(activeTab === 'ej') drawInd(curInd, AC[curInd[2]]);
-    if(activeTab === 'per') drawPeriod(curInd, AC[curInd[2]]);
+    if(activeTab === 'ej') drawInd(curInd, getAreaColor(curInd[2]));
+    if(activeTab === 'per') drawPeriod(curInd, getAreaColor(curInd[2]));
   }
 }
 
@@ -1793,8 +1747,7 @@ function exportCurrentViewToCSV() {
   document.body.removeChild(link);
 }
 
-// Configuración opcional para leer en tiempo real desde Google Sheets vía Web App URL
-const APPS_SCRIPT_WEBAPP_URL = ""; // Si tenés la URL de tu Web App (https://script.google.com/macros/s/.../exec), pegala acá
+const APPS_SCRIPT_WEBAPP_URL = "";
 
 async function fetchRealtimeSheetsData() {
   if (!APPS_SCRIPT_WEBAPP_URL) return;
