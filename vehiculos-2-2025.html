@@ -150,8 +150,67 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
   .no-print{display:none!important}
 }
 </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body><div style="background:#f97316;color:#fff;text-align:center;padding:8px 0;font-weight:600;font-size:13px">📋 Informe histórico · 2° Semestre 2025 · <a href="vehiculos.html" style="color:#fff;text-decoration:underline">Ver dashboard actual</a></div>
+<body>
+  <!-- ▼▼▼ ESINEL GLOBAL HEADER ▼▼▼ -->
+  <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
+        <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
+          <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
+            <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="9" r="5" fill="#3b82f6"/><circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="35" r="5" fill="#3b82f6"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+              <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+              <circle cx="48" cy="9" r="5" fill="#3b82f6"/><circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+              <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
+            </div>
+            <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
+            <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+              <span class="text-slate-400">ISO 9001</span>
+              <span class="text-emerald-400">ISO 14001</span>
+              <span class="text-rose-400">ISO 45001</span>
+            </div>
+          </div>
+        </a>
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+            <i class="ti ti-shield-check text-sky-400 text-sm"></i>
+            <span>SGI · Gestión Integrada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
+      <div class="w-full px-4 sm:px-6 lg:px-8">
+        <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
+          <a class="esinel-nav-item esinel-active px-3 py-2 rounded-lg font-semibold text-blue-400 bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="#" onclick="abrirPanel();return false"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
+
 <div class="wrap">
   <div class="title-row">
     <div><h1>Gestión de Vehículos</h1>
@@ -857,9 +916,88 @@ function renderComparativa() {
   document.getElementById('comp-tbody').innerHTML = rows;
 }
 </script>
-<script src="https://accounts.google.com/gsi/client" async></script>
-<style id="sgi-s">#sgi-auth-overlay{position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:system-ui}.sgi-card{background:#1e293b;border-radius:1rem;padding:2.5rem 3rem;text-align:center;max-width:340px;box-shadow:0 25px 50px rgba(0,0,0,.5)}.sgi-icon{font-size:2.5rem;margin-bottom:.75rem}.sgi-title{color:#f8fafc;font-size:1.4rem;font-weight:700;margin-bottom:.25rem}.sgi-sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem}</style>
-<div id="sgi-auth-overlay"><div class="sgi-card"><div class="sgi-icon">🔒</div><div class="sgi-title">SGI · ESINEL</div><div class="sgi-sub">Acceso restringido<br>Iniciá sesión con <strong style="color:#38bdf8">@esinel.com.ar</strong></div><div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div><div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="pill"></div></div></div>
-<script id="sgi-js">(function(){function injectChip(n){var h=document.querySelector('.esinel-hdr-top');if(!h)return;var ini=n.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();var c=document.createElement('div');c.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;margin-left:auto;';c.title='Cerrar sesi\u00f3n';c.onclick=function(){sessionStorage.clear();location.reload();};c.innerHTML='<div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">'+ini+'</div><span style="font-size:11px;color:#94a3b8;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+n+'</span>';h.appendChild(c);}if(sessionStorage.getItem('sgi_ok')==='1'){var ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();var _n=sessionStorage.getItem('sgi_name')||'';if(_n)injectChip(_n);return;}function sgiCb(r){var p=JSON.parse(atob(r.credential.split('.')[1]));if(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com'){sessionStorage.setItem('sgi_ok','1');sessionStorage.setItem('sgi_email',p.email);var nm=p.name||p.email.split('@')[0];sessionStorage.setItem('sgi_name',nm);var ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();injectChip(nm);}};window.sgiCb=sgiCb;})();</script>
+  <!-- Auth Overlay -->
+  <div id="sgi-auth-overlay" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl border border-slate-200 p-8 shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto text-3xl shadow-sm mb-4"><i class="ti ti-lock"></i></div>
+      <h2 class="text-xl font-bold tracking-tight text-slate-900">SGI · ESINEL</h2>
+      <p class="text-xs text-slate-500 mt-2 leading-relaxed">Acceso restringido para personal autorizado.<br>Iniciá sesión con tu cuenta corporativa <strong class="font-semibold">@esinel.com.ar</strong></p>
+      <div class="mt-6 flex flex-col items-center justify-center">
+        <div id="g_id_onload" data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com" data-callback="sgiCb" data-auto_prompt="true"></div>
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-shape="pill"></div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
+        <button type="button" onclick="entrarDemo()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95">
+          <i class="ti ti-player-play text-sm text-sky-400"></i> Entrar en Modo Demo / Vista Previa
+        </button>
+        <span class="text-[10px] text-slate-400">Simula usuario: Luan Thiago Baira</span>
+      </div>
+    </div>
+  </div>
+  <!-- Panel Overlay -->
+  <div id="panel-overlay" class="fixed left-0 right-0 bottom-0 z-50 hidden flex-col bg-slate-900/40 backdrop-blur-sm">
+    <div class="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span><span class="text-xs font-bold text-slate-800">Mi Panel — Gestión Directa SGI</span></div>
+      <button onclick="cerrarPanel()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition"><i class="ti ti-x text-sm"></i> Cerrar Panel</button>
+    </div>
+    <iframe id="panel-iframe" src="" class="flex-1 w-full border-none bg-slate-50"></iframe>
+  </div>
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-800">
+    <div id="toast-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+    <span id="toast-message" class="text-xs font-medium">Acción completada</span>
+  </div>
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script>
+  (function(){
+    function injectChip(n){
+      const h=document.querySelector('.esinel-hdr-top');if(!h)return;
+      const ini=n.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+      const c=document.createElement('div');
+      c.className='flex items-center gap-2.5 cursor-pointer ml-auto px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 transition';
+      c.title='Sesión iniciada · Clic para salir';
+      c.onclick=function(){sessionStorage.clear();location.reload();};
+      c.innerHTML='<div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">'+ini+'</div>'
+        +'<span class="text-xs font-medium text-slate-300 max-w-[120px] truncate hidden sm:inline-block">'+n+'</span>'
+        +'<i class="ti ti-logout text-slate-400 text-xs"></i>';
+      h.appendChild(c);
+    }
+    window.entrarDemo=function(){
+      sessionStorage.setItem('sgi_ok','1');
+      sessionStorage.setItem('sgi_email','thiagobaira@gmail.com');
+      sessionStorage.setItem('sgi_name','Luan Thiago Baira');
+      const ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();
+      injectChip('Luan Thiago Baira');
+    };
+    if(sessionStorage.getItem('sgi_ok')==='1'){
+      const ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();
+      const _n=sessionStorage.getItem('sgi_name')||'';if(_n)injectChip(_n);
+    }
+    function sgiCb(r){
+      try{
+        const p=JSON.parse(atob(r.credential.split('.')[1]));
+        if(p.email&&(p.email.endsWith('@esinel.com.ar')||p.email==='thiagobaira@gmail.com')){
+          sessionStorage.setItem('sgi_ok','1');sessionStorage.setItem('sgi_email',p.email);
+          const nm=p.name||p.email.split('@')[0];sessionStorage.setItem('sgi_name',nm);
+          const ov=document.getElementById('sgi-auth-overlay');if(ov)ov.remove();injectChip(nm);
+        }
+      }catch(e){}
+    }
+    window.sgiCb=sgiCb;
+    window.abrirPanel=function(){
+      const ov=document.getElementById('panel-overlay');
+      const fr=document.getElementById('panel-iframe');
+      const hdr=document.querySelector('header');
+      ov.style.top=(hdr?hdr.offsetHeight:52)+'px';
+      ov.style.display='flex';document.body.style.overflow='hidden';
+      if(!fr.src||!fr.src.includes('panel_sgi.html'))fr.src='panel_sgi.html';
+      fr.onload=function(){setTimeout(()=>{
+        const em=sessionStorage.getItem('sgi_email');const nm=sessionStorage.getItem('sgi_name');
+        if(em&&nm)try{fr.contentWindow.postMessage({type:'sgi-auth',email:em,name:nm},window.location.origin);}catch(e){}
+      },80);};
+    };
+    window.cerrarPanel=function(){document.getElementById('panel-overlay').style.display='none';document.body.style.overflow='';};
+  })();
+  </script>
 </body>
 </html>
