@@ -1,500 +1,749 @@
-﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" class="h-full">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SGI - Tablero Gerencial</title>
+<title>SGI - Tablero Gerencial | ESINEL</title>
+
+<!-- Tipografías y Frameworks -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+        colors: {
+          brand: {
+            50: '#eff6ff',
+            100: '#dbeafe',
+            500: '#3b82f6',
+            600: '#2563eb',
+            700: '#1d4ed8',
+          }
+        }
+      }
+    }
+  };
+</script>
+
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%}body{height:100%;overflow:hidden;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:13px}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-
-:root{
-  --mg:#0284c7;--bg:#f8fafc;--sb:#ffffff;--surf:#ffffff;--bdr:#e2e8f0;--mut:#94a3b8;--sub:#64748b;--tx:#0f172a;--tx2:#334155;--grid:#e2e8f0;--tick:#94a3b8;--row:#f1f5f9;--top:#ffffff;--bf:#e2e8f0;--cg-bg:#dcfce7;--cg:#166534;--cr-bg:#fee2e2;--cr:#991b1b
+:root {
+  --app-bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-alt: #f1f5f9;
+  --border-color: #e2e8f0;
+  --text-main: #0f172a;
+  --text-sub: #475569;
+  --text-muted: #94a3b8;
+  --accent-ok: #10b981;
+  --accent-ok-bg: #ecfdf5;
+  --accent-bad: #f43f5e;
+  --accent-bad-bg: #fff1f2;
 }
 
-@media(prefers-color-scheme:dark){:root{
-  --mg:#0ea5e9;--bg:#0b0f19;--sb:#111827;--surf:#1f2937;--bdr:#374151;--mut:#6b7280;--sub:#9ca3af;--tx:#f3f4f6;--tx2:#e5e7eb;--grid:#374151;--tick:#9ca3af;--row:#111827;--top:#0b0f19;--bf:#374151;--cg-bg:rgba(16,185,129,.15);--cg:#34d399;--cr-bg:rgba(244,63,94,.15);--cr:#fb7185
-}}
+html.dark {
+  --app-bg: #090d16;
+  --surface: #0f172a;
+  --surface-alt: #1e293b;
+  --border-color: #1e293b;
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --text-muted: #64748b;
+  --accent-ok: #34d399;
+  --accent-ok-bg: rgba(16, 185, 129, 0.15);
+  --accent-bad: #fb7185;
+  --accent-bad-bg: rgba(244, 63, 94, 0.15);
+}
 
-body { background: var(--bg); color: var(--tx); transition: background 0.3s, color 0.3s; }
-.shell { display: flex; flex: 1; width: 100%; min-height: 0; }
+body {
+  background-color: var(--app-bg);
+  color: var(--text-main);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
 
-.sb { width: 240px; flex-shrink: 0; background: var(--sb); border-right: 1px solid var(--bdr); display: flex; flex-direction: column; transition: all 0.2s; z-index: 10; }
-.sb-hd { padding: 18px 16px 14px; border-bottom: 1px solid var(--bdr); }
-.sb-logo { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mg); display: flex; align-items: center; gap: 6px; }
-.sb-name { font-size: 14px; font-weight: 700; color: var(--tx); margin-top: 4px; line-height: 1.2; }
-.sb-sub { font-size: 10.5px; color: var(--sub); margin-top: 2px; }
+/* Scrollbar moderno */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+html.dark ::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.45); }
+::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.7); }
 
-/* Selector de Ejercicio */
-.sb-ej { margin: 12px 14px 0; background: var(--surf); border: 1px solid var(--bdr); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; transition: border-color 0.2s; }
-.sb-ej:hover { border-color: var(--mg); }
-.sb-ejl { font-size: 9px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;}
-.sb-ejv { font-size: 13.5px; font-weight: 700; color: var(--tx); }
-.ej-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: var(--surf); border: 1px solid var(--bdr); border-radius: 8px; margin-top: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100; max-height: 200px; overflow-y: auto; display: none; }
-.dd-item { padding: 10px 12px; font-size: 12.5px; font-weight: 500; color: var(--tx2); cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--bdr); }
-.dd-item:last-child { border-bottom: none; }
-.dd-item:hover { background: var(--row); color: var(--mg); }
+/* Animaciones e interacciones */
+.kpi-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.08);
+}
+html.dark .kpi-card:hover {
+  box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.4);
+}
 
-/* Tarjetas Clickables Sidebar */
-.sb-stats { display: flex; gap: 1px; margin: 12px 14px; background: var(--bdr); border-radius: 8px; overflow: hidden; }
-.sb-st { flex: 1; background: var(--surf); padding: 8px 4px; text-align: center; cursor: pointer; transition: background 0.15s; }
-.sb-st:hover { background: var(--row); }
-.sb-stn { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sb-stl { font-size: 9px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+.area-nav-item {
+  transition: all 0.18s ease;
+}
+.area-nav-item:hover {
+  background: var(--surface-alt);
+}
+.area-nav-item.active {
+  background: var(--surface-alt);
+  border-left-color: var(--area-accent);
+}
 
-.sb-sec { font-size: 9.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--mut); padding: 14px 16px 6px; }
-.sb-sc { flex: 1; overflow-y: auto; padding-bottom: 10px; }
-.sb-sc::-webkit-scrollbar { width: 4px; }
-.sb-sc::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 2px; }
+.fade-in {
+  animation: fadeIn 0.22s ease-out forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-.ar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
-.ar:hover { background: var(--row); }
-.ar.sel { background: var(--row); border-left-color: var(--ac); }
-.ar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ac); flex-shrink: 0; }
-.ar-lbl { flex: 1; font-size: 12px; font-weight: 500; color: var(--tx2); }
-.chips { display: flex; gap: 4px; }
-.ch { font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-variant-numeric: tabular-nums; }
-.cg { background: var(--cg-bg); color: var(--cg); }
-.cr { background: var(--cr-bg); color: var(--cr); }
-
-.cnt { flex: 1; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-.topbar { height: 50px; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; padding: 0 24px; gap: 12px; flex-shrink: 0; background: var(--top); z-index: 5; }
-.bc { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--sub); }
-.bcl { cursor: pointer; color: var(--sub); transition: color 0.1s; padding: 4px 6px; border-radius: 4px; margin-left: -6px; }
-.bcl:hover { color: var(--tx); background: var(--row); }
-.bcc { color: var(--tx); font-weight: 600; padding: 4px 0; }
-.sep { color: var(--mut); font-size: 10px; }
-.ts { flex: 1; }
-
-.search-box { display: flex; align-items: center; background: var(--surf); border: 1px solid var(--bdr); border-radius: 6px; padding: 0 10px; height: 30px; margin-right: auto; max-width: 250px; }
-.search-box input { background: transparent; border: none; color: var(--tx); outline: none; font-size: 12px; width: 100%; margin-left: 6px; font-family: inherit; }
-.search-box input::placeholder { color: var(--mut); }
-.ej-tag, .theme-btn { font-size: 11.5px; background: var(--surf); border: 1px solid var(--bdr); border-radius: 6px; padding: 5px 12px; color: var(--sub); font-weight: 500; }
-.theme-btn { cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
-.theme-btn:hover { color: var(--tx); border-color: var(--mut); }
-
-.pg { display: none; flex: 1; overflow-y: auto; padding: 24px 32px; scroll-behavior: smooth; }
-.pg.on { display: block; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-.pg::-webkit-scrollbar { width: 6px; }
-.pg::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 3px; }
-
-.ceo-header { margin-bottom: 24px; }
-.ceo-title { font-size: 22px; font-weight: 700; color: var(--tx); letter-spacing: -0.5px; }
-.ceo-subtitle { font-size: 13px; color: var(--sub); margin-top: 4px; }
-
-.hg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
-.hk { background: var(--surf); border: 1px solid var(--bdr); border-radius: 12px; padding: 18px 20px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
-.hk:hover { transform: translateY(-2px); border-color: var(--ac, var(--mut)); }
-.hk::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--ac, var(--bdr)); }
-.hkl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--sub); margin-bottom: 6px; }
-.hkv { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; color: var(--tx); }
-.hks { font-size: 11.5px; font-weight: 500; margin-top: 4px; }
-
-.sec-t { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; padding-top: 10px; border-top: 1px solid var(--bdr); }
-.sec-t-title { font-size: 12.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--sub); }
-
-.itw { background: var(--surf); border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-.itw table { width: 100%; border-collapse: collapse; }
-.itw th { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mut); font-weight: 700; padding: 12px 16px; border-bottom: 1px solid var(--bdr); text-align: left; background: var(--row); }
-.itw td { padding: 12px 16px; border-bottom: 1px solid var(--row); vertical-align: middle; }
-.itw tr:last-child td { border-bottom: none; }
-.itw tbody tr { cursor: pointer; transition: background 0.15s; }
-.itw tbody tr:hover td { background: var(--row); }
-.ic { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 11px; font-weight: 600; color: var(--sub); background: var(--bg); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--bdr); }
-.in { font-size: 13.5px; font-weight: 600; color: var(--tx); }
-.bdg { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
-.bok { background: var(--cg-bg); color: var(--cg); }
-.bbad { background: var(--cr-bg); color: var(--cr); }
-.bnd { background: var(--bdr); color: var(--sub); }
-.garr { color: var(--mut); font-size: 16px; font-weight: bold; transition: transform 0.2s, color 0.2s; }
-.itw tbody tr:hover .garr { color: var(--mg); transform: translateX(3px); }
-
-.acards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-.acard { background: var(--surf); border: 1px solid var(--bdr); border-top: 4px solid var(--ac); border-radius: 12px; padding: 20px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
-.acard:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--ac); }
-.ach { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-.acn { font-size: 15px; font-weight: 700; color: var(--tx); }
-.acc { font-size: 11.5px; color: var(--sub); margin-top: 3px; font-weight: 500; }
-.acs { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--tx); text-align: right; }
-.acs-l { font-size: 10px; color: var(--sub); font-weight: 500; text-transform: uppercase; }
-.acbw { height: 6px; background: var(--bf); border-radius: 3px; margin-bottom: 10px; overflow: hidden; }
-.acb { height: 100%; border-radius: 3px; background: var(--ac); transition: width 0.5s ease; }
-.acr { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--sub); }
-
-.ahd { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-.adot { border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-.ah { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-.as_ { font-size: 14px; color: var(--sub); margin-left: 4px; font-weight: 500; }
-.kr { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-.kc { background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; padding: 14px 16px; }
-.kl { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--sub); margin-bottom: 4px; }
-.kv { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.ks { font-size: 11px; font-weight: 500; color: var(--sub); margin-top: 3px; }
-.cc { background: var(--surf); border: 1px solid var(--bdr); border-radius: 12px; padding: 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-.chd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-.cht { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--tx2); }
-.leg { display: flex; gap: 14px; flex-wrap: wrap; }
-.li { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--sub); }
-.ld { width: 8px; height: 8px; border-radius: 50%; }
-
-.cscroll { overflow-x: auto; overflow-y: hidden; position: relative; padding-bottom: 4px; }
-.cscroll::-webkit-scrollbar { height: 6px; }
-.cscroll::-webkit-scrollbar-track { background: var(--row); border-radius: 3px; }
-.cscroll::-webkit-scrollbar-thumb { background: var(--mut); border-radius: 3px; }
-canvas { display: block; max-width: 100%; }
-
-.ihd { margin-bottom: 24px; }
-.iha { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-.iht { font-size: 26px; font-weight: 800; color: var(--tx); line-height: 1.2; letter-spacing: -0.5px; }
-.ihc { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px; font-weight: 500; color: var(--sub); margin-top: 6px; display: inline-block; background: var(--surf); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--bdr); }
-.dkr { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-.dk { background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; padding: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-.dkl { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--sub); margin-bottom: 6px; }
-.dkv { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.dks { font-size: 11px; font-weight: 500; color: var(--sub); margin-top: 4px; }
-
-/* TABS MEJORADAS */
-.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surf); border: 1px solid var(--bdr); border-radius: 8px; padding: 4px; width: fit-content; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-.tab { padding: 8px 18px; border-radius: 6px; font-size: 12.5px; font-weight: 600; color: var(--sub); cursor: pointer; transition: all 0.2s; }
-.tab:hover:not(.on) { color: var(--tx); background: var(--row); }
-.tab.on { background: var(--mg); color: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-
-.changes { margin-bottom: 20px; }
-.ch-row { display: flex; align-items: stretch; gap: 14px; padding: 14px 16px; background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.1s; }
-.ch-row:hover { transform: translateX(2px); border-color: var(--mut); }
-.ch-ej { font-size: 11.5px; font-weight: 700; font-family: 'SFMono-Regular', monospace; color: var(--sub); flex-shrink: 0; padding-top: 2px; min-width: 85px; text-transform: uppercase; }
-.ch-items { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-.ch-items-row { display: flex; flex-wrap: wrap; gap: 8px; }
-.ch-pill { font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 5px; }
-.ch-up { background: var(--cg-bg); color: var(--cg); border: 1px solid rgba(16,185,129,0.3); }
-.ch-dn { background: var(--cr-bg); color: var(--cr); border: 1px solid rgba(244,63,94,0.3); }
-.ch-neu { background: var(--bnd-bg); color: var(--sub); border: 1px solid var(--bdr); }
-.ch-obj { background: rgba(14,165,233,0.15); color: #38bdf8; border: 1px solid rgba(14,165,233,0.3); }
-.ej-sel { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-.ej-btn { font-size: 11.5px; font-weight: 600; padding: 6px 14px; border-radius: 6px; cursor: pointer; border: 1px solid var(--bdr); background: var(--surf); color: var(--sub); transition: all 0.15s; font-variant-numeric: tabular-nums; }
-.ej-btn:hover { border-color: var(--mg); color: var(--tx); background: var(--row); }
-.ej-btn.on { background: var(--mg); color: #fff; border-color: var(--mg); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-
-.ig { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-.ic_ { background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; padding: 16px 20px; }
-.il { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mut); margin-bottom: 8px; border-bottom: 1px solid var(--bdr); padding-bottom: 6px; }
-.iv { font-size: 13.5px; color: var(--tx2); line-height: 1.6; font-weight: 400; }
-.if { grid-column: 1 / -1; }
-.ht { margin-top: 24px; background: var(--surf); border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; }
-.ht table { width: 100%; border-collapse: collapse; }
-.ht th { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mut); font-weight: 700; padding: 12px 16px; border-bottom: 1px solid var(--bdr); text-align: left; background: var(--row); }
-.ht td { padding: 12px 16px; border-bottom: 1px solid var(--row); font-variant-numeric: tabular-nums; font-size: 13.5px; color: var(--tx2); font-weight: 500; }
-
-/* TOOLTIP PARA GRÁFICOS */
-#chart-tooltip { position: absolute; display: none; background: rgba(15, 23, 42, 0.95); color: white; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; pointer-events: none; transform: translate(-50%, -120%); box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); z-index: 100; backdrop-filter: blur(4px); }
-#chart-tooltip .tt-lbl { color: #94a3b8; font-size: 10.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
-#chart-tooltip .tt-val { font-size: 15px; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 6px; }
-#chart-tooltip .tt-obj { font-size: 11px; color: #fbbf24; font-weight: 500; }
-:root #chart-tooltip { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: #e2e8f0; }
-
-@media (max-width: 1100px) { .hg, .kr, .dkr { grid-template-columns: repeat(2, 1fr); } .acards { grid-template-columns: 1fr; } }
-@media (max-width: 768px) { .sb { width: 180px; } .hg, .kr, .dkr { grid-template-columns: 1fr; } .ig { grid-template-columns: 1fr; } }
+/* Estilo para los contenedores de gráficos fluidos */
+.chart-box {
+  position: relative;
+  width: 100%;
+  height: 250px;
+}
+@media (min-width: 640px) {
+  .chart-box { height: 275px; }
+}
 </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+
 <!-- ▼▼▼ ESINEL GLOBAL HEADER ▼▼▼ -->
-  <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
+<header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white flex-shrink-0">
+  <div class="w-full px-4 sm:px-6 lg:px-8">
+    <div class="esinel-hdr-top py-2.5 flex items-center justify-between gap-4">
+      <a class="esinel-logo flex items-center gap-3 group text-decoration-none" href="index.html">
+        <div class="w-9 h-9 flex-shrink-0 bg-slate-900/90 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center group-hover:border-blue-500/50 transition">
+          <svg width="30" height="30" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9" cy="9" r="5" fill="#9BA4B0"/>
+            <circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="9" cy="35" r="5" fill="#9BA4B0"/>
+            <circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="9" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="35" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+            <circle cx="35" cy="9" r="5" fill="#9BA4B0"/>
+            <circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+            <circle cx="48" cy="9" r="5" fill="#3b82f6"/>
+            <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+            <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
+          </div>
+          <p class="text-[9.5px] font-medium text-slate-400 tracking-wider uppercase mt-0.5">Obras Eléctricas · Ingeniería · Tableros</p>
+          <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+            <span class="text-slate-400">ISO 9001</span>
+            <span class="text-emerald-400">ISO 14001</span>
+            <span class="text-rose-400">ISO 45001</span>
+          </div>
+        </div>
+      </a>
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+          <i class="ti ti-shield-check text-sky-400 text-sm"></i>
+          <span>SGI · Gestión Integrada</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
     <div class="w-full px-4 sm:px-6 lg:px-8">
-      <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
-        <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
-          <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
-            <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="9" cy="9" r="5" fill="#9BA4B0"/>
-              <circle cx="9" cy="22" r="5" fill="#3b82f6"/>
-              <circle cx="9" cy="35" r="5" fill="#9BA4B0"/>
-              <circle cx="9" cy="48" r="5" fill="#3b82f6"/>
-              <circle cx="22" cy="9" r="5" fill="#3b82f6"/>
-              <circle cx="22" cy="22" r="5" fill="#3b82f6"/>
-              <circle cx="22" cy="35" r="5" fill="#3b82f6"/>
-              <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-              <circle cx="35" cy="9" r="5" fill="#9BA4B0"/>
-              <circle cx="35" cy="22" r="5" fill="#3b82f6"/>
-              <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
-              <circle cx="48" cy="9" r="5" fill="#3b82f6"/>
-              <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
-              <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
-            </div>
-            <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
-            <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
-              <span class="text-slate-400">ISO 9001</span>
-              <span class="text-emerald-400">ISO 14001</span>
-              <span class="text-rose-400">ISO 45001</span>
-            </div>
-          </div>
-        </a>
-        <div class="flex items-center gap-3">
-          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
-            <i class="ti ti-shield-check text-sky-400 text-sm"></i>
-            <span>SGI · Gestión Integrada</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
-      <div class="w-full px-4 sm:px-6 lg:px-8">
-        <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
-          <a class="esinel-nav-item esinel-active px-3 py-2 rounded-lg esinel-active font-semibold text-blue-400 bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="#" onclick="abrirPanel();return false"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
-        </nav>
-      </div>
-    </div>
-  </header>
-  <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
-
-<div class="shell">
-<div class="sb">
-  <div class="sb-hd">
-    <div class="sb-logo">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      ESINEL SGI
-    </div>
-    <div class="sb-name">Tablero Gerencial</div>
-    <div class="sb-sub">Sistema de Indicadores</div>
-    
-    <!-- DESPLEGABLE GLOBAL EJERCICIO -->
-    <div class="sb-ej" onclick="toggleEjMenu()" title="Haga clic para cambiar de Ejercicio">
-      <div>
-        <div class="sb-ejl">Ejercicio Activo</div>
-        <div class="sb-ejv" id="sb-ej-lbl">Cargando...</div>
-      </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sub)" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      <div id="ej-dropdown" class="ej-dropdown"></div>
+      <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
+        <a class="esinel-nav-item esinel-active px-3 py-1.5 rounded-lg font-semibold text-blue-400 bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="#" onclick="abrirPanel();return false"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+        <a class="esinel-nav-item px-3 py-1.5 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
+      </nav>
     </div>
   </div>
+</header>
+<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
+
+<div class="flex flex-1 w-full min-h-0 overflow-hidden">
   
-  <!-- TARJETAS LATERALES FILTRABLES -->
-  <div class="sb-stats">
-    <div class="sb-st" onclick="showFilteredList('all')" title="Ver todos los operativos">
-      <div class="sb-stn" id="sb-t">—</div><div class="sb-stl">Total</div>
-    </div>
-    <div class="sb-st" onclick="showFilteredList('ok')" title="Ver los que cumplen">
-      <div class="sb-stn" style="color:var(--cg)" id="sb-o">—</div><div class="sb-stl">Cumplen</div>
-    </div>
-    <div class="sb-st" onclick="showFilteredList('bad')" title="Ver las alertas">
-      <div class="sb-stn" style="color:var(--cr)" id="sb-b">—</div><div class="sb-stl">Alerta</div>
-    </div>
-  </div>
-
-  <div class="sb-sec">Áreas Operativas</div>
-  <div class="sb-sc">
-    <div class="ar sel" onclick="goHome()" style="--ac:var(--mg)"><div class="ar-dot" style="background:var(--mg)"></div><div class="ar-lbl" style="font-weight:700;color:var(--tx)">Vista General</div></div>
-    <div id="sb-areas"></div>
-  </div>
-</div>
-
-<div class="cnt">
-  <div class="topbar">
-    <div class="bc" id="bc"><span class="bcc">Vista General</span></div>
-    <div class="ts"></div>
-    <div class="search-box">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="globalSearch" placeholder="Buscar métrica o código..." onkeyup="handleSearch(this.value)">
-    </div>
-    <div class="ej-tag" id="top-ej-tag">...</div>
-    <button class="theme-btn" id="tbtn" onclick="toggleTheme()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      Tema
-    </button>
-  </div>
-
-  <div id="chart-tooltip">
-    <span class="tt-lbl" id="tt-l"></span>
-    <div class="tt-val"><span id="tt-v"></span><span class="tt-obj" id="tt-o"></span></div>
-  </div>
-
-  <div class="pg on" id="pg-home">
-    <div class="ceo-header">
-      <div class="ceo-title">Estado Global del Sistema SGI</div>
-      <div class="ceo-subtitle">Resumen ejecutivo y consolidado de métricas para la toma de decisiones.</div>
-    </div>
+  <!-- SIDEBAR LATERAL -->
+  <aside class="w-64 flex-shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-20">
     
-    <!-- TARJETAS SUPERIORES CLICKABLES -->
-    <div class="hg">
-      <div class="hk" style="--ac: var(--mut)" onclick="showFilteredList('all')">
-        <div class="hkl">Métricas Totales</div>
-        <div class="hkv" id="hk-t">—</div>
-        <div class="hks" style="color:var(--sub)">auditadas en este ejercicio</div>
+    <div class="p-3.5 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+        <i class="ti ti-layout-dashboard text-base"></i>
+        <span>Tablero Gerencial</span>
       </div>
-      <div class="hk" style="--ac: var(--cg)" onclick="showFilteredList('ok')">
-        <div class="hkl">Cumplimiento Global</div>
-        <div class="hkv" style="color:var(--cg)" id="hk-o-pct">—</div>
-        <div class="hks"><span id="hk-o" style="font-weight:700;color:var(--tx)">—</span> alcanzan el objetivo</div>
-      </div>
-      <div class="hk" style="--ac: var(--cr)" onclick="showFilteredList('bad')">
-        <div class="hkl">Focos de Alerta Crítica</div>
-        <div class="hkv" style="color:var(--cr)" id="hk-b">—</div>
-        <div class="hks"><span id="hk-b-pct" style="color:var(--tx)">—</span> requieren atención inmediata</div>
-      </div>
-      <div class="hk" style="--ac: var(--mg)">
-        <div class="hkl">Áreas Evaluadas</div>
-        <div class="hkv">8</div>
-        <div class="hks" style="color:var(--sub)">departamentos medidos</div>
+      <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Indicadores de Desempeño</div>
+
+      <!-- Selector de Ejercicio -->
+      <div class="relative mt-3">
+        <button id="btnEjToggle" onclick="toggleEjMenu()" class="w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-left flex items-center justify-between transition group">
+          <div>
+            <span class="block text-[9.5px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ejercicio Activo</span>
+            <span id="sb-ej-lbl" class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">Cargando...</span>
+          </div>
+          <i class="ti ti-selector text-slate-400 group-hover:text-blue-500 transition text-base"></i>
+        </button>
+        <div id="ej-dropdown" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl py-1 z-50 max-h-56 overflow-y-auto hidden"></div>
       </div>
     </div>
+
+    <!-- Segmented Status (Total / Cumplen / Alertas) -->
+    <div class="p-2.5 mx-3 my-2 bg-slate-100 dark:bg-slate-800/50 rounded-xl border border-slate-200/60 dark:border-slate-800 grid grid-cols-3 gap-1">
+      <button onclick="showFilteredList('all')" title="Ver todos los indicadores" class="flex flex-col items-center py-1 px-1 rounded-lg hover:bg-white dark:hover:bg-slate-700/60 transition">
+        <span id="sb-t" class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white font-mono leading-tight">—</span>
+        <span class="text-[9px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">Total</span>
+      </button>
+      <button onclick="showFilteredList('ok')" title="Ver cumplidos" class="flex flex-col items-center py-1 px-1 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition">
+        <span id="sb-o" class="text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono leading-tight">—</span>
+        <span class="text-[9px] uppercase tracking-wider font-bold text-emerald-600 dark:text-emerald-400">Cumplen</span>
+      </button>
+      <button onclick="showFilteredList('bad')" title="Ver alertas y desvíos" class="flex flex-col items-center py-1 px-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
+        <span id="sb-b" class="text-sm sm:text-base font-extrabold text-rose-600 dark:text-rose-400 font-mono leading-tight">—</span>
+        <span class="text-[9px] uppercase tracking-wider font-bold text-rose-600 dark:text-rose-400">Alerta</span>
+      </button>
+    </div>
+
+    <!-- Áreas Operativas Nav -->
+    <div class="px-4 pt-2 pb-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+      <span>Áreas Auditadas</span>
+      <span>8 Áreas</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
+      <div id="btn-vista-general" class="area-nav-item active flex items-center justify-between px-3 py-2 rounded-xl border-l-4 border-blue-500 cursor-pointer text-xs font-semibold text-slate-800 dark:text-slate-200" onclick="goHome()" style="--area-accent:#3b82f6">
+        <div class="flex items-center gap-2.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50"></div>
+          <span>Vista General</span>
+        </div>
+        <i class="ti ti-chevron-right text-slate-400 text-xs"></i>
+      </div>
+      <div id="sb-areas" class="space-y-0.5 pt-0.5"></div>
+    </div>
+
+    <!-- Selector de Tema (Claro / Oscuro) -->
+    <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 flex items-center justify-between">
+      <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+        <i class="ti ti-palette text-sm"></i>
+        <span>Apariencia</span>
+      </div>
+      <div class="flex items-center bg-slate-200 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-300/60 dark:border-slate-700">
+        <button id="theme-btn-light" onclick="setTheme('light')" class="px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition" title="Modo Claro">
+          <i class="ti ti-sun text-xs"></i>
+          <span class="text-[10px]">Claro</span>
+        </button>
+        <button id="theme-btn-dark" onclick="setTheme('dark')" class="px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition" title="Modo Oscuro">
+          <i class="ti ti-moon text-xs"></i>
+          <span class="text-[10px]">Oscuro</span>
+        </button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950 overflow-hidden relative">
     
-    <!-- CONTENEDOR DE RESULTADOS / FILTROS -->
-    <div id="search-results" style="display:none; margin-bottom:24px;">
-      <div class="sec-t"><div class="sec-t-title" id="search-title" style="color:var(--mg)">Resultados</div></div>
-      <div class="itw"><table><thead><tr><th>Código</th><th>Indicador</th><th>Área</th><th>Estado actual</th><th></th></tr></thead><tbody id="search-tb"></tbody></table></div>
-    </div>
+    <!-- Topbar Interna con Breadcrumb, Buscador y Exportación -->
+    <div class="h-14 px-4 sm:px-6 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex items-center justify-between gap-3 flex-shrink-0 z-10">
+      
+      <nav class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 truncate" id="bc">
+        <span class="font-bold text-slate-800 dark:text-slate-100">Vista General</span>
+      </nav>
 
-    <!-- CONTENEDOR NORMAL (Tarjetas por Área) -->
-    <div id="home-content">
-      <div class="sec-t">
-        <div class="sec-t-title">Desempeño Consolidado por Área</div>
-      </div>
-      <div class="acards" id="acards"></div>
-    </div>
-  </div>
-
-  <div class="pg" id="pg-area">
-    <div class="ahd"><div class="adot" id="a-dot" style="width:16px;height:16px"></div><div class="ah" id="a-t"></div><div class="as_" id="a-s"></div></div>
-    <div class="kr">
-      <div class="kc"><div class="kl">Total Área</div><div class="kv" id="a-tot">—</div><div class="ks">indicadores</div></div>
-      <div class="kc"><div class="kl">Cumplen</div><div class="kv" style="color:var(--cg)" id="a-ok">—</div><div class="ks" id="a-oks"></div></div>
-      <div class="kc"><div class="kl">Desvíos</div><div class="kv" style="color:var(--cr)" id="a-bad">—</div><div class="ks" id="a-bads"></div></div>
-      <div class="kc"><div class="kl">Promedio</div><div class="kv" id="a-avg">—</div><div class="ks" id="a-avgs"></div></div>
-    </div>
-    <div class="cc">
-      <div class="chd"><span class="cht">Tendencia Histórica Global del Área</span>
-        <div class="leg"><div class="li"><div class="ld" style="background:var(--mg)"></div>Promedio Real</div><div class="li"><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/></svg>Objetivo</div></div>
-      </div>
-      <div class="cscroll" id="a-scroll"><canvas id="aChart"></canvas></div>
-    </div>
-    <div class="itw"><table><thead><tr><th>Código</th><th>Métrica Estratégica</th><th style="text-align:right">Valor Actual</th><th style="text-align:right">Objetivo</th><th>Estado</th><th>Frecuencia</th><th></th></tr></thead><tbody id="a-tb"></tbody></table></div>
-  </div>
-
-  <div class="pg" id="pg-ind">
-    <div class="ihd">
-      <div class="iha"><div class="adot" id="i-dot" style="width:10px;height:10px"></div><span id="i-area"></span></div>
-      <div class="iht" id="i-t"></div><div class="ihc" id="i-id"></div>
-    </div>
-    <div class="dkr">
-      <div class="dk"><div class="dkl">Valor Reportado</div><div class="dkv" id="i-val">—</div><div class="dks" id="i-vals"></div></div>
-      <div class="dk"><div class="dkl">Objetivo Establecido</div><div class="dkv" style="color:#f59e0b" id="i-obj">—</div><div class="dks">Meta oficial actual</div></div>
-      <div class="dk"><div class="dkl">Desvío / Margen</div><div class="dkv" id="i-diff">—</div><div class="dks" id="i-diffs"></div></div>
-      <div class="dk"><div class="dkl">Madurez del Dato</div><div class="dkv" id="i-exn">—</div><div class="dks" id="i-exns"></div></div>
-    </div>
-
-    <div class="tabs">
-      <div class="tab on" id="tab-ej" onclick="switchTab('ej')">Serie Anual (Ejercicios)</div>
-      <div class="tab" id="tab-per" onclick="switchTab('per')">Control Periódico</div>
-      <div class="tab" id="tab-chg" onclick="switchTab('chg')">Ficha Técnica & Acciones</div>
-    </div>
-
-    <div id="tv-ej">
-      <div class="cc">
-        <div class="chd"><span class="cht">Evolución Anual y Cumplimiento</span>
-          <div class="leg"><div class="li"><div class="ld" style="background:var(--cg)"></div>Cumple</div><div class="li"><div class="ld" style="background:var(--cr)"></div>Desvío</div><div class="li"><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/></svg>Objetivo</div></div>
+      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div class="relative w-40 sm:w-60">
+          <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input 
+            type="text" 
+            id="globalSearch" 
+            placeholder="Buscar indicador o código..." 
+            onkeyup="handleSearch(this.value)"
+            class="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition placeholder-slate-400"
+          />
         </div>
-        <div class="cscroll" id="ej-scroll" onmousemove="handleChartHover(event, 'ej')" onmouseleave="hideTooltip()"><canvas id="iChart"></canvas></div>
-      </div>
-    </div>
 
-    <div id="tv-per" style="display:none">
-      <div class="cc">
-        <div class="chd"><span class="cht" id="per-chart-title">Desglose Periódico</span>
-          <div class="leg"><div class="li"><div class="ld" style="background:var(--cg)"></div>Cumple</div><div class="li"><div class="ld" style="background:var(--cr)"></div>Desvío</div><div class="li"><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/></svg>Objetivo</div></div>
+        <div id="top-ej-tag" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
+          <i class="ti ti-calendar text-xs"></i>
+          <span>Ej. 35 · 2026</span>
         </div>
-        <div id="ej-sel" class="ej-sel"></div>
-        <div class="cscroll" id="per-scroll" onmousemove="handleChartHover(event, 'per')" onmouseleave="hideTooltip()"><canvas id="perChart"></canvas></div>
-        <div id="per-empty" style="text-align:center;padding:36px;color:var(--sub);font-size:13.5px;display:none;background:var(--bg);border-radius:8px;">No hay desglose periódico disponible para este ejercicio en la base de datos.</div>
+
+        <button onclick="exportCurrentViewToCSV()" title="Descargar datos en CSV" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition shadow-sm">
+          <i class="ti ti-download text-xs"></i>
+          <span>CSV</span>
+        </button>
       </div>
+
     </div>
 
-    <div id="tv-chg" style="display:none">
-      <div class="changes" id="changes-list"></div>
-      <div class="ig">
-        <div class="ic_"><div class="il">Definición de la Métrica</div><div class="iv" id="i-que"></div></div>
-        <div class="ic_"><div class="il">Metodología de Medición</div><div class="iv" id="i-meta"></div></div>
-        <div class="ic_ if"><div class="il">Historial de Acciones Correctivas / Planes de Mejora</div><div class="iv" id="i-acc"></div></div>
+    <!-- PÁGINA 1: RESUMEN EJECUTIVO (HOME) -->
+    <div id="pg-home" class="pg on flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-slate-200/70 dark:border-slate-800/70">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">Estado Global del Sistema SGI</h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Consolidado general de cumplimiento de metas y monitoreo de desvíos.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Normas ISO 9001 · 14001 · 45001
+          </span>
+        </div>
       </div>
+
+      <!-- Tarjetas KPIs Globales -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="kpi-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer relative overflow-hidden shadow-sm" onclick="showFilteredList('all')">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+            <span class="text-[11px] font-bold uppercase tracking-wider">Métricas Totales</span>
+            <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+              <i class="ti ti-chart-dots text-base"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-slate-900 dark:text-white font-mono" id="hk-t">—</div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Auditadas en este ejercicio</p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-slate-300 dark:bg-slate-700"></div>
+        </div>
+
+        <div class="kpi-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer relative overflow-hidden shadow-sm" onclick="showFilteredList('ok')">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Cumplimiento Global</span>
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+              <i class="ti ti-circle-check text-base"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono" id="hk-o-pct">—</div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <strong id="hk-o" class="text-slate-800 dark:text-slate-200 font-bold">—</strong> métricas en objetivo
+          </p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500"></div>
+        </div>
+
+        <div class="kpi-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer relative overflow-hidden shadow-sm" onclick="showFilteredList('bad')">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Focos de Alerta</span>
+            <div class="w-8 h-8 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500">
+              <i class="ti ti-alert-triangle text-base"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-rose-600 dark:text-rose-400 font-mono" id="hk-b">—</div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <span id="hk-b-pct" class="font-bold text-rose-600 dark:text-rose-400">—</span> requieren acción inmediata
+          </p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-rose-500"></div>
+        </div>
+
+        <div class="kpi-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Áreas Auditadas</span>
+            <div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+              <i class="ti ti-building text-base"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-slate-900 dark:text-white font-mono">8</div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sectores bajo seguimiento</p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-blue-500"></div>
+        </div>
+
+      </div>
+
+      <!-- Contenedor Resultados Filtro Rápido o Búsqueda -->
+      <div id="search-results" class="hidden space-y-3 fade-in">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="ti ti-filter text-blue-500"></i>
+            <h3 id="search-title" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Resultados Filtrados</h3>
+          </div>
+          <button onclick="goHome()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1">
+            <i class="ti ti-x text-sm"></i> Limpiar filtro
+          </button>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
+                <tr>
+                  <th class="py-3 px-4 sm:px-6">Código</th>
+                  <th class="py-3 px-4">Indicador</th>
+                  <th class="py-3 px-4">Área</th>
+                  <th class="py-3 px-4 text-center">Estado Ejercicio</th>
+                  <th class="py-3 px-4 text-right"></th>
+                </tr>
+              </thead>
+              <tbody id="search-tb" class="divide-y divide-slate-100 dark:divide-slate-800/80"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjetas por Área Operativa -->
+      <div id="home-content" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Desempeño Consolidado por Área</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Hacé clic en cualquier departamento para ver sus métricas detalladas</p>
+          </div>
+        </div>
+        <div id="acards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+
     </div>
 
-    <div class="ht" id="tv-hist"><table><thead><tr><th>Período Contable</th><th style="text-align:right">Resultado Auditado</th><th style="text-align:right">Objetivo</th><th>Certificación</th><th style="text-align:right">Margen</th></tr></thead><tbody id="i-hist"></tbody></table></div>
-  </div>
-</div>
+    <!-- PÁGINA 2: VISTA DETALLADA DEL ÁREA -->
+    <div id="pg-area" class="pg hidden flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+        <div class="flex items-center gap-3">
+          <div id="a-dot" class="w-4 h-4 rounded-xl shadow-md"></div>
+          <div>
+            <h2 id="a-t" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">Área</h2>
+            <p id="a-s" class="text-xs text-slate-500 dark:text-slate-400"></p>
+          </div>
+        </div>
+        <button onclick="goHome()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm self-start sm:self-auto">
+          <i class="ti ti-arrow-left text-sm"></i>
+          <span>Volver al Tablero</span>
+        </button>
+      </div>
+
+      <!-- 4 Stats Resumen del Área -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Total Métricas</span>
+          <div id="a-tot" class="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">—</div>
+          <span class="text-[11px] text-slate-500">en esta área</span>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-600 dark:text-emerald-400 block mb-1">Cumplen</span>
+          <div id="a-ok" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">—</div>
+          <span id="a-oks" class="text-[11px] text-slate-500"></span>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-rose-600 dark:text-rose-400 block mb-1">Desvíos</span>
+          <div id="a-bad" class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">—</div>
+          <span id="a-bads" class="text-[11px] text-slate-500"></span>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Promedio Área</span>
+          <div id="a-avg" class="text-2xl font-extrabold font-mono">—</div>
+          <span id="a-avgs" class="text-[11px] text-slate-500"></span>
+        </div>
+      </div>
+
+      <!-- Gráfico Automático de Tendencia del Área -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Evolución Histórica Consolidada</h4>
+            <p class="text-[11px] text-slate-500">Promedio de resultados vs meta promedio a través de los ejercicios</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs">
+            <span class="inline-flex items-center gap-1.5 font-semibold text-slate-600 dark:text-slate-300">
+              <span class="w-3 h-3 rounded-full bg-blue-500"></span> Promedio Real
+            </span>
+            <span class="inline-flex items-center gap-1.5 font-semibold text-amber-600 dark:text-amber-400">
+              <span class="w-4 border-b-2 border-dashed border-amber-500"></span> Meta SGI
+            </span>
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="aChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Tabla de Indicadores del Área -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Indicadores Operativos del Sector</h4>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
+              <tr>
+                <th class="py-3 px-4 sm:px-6">Código</th>
+                <th class="py-3 px-4">Métrica Estratégica</th>
+                <th class="py-3 px-4 text-right">Resultado</th>
+                <th class="py-3 px-4 text-right">Objetivo</th>
+                <th class="py-3 px-4 text-center">Estado</th>
+                <th class="py-3 px-4">Frecuencia</th>
+                <th class="py-3 px-4 text-right"></th>
+              </tr>
+            </thead>
+            <tbody id="a-tb" class="divide-y divide-slate-100 dark:divide-slate-800/80"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PÁGINA 3: VISTA INDIVIDUAL DEL INDICADOR -->
+    <div id="pg-ind" class="pg hidden flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-start justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <span id="i-dot" class="w-2.5 h-2.5 rounded-full"></span>
+            <span id="i-area">Área</span>
+          </div>
+          <h2 id="i-t" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">Indicador</h2>
+          <div class="mt-1 flex items-center gap-2">
+            <span id="i-id" class="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">CODE</span>
+          </div>
+        </div>
+
+        <button onclick="goArea(curInd[2])" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm self-start sm:self-auto">
+          <i class="ti ti-arrow-left text-sm"></i>
+          <span>Volver al Área</span>
+        </button>
+      </div>
+
+      <!-- 4 KPIs del Indicador -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Valor Registrado</span>
+          <div id="i-val" class="text-2xl font-extrabold font-mono">—</div>
+          <span id="i-vals" class="text-[11px] text-slate-500"></span>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-amber-500 block mb-1">Meta Oficial</span>
+          <div id="i-obj" class="text-2xl font-extrabold text-amber-500 font-mono">—</div>
+          <span class="text-[11px] text-slate-500">Objetivo fijado</span>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Desvío / Margen</span>
+          <div id="i-diff" class="text-2xl font-extrabold font-mono">—</div>
+          <span id="i-diffs" class="text-[11px] text-slate-500"></span>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Auditorías</span>
+          <div id="i-exn" class="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">—</div>
+          <span id="i-exns" class="text-[11px] text-slate-500">Historial disponible</span>
+        </div>
+      </div>
+
+      <!-- Selector de Pestañas (Tabs) -->
+      <div class="flex items-center gap-1 p-1 bg-slate-200/70 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 w-fit">
+        <button id="tab-ej" onclick="switchTab('ej')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm">
+          Serie Anual (Ejercicios)
+        </button>
+        <button id="tab-per" onclick="switchTab('per')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          Control Periódico
+        </button>
+        <button id="tab-chg" onclick="switchTab('chg')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          Ficha Técnica & Acciones
+        </button>
+      </div>
+
+      <!-- Pestaña 1: Serie Anual (Gráfico Responsivo Moderno) -->
+      <div id="tv-ej" class="space-y-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Evolución Anual y Cumplimiento</h4>
+              <p class="text-[11px] text-slate-500">Resultados auditados frente a la meta fijada para cada ejercicio</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600 dark:text-emerald-400">
+                <span class="w-3 h-3 rounded-md bg-emerald-500"></span> Cumple
+              </span>
+              <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600 dark:text-rose-400">
+                <span class="w-3 h-3 rounded-md bg-rose-500"></span> Desvío
+              </span>
+              <span class="inline-flex items-center gap-1.5 font-semibold text-amber-600 dark:text-amber-400">
+                <span class="w-4 border-b-2 border-dashed border-amber-500"></span> Meta
+              </span>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="iChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestaña 2: Control Periódico (Gráfico Responsivo) -->
+      <div id="tv-per" class="hidden space-y-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Desglose Periódico / Muestreos</h4>
+              <p class="text-[11px] text-slate-500">Comportamiento en los cortes intermedios del ejercicio</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600 dark:text-emerald-400">
+                <span class="w-3 h-3 rounded-md bg-emerald-500"></span> Cumple
+              </span>
+              <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600 dark:text-rose-400">
+                <span class="w-3 h-3 rounded-md bg-rose-500"></span> Desvío
+              </span>
+              <span class="inline-flex items-center gap-1.5 font-semibold text-amber-600 dark:text-amber-400">
+                <span class="w-4 border-b-2 border-dashed border-amber-500"></span> Meta
+              </span>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2 pt-1">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Filtrar Ejercicio:</span>
+            <div id="ej-sel" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="perChart"></canvas>
+          </div>
+          <div id="per-empty" class="hidden text-center py-10 text-slate-400 dark:text-slate-500 text-xs bg-slate-50 dark:bg-slate-800/40 rounded-xl">
+            No hay desglose periódico disponible para este ejercicio en la base de datos.
+          </div>
+
+          <!-- Tabla de Muestreos del Período Seleccionado -->
+          <div id="per-table-wrap" class="hidden mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              Detalle de Muestreos del Período
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th class="py-2.5 px-4">Fecha de Corte</th>
+                    <th class="py-2.5 px-4 text-right">Resultado</th>
+                    <th class="py-2.5 px-4 text-right">Meta</th>
+                    <th class="py-2.5 px-4 text-center">Estado</th>
+                    <th class="py-2.5 px-4 text-right">Desvío</th>
+                  </tr>
+                </thead>
+                <tbody id="per-tb" class="divide-y divide-slate-100 dark:divide-slate-800/80 font-mono"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestaña 3: Ficha Técnica & Acciones -->
+      <div id="tv-chg" class="hidden space-y-4">
+        <div id="changes-list" class="space-y-2"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">Definición de la Métrica</h5>
+            <p id="i-que" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">Metodología & Responsable</h5>
+            <div id="i-meta" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></div>
+          </div>
+
+          <div class="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <h5 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">Historial de Acciones Correctivas y Planes de Mejora (SGI)</h5>
+            <div id="i-acc" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla Histórica de Certificación -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm" id="tv-hist">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Historial Detallado de Auditorías</h4>
+          <span class="text-[11px] text-slate-400">Valores de cierre y margen</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
+              <tr>
+                <th class="py-3 px-4 sm:px-6">Período Contable</th>
+                <th class="py-3 px-4 text-right">Resultado Auditado</th>
+                <th class="py-3 px-4 text-right">Objetivo</th>
+                <th class="py-3 px-4 text-center">Certificación</th>
+                <th class="py-3 px-4 text-right">Margen</th>
+              </tr>
+            </thead>
+            <tbody id="i-hist" class="divide-y divide-slate-100 dark:divide-slate-800/80 font-mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
 </div>
 
 <script>
 // =========================================================================
-// MOTOR DE INYECCIÓN (APPS SCRIPT) Y SISTEMA DE RESPALDO ANTI-FALLOS
+// MOTOR DE DATOS (APPS SCRIPT / BACKUP LOCAL)
 // =========================================================================
 let INYECTADO = null;
 try {
-    // Si usas Google Apps Script, tu script buscará la palabra "__DATA__" 
-    // y la reemplazará por la información de Google Sheets.
-    INYECTADO = __DATA__; 
+  INYECTADO = __DATA__;
 } catch(e) {
-    // Si pegaste este código en GitHub y Apps Script todavía NO ha reemplazado 
-    // la palabra __DATA__, se lanzará un error interno. Lo atrapamos aquí
-    // para cargar automáticamente los datos de respaldo y evitar pantalla vacía.
-    console.warn("Esperando datos de Apps Script. Cargando versión de respaldo...");
+  console.warn("Cargando versión de datos de respaldo...");
 }
 
-// Datos oficiales de Esinel (28 indicadores) por si falla la conexión
 const FALLBACK_DATA = [
-  ["COME1","Encuesta anual a clientes","Comercial",8.7,"30/06/2026",7.5,1,[["2018-12-31",8.7,6],["2019-12-31",7.9,7],["2020-12-31",8.8,7],["2021-12-31",8.5,7],["2022-03-31",9.1,7],["2023-03-31",null,7],["2023-06-30",10,7],["2023-09-30",8.7,7],["2023-12-31",null,7],["2024-03-31",null,7],["2024-06-30",9.2,7],["2024-09-30",7,7],["2024-12-31",8,7],["2025-03-31",10,7],["2025-06-30",8.8,7],["2025-09-30",8.6,7],["2025-12-31",8.4,7],["2026-03-31",8.2,7],["2026-06-30",8.7,7.5],["2026-09-30",null,7.5],["2026-12-31",null,7.5],["2027-03-31",null,7.5]],[[27,8.7,6],[28,7.9,7],[29,8.8,7],[30,8.8,7],[31,null,7],[32,9.35,7],[33,8.55,7],[34,8.5,7],[35,8.7,7.5]],"Mantener la satisfacción de los Clientes","Encuesta de satisfacción","Trimestral","Comercial - Gerencia General","Ej.33->34: Llamado del encargado de obra al cliente para obtener opinion directa y actualizada (objetivo Ej.34: 7 pts). | Ej.34->35: Aumentar objetivo a 7,50 pts y medir % de participacion. Segmentar encuestas por tipo de contrato (Ing/Obra/Tab). Seguimiento intermedio (50% avance) en obras > 4 meses. Implementar dashboard en HPOT (objetivo Ej.35: 7,50 pts)."],
-  ["COME2","Clientes potenciales","Comercial",10,"31/07/2026",8,1,[["2018-03-18",8,6],["2018-07-18",10,6],["2018-11-30",10,6],["2019-03-31",10,6],["2019-07-31",8,8],["2019-11-30",10,8],["2020-03-31",10,8],["2020-07-31",10,8],["2020-11-30",10,8],["2021-03-31",8,8],["2021-07-31",9,8],["2021-11-30",8,8],["2022-03-31",10,8],["2022-07-31",10,8],["2022-11-30",10,8],["2023-03-31",10,8],["2023-07-31",10,8],["2023-11-30",10,8],["2024-03-31",10,8],["2024-07-31",10,8],["2024-11-30",10,8],["2025-03-31",10,8],["2025-07-31",10,8],["2025-11-30",10,8],["2026-03-31",10,8],["2026-07-31",10,8],["2026-11-30",null,8],["2027-03-31",null,8]],[[26,8,6],[27,10,6],[28,9.33,8],[29,9.33,8],[30,9,8],[31,10,8],[32,10,8],[33,10,8],[34,10,8],[35,10,8]],"Aumentar cantidad de Clientes Potenciales","Incorporar Datos de nuevos clientes (desde abril 2024 solo nuevos, no repetidos)","Cuatrimestral","Comercial - Gerencia General","Ej.33->34: Filtrar por rango de cliente segun magnitud e importancia de la obra (objetivo Ej.34: 8 pts). | Ej.34->35: Elevar objetivo de clientes nuevos. Segmentar por bases: Santa Fe, AMBA y Mar del Plata. Clientes recuperados (>3 anios) tomados como nuevos. Uso de HPOT para automatizacion y registro preciso (objetivo Ej.35: 8 pts)."],
-  ["COME3","Obras cotizadas vs adjudicadas","Comercial",8,"31/07/2026",8,1,[["2018-03-31",10,8],["2018-07-31",8,8],["2018-11-30",8,8],["2019-03-31",8,8],["2019-07-31",8,8],["2019-11-30",10,8],["2020-03-31",10,8],["2020-07-31",9,8],["2020-11-30",8,8],["2021-03-31",10,8],["2021-07-31",5,8],["2021-11-30",8,8],["2022-03-31",8,8],["2022-07-31",8,7.5],["2022-11-30",9,7.5],["2023-03-31",10,7.5],["2023-07-31",10,8],["2023-11-30",10,8],["2024-03-31",9,8],["2024-07-31",8,8],["2024-11-30",8,8],["2025-03-31",8,8],["2025-05-31",9,8],["2025-07-31",8,8],["2025-09-30",7,8],["2025-11-30",9,8],["2026-01-31",9,8],["2026-03-31",10,8],["2026-05-31",9,8],["2026-07-31",8,8],["2026-09-30",null,8],["2026-11-30",null,8],["2027-01-31",null,8],["2027-03-31",null,8]],[[26,10,8],[27,8,8],[28,9.33,8],[29,9,8],[30,7,8],[31,9,7.5],[32,9.67,8],[33,8,8],[34,8.67,8],[35,8.5,8]],"Mantener buena relación Obras cotizadas/adjudicadas","Estudio del cliente y posibilidades de contratación","Bimestral","Comercial - Gerencia General","Ej.33->34: Medicion cada 2 meses (objetivo Ej.34: 8 pts). | Ej.34->35: Nueva formula por cantidad y volumen. (objetivo Ej.35: 8 pts)."],
-  ["COME4","Rentabilidad teórica de ventas","Comercial",10,"31/03/2026",8,1,[["2018-03-31",10,6],["2018-07-31",8,6],["2018-11-30",10,6],["2019-03-31",8,6],["2019-07-31",6,7],["2019-11-30",8,7],["2020-03-31",8,7],["2020-07-31",4,6],["2020-11-30",8,6],["2021-03-31",8,6],["2021-07-31",10,7],["2021-11-30",8,7],["2022-03-31",8,7],["2022-07-31",8,8],["2022-11-30",10,8],["2023-03-31",8,8],["2023-07-31",10,7],["2023-11-30",10,7],["2024-03-31",8,7],["2024-07-31",6,8],["2024-11-30",10,8],["2025-03-31",6,8],["2025-07-31",8,8],["2025-11-30",8,8],["2026-03-31",10,8],["2026-07-31",null,8],["2026-11-30",null,8],["2027-03-31",null,8]],[[26,10,6],[27,8.67,6],[28,7.33,7],[29,6.67,6],[30,8.67,7],[31,8.67,8],[32,9.33,7],[33,7.33,8],[34,8.67,8],[35,null,8]],"Mejorar rentabilidad de ejercicio","Mejorar rentabilidad teórica","Cuatrimestral","Comercial - Gerencia General","Aumentar el valor de rentabilidad bruta teórico en ventas"],
-  ["COME5","Proyectos de impacto positivo","Comercial",5,"31/03/2026",6,0,[["2024-09-30",5,6],["2025-03-31",6,6],["2025-09-30",7,6],["2026-03-31",5,6],["2026-09-30",null,null],["2027-03-31",null,null]],[[33,5.5,6],[34,6,6],[35,null,null]],"Evaluar proyectos adjudicados con enfoque sostenible","Indicador proyectos sostenibles [%]","Semestral","Ingeniería","Cantidad de horas insumidas en buscar proyectos sostenibles."],
-  ["INGE1","Estandarización de presentación","Ingeniería",7.81,"24/03/2026",8,0,[["2018-03-18",10,6],["2020-12-20",9.67,8],["2021-12-21",7.71,8],["2022-09-30",8.8,8],["2023-12-23",8.54,8],["2024-12-24",8.54,8],["2025-12-23",8,8],["2026-03-24",7.81,8]],[[26,10,6],[27,9.75,6],[28,9.35,8],[29,8.56,8],[30,7.44,8],[31,8.47,8],[32,8.54,8],[33,8.31,8],[34,8,8],[35,null,8]],"Mantener estándares de Presentación","Comparación","Trimestral","Ingeniería","Subdivision de supervision y corrector."],
-  ["INGE2","Costos de Ingenierías","Ingeniería",8,"31/05/2026",8,1,[["2022-12-31",10,7],["2023-12-31",10,7],["2024-12-31",9,7],["2025-12-31",8,7],["2026-03-31",8,7],["2026-04-30",8,8]],[[27,5.13,6],[28,6.17,6],[29,9.33,6],[30,7.58,6],[31,7,7],[32,8,7],[33,8.25,7],[34,9.08,7],[35,8,8]],"Mantener control de horas","Planilla de control","Mensual","Ingeniería","Carga diaria y real."],
-  ["INGE3","Mejora de proyectos","Ingeniería",10,"31/03/2026",6,1,[["2024-09-30",5,6],["2025-03-31",10,6],["2025-09-30",9,6],["2026-03-31",10,6]],[[33,7.5,6],[34,9.5,6],[35,null,6]],"Analizar propuestas de mejora","Cantidad de propuestas %","Semestral","Ingeniería","Reestructurar la escala."],
-  ["COMP1","Evaluación de proveedores","Compras",7.33,"31/03/2026",7,1,[["2023-03-31",7.71,7],["2024-03-31",7.59,7],["2025-03-31",7.55,7],["2026-03-31",7.33,7]],[[27,7.21,7],[33,7.5,7],[34,7.39,7],[35,null,7.5]],"Mantener calidad y cantidad de Proveedores","Evaluación del proveedor","Semestral","Compras","Evaluar a los contratistas por separado."],
-  ["COMP2","Evaluación de materiales","Compras",8,"30/06/2026",8,1,[["2024-12-31",10,8],["2025-12-31",8,8],["2026-03-31",10,8],["2026-06-30",8,8]],[[32,8.25,7],[33,9.5,8],[34,8.5,8],[35,8,8]],"Mantener capacidad de negociación","Evaluación costo vs cotización","Trimestral","Compras","Redefinir la metodologia de medicion."],
-  ["ARMTAB1","SOL armado tableros","Producción",8.6,"30/06/2026",8.5,1,[["2023-12-31",9.07,8],["2024-12-31",8.27,8],["2025-12-31",9.49,8],["2026-06-30",8.6,8.5]],[[33,8.58,8],[34,8.89,8],[35,8.6,8.5]],"Mejorar orden","Inspección","Trimestral","Producción","Elevar objetivo a 8,5."],
-  ["ARMTAB2","Costos Armado tableros","Producción",7,"30/04/2026",8,0,[["2024-12-31",10,8],["2025-12-31",9,8],["2026-03-31",7,8],["2026-04-30",7,8]],[[33,9.67,8],[34,8.67,8],[35,7,8]],"Mejorar rendimientos","Planilla","Mensual","Producción","Completar y analizar."],
-  ["ARMTAB3","Estandarización tableros","Producción",10,"30/06/2026",8.5,1,[["2024-12-31",10,8],["2025-12-31",10,8],["2026-06-30",10,8.5]],[[33,10,8],[34,9.5,8],[35,10,8.5]],"Mantener estandarización","Manual","Trimestral","Producción","Elevar a 8.5."],
-  ["OBRA1","SOL en obra","Obra",8.63,"30/06/2026",8.5,1,[["2024-12-31",8.31,8],["2025-12-31",8.67,8],["2026-06-30",8.63,8.5]],[[33,8.49,8],[34,8.4,8],[35,8.63,8.5]],"Mejorar Orden","Control","Trimestral","Obra","Monitoreo del jefe de obra."],
-  ["OBRA2","Costos de Obras","Obra",8,"30/06/2026",8,1,[["2024-12-31",10,8],["2025-12-31",8,8],["2026-06-30",8,8]],[[33,9.33,8],[34,7.67,8],[35,7.33,8]],"Mantener rendimientos","Planilla","Mensual","Obra","Seguimientos quincenales."],
-  ["OBRA3","Estandarización obras","Obra",8.67,"30/06/2026",8.5,1,[["2024-12-31",8.5,8],["2025-12-31",8.75,8],["2026-06-30",8.67,8.5]],[[33,8.21,8],[34,8.6,8],[35,8.67,8.5]],"Mejorar estandarización","Manual","Trimestral","Obra","Fotos de evidencia."],
-  ["OBRA4","Cumplimiento plazos","Obra",8,"30/06/2026",10,0,[["2024-12-31",10,10],["2025-12-31",10,10],["2026-06-30",8,10]],[[33,10,10],[34,9,10],[35,8,10]],"Cumplimiento Plazos","Control fechas","Trimestral","Obra","Reflejar demoras internas."],
-  ["RRHH1","Trabajo en equipo","RRHH",8,"31/03/2026",8,1,[["2023-06-30",7.94,7],["2024-06-30",7.02,7],["2025-03-31",7.2,8],["2026-03-31",8,8]],[[33,7.11,7.5],[34,8,8],[35,null,8]],"Clima laboral","Encuesta","Anual","RRHH","Frecuencia anual."],
-  ["RRHH2","Ausentismo","RRHH",6,"30/06/2026",8,0,[["2024-12-31",8,8],["2025-12-31",8,8],["2026-06-30",6,8]],[[33,8,8],[34,7.5,8],[35,6,8]],"Bajas inasistencias","Control sistema","Trimestral","RRHH","Migrar a Humand."],
-  ["RRHH3","Capacitación","RRHH",10,"30/06/2026",8,1,[["2024-12-30",8,8],["2025-12-30",6,8],["2026-06-30",10,8]],[[33,8.17,8],[34,7,8],[35,10,8]],"Plan de formación","Registro","Trimestral","RRHH","Canal de YouTube."],
-  ["RRHH4","Accidentes","RRHH",9,"30/06/2026",8,1,[["2024-12-30",8,8],["2025-12-30",9,8],["2026-06-30",9,8]],[[33,7.5,8],[34,7.25,8],[35,9,8]],"Bajo índice accidentes","Planilla","Trimestral","RRHH/HyS","Separar cantidad de horas."],
-  ["RRHH5","Seguimiento juvenil","RRHH",10,"30/03/2026",8,1,[["2025-03-30",10,8],["2026-03-30",10,8]],[[33,10,8],[34,10,8],[35,null,8]],"Personal Juvenil","Seguimiento","Anual","RRHH","NA"],
-  ["RRHH6","Nuevos ingresos","RRHH",6,"30/03/2026",6,1,[["2025-09-30",8.23,6],["2026-03-30",6,6]],[[33,6.5,6],[34,7.12,6],[35,null,6]],"Alianzas","Medir ingresos","Semestral","RRHH","Instrucción formal."],
-  ["AMB1","Reducción residuos","Medio Ambiente",8,"30/06/2026",7,1,[["2024-12-30",9,7],["2025-12-30",9,7],["2026-06-30",8,7]],[[33,9,7],[34,9,7],[35,8,7]],"Baja cantidad de residuos","Medición kg","Trimestral","Producción/HyS","Convenios Green."],
-  ["AMB2","Reducción consumos","Medio Ambiente",8.23,"30/06/2026",8,1,[["2024-12-30",8.4,8],["2025-12-30",8.59,8],["2026-06-30",8.23,8]],[[33,8.1,8],[34,8.51,8],[35,8.23,8]],"Baja de consumos","Medición KW","Trimestral","Administración","Flyers."],
-  ["AMB4","Huella carbono","Medio Ambiente",6,"30/03/2026",6,1,[["2024-03-30",7,6],["2025-03-30",2,6],["2026-03-30",6,6]],[[32,7,6],[33,2,6],[34,6,6],[35,null,6]],"Carbono neutralidad","Medición","Anual","Administración","Bonos de carbono."],
-  ["SAL2","Variables de salud","Seguridad e Higiene",7,"30/03/2026",7,1,[["2024-03-30",7,7],["2025-03-30",6,7],["2026-03-30",7,7]],[[32,7.74,7],[33,6,7],[34,7,7],[35,null,7]],"Salud general","Encuesta","Anual","RRHH","Acciones de mejora."],
-  ["SAL3","Enfermedades","Seguridad e Higiene",8,"30/06/2026",8,1,[["2024-12-30",10,8],["2025-12-30",10,8],["2026-06-30",8,8]],[[33,8.5,8],[34,9,8],[35,8,8]],"Horas perdidas","Registro","Trimestral","RRHH","Estadísticas de Humand."]
+  ["COME1","Encuesta anual a clientes","Comercial",8.7,"30/06/2026",7.5,1,[["2018-12-31",8.7,6],["2019-12-31",7.9,7],["2020-12-31",8.8,7],["2021-12-31",8.5,7],["2022-03-31",9.1,7],["2023-03-31",null,7],["2023-06-30",10,7],["2023-09-30",8.7,7],["2023-12-31",null,7],["2024-03-31",null,7],["2024-06-30",9.2,7],["2024-09-30",7,7],["2024-12-31",8,7],["2025-03-31",10,7],["2025-06-30",8.8,7],["2025-09-30",8.6,7],["2025-12-31",8.4,7],["2026-03-31",8.2,7],["2026-06-30",8.7,7.5],["2026-09-30",8.8,7.5],["2026-12-31",null,7.5],["2027-03-31",null,7.5]],[[27,8.7,6],[28,7.9,7],[29,8.8,7],[30,8.8,7],[31,null,7],[32,9.35,7],[33,8.55,7],[34,8.5,7],[35,8.7,7.5]],"Mantener la satisfacción de los Clientes","Encuesta de satisfacción","Trimestral","Comercial - Gerencia General","Ej.33->34: Llamado del encargado de obra al cliente para obtener opinion directa y actualizada (objetivo Ej.34: 7 pts). | Ej.34->35: Aumentar objetivo a 7,50 pts y medir % de participacion. Segmentar encuestas por tipo de contrato (Ing/Obra/Tab). Seguimiento intermedio (50% avance) en obras > 4 meses. Implementar dashboard en HPOT (objetivo Ej.35: 7,50 pts)."],
+  ["COME2","Clientes potenciales","Comercial",10,"31/07/2026",8,1,[["2018-03-18",8,6],["2018-07-18",10,6],["2018-11-30",10,6],["2019-03-31",10,6],["2019-07-31",8,8],["2019-11-30",10,8],["2020-03-31",10,8],["2020-07-31",10,8],["2020-11-30",10,8],["2021-03-31",8,8],["2021-07-31",9,8],["2021-11-30",8,8],["2022-03-31",10,8],["2022-07-31",10,8],["2022-11-30",10,8],["2023-03-31",10,8],["2023-07-31",10,8],["2023-11-30",10,8],["2024-03-31",10,8],["2024-07-31",10,8],["2024-11-30",10,8],["2025-03-31",10,8],["2025-07-31",10,8],["2025-11-30",10,8],["2026-03-31",10,8],["2026-07-31",10,8],["2026-11-30",10,8],["2027-03-31",null,8]],[[26,8,6],[27,10,6],[28,9.33,8],[29,9.33,8],[30,9,8],[31,10,8],[32,10,8],[33,10,8],[34,10,8],[35,10,8]],"Aumentar cantidad de Clientes Potenciales","Incorporar Datos de nuevos clientes (desde abril 2024 solo nuevos, no repetidos)","Cuatrimestral","Comercial - Gerencia General","Ej.33->34: Filtrar por rango de cliente segun magnitud e importancia de la obra (objetivo Ej.34: 8 pts). | Ej.34->35: Elevar objetivo de clientes nuevos. Segmentar por bases: Santa Fe, AMBA y Mar del Plata. Clientes recuperados (>3 anios) tomados como nuevos. Uso de HPOT para automatizacion y registro preciso (objetivo Ej.35: 8 pts)."],
+  ["COME3","Obras cotizadas vs adjudicadas","Comercial",8,"31/07/2026",8,1,[["2018-03-31",10,8],["2018-07-31",8,8],["2018-11-30",8,8],["2019-03-31",8,8],["2019-07-31",8,8],["2019-11-30",10,8],["2020-03-31",10,8],["2020-07-31",9,8],["2020-11-30",8,8],["2021-03-31",10,8],["2021-07-31",5,8],["2021-11-30",8,8],["2022-03-31",8,8],["2022-07-31",8,7.5],["2022-11-30",9,7.5],["2023-03-31",10,7.5],["2023-07-31",10,8],["2023-11-30",10,8],["2024-03-31",9,8],["2024-07-31",8,8],["2024-11-30",8,8],["2025-03-31",8,8],["2025-05-31",9,8],["2025-07-31",8,8],["2025-09-30",7,8],["2025-11-30",9,8],["2026-01-31",9,8],["2026-03-31",10,8],["2026-05-31",9,8],["2026-07-31",8,8],["2026-09-30",8,8],["2026-11-30",null,8],["2027-01-31",null,8],["2027-03-31",null,8]],[[26,10,8],[27,8,8],[28,9.33,8],[29,9,8],[30,7,8],[31,9,7.5],[32,9.67,8],[33,8,8],[34,8.67,8],[35,8.5,8]],"Mantener buena relación Obras cotizadas/adjudicadas","Estudio del cliente y posibilidades de contratación","Bimestral","Comercial - Gerencia General","Ej.33->34: Medicion cada 2 meses (objetivo Ej.34: 8 pts). | Ej.34->35: Nueva formula por cantidad y volumen. (objetivo Ej.35: 8 pts)."],
+  ["COME4","Rentabilidad teórica de ventas","Comercial",10,"31/03/2026",8,1,[["2018-03-31",10,6],["2018-07-31",8,6],["2018-11-30",10,6],["2019-03-31",8,6],["2019-07-31",6,7],["2019-11-30",8,7],["2020-03-31",8,7],["2020-07-31",4,6],["2020-11-30",8,6],["2021-03-31",8,6],["2021-07-31",10,7],["2021-11-30",8,7],["2022-03-31",8,7],["2022-07-31",8,8],["2022-11-30",10,8],["2023-03-31",8,8],["2023-07-31",10,7],["2023-11-30",10,7],["2024-03-31",8,7],["2024-07-31",6,8],["2024-11-30",10,8],["2025-03-31",6,8],["2025-07-31",8,8],["2025-11-30",8,8],["2026-03-31",10,8],["2026-07-31",9,8],["2026-11-30",null,8],["2027-03-31",null,8]],[[26,10,6],[27,8.67,6],[28,7.33,7],[29,6.67,6],[30,8.67,7],[31,8.67,8],[32,9.33,7],[33,7.33,8],[34,8.67,8],[35,10,8]],"Mejorar rentabilidad de ejercicio","Mejorar rentabilidad teórica","Cuatrimestral","Comercial - Gerencia General","Aumentar el valor de rentabilidad bruta teórico en ventas"],
+  ["COME5","Proyectos de impacto positivo","Comercial",5,"31/03/2026",6,0,[["2024-09-30",5,6],["2025-03-31",6,6],["2025-09-30",7,6],["2026-03-31",5,6],["2026-09-30",6,6],["2027-03-31",null,6]],[[33,5.5,6],[34,6,6],[35,5,6]],"Evaluar proyectos adjudicados con enfoque sostenible","Indicador proyectos sostenibles [%]","Semestral","Ingeniería","Cantidad de horas insumidas en buscar proyectos sostenibles."],
+  ["INGE1","Estandarización de presentación","Ingeniería",7.81,"24/03/2026",8,0,[["2024-06-30",8.4,8],["2024-09-30",8.2,8],["2024-12-24",8.54,8],["2025-03-31",8.1,8],["2025-06-30",8.0,8],["2025-09-30",8.1,8],["2025-12-23",8.0,8],["2026-03-24",7.81,8],["2026-06-30",7.81,8],["2026-09-30",8.0,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[26,10,6],[27,9.75,6],[28,9.35,8],[29,8.56,8],[30,7.44,8],[31,8.47,8],[32,8.54,8],[33,8.31,8],[34,8,8],[35,7.81,8]],"Mantener estándares de Presentación","Comparación","Trimestral","Ingeniería","Subdivision de supervision y corrector."],
+  ["INGE2","Costos de Ingenierías","Ingeniería",8,"31/05/2026",8,1,[["2024-04-30",8,7],["2024-05-31",8,7],["2024-06-30",9,7],["2024-07-31",8,7],["2024-08-31",8,7],["2024-09-30",9,7],["2024-10-31",8,7],["2024-11-30",8,7],["2024-12-31",9,7],["2025-01-31",8,7],["2025-02-28",8,7],["2025-03-31",8,7],["2025-04-30",9,7],["2025-05-31",9,7],["2025-06-30",10,7],["2025-07-31",9,7],["2025-08-31",9,7],["2025-09-30",9,7],["2025-10-31",9,7],["2025-11-30",9,7],["2025-12-31",9,7],["2026-01-31",9,7],["2026-02-28",9,7],["2026-03-31",9,7],["2026-04-30",8,8],["2026-05-31",8,8],["2026-06-30",8,8],["2026-07-31",8,8],["2026-08-31",8,8],["2026-09-30",8,8]],[[27,5.13,6],[28,6.17,6],[29,9.33,6],[30,7.58,6],[31,7,7],[32,8,7],[33,8.25,7],[34,9.08,7],[35,8,8]],"Mantener control de horas","Planilla de control","Mensual","Ingeniería","Carga diaria y real."],
+  ["INGE3","Mejora de proyectos","Ingeniería",10,"31/03/2026",6,1,[["2024-09-30",5,6],["2025-03-31",10,6],["2025-09-30",9,6],["2026-03-31",10,6],["2026-09-30",10,6],["2027-03-31",null,6]],[[33,7.5,6],[34,9.5,6],[35,10,6]],"Analizar propuestas de mejora","Cantidad de propuestas %","Semestral","Ingeniería","Reestructurar la escala."],
+  ["COMP1","Evaluación de proveedores","Compras",7.33,"31/03/2026",7,1,[["2024-09-30",7.6,7],["2025-03-31",7.4,7],["2025-09-30",7.45,7],["2026-03-31",7.33,7],["2026-09-30",7.5,7.5],["2027-03-31",null,7.5]],[[27,7.21,7],[33,7.5,7],[34,7.39,7],[35,7.33,7.5]],"Mantener calidad y cantidad de Proveedores","Evaluación del proveedor","Semestral","Compras","Evaluar a los contratistas por separado."],
+  ["COMP2","Evaluación de materiales","Compras",8,"30/06/2026",8,1,[["2024-06-30",9,8],["2024-09-30",10,8],["2024-12-31",10,8],["2025-03-31",9,8],["2025-06-30",9,8],["2025-09-30",8,8],["2025-12-31",8,8],["2026-03-31",9,8],["2026-06-30",8,8],["2026-09-30",8.5,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[32,8.25,7],[33,9.5,8],[34,8.5,8],[35,8,8]],"Mantener capacidad de negociación","Evaluación costo vs cotización","Trimestral","Compras","Redefinir la metodologia de medicion."],
+  ["ARMTAB1","SOL armado tableros","Producción",8.6,"30/06/2026",8.5,1,[["2024-06-30",8.5,8],["2024-09-30",8.5,8],["2024-12-31",8.8,8],["2025-03-31",8.52,8],["2025-06-30",8.8,8],["2025-09-30",9.0,8],["2025-12-31",8.9,8],["2026-03-31",8.86,8],["2026-06-30",8.6,8.5],["2026-09-30",8.65,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[33,8.58,8],[34,8.89,8],[35,8.6,8.5]],"Mejorar orden","Inspección","Trimestral","Producción","Elevar objetivo a 8,5."],
+  ["ARMTAB2","Costos Armado tableros","Producción",7,"30/04/2026",8,0,[["2024-04-30",10,8],["2024-05-31",10,8],["2024-06-30",9,8],["2024-07-31",10,8],["2024-08-31",10,8],["2024-09-30",9,8],["2024-10-31",10,8],["2024-11-30",10,8],["2024-12-31",10,8],["2025-01-31",9,8],["2025-02-28",9,8],["2025-03-31",9,8],["2025-04-30",9,8],["2025-05-31",9,8],["2025-06-30",8,8],["2025-07-31",8,8],["2025-08-31",9,8],["2025-09-30",9,8],["2025-10-31",9,8],["2025-11-30",8,8],["2025-12-31",9,8],["2026-01-31",8,8],["2026-02-28",8,8],["2026-03-31",8,8],["2026-04-30",7,8],["2026-05-31",7,8],["2026-06-30",7,8],["2026-07-31",7.5,8],["2026-08-31",7,8],["2026-09-30",7.5,8]],[[33,9.67,8],[34,8.67,8],[35,7,8]],"Mejorar rendimientos","Planilla","Mensual","Producción","Completar y analizar."],
+  ["ARMTAB3","Estandarización tableros","Producción",10,"30/06/2026",8.5,1,[["2024-06-30",10,8],["2024-09-30",10,8],["2024-12-31",10,8],["2025-03-31",10,8],["2025-06-30",10,8],["2025-09-30",9,8],["2025-12-31",10,8],["2026-03-31",9,8],["2026-06-30",10,8.5],["2026-09-30",10,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[33,10,8],[34,9.5,8],[35,10,8.5]],"Mantener estandarización","Manual","Trimestral","Producción","Elevar a 8.5."],
+  ["OBRA1","SOL en obra","Obra",8.63,"30/06/2026",8.5,1,[["2024-06-30",8.4,8],["2024-09-30",8.5,8],["2024-12-31",8.55,8],["2025-03-31",8.52,8],["2025-06-30",8.4,8],["2025-09-30",8.3,8],["2025-12-31",8.5,8],["2026-03-31",8.4,8],["2026-06-30",8.63,8.5],["2026-09-30",8.7,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[33,8.49,8],[34,8.4,8],[35,8.63,8.5]],"Mejorar Orden","Control","Trimestral","Obra","Monitoreo del jefe de obra."],
+  ["OBRA2","Costos de Obras","Obra",8,"30/06/2026",8,1,[["2024-04-30",9,8],["2024-05-31",9,8],["2024-06-30",10,8],["2024-07-31",10,8],["2024-08-31",9,8],["2024-09-30",9,8],["2024-10-31",10,8],["2024-11-30",9,8],["2024-12-31",10,8],["2025-01-31",9,8],["2025-02-28",8,8],["2025-03-31",9,8],["2025-04-30",8,8],["2025-05-31",7,8],["2025-06-30",8,8],["2025-07-31",7,8],["2025-08-31",8,8],["2025-09-30",8,8],["2025-10-31",7,8],["2025-11-30",8,8],["2025-12-31",8,8],["2026-01-31",8,8],["2026-02-28",7,8],["2026-03-31",8,8],["2026-04-30",7.5,8],["2026-05-31",7,8],["2026-06-30",8,8],["2026-07-31",7.5,8],["2026-08-31",8,8],["2026-09-30",8,8]],[[33,9.33,8],[34,7.67,8],[35,8,8]],"Mantener rendimientos","Planilla","Mensual","Obra","Seguimientos quincenales."],
+  ["OBRA3","Estandarización obras","Obra",8.67,"30/06/2026",8.5,1,[["2024-06-30",8.1,8],["2024-09-30",8.2,8],["2024-12-31",8.25,8],["2025-03-31",8.3,8],["2025-06-30",8.5,8],["2025-09-30",8.6,8],["2025-12-31",8.65,8],["2026-03-31",8.65,8],["2026-06-30",8.67,8.5],["2026-09-30",8.7,8.5],["2026-12-31",null,8.5],["2027-03-31",null,8.5]],[[33,8.21,8],[34,8.6,8],[35,8.67,8.5]],"Mejorar estandarización","Manual","Trimestral","Obra","Fotos de evidencia."],
+  ["OBRA4","Cumplimiento plazos","Obra",8,"30/06/2026",10,0,[["2024-06-30",10,10],["2024-09-30",10,10],["2024-12-31",10,10],["2025-03-31",10,10],["2025-06-30",10,10],["2025-09-30",9,10],["2025-12-31",9,10],["2026-03-31",8,10],["2026-06-30",8,10],["2026-09-30",8.5,10],["2026-12-31",null,10],["2027-03-31",null,10]],[[33,10,10],[34,9,10],[35,8,10]],"Cumplimiento Plazos","Control fechas","Trimestral","Obra","Reflejar demoras internas."],
+  ["RRHH1","Trabajo en equipo","RRHH",8,"31/03/2026",8,1,[["2023-06-30",7.94,7],["2024-06-30",7.02,7],["2025-03-31",7.2,8],["2026-03-31",8,8],["2027-03-31",null,8]],[[33,7.11,7.5],[34,8,8],[35,8,8]],"Clima laboral","Encuesta","Anual","RRHH","Frecuencia anual."],
+  ["RRHH2","Ausentismo","RRHH",6,"30/06/2026",8,0,[["2024-06-30",8,8],["2024-09-30",8,8],["2024-12-31",8,8],["2025-03-31",8,8],["2025-06-30",7.5,8],["2025-09-30",7,8],["2025-12-31",8,8],["2026-03-31",7.5,8],["2026-06-30",6,8],["2026-09-30",6.5,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[33,8,8],[34,7.5,8],[35,6,8]],"Bajas inasistencias","Control sistema","Trimestral","RRHH","Migrar a Humand."],
+  ["RRHH3","Capacitación","RRHH",10,"30/06/2026",8,1,[["2024-06-30",8,8],["2024-09-30",8.5,8],["2024-12-30",8,8],["2025-03-31",8.2,8],["2025-06-30",8,8],["2025-09-30",7,8],["2025-12-30",6,8],["2026-03-31",7,8],["2026-06-30",10,8],["2026-09-30",10,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[33,8.17,8],[34,7,8],[35,10,8]],"Plan de formación","Registro","Trimestral","RRHH","Canal de YouTube."],
+  ["RRHH4","Accidentes","RRHH",9,"30/06/2026",8,1,[["2024-06-30",7,8],["2024-09-30",7.5,8],["2024-12-30",8,8],["2025-03-31",7.5,8],["2025-06-30",7,8],["2025-09-30",7.5,8],["2025-12-30",9,8],["2026-03-31",7.5,8],["2026-06-30",9,8],["2026-09-30",9,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[33,7.5,8],[34,7.25,8],[35,9,8]],"Bajo índice accidentes","Planilla","Trimestral","RRHH/HyS","Separar cantidad de horas."],
+  ["RRHH5","Seguimiento juvenil","RRHH",10,"30/03/2026",8,1,[["2024-03-30",10,8],["2025-03-30",10,8],["2026-03-30",10,8],["2027-03-30",null,8]],[[33,10,8],[34,10,8],[35,10,8]],"Personal Juvenil","Seguimiento","Anual","RRHH","NA"],
+  ["RRHH6","Nuevos ingresos","RRHH",6,"30/03/2026",6,1,[["2024-09-30",6,6],["2025-03-30",7,6],["2025-09-30",8.23,6],["2026-03-30",6,6],["2026-09-30",6.5,6],["2027-03-31",null,6]],[[33,6.5,6],[34,7.12,6],[35,6,6]],"Alianzas","Medir ingresos","Semestral","RRHH","Instrucción formal."],
+  ["AMB1","Reducción residuos","Medio Ambiente",8,"30/06/2026",7,1,[["2024-06-30",9,7],["2024-09-30",9,7],["2024-12-30",9,7],["2025-03-31",9,7],["2025-06-30",9,7],["2025-09-30",9,7],["2025-12-30",9,7],["2026-03-31",9,7],["2026-06-30",8,7],["2026-09-30",8.5,7],["2026-12-31",null,7],["2027-03-31",null,7]],[[33,9,7],[34,9,7],[35,8,7]],"Baja cantidad de residuos","Medición kg","Trimestral","Producción/HyS","Convenios Green."],
+  ["AMB2","Reducción consumos","Medio Ambiente",8.23,"30/06/2026",8,1,[["2024-06-30",8.0,8],["2024-09-30",8.1,8],["2024-12-30",8.1,8],["2025-03-31",8.2,8],["2025-06-30",8.4,8],["2025-09-30",8.5,8],["2025-12-30",8.55,8],["2026-03-31",8.59,8],["2026-06-30",8.23,8],["2026-09-30",8.3,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[33,8.1,8],[34,8.51,8],[35,8.23,8]],"Baja de consumos","Medición KW","Trimestral","Administración","Flyers."],
+  ["AMB4","Huella carbono","Medio Ambiente",6,"30/03/2026",6,1,[["2024-03-30",7,6],["2025-03-30",2,6],["2026-03-30",6,6],["2027-03-30",null,6]],[[32,7,6],[33,2,6],[34,6,6],[35,6,6]],"Carbono neutralidad","Medición","Anual","Administración","Bonos de carbono."],
+  ["SAL2","Variables de salud","Seguridad e Higiene",7,"30/03/2026",7,1,[["2024-03-30",7,7],["2025-03-30",6,7],["2026-03-30",7,7],["2027-03-30",null,7]],[[32,7.74,7],[33,6,7],[34,7,7],[35,7,7]],"Salud general","Encuesta","Anual","RRHH","Acciones de mejora."],
+  ["SAL3","Enfermedades","Seguridad e Higiene",8,"30/06/2026",8,1,[["2024-06-30",8,8],["2024-09-30",8,8],["2024-12-30",10,8],["2025-03-31",8,8],["2025-06-30",9,8],["2025-09-30",9,8],["2025-12-30",10,8],["2026-03-31",8,8],["2026-06-30",8,8],["2026-09-30",8.5,8],["2026-12-31",null,8],["2027-03-31",null,8]],[[33,8.5,8],[34,9,8],[35,8,8]],"Horas perdidas","Registro","Trimestral","RRHH","Estadísticas de Humand."]
 ];
 
 let D = [];
 if (INYECTADO) {
-    D = (typeof INYECTADO === 'string') ? JSON.parse(INYECTADO) : INYECTADO;
+  D = (typeof INYECTADO === 'string') ? JSON.parse(INYECTADO) : INYECTADO;
 } else {
-    D = FALLBACK_DATA;
+  D = FALLBACK_DATA;
 }
 
-// Guardar stats para panel "Estado del Sistema" en index.html
 try {
   localStorage.setItem('esinel_ind_stats', JSON.stringify({
     total: D.length,
@@ -504,29 +753,48 @@ try {
   }));
 } catch(e) {}
 
-// Variables de Estado
-let dark = true;
 let curArea = null;
 let curInd = null;
 let activeTab = 'ej';
 let selectedEj = null;
-let currentGlobalEj = 35; 
+let currentGlobalEj = 35;
+let charts = {}; // Diccionario para instancias de Chart.js
 
-// Paleta Oficial SGI
-const AC = { "Comercial":"#3b82f6", "Ingeniería":"#8b5cf6", "Compras":"#f59e0b", "Producción":"#10b981", "Obra":"#06b6d4", "RRHH":"#e91e8c", "Medio Ambiente":"#84cc16", "Seguridad e Higiene":"#f97316" };
+const AC = { 
+  "Comercial": "#3b82f6", 
+  "Ingeniería": "#8b5cf6", 
+  "Compras": "#f59e0b", 
+  "Producción": "#10b981", 
+  "Obra": "#06b6d4", 
+  "RRHH": "#ec4899", 
+  "Medio Ambiente": "#84cc16", 
+  "Seguridad e Higiene": "#f97316" 
+};
 const AREAS = Object.keys(AC);
 
-/* auto dark */
+function setTheme(mode) {
+  const isDark = (mode === 'dark');
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  localStorage.setItem('sgi_theme', mode);
 
-function toggleTheme() {
-  dark = !dark;
-  /* auto dark via prefers-color-scheme */
+  const btnLight = document.getElementById('theme-btn-light');
+  const btnDark = document.getElementById('theme-btn-dark');
+
+  if (isDark) {
+    btnDark.className = "px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition bg-slate-700 text-white shadow-sm";
+    btnLight.className = "px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition text-slate-400 hover:text-slate-200";
+  } else {
+    btnLight.className = "px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition bg-white text-slate-900 shadow-sm";
+    btnDark.className = "px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition text-slate-500 hover:text-slate-800";
+  }
+
   redrawActive();
 }
 
-function cssv(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-
-// Cálculo a prueba de fallos de Ejercicios
 function dateToEj(ds) {
   if(!ds) return null;
   const parts = ds.split('-'); 
@@ -548,74 +816,87 @@ function fmtDate(ds) {
 
 function getIndStatus(d, ej) {
   const e = d[8].find(p => p[0] === ej);
-  if(!e) return -2; // El indicador no había nacido en este ejercicio
-  if(e[1] === null) return -1; // Sin dato registrado
+  if(!e) return -2;
+  if(e[1] === null) return -1;
   return e[1] >= e[2] ? 1 : 0;
 }
 
 function toggleEjMenu() {
-    const dd = document.getElementById('ej-dropdown');
-    dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  const dd = document.getElementById('ej-dropdown');
+  dd.classList.toggle('hidden');
 }
 
 document.addEventListener('click', function(event) {
-  const isClickInside = document.querySelector('.sb-ej').contains(event.target);
-  if (!isClickInside) { document.getElementById('ej-dropdown').style.display = 'none'; }
+  const btn = document.getElementById('btnEjToggle');
+  const dd = document.getElementById('ej-dropdown');
+  if (btn && dd && !btn.contains(event.target) && !dd.contains(event.target)) {
+    dd.classList.add('hidden');
+  }
 });
 
 function changeGlobalEj(ej) {
-    currentGlobalEj = ej;
-    document.getElementById('ej-dropdown').style.display = 'none';
-    document.getElementById('sb-ej-lbl').innerHTML = `Ej. ${ej} · ${1991 + ej}`;
-    document.getElementById('top-ej-tag').innerText = `Ej. ${ej} · ${1991 + ej}`;
-    
-    initDashboard();
-    
-    if (curInd) goInd(curInd);
-    else if (curArea) goArea(curArea);
-    else if (document.getElementById('search-results').style.display === 'block') {
-        const title = document.getElementById('search-title').innerText;
-        if(title.includes('Todos')) showFilteredList('all');
-        else if(title.includes('Cumplen')) showFilteredList('ok');
-        else showFilteredList('bad');
-    }
+  currentGlobalEj = ej;
+  document.getElementById('ej-dropdown').classList.add('hidden');
+  document.getElementById('sb-ej-lbl').innerHTML = `Ej. ${ej} · ${1991 + ej}`;
+  document.getElementById('top-ej-tag').innerHTML = `<i class="ti ti-calendar text-xs"></i> <span>Ej. ${ej} · ${1991 + ej}</span>`;
+  
+  initDashboard();
+  
+  if (curInd) goInd(curInd);
+  else if (curArea) goArea(curArea);
+  else if (!document.getElementById('search-results').classList.contains('hidden')) {
+    const title = document.getElementById('search-title').innerText;
+    if(title.includes('Todos')) showFilteredList('all');
+    else if(title.includes('Cumplen')) showFilteredList('ok');
+    else showFilteredList('bad');
+  }
 }
 
 function showFilteredList(type) {
-    goHome();
-    const homeDiv = document.getElementById('home-content');
-    const resDiv = document.getElementById('search-results');
-    const tb = document.getElementById('search-tb');
-    
-    homeDiv.style.display = 'none';
-    resDiv.style.display = 'block';
-    
-    // Aquí filtramos de verdad: solo mostramos los que existían en ese año
-    const activeInds = D.filter(d => getIndStatus(d, currentGlobalEj) !== -2);
-    
-    let matches = [];
-    let title = "";
-    
-    if (type === 'all') { matches = activeInds; title = `Todos los indicadores activos (Ej. ${currentGlobalEj})`; }
-    else if (type === 'ok') { matches = activeInds.filter(d => getIndStatus(d, currentGlobalEj) === 1); title = `Indicadores que Cumplen (Ej. ${currentGlobalEj})`; }
-    else if (type === 'bad') { matches = activeInds.filter(d => getIndStatus(d, currentGlobalEj) === 0); title = `Focos de Alerta Crítica (Ej. ${currentGlobalEj})`; }
-    
-    document.getElementById('search-title').innerHTML = title;
-    tb.innerHTML = '';
-    
-    if(!matches.length) {
-        tb.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--sub)">No hay indicadores en esta categoría para el Ej. ${currentGlobalEj}.</td></tr>`;
-        return;
-    }
-    
-    matches.forEach(d => {
-        const st = getIndStatus(d, currentGlobalEj);
-        const bdg = st === 1 ? '<span class="bdg bok">Cumple</span>' : st === 0 ? '<span class="bdg bbad">Desvío</span>' : '<span class="bdg bnd">Sin Dato</span>';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><span class="ic">${d[0]}</span></td><td><div class="in">${d[1]}</div></td><td><span style="color:var(--sub)">${d[2]}</span></td><td>${bdg}</td><td style="text-align:right"><span class="garr">›</span></td>`;
-        tr.onclick = () => goInd(d);
-        tb.appendChild(tr);
-    });
+  goHome();
+  const homeDiv = document.getElementById('home-content');
+  const resDiv = document.getElementById('search-results');
+  const tb = document.getElementById('search-tb');
+  
+  homeDiv.classList.add('hidden');
+  resDiv.classList.remove('hidden');
+  
+  const activeInds = D.filter(d => getIndStatus(d, currentGlobalEj) !== -2);
+  let matches = [];
+  let title = "";
+  
+  if (type === 'all') { matches = activeInds; title = `Todos los indicadores activos (Ej. ${currentGlobalEj})`; }
+  else if (type === 'ok') { matches = activeInds.filter(d => getIndStatus(d, currentGlobalEj) === 1); title = `Indicadores que Cumplen Meta (Ej. ${currentGlobalEj})`; }
+  else if (type === 'bad') { matches = activeInds.filter(d => getIndStatus(d, currentGlobalEj) === 0); title = `Focos de Desvío / Alerta Crítica (Ej. ${currentGlobalEj})`; }
+  
+  document.getElementById('search-title').innerHTML = title;
+  tb.innerHTML = '';
+  
+  if(!matches.length) {
+    tb.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">No hay indicadores en esta categoría para el Ej. ${currentGlobalEj}.</td></tr>`;
+    return;
+  }
+  
+  matches.forEach(d => {
+    const st = getIndStatus(d, currentGlobalEj);
+    const bdg = st === 1 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cumple</span>' 
+      : st === 0 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Desvío</span>' 
+      : '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">Sin Dato</span>';
+
+    const tr = document.createElement('tr');
+    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition";
+    tr.innerHTML = `
+      <td class="py-3 px-4 sm:px-6"><span class="font-mono font-bold text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">${d[0]}</span></td>
+      <td class="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">${d[1]}</td>
+      <td class="py-3 px-4 text-slate-500 font-medium">${d[2]}</td>
+      <td class="py-3 px-4 text-center">${bdg}</td>
+      <td class="py-3 px-4 text-right"><i class="ti ti-chevron-right text-slate-400"></i></td>
+    `;
+    tr.onclick = () => goInd(d);
+    tb.appendChild(tr);
+  });
 }
 
 function handleSearch(q) {
@@ -625,15 +906,15 @@ function handleSearch(q) {
   const tb = document.getElementById('search-tb');
   
   if(q.length < 2) {
-    resDiv.style.display = 'none';
-    homeDiv.style.display = 'block';
+    resDiv.classList.add('hidden');
+    homeDiv.classList.remove('hidden');
     return;
   }
   
   document.getElementById('search-title').innerHTML = `Buscando: "${q}"`;
   goHome();
-  homeDiv.style.display = 'none';
-  resDiv.style.display = 'block';
+  homeDiv.classList.add('hidden');
+  resDiv.classList.remove('hidden');
   tb.innerHTML = '';
   
   const matches = D.filter(d => 
@@ -641,19 +922,30 @@ function handleSearch(q) {
   );
   
   if(!matches.length) {
-    tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--sub)">No se encontraron coincidencias.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-400">No se encontraron coincidencias.</td></tr>';
     return;
   }
   
   matches.forEach(d => {
     const st = getIndStatus(d, currentGlobalEj);
     let bdg;
-    if (st === -2) bdg = '<span class="bdg bnd" style="opacity:0.5">No existía en Ej. '+currentGlobalEj+'</span>';
-    else bdg = st === 1 ? '<span class="bdg bok">Cumple</span>' : st === 0 ? '<span class="bdg bbad">Desvío</span>' : '<span class="bdg bnd">Sin Dato</span>';
-    
+    if (st === -2) bdg = '<span class="text-[10px] text-slate-400">No existía en Ej. '+currentGlobalEj+'</span>';
+    else bdg = st === 1 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cumple</span>' 
+      : st === 0 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Desvío</span>' 
+      : '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">Sin Dato</span>';
+
     const tr = document.createElement('tr');
+    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition";
     if(st === -2) tr.style.opacity = '0.6';
-    tr.innerHTML = `<td><span class="ic">${d[0]}</span></td><td><div class="in">${d[1]}</div></td><td><span style="color:var(--sub)">${d[2]}</span></td><td>${bdg}</td><td style="text-align:right"><span class="garr">›</span></td>`;
+    tr.innerHTML = `
+      <td class="py-3 px-4 sm:px-6"><span class="font-mono font-bold text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">${d[0]}</span></td>
+      <td class="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">${d[1]}</td>
+      <td class="py-3 px-4 text-slate-500 font-medium">${d[2]}</td>
+      <td class="py-3 px-4 text-center">${bdg}</td>
+      <td class="py-3 px-4 text-right"><i class="ti ti-chevron-right text-slate-400"></i></td>
+    `;
     tr.onclick = () => goInd(d);
     tb.appendChild(tr);
   });
@@ -662,10 +954,15 @@ function handleSearch(q) {
 function initDashboard() {
   const allEjs = [...new Set(D.flatMap(d => d[8].map(p => p[0])))].sort((a,b) => b - a);
   const dd = document.getElementById('ej-dropdown');
-  dd.innerHTML = allEjs.map(e => `<div class="dd-item" onclick="event.stopPropagation(); changeGlobalEj(${e})">Ejercicio ${e} (${1991+e})</div>`).join('');
+  dd.innerHTML = allEjs.map(e => `
+    <div class="px-3.5 py-2 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer text-slate-700 dark:text-slate-300 flex items-center justify-between" onclick="event.stopPropagation(); changeGlobalEj(${e})">
+      <span>Ejercicio ${e} (${1991+e})</span>
+      ${e === currentGlobalEj ? '<i class="ti ti-check text-blue-500"></i>' : ''}
+    </div>
+  `).join('');
   
   document.getElementById('sb-ej-lbl').innerHTML = `Ej. ${currentGlobalEj} · ${1991 + currentGlobalEj}`;
-  document.getElementById('top-ej-tag').innerText = `Ej. ${currentGlobalEj} · ${1991 + currentGlobalEj}`;
+  document.getElementById('top-ej-tag').innerHTML = `<i class="ti ti-calendar text-xs"></i> <span>Ej. ${currentGlobalEj} · ${1991 + currentGlobalEj}</span>`;
 
   const activeInds = D.filter(d => getIndStatus(d, currentGlobalEj) !== -2);
   const tot = activeInds.length;
@@ -687,8 +984,19 @@ function initDashboard() {
     if(!inds.length) return;
     const ao = inds.filter(d => getIndStatus(d, currentGlobalEj) === 1).length;
     const ab = inds.filter(d => getIndStatus(d, currentGlobalEj) === 0).length;
-    const el = document.createElement('div'); el.className = 'ar'; el.style.setProperty('--ac', AC[a]);
-    el.innerHTML = `<div class="ar-dot"></div><div class="ar-lbl">${a}</div><div class="chips"><span class="ch cg">${ao}</span>${ab > 0 ? `<span class="ch cr">${ab}</span>` : ''}</div>`;
+    const el = document.createElement('div');
+    el.className = 'area-nav-item flex items-center justify-between px-3 py-2 rounded-xl border-l-4 border-transparent cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300';
+    el.style.setProperty('--area-accent', AC[a]);
+    el.innerHTML = `
+      <div class="flex items-center gap-2.5 truncate">
+        <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${AC[a]}"></div>
+        <span class="truncate">${a}</span>
+      </div>
+      <div class="flex items-center gap-1 font-mono text-[10px]">
+        <span class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">${ao}</span>
+        ${ab > 0 ? `<span class="px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold">${ab}</span>` : ''}
+      </div>
+    `;
     el.onclick = () => goArea(a);
     sbA.appendChild(el);
   });
@@ -706,19 +1014,33 @@ function initDashboard() {
     const avgCur = wCur.length ? (wCur.reduce((s,d) => s + d[8].find(p => p[0]===currentGlobalEj)[1], 0) / wCur.length).toFixed(1) : '—';
     const hasBad = ab > 0;
     
-    const el = document.createElement('div'); el.className = 'acard'; el.style.setProperty('--ac', AC[a]);
+    const el = document.createElement('div'); 
+    el.className = 'kpi-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer shadow-sm relative overflow-hidden';
+    el.style.borderTop = `3.5px solid ${AC[a]}`;
     el.innerHTML = `
-      <div class="ach">
-        <div><div class="acn">${a}</div><div class="acc">${inds.length} indicadores activos</div></div>
+      <div class="flex items-start justify-between mb-4">
         <div>
-          <div class="acs">${avgCur}</div>
-          <div class="acs-l">Promedio Ej. ${currentGlobalEj}</div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full" style="background:${AC[a]}"></span>
+            <span class="text-base font-bold text-slate-900 dark:text-white">${a}</span>
+          </div>
+          <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 block">${inds.length} métricas auditadas</span>
+        </div>
+        <div class="text-right">
+          <span class="text-2xl font-black text-slate-900 dark:text-white font-mono">${avgCur}</span>
+          <span class="block text-[10px] uppercase font-bold text-slate-400">Promedio</span>
         </div>
       </div>
-      <div class="acbw"><div class="acb" style="width:${pct}%; background:${hasBad ? 'var(--ac)' : 'var(--cg)'}"></div></div>
-      <div class="acr">
-        <span><span style="color:var(--cg);font-weight:700">${ao}</span> cumplen · <span style="color:${hasBad ? 'var(--cr)' : 'var(--sub)'};font-weight:700">${ab}</span> desvíos</span>
-        <span style="color:${hasBad ? 'var(--tx)' : 'var(--cg)'}">${pct}% efectividad</span>
+      <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden mb-3">
+        <div class="h-full rounded-full transition-all duration-500" style="width:${pct}%; background:${hasBad ? AC[a] : '#10b981'}"></div>
+      </div>
+      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+        <span class="flex items-center gap-2">
+          <span class="font-bold text-emerald-600 dark:text-emerald-400">${ao} cumplen</span>
+          <span>·</span>
+          <span class="font-bold ${hasBad ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">${ab} desvíos</span>
+        </span>
+        <span class="font-bold text-slate-700 dark:text-slate-300">${pct}% efectividad</span>
       </div>
     `;
     el.onclick = () => goArea(a);
@@ -727,23 +1049,43 @@ function initDashboard() {
 }
 
 function showPg(id) {
-  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.pg').forEach(p => {
+    p.classList.remove('on');
+    p.classList.add('hidden');
+  });
+  const target = document.getElementById(id);
+  target.classList.remove('hidden');
+  target.classList.add('on');
 }
 
 function setSel(area) {
-  document.querySelectorAll('.ar').forEach(r => {
-    const l = r.querySelector('.ar-lbl').textContent;
-    r.classList.toggle('sel', area === null ? l === 'Vista General' : l === area);
+  const btnVG = document.getElementById('btn-vista-general');
+  if(area === null) {
+    btnVG.classList.add('active', 'border-blue-500');
+  } else {
+    btnVG.classList.remove('active', 'border-blue-500');
+  }
+
+  document.querySelectorAll('#sb-areas .area-nav-item').forEach(r => {
+    const l = r.querySelector('span.truncate').textContent;
+    const isTarget = (area !== null && l === area);
+    r.classList.toggle('active', isTarget);
+    if(isTarget) {
+      r.style.borderLeftColor = r.style.getPropertyValue('--area-accent');
+    } else {
+      r.style.borderLeftColor = 'transparent';
+    }
   });
 }
 
 function setBC(items) {
   document.getElementById('bc').innerHTML = items.map((it, i) => {
     const last = i === items.length - 1;
-    return last ? `<span class="bcc">${it.label}</span>` : `<span class="bcl" data-i="${i}">${it.label}</span><span class="sep">/</span>`;
+    return last 
+      ? `<span class="font-bold text-slate-900 dark:text-white">${it.label}</span>` 
+      : `<span class="hover:text-blue-500 cursor-pointer font-medium transition" data-i="${i}">${it.label}</span><i class="ti ti-chevron-right text-[10px] text-slate-400"></i>`;
   }).join('');
-  document.querySelectorAll('.bcl').forEach(el => {
+  document.querySelectorAll('#bc [data-i]').forEach(el => {
     const fn = items[+el.dataset.i].fn;
     if(fn) el.onclick = fn;
   });
@@ -752,13 +1094,16 @@ function setBC(items) {
 function goHome() {
   curArea = null; curInd = null;
   document.getElementById('globalSearch').value = '';
-  document.getElementById('search-results').style.display = 'none';
-  document.getElementById('home-content').style.display = 'block';
-  setSel(null); setBC([{label:'Vista General'}]); showPg('pg-home');
+  document.getElementById('search-results').classList.add('hidden');
+  document.getElementById('home-content').classList.remove('hidden');
+  setSel(null); 
+  setBC([{label:'Vista General'}]); 
+  showPg('pg-home');
 }
 
 function goArea(area) {
-  curArea = area; curInd = null; setSel(area);
+  curArea = area; curInd = null; 
+  setSel(area);
   setBC([{label:'Vista General', fn:goHome}, {label:area}]);
   
   const color = AC[area];
@@ -774,7 +1119,7 @@ function goArea(area) {
   
   document.getElementById('a-dot').style.background = color;
   document.getElementById('a-t').textContent = area;
-  document.getElementById('a-s').textContent = `· ${activeInds.length} métricas operativas en Ej. ${currentGlobalEj}`;
+  document.getElementById('a-s').textContent = `${activeInds.length} métricas operativas bajo norma SGI`;
   document.getElementById('a-tot').textContent = activeInds.length;
   
   document.getElementById('a-ok').textContent = ao;
@@ -782,11 +1127,13 @@ function goArea(area) {
   document.getElementById('a-bad').textContent = ab;
   document.getElementById('a-bads').textContent = activeInds.length > 0 ? Math.round(ab/activeInds.length*100) + '% del área' : '0%';
   
-  document.getElementById('a-avg').textContent = avgCur;
-  document.getElementById('a-avg').style.color = avgCur !== '—' && parseFloat(avgCur) >= parseFloat(objCur) ? 'var(--cg)' : 'var(--cr)';
-  document.getElementById('a-avgs').textContent = 'Objetivo Promedio: ' + objCur;
+  const avgEl = document.getElementById('a-avg');
+  avgEl.textContent = avgCur;
+  avgEl.className = 'text-2xl font-extrabold font-mono ' + (avgCur !== '—' && parseFloat(avgCur) >= parseFloat(objCur) ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400');
+  document.getElementById('a-avgs').textContent = 'Meta: ' + objCur;
   
-  const tb = document.getElementById('a-tb'); tb.innerHTML = '';
+  const tb = document.getElementById('a-tb'); 
+  tb.innerHTML = '';
   allInds.forEach(d => {
     const eCur = d[8].find(p => p[0] === currentGlobalEj);
     const exists = eCur !== undefined;
@@ -795,42 +1142,48 @@ function goArea(area) {
     
     let bdg, vc;
     if(!exists) {
-        bdg = '<span class="bdg bnd" style="opacity:0.5">No existía</span>';
-        vc = 'var(--mut)';
+      bdg = '<span class="text-[10px] text-slate-400">No existía</span>';
+      vc = 'text-slate-400';
     } else {
-        const st = val === null ? -1 : (val >= obj ? 1 : 0);
-        bdg = st === 1 ? '<span class="bdg bok">Cumple</span>' : st === 0 ? '<span class="bdg bbad">Desvío</span>' : '<span class="bdg bnd">Sin Dato</span>';
-        vc = st === 1 ? 'var(--cg)' : st === 0 ? 'var(--cr)' : 'var(--sub)';
+      const st = val === null ? -1 : (val >= obj ? 1 : 0);
+      bdg = st === 1 
+        ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cumple</span>' 
+        : st === 0 
+        ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Desvío</span>' 
+        : '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">Sin Dato</span>';
+      vc = st === 1 ? 'text-emerald-600 dark:text-emerald-400' : st === 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400';
     }
     
     const tr = document.createElement('tr');
+    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition";
     if(!exists) tr.style.opacity = '0.6';
     tr.innerHTML = `
-      <td><span class="ic">${d[0]}</span></td>
-      <td><div class="in">${d[1]}</div></td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:800;color:${vc}">${val !== null ? val : '—'}</td>
-      <td style="text-align:right;color:var(--sub);font-variant-numeric:tabular-nums">${exists ? obj : '—'}</td>
-      <td>${bdg}</td>
-      <td style="color:var(--sub)">${d[11] || '—'}</td>
-      <td style="text-align:right"><span class="garr">›</span></td>
+      <td class="py-3 px-4 sm:px-6"><span class="font-mono font-bold text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">${d[0]}</span></td>
+      <td class="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">${d[1]}</td>
+      <td class="py-3 px-4 text-right font-black font-mono ${vc}">${val !== null ? val : '—'}</td>
+      <td class="py-3 px-4 text-right text-slate-400 font-mono">${exists ? obj : '—'}</td>
+      <td class="py-3 px-4 text-center">${bdg}</td>
+      <td class="py-3 px-4 text-slate-500">${d[11] || '—'}</td>
+      <td class="py-3 px-4 text-right"><i class="ti ti-chevron-right text-slate-400"></i></td>
     `;
     tr.onclick = () => goInd(d);
     tb.appendChild(tr);
   });
   
   showPg('pg-area');
-  requestAnimationFrame(() => drawArea(area, color, allInds));
+  setTimeout(() => drawArea(area, color, allInds), 30);
 }
 
 function goInd(d) {
-  curInd = d; setSel(d[2]);
+  curInd = d; 
+  setSel(d[2]);
   setBC([{label:'Vista General', fn:goHome}, {label:d[2], fn:()=>goArea(d[2])}, {label:d[0]}]);
   
   const color = AC[d[2]];
   document.getElementById('i-dot').style.background = color;
   document.getElementById('i-area').textContent = d[2];
   document.getElementById('i-t').textContent = d[1];
-  document.getElementById('i-id').textContent = d[0] + ' · ' + (d[11] || 'S/Frec.');
+  document.getElementById('i-id').textContent = `${d[0]} · Frecuencia: ${d[11] || 'S/D'}`;
   
   const eCur = d[8].find(p => p[0] === currentGlobalEj);
   const wv = d[8].filter(p => p[1] !== null);
@@ -839,18 +1192,20 @@ function goInd(d) {
   const obj = eCur ? eCur[2] : (lastV ? lastV[2] : d[5]);
   const diff = val !== null ? val - obj : null;
   
-  document.getElementById('i-val').textContent = val !== null ? val : '—';
-  document.getElementById('i-val').style.color = val === null ? 'var(--sub)' : (val >= obj ? 'var(--cg)' : 'var(--cr)');
-  document.getElementById('i-vals').textContent = (eCur && eCur[1] !== null) ? `Medido en Ej. ${currentGlobalEj}` : (lastV ? `Último reportado: Ej. ${lastV[0]}` : '');
+  const valEl = document.getElementById('i-val');
+  valEl.textContent = val !== null ? val : '—';
+  valEl.className = 'text-2xl font-extrabold font-mono ' + (val === null ? 'text-slate-400' : (val >= obj ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'));
+  document.getElementById('i-vals').textContent = (eCur && eCur[1] !== null) ? `Medido en Ej. ${currentGlobalEj}` : (lastV ? `Último: Ej. ${lastV[0]}` : '');
   
   document.getElementById('i-obj').textContent = obj !== null ? obj : '—';
+  const diffEl = document.getElementById('i-diff');
   if(diff !== null) {
-    document.getElementById('i-diff').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(2);
-    document.getElementById('i-diff').style.color = diff >= 0 ? 'var(--cg)' : 'var(--cr)';
+    diffEl.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(2);
+    diffEl.className = 'text-2xl font-extrabold font-mono ' + (diff >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400');
     document.getElementById('i-diffs').textContent = diff >= 0 ? 'Sobre el objetivo' : 'Bajo el objetivo';
   } else {
-    document.getElementById('i-diff').textContent = '—';
-    document.getElementById('i-diff').style.color = 'var(--sub)';
+    diffEl.textContent = '—';
+    diffEl.className = 'text-2xl font-extrabold font-mono text-slate-400';
     document.getElementById('i-diffs').textContent = '';
   }
   
@@ -858,306 +1213,558 @@ function goInd(d) {
   document.getElementById('i-exns').textContent = `Auditorías históricas`;
   
   document.getElementById('i-que').textContent = d[9] || 'Definición no disponible en sistema.';
-  document.getElementById('i-meta').innerHTML = `<strong>Fuente de Medición:</strong> ${d[10] || '—'}<br><br><strong>Responsable / Área:</strong> ${d[12] || d[2] || '—'}`;
+  document.getElementById('i-meta').innerHTML = `
+    <div class="space-y-1">
+      <div><strong class="text-slate-900 dark:text-white">Fuente / Metodología:</strong> ${d[10] || '—'}</div>
+      <div><strong class="text-slate-900 dark:text-white">Responsable:</strong> ${d[12] || d[2] || '—'}</div>
+    </div>
+  `;
   document.getElementById('i-acc').textContent = d[13] || 'Sin acciones registradas ni planes de mejora actuales.';
   
   buildChanges(d);
   buildPeriodSelector(d);
   
-  const hb = document.getElementById('i-hist'); hb.innerHTML = '';
+  const hb = document.getElementById('i-hist'); 
+  hb.innerHTML = '';
   [...d[8]].reverse().forEach(p => {
     const v = p[1], ob = p[2], st = v === null ? -1 : (v >= ob ? 1 : 0);
-    const bdg = st === 1 ? '<span class="bdg bok">Cumple</span>' : st === 0 ? '<span class="bdg bbad">Desvío</span>' : '<span class="bdg bnd">Sin Dato</span>';
-    const d2 = v !== null ? v - ob : null;
-    const dc = d2 !== null && d2 >= 0 ? 'var(--cg)' : 'var(--cr)';
-    const vc = st === 1 ? 'var(--cg)' : st === 0 ? 'var(--cr)' : 'var(--sub)';
+    const bdg = st === 1 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Cumple</span>' 
+      : st === 0 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">Desvío</span>' 
+      : '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">Sin Dato</span>';
     
-    hb.innerHTML += `<tr>
-      <td style="font-weight:700">Ejercicio ${p[0]}</td>
-      <td style="text-align:right;font-weight:800;color:${vc}">${v !== null ? v : '—'}</td>
-      <td style="text-align:right;color:var(--sub)">${ob}</td>
-      <td>${bdg}</td>
-      <td style="text-align:right;font-weight:700;color:${d2 !== null ? dc : 'var(--sub)'}">${d2 !== null ? (d2 >= 0 ? '+' : '') + d2.toFixed(2) : '—'}</td>
-    </tr>`;
+    const d2 = v !== null ? v - ob : null;
+    const dc = d2 !== null && d2 >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
+    const vc = st === 1 ? 'text-emerald-600 dark:text-emerald-400' : st === 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400';
+    
+    hb.innerHTML += `
+      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+        <td class="py-3 px-4 sm:px-6 font-bold text-slate-900 dark:text-white">Ejercicio ${p[0]}</td>
+        <td class="py-3 px-4 text-right font-black ${vc}">${v !== null ? v : '—'}</td>
+        <td class="py-3 px-4 text-right text-slate-400">${ob}</td>
+        <td class="py-3 px-4 text-center">${bdg}</td>
+        <td class="py-3 px-4 text-right font-bold ${d2 !== null ? dc : 'text-slate-400'}">${d2 !== null ? (d2 >= 0 ? '+' : '') + d2.toFixed(2) : '—'}</td>
+      </tr>
+    `;
   });
   
   switchTab('ej');
   showPg('pg-ind');
-  requestAnimationFrame(() => drawInd(d, color));
+  setTimeout(() => drawInd(d, color), 30);
 }
 
 function switchTab(t) {
   activeTab = t;
   ['ej','per','chg'].forEach(k => {
-    document.getElementById('tab-'+k).classList.toggle('on', k === t);
-    document.getElementById('tv-'+k).style.display = k === t ? 'block' : 'none';
+    const btn = document.getElementById('tab-'+k);
+    const view = document.getElementById('tv-'+k);
+    if(k === t) {
+      btn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm";
+      view.classList.remove('hidden');
+    } else {
+      btn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+      view.classList.add('hidden');
+    }
   });
-  document.getElementById('tv-hist').style.display = t === 'chg' ? 'none' : 'block';
   
-  if(t === 'per' && curInd) requestAnimationFrame(() => drawPeriod(curInd, AC[curInd[2]]));
-  if(t === 'ej' && curInd) requestAnimationFrame(() => drawInd(curInd, AC[curInd[2]]));
+  const hist = document.getElementById('tv-hist');
+  if(t === 'chg') hist.classList.add('hidden');
+  else hist.classList.remove('hidden');
+  
+  // Garantizar que el contenedor esté visible en el DOM antes de renderizar Chart.js
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      if(t === 'per' && curInd) drawPeriod(curInd, AC[curInd[2]]);
+      if(t === 'ej' && curInd) drawInd(curInd, AC[curInd[2]]);
+    }, 40);
+  });
 }
 
 function buildChanges(d) {
-  const list = document.getElementById('changes-list'); list.innerHTML = '';
+  const list = document.getElementById('changes-list'); 
+  list.innerHTML = '';
   const ejs = d[8];
-  let anyObjChange = false;
   
   for(let i=1; i<ejs.length; i++) {
     const prev = ejs[i-1], cur = ejs[i];
     if(cur[2] !== prev[2]) {
-      anyObjChange = true;
       const od = cur[2] - prev[2];
-      const cls = od > 0 ? 'ch-obj' : 'ch-dn';
-      const div = document.createElement('div'); div.className = 'ch-row';
-      div.innerHTML = `<div class="ch-ej">Ej. ${prev[0]} → ${cur[0]}</div><div class="ch-items"><span class="ch-pill ${cls}">Objetivo Modificado: ${prev[2]} → ${cur[2]} (${od > 0 ? '+' : ''}${od.toFixed(1)} pts)</span></div>`;
+      const cls = od > 0 ? 'bg-blue-500/10 text-blue-500 border-blue-500/30' : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs';
+      div.innerHTML = `
+        <span class="font-mono font-bold text-slate-500">Ej. ${prev[0]} → ${cur[0]}</span>
+        <span class="px-2 py-0.5 rounded-md font-bold border ${cls}">Objetivo Modificado: ${prev[2]} → ${cur[2]} (${od > 0 ? '+' : ''}${od.toFixed(1)} pts)</span>
+      `;
       list.appendChild(div);
     }
-  }
-  
-  const freqDiv = document.createElement('div'); freqDiv.className = 'ch-row';
-  freqDiv.innerHTML = `<div class="ch-ej">Parámetros</div><div class="ch-items"><div class="ch-items-row"><span class="ch-pill ch-neu">Freq: ${d[11]}</span><span class="ch-pill ch-neu">Estado SGI: Activo</span></div></div>`;
-  list.appendChild(freqDiv);
-  
-  if(!anyObjChange) {
-    const nd = document.createElement('div'); nd.style.cssText = 'font-size:12px;color:var(--sub);padding:0 0 12px 16px;font-style:italic'; nd.textContent = 'Histórico: Sin alteraciones de objetivo registradas.';
-    list.insertBefore(nd, list.firstChild);
   }
 }
 
 function buildPeriodSelector(d) {
-  const sel = document.getElementById('ej-sel'); sel.innerHTML = '';
+  const sel = document.getElementById('ej-sel'); 
+  sel.innerHTML = '';
   if(!d[7] || !d[7].length) {
-    sel.innerHTML = '<span style="font-size:12px;color:var(--sub);padding-left:4px">No hay reportes periódicos cargados en la base de datos para este indicador.</span>';
-    selectedEj = null; return;
+    sel.innerHTML = '<span class="text-xs text-slate-400">No hay muestreos periódicos en base de datos.</span>';
+    selectedEj = null; 
+    return;
   }
   const ejSet = new Set(d[7].map(p => dateToEj(p[0])).filter(e => e !== null));
   const ejList = Array.from(ejSet).sort((a,b) => a - b);
   if(!ejList.length) { selectedEj = null; return; }
   
-  selectedEj = ejList[ejList.length-1]; 
+  // Priorizar el ejercicio activo global si contiene datos; si no, el más reciente
+  selectedEj = ejList.includes(currentGlobalEj) ? currentGlobalEj : ejList[ejList.length-1];
+
+  // Botón Histórico Completo
+  const btnAll = document.createElement('button');
+  btnAll.className = 'px-3 py-1 rounded-lg text-xs font-bold transition border bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500';
+  btnAll.textContent = 'Histórico Completo';
+  btnAll.onclick = () => {
+    selectedEj = 'all';
+    document.querySelectorAll('#ej-sel button').forEach(b => {
+      const active = (b === btnAll);
+      b.className = `px-3 py-1 rounded-lg text-xs font-bold transition border ${active ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500'}`;
+    });
+    if(activeTab === 'per') drawPeriod(curInd, AC[curInd[2]]);
+  };
+  sel.appendChild(btnAll);
+
   ejList.forEach(ej => {
     const btn = document.createElement('button');
-    btn.className = 'ej-btn' + (ej === selectedEj ? ' on' : '');
+    const isSel = (ej === selectedEj);
+    btn.className = `px-3 py-1 rounded-lg text-xs font-bold transition border ${isSel ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500'}`;
     btn.textContent = 'Ej. ' + ej;
     btn.onclick = () => {
       selectedEj = ej;
-      document.querySelectorAll('.ej-btn').forEach(b => b.classList.toggle('on', b.textContent === 'Ej. ' + ej));
-      if(activeTab === 'per') requestAnimationFrame(() => drawPeriod(curInd, AC[curInd[2]]));
+      document.querySelectorAll('#ej-sel button').forEach(b => {
+        const active = (b.textContent === 'Ej. ' + ej);
+        b.className = `px-3 py-1 rounded-lg text-xs font-bold transition border ${active ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500'}`;
+      });
+      if(activeTab === 'per') drawPeriod(curInd, AC[curInd[2]]);
     };
     sel.appendChild(btn);
   });
 }
 
-function setupCanvas(id, W, H) {
-  const c = document.getElementById(id);
-  const ctx = c.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  c.width = W * dpr; c.height = H * dpr;
-  c.style.width = W + 'px'; c.style.height = H + 'px';
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, W, H);
-  
-  if(!c.dataset.tooltips) c.dataset.tooltips = '[]';
-  return ctx;
+function getChartColors() {
+  const isDark = document.documentElement.classList.contains('dark');
+  return {
+    grid: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)',
+    tick: isDark ? '#94a3b8' : '#64748b',
+    tooltipBg: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.96)',
+    tooltipText: isDark ? '#f8fafc' : '#0f172a',
+    tooltipBorder: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)'
+  };
 }
 
-function drawGrid(ctx, W, H, pL, pR, pT, pB) {
-  const cH = H - pT - pB;
-  const yP = v => pT + cH - (v / 10) * cH;
-  const grid = cssv('--grid'), tick = cssv('--tick');
-  
-  ctx.beginPath();
-  [0, 2, 4, 6, 8, 10].forEach(v => {
-    const y = yP(v);
-    ctx.moveTo(pL, y); ctx.lineTo(W - pR, y);
-    ctx.fillStyle = tick; ctx.font = '10px system-ui'; ctx.textAlign = 'right'; ctx.fillText(v, pL - 8, y + 4);
-  });
-  ctx.strokeStyle = grid; ctx.lineWidth = 1; ctx.stroke();
-  return yP;
+function destroyChart(id) {
+  if (charts[id]) {
+    charts[id].destroy();
+    delete charts[id];
+  }
 }
 
-function drawBars(ctx, canvasId, data, xP, yP, colW, H, pT, pB) {
-  const cH = H - pT - pB;
-  const bW = Math.min(colW * 0.6, 45); 
-  const lblThreshold = 22;
-  const tick = cssv('--tick'), txC = cssv('--tx'), bf = cssv('--bf');
-  const tooltips = [];
-  
-  data.forEach((pt, i) => {
-    const x = xP(i), v = pt.val, ob = pt.obj;
-    tooltips.push({ x: x, w: colW, val: v, obj: ob, lbl: pt.label });
+// Plugin nativo de etiquetas de datos para Chart.js
+const valueLabelPlugin = {
+  id: 'valueLabelPlugin',
+  afterDatasetsDraw(chart) {
+    const { ctx } = chart;
+    const isDark = document.documentElement.classList.contains('dark');
+    const defaultColor = isDark ? '#f8fafc' : '#0f172a';
 
-    if(v !== null) {
-      const isOk = v >= ob;
-      const bc = isOk ? '#10b981' : '#f43f5e';
-      const y = yP(v), bH = cH - (y - pT);
-      
-      const grad = ctx.createLinearGradient(0, y, 0, y + bH);
-      grad.addColorStop(0, isOk ? '#34d399' : '#fb7185');
-      grad.addColorStop(1, isOk ? '#059669' : '#e11d48');
-      
-      ctx.fillStyle = grad;
-      if(ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x - bW/2, y, bW, Math.max(2, bH), [4, 4, 0, 0]); ctx.fill(); }
-      else ctx.fillRect(x - bW/2, y, bW, Math.max(2, bH));
-      
-      if(bW >= lblThreshold) {
-        const fs = Math.max(10, Math.min(12, bW * 0.3));
-        ctx.font = `bold ${fs}px system-ui`; ctx.textAlign = 'center';
-        if(bH > 22) { ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fillText(v, x, y + 15); }
-        else { ctx.fillStyle = txC; ctx.fillText(v, x, y - 6); }
-      }
-    } else {
-      ctx.fillStyle = bf; ctx.fillRect(x - bW/2, H - pB - 8, bW, 6);
-    }
-    
-    if(pt.label) {
-      ctx.fillStyle = tick;
-      const fs = Math.max(9, Math.min(11, colW * 0.2));
-      ctx.font = `600 ${fs}px system-ui`; ctx.textAlign = 'center';
-      ctx.fillText(pt.label, x, H - pB + 16);
-    }
-  });
-  
-  document.getElementById(canvasId).dataset.tooltips = JSON.stringify(tooltips);
-}
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      if (dataset.showDataLabels === false) return;
+      const meta = chart.getDatasetMeta(datasetIndex);
+      if (!meta || !meta.visible) return;
 
-function drawObjLine(ctx, data, xP, yP, H, pT, pB, showLabels) {
-  ctx.setLineDash([5, 4]); ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2;
-  ctx.beginPath(); let f = true;
-  data.forEach((pt, i) => { const y = yP(pt.obj), x = xP(i); f ? (ctx.moveTo(x, y), f = false) : ctx.lineTo(x, y); });
-  ctx.stroke(); ctx.setLineDash([]);
-  
-  if(showLabels) {
-    let lastObj = null;
-    data.forEach((pt, i) => {
-      if(pt.obj !== lastObj) {
-        ctx.fillStyle = '#f59e0b'; ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center';
-        ctx.fillText('Meta: ' + pt.obj, xP(i), yP(pt.obj) - 8);
-        lastObj = pt.obj;
-      }
+      meta.data.forEach((element, index) => {
+        const rawVal = dataset.data[index];
+        if (rawVal === null || rawVal === undefined) return;
+        if (!element || isNaN(element.x) || isNaN(element.y)) return;
+
+        const valText = typeof rawVal === 'number' 
+          ? (Number.isInteger(rawVal) ? rawVal.toString() : rawVal.toFixed(2).replace(/\.?0+$/, ''))
+          : String(rawVal);
+
+        ctx.save();
+        ctx.font = '700 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+
+        if (dataset.type === 'bar' || (!dataset.type && chart.config.type === 'bar')) {
+          const { x, y, base } = element;
+          const topY = Math.min(y, base);
+          ctx.fillStyle = defaultColor;
+          ctx.fillText(valText, x, topY - 4);
+        } else {
+          const { x, y } = element;
+          ctx.fillStyle = dataset.borderColor || defaultColor;
+          ctx.fillText(valText, x, y - 7);
+        }
+        ctx.restore();
+      });
     });
   }
-}
+};
 
-function handleChartHover(e, tabId) {
-  const cId = tabId === 'ej' ? 'iChart' : 'perChart';
-  const c = document.getElementById(cId);
-  const tt = document.getElementById('chart-tooltip');
-  if(!c || !c.dataset.tooltips) return;
-  
-  const rect = c.getBoundingClientRect();
-  const scaleX = c.width / rect.width / (window.devicePixelRatio || 1);
-  const x = (e.clientX - rect.left) * scaleX;
-  
-  const tooltips = JSON.parse(c.dataset.tooltips);
-  const hit = tooltips.find(t => Math.abs(t.x - x) < t.w / 2);
-  
-  if(hit) {
-    document.getElementById('tt-l').textContent = hit.lbl;
-    document.getElementById('tt-v').textContent = hit.val !== null ? hit.val : 'Sin dato';
-    document.getElementById('tt-o').textContent = hit.obj !== null ? `(Meta: ${hit.obj})` : '';
-    document.getElementById('tt-v').style.color = hit.val === null ? 'var(--sub)' : (hit.val >= hit.obj ? 'var(--cg)' : 'var(--cr)');
-    
-    tt.style.display = 'block';
-    tt.style.left = (e.clientX) + 'px';
-    tt.style.top = (e.clientY - 15) + 'px';
-  } else {
-    tt.style.display = 'none';
-  }
-}
-function hideTooltip() { document.getElementById('chart-tooltip').style.display = 'none'; }
-
-
+// 1. Gráfico de Área (Curva Suave + Línea de Meta)
 function drawArea(area, color, inds) {
-  const ejSet = new Set(); inds.forEach(d => d[8].forEach(p => { if(p[1] !== null) ejSet.add(p[0]); }));
-  const ejList = Array.from(ejSet).sort((a,b) => a - b); if(!ejList.length) return;
+  destroyChart('aChart');
+  const canvas = document.getElementById('aChart');
+  if (!canvas) return;
+
+  const ejSet = new Set();
+  inds.forEach(d => d[8].forEach(p => { if(p[1] !== null) ejSet.add(p[0]); }));
+  const ejList = Array.from(ejSet).sort((a,b) => a - b);
+  if(!ejList.length) return;
+
+  const labels = ejList.map(e => 'Ej. ' + e);
   
-  const container = document.getElementById('aChart').parentElement;
-  const cW = container.clientWidth || 600;
-  const n = ejList.length;
-  const minCol = 60;
-  const W = Math.max(cW, n * minCol + 60);
-  const H = 200;
+  const aVal = e => { 
+    const vs = inds.map(d => { const p = d[8].find(x => x[0]===e); return p && p[1] !== null ? p[1] : null}).filter(v => v!==null); 
+    return vs.length ? +(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(2) : null; 
+  };
+  const aObj = e => { 
+    const vs = inds.map(d => { const p = d[8].find(x => x[0]===e); return p ? p[2] : null}).filter(v => v!==null); 
+    return vs.length ? +(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(2) : null; 
+  };
+
+  const dataVal = ejList.map(e => aVal(e));
+  const dataObj = ejList.map(e => aObj(e));
+
+  const cColors = getChartColors();
+  const ctx = canvas.getContext('2d');
   
-  const ctx = setupCanvas('aChart', W, H);
-  const pL = 40, pR = 20, pT = 15, pB = 25, chartW = W - pL - pR;
-  
-  const xP = e => pL + (ejList.length === 1 ? chartW/2 : (ejList.indexOf(e) / (ejList.length - 1)) * chartW);
-  const yP = drawGrid(ctx, W, H, pL, pR, pT, pB);
-  const tick = cssv('--tick'), grid = cssv('--grid');
-  
-  ejList.forEach(e => {
-    ctx.fillStyle = tick; ctx.font = '600 11px system-ui'; ctx.textAlign = 'center'; 
-    ctx.fillText('Ej.' + e, xP(e), H - pB + 18);
-  });
-  
-  inds.forEach(d => {
-    const pts = d[8].filter(p => p[1] !== null); if(pts.length < 2) return;
-    ctx.beginPath(); ctx.strokeStyle = cssv('--row'); ctx.lineWidth = 1.5;
-    pts.forEach((p, i) => i === 0 ? ctx.moveTo(xP(p[0]), yP(p[1])) : ctx.lineTo(xP(p[0]), yP(p[1])));
-    ctx.stroke();
-  });
-  
-  const aObj = e => { const vs = inds.map(d => { const p = d[8].find(x => x[0]===e); return p ? p[2] : null}).filter(v => v!==null); return vs.length ? vs.reduce((a,b)=>a+b,0)/vs.length : null; };
-  ctx.setLineDash([5, 4]); ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2; ctx.beginPath(); let f1 = true;
-  ejList.forEach(e => { const v = aObj(e); if(v === null) return; f1 ? (ctx.moveTo(xP(e), yP(v)), f1 = false) : ctx.lineTo(xP(e), yP(v)); }); ctx.stroke(); ctx.setLineDash([]);
-  
-  const aVal = e => { const vs = inds.map(d => { const p = d[8].find(x => x[0]===e); return p && p[1] !== null ? p[1] : null}).filter(v => v!==null); return vs.length ? vs.reduce((a,b)=>a+b,0)/vs.length : null; };
-  ctx.strokeStyle = color; ctx.lineWidth = 3.5; ctx.beginPath(); let f2 = true;
-  ejList.forEach(e => { const v = aVal(e); if(v === null) return; f2 ? (ctx.moveTo(xP(e), yP(v)), f2 = false) : ctx.lineTo(xP(e), yP(v)); }); ctx.stroke();
-  
-  ejList.forEach(e => {
-    const v = aVal(e); if(v === null) return;
-    const x = xP(e), y = yP(v);
-    ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 2*Math.PI); ctx.fillStyle = color; ctx.fill();
-    ctx.strokeStyle = cssv('--bg'); ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = cssv('--tx'); ctx.font = 'bold 11px system-ui'; ctx.textAlign = 'center'; ctx.fillText(v.toFixed(1), x, y - 10);
+  // Gradiente suave de fondo
+  const grad = ctx.createLinearGradient(0, 0, 0, 240);
+  grad.addColorStop(0, color + '33');
+  grad.addColorStop(1, color + '00');
+
+  charts['aChart'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Promedio Real',
+          data: dataVal,
+          borderColor: color,
+          backgroundColor: grad,
+          borderWidth: 2.8,
+          fill: true,
+          tension: 0.35,
+          pointRadius: 4.5,
+          pointBackgroundColor: color,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointHoverRadius: 6.5,
+          showDataLabels: true
+        },
+        {
+          label: 'Meta SGI',
+          data: dataObj,
+          borderColor: '#f59e0b',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 2.5,
+          pointBackgroundColor: '#f59e0b',
+          pointBorderColor: 'transparent',
+          fill: false,
+          tension: 0,
+          showDataLabels: false
+        }
+      ]
+    },
+    plugins: [valueLabelPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { top: 22, left: 6, right: 6 }
+      },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: cColors.tooltipBg,
+          titleColor: cColors.tooltipText,
+          bodyColor: cColors.tooltipText,
+          borderColor: cColors.tooltipBorder,
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 10,
+          boxPadding: 4,
+          usePointStyle: true,
+          bodyFont: { family: '"JetBrains Mono", monospace', size: 12, weight: '600' }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: cColors.tick, font: { family: '"Plus Jakarta Sans"', size: 11, weight: '500' } }
+        },
+        y: {
+          min: 0,
+          max: 10,
+          grid: { color: cColors.grid },
+          ticks: { 
+            stepSize: 2.5, 
+            color: cColors.tick,
+            font: { family: '"JetBrains Mono", monospace', size: 10.5 }
+          }
+        }
+      }
+    }
   });
 }
 
+// 2. Gráfico Individual de Serie Anual (Ejercicios)
 function drawInd(d, color) {
-  const container = document.getElementById('ej-scroll');
-  const cW = container.clientWidth || 600, n = d[8].length;
-  const colW = Math.max(60, Math.floor((cW - 60) / Math.max(1, n)));
-  const W = Math.max(cW, colW * n + 60), H = 220;
-  
-  const ctx = setupCanvas('iChart', W, H);
-  const pL = 40, pR = 20, pT = 25, pB = 25;
-  const xP = i => pL + i * colW + colW/2;
-  const yP = drawGrid(ctx, W, H, pL, pR, pT, pB);
-  
-  const pts = d[8].map((p, i) => ({val: p[1], obj: p[2], label: 'Ej. ' + p[0]}));
-  drawBars(ctx, 'iChart', pts, xP, yP, colW, H, pT, pB);
-  drawObjLine(ctx, pts, xP, yP, H, pT, pB, true);
+  destroyChart('iChart');
+  const canvas = document.getElementById('iChart');
+  if (!canvas || !d || !d[8]) return;
+
+  const pts = d[8];
+  if (!pts.length) return;
+
+  const labels = pts.map(p => 'Ej. ' + p[0]);
+  const values = pts.map(p => p[1]);
+  const targets = pts.map(p => p[2]);
+
+  const barColors = pts.map(p => {
+    if (p[1] === null) return 'rgba(148, 163, 184, 0.25)';
+    return p[1] >= p[2] ? '#10b981' : '#f43f5e';
+  });
+
+  const cColors = getChartColors();
+  const ctx = canvas.getContext('2d');
+
+  charts['iChart'] = new Chart(ctx, {
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Meta',
+          data: targets,
+          borderColor: '#f59e0b',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 3,
+          pointBackgroundColor: '#f59e0b',
+          order: 1,
+          showDataLabels: false
+        },
+        {
+          type: 'bar',
+          label: 'Resultado',
+          data: values,
+          backgroundColor: barColors,
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 38,
+          order: 2,
+          showDataLabels: true
+        }
+      ]
+    },
+    plugins: [valueLabelPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { top: 22, left: 6, right: 6 }
+      },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: cColors.tooltipBg,
+          titleColor: cColors.tooltipText,
+          bodyColor: cColors.tooltipText,
+          borderColor: cColors.tooltipBorder,
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 10,
+          usePointStyle: true,
+          bodyFont: { family: '"JetBrains Mono", monospace', size: 12, weight: '600' },
+          callbacks: {
+            label: function(ctx) {
+              const val = ctx.raw !== null ? ctx.raw : 'Sin dato';
+              return ` ${ctx.dataset.label}: ${val}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: cColors.tick, font: { family: '"Plus Jakarta Sans"', size: 11, weight: '500' } }
+        },
+        y: {
+          min: 0,
+          max: 10,
+          grid: { color: cColors.grid },
+          ticks: { 
+            stepSize: 2.5, 
+            color: cColors.tick,
+            font: { family: '"JetBrains Mono", monospace', size: 10.5 }
+          }
+        }
+      }
+    }
+  });
 }
 
+// 3. Gráfico Individual Periódico con Tabla Detallada
 function drawPeriod(d, color) {
+  destroyChart('perChart');
+  const canvas = document.getElementById('perChart');
+  const tableWrap = document.getElementById('per-table-wrap');
+  const tableBody = document.getElementById('per-tb');
+  if (!canvas) return;
+
   if(!d[7] || !d[7].length) { 
-    document.getElementById('per-empty').style.display = 'block'; 
-    document.getElementById('perChart').style.display = 'none'; 
+    document.getElementById('per-empty').classList.remove('hidden'); 
+    canvas.classList.add('hidden'); 
+    if (tableWrap) tableWrap.classList.add('hidden');
     return; 
   }
+
   const ej = selectedEj;
-  const pts = d[7].filter(p => dateToEj(p[0]) === ej);
-  
-  document.getElementById('per-empty').style.display = pts.length ? 'none' : 'block';
-  document.getElementById('perChart').style.display = pts.length ? 'block' : 'none';
-  if(!pts.length) return;
-  
-  const container = document.getElementById('per-scroll');
-  const cW = container.clientWidth || 600, n = pts.length;
-  const colW = Math.max(45, Math.floor((cW - 60) / Math.max(1, n)));
-  const W = Math.max(cW, colW * n + 60), H = 220;
-  
-  const ctx = setupCanvas('perChart', W, H);
-  const pL = 40, pR = 20, pT = 25, pB = 25;
-  const xP = i => pL + i * colW + colW/2;
-  const yP = drawGrid(ctx, W, H, pL, pR, pT, pB);
-  
-  const data = pts.map((p, i) => ({val: p[1], obj: p[2], label: fmtDate(p[0])}));
-  drawBars(ctx, 'perChart', data, xP, yP, colW, H, pT, pB);
-  drawObjLine(ctx, data, xP, yP, H, pT, pB, true);
+  const pts = (ej === 'all') 
+    ? d[7].filter(p => p[1] !== null) 
+    : d[7].filter(p => dateToEj(p[0]) === ej);
+
+  if(!pts.length) {
+    document.getElementById('per-empty').classList.remove('hidden'); 
+    canvas.classList.add('hidden'); 
+    if (tableWrap) tableWrap.classList.add('hidden');
+    return;
+  }
+
+  document.getElementById('per-empty').classList.add('hidden'); 
+  canvas.classList.remove('hidden');
+
+  // Renderizar la tabla de detalle periódico
+  if (tableWrap && tableBody) {
+    tableWrap.classList.remove('hidden');
+    tableBody.innerHTML = '';
+    pts.forEach(p => {
+      const val = p[1];
+      const target = p[2];
+      const isOk = val !== null && val >= target;
+      const badge = val === null 
+        ? '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">Sin Dato</span>'
+        : isOk 
+        ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Cumple</span>'
+        : '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">Desvío</span>';
+      
+      const diff = val !== null ? +(val - target).toFixed(2) : null;
+      const diffClass = diff !== null && diff >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
+      const valClass = isOk ? 'text-emerald-600 dark:text-emerald-400' : (val === null ? 'text-slate-400' : 'text-rose-600 dark:text-rose-400');
+
+      tableBody.innerHTML += `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+          <td class="py-2.5 px-4 font-semibold text-slate-800 dark:text-slate-200">${p[0]} (${fmtDate(p[0])})</td>
+          <td class="py-2.5 px-4 text-right font-black ${valClass}">${val !== null ? val : '—'}</td>
+          <td class="py-2.5 px-4 text-right text-slate-400">${target !== null ? target : '—'}</td>
+          <td class="py-2.5 px-4 text-center">${badge}</td>
+          <td class="py-2.5 px-4 text-right font-bold ${diff !== null ? diffClass : 'text-slate-400'}">${diff !== null ? (diff >= 0 ? '+' : '') + diff : '—'}</td>
+        </tr>
+      `;
+    });
+  }
+
+  const labels = pts.map(p => fmtDate(p[0]));
+  const values = pts.map(p => p[1]);
+  const targets = pts.map(p => p[2]);
+
+  const barColors = pts.map(p => {
+    if (p[1] === null) return 'rgba(148, 163, 184, 0.25)';
+    return p[1] >= p[2] ? '#10b981' : '#f43f5e';
+  });
+
+  const cColors = getChartColors();
+  const ctx = canvas.getContext('2d');
+
+  charts['perChart'] = new Chart(ctx, {
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Meta',
+          data: targets,
+          borderColor: '#f59e0b',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 2.5,
+          pointBackgroundColor: '#f59e0b',
+          order: 1,
+          showDataLabels: false
+        },
+        {
+          type: 'bar',
+          label: 'Resultado',
+          data: values,
+          backgroundColor: barColors,
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 34,
+          order: 2,
+          showDataLabels: true
+        }
+      ]
+    },
+    plugins: [valueLabelPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { top: 22, left: 6, right: 6 }
+      },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: cColors.tooltipBg,
+          titleColor: cColors.tooltipText,
+          bodyColor: cColors.tooltipText,
+          borderColor: cColors.tooltipBorder,
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 10,
+          usePointStyle: true,
+          bodyFont: { family: '"JetBrains Mono", monospace', size: 12, weight: '600' },
+          callbacks: {
+            label: function(ctx) {
+              const val = ctx.raw !== null ? ctx.raw : 'Sin dato';
+              return ` ${ctx.dataset.label}: ${val}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: cColors.tick, font: { family: '"Plus Jakarta Sans"', size: 11, weight: '500' } }
+        },
+        y: {
+          min: 0,
+          max: 10,
+          grid: { color: cColors.grid },
+          ticks: { 
+            stepSize: 2.5, 
+            color: cColors.tick,
+            font: { family: '"JetBrains Mono", monospace', size: 10.5 }
+          }
+        }
+      }
+    }
+  });
 }
 
 function redrawActive() {
@@ -1170,16 +1777,51 @@ function redrawActive() {
   }
 }
 
-window.addEventListener('resize', () => {
-  requestAnimationFrame(redrawActive);
-});
+function exportCurrentViewToCSV() {
+  let csv = "Codigo,Indicador,Area,Valor,Objetivo,Frecuencia\n";
+  D.forEach(d => {
+    const e = d[8].find(p => p[0] === currentGlobalEj);
+    const val = e && e[1] !== null ? e[1] : '';
+    const obj = e ? e[2] : d[5];
+    csv += `"${d[0]}","${d[1]}","${d[2]}","${val}","${obj}","${d[11]||''}"\n`;
+  });
+  const link = document.createElement("a");
+  link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+  link.download = `esinel_indicadores_ej${currentGlobalEj}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Configuración opcional para leer en tiempo real desde Google Sheets vía Web App URL
+const APPS_SCRIPT_WEBAPP_URL = ""; // Si tenés la URL de tu Web App (https://script.google.com/macros/s/.../exec), pegala acá
+
+async function fetchRealtimeSheetsData() {
+  if (!APPS_SCRIPT_WEBAPP_URL) return;
+  try {
+    const resp = await fetch(APPS_SCRIPT_WEBAPP_URL);
+    if (!resp.ok) return;
+    const json = await resp.json();
+    if (Array.isArray(json) && json.length > 0) {
+      D = json;
+      initDashboard();
+      redrawActive();
+    }
+  } catch (err) {
+    console.warn("No se pudo sincronizar en vivo con Sheets:", err);
+  }
+}
 
 window.onload = () => {
+  const savedTheme = localStorage.getItem('sgi_theme') || 'light';
+  setTheme(savedTheme);
+
   initDashboard();
-  // Mostrar banner de cross-link si hay desvíos
+  fetchRealtimeSheetsData();
+
   try {
     const stats = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null');
-    const desvios = stats ? stats.desvios : 5; // fallback al conocido
+    const desvios = stats ? stats.desvios : 5;
     if (desvios > 0) {
       const banner = document.getElementById('ind-crosslink');
       if (banner) {
@@ -1191,156 +1833,148 @@ window.onload = () => {
 };
 </script>
 
-<!-- ── PANEL CROSS-LINK: Hallazgos por desvío de indicador ── -->
+<!-- PANEL CROSSLINK: Hallazgos por desvío de indicador -->
 <div id="ind-crosslink" style="display:none;position:fixed;bottom:20px;right:20px;z-index:1000;max-width:280px">
-  <div style="background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4)">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#475569;text-transform:uppercase;margin-bottom:8px">📈 Desvíos de indicadores</div>
-    <div style="font-size:13px;font-weight:600;color:#f87171;margin-bottom:4px"><span id="ind-desvios-count">5</span> indicadores en desvío</div>
-    <div style="font-size:11px;color:#64748b;margin-bottom:12px">Los desvíos generan observaciones de mejora (tipo OM) en el registro de hallazgos</div>
-    <a href="hallazgos.html?tipo=indicadores" style="display:flex;align-items:center;justify-content:space-between;background:#7f1d1d40;border:1px solid #ef444440;border-radius:8px;padding:8px 12px;text-decoration:none" onmouseover="this.style.background='#991b1b'" onmouseout="this.style.background='#7f1d1d40'">
-      <span style="font-size:12px;font-weight:600;color:#fca5a5">⚠️ Ver hallazgos OM relacionados</span>
-      <span style="color:#f87171">→</span>
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-2xl text-left">
+    <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-1">📈 Desvíos de Indicadores</div>
+    <div class="text-xs font-bold text-rose-400 mb-1"><span id="ind-desvios-count">5</span> indicadores en desvío</div>
+    <div class="text-[11px] text-slate-400 mb-3">Los desvíos generan observaciones de mejora (tipo OM) en el registro de hallazgos</div>
+    <a href="hallazgos.html?tipo=indicadores" class="flex items-center justify-between bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 rounded-xl px-3 py-2 text-decoration-none text-xs font-semibold text-rose-200 transition">
+      <span>⚠ Ver hallazgos OM</span>
+      <span>→</span>
     </a>
-    <button onclick="document.getElementById('ind-crosslink').style.display='none'" style="margin-top:8px;width:100%;background:none;border:none;font-size:10px;color:#334155;cursor:pointer;text-align:center">Ocultar</button>
+    <button onclick="document.getElementById('ind-crosslink').style.display='none'" class="mt-2 w-full text-center text-[10px] text-slate-500 hover:text-slate-300">Ocultar aviso</button>
   </div>
 </div>
+
 <!-- Auth Overlay de Google Identity Services con Botón Modo Demo -->
-  <div id="sgi-auth-overlay" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-white rounded-3xl border border-slate-200 p-8 shadow-2xl text-center">
-      <div class="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 text-brand-600 flex items-center justify-center mx-auto text-3xl shadow-sm mb-4">
-        <i class="ti ti-lock"></i>
-      </div>
-      <h2 class="text-xl font-bold tracking-tight text-slate-900">SGI · ESINEL</h2>
-      <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-        Acceso restringido para personal autorizado.<br>
-        Iniciá sesión con tu cuenta corporativa <strong class="text-brand-600 font-semibold">@esinel.com.ar</strong>
-      </p>
-      <div class="mt-6 flex flex-col items-center justify-center">
-        <div id="g_id_onload"
-             data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
-             data-callback="sgiCb"
-             data-auto_prompt="true"></div>
-        <div class="g_id_signin"
-             data-type="standard"
-             data-size="large"
-             data-theme="outline"
-             data-shape="pill"></div>
-      </div>
-      <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
-        <button type="button" onclick="entrarDemo()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 transition active:scale-95">
-          <i class="ti ti-player-play text-sm text-sky-400"></i>
-          <span>Entrar en Modo Demo / Vista Previa</span>
-        </button>
-        <span class="text-[10px] text-slate-400">Simula usuario: Luan Thiago Baira</span>
-      </div>
+<div id="sgi-auth-overlay" class="fixed inset-0 z-[9999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+  <div class="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-2xl text-center">
+    <div class="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 flex items-center justify-center mx-auto text-3xl shadow-sm mb-4">
+      <i class="ti ti-lock"></i>
     </div>
-  </div>
-
-  <!-- PANEL OVERLAY para 'Mi Panel' (Desplegable superior integrado) -->
-  <div id="panel-overlay" class="fixed left-0 right-0 bottom-0 z-50 hidden flex-col bg-slate-900/40 backdrop-blur-sm">
-    <div class="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-sm">
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></span>
-        <span class="text-xs font-bold text-slate-800">Mi Panel — Gestión Directa SGI</span>
-      </div>
-      <button onclick="cerrarPanel()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
-        <i class="ti ti-x text-sm"></i>
-        <span>Cerrar Panel</span>
+    <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SGI · ESINEL</h2>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+      Acceso restringido para personal autorizado.<br>
+      Iniciá sesión con tu cuenta corporativa <strong class="text-blue-500 font-semibold">@esinel.com.ar</strong>
+    </p>
+    <div class="mt-6 flex flex-col items-center justify-center">
+      <div id="g_id_onload"
+           data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
+           data-callback="sgiCb"
+           data-auto_prompt="false"
+           data-use_fedcm_for_prompt="false"></div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-shape="pill"></div>
+    </div>
+    <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+      <button type="button" onclick="entrarDemo()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md flex items-center justify-center gap-2 transition active:scale-95">
+        <i class="ti ti-player-play text-sm text-sky-400"></i>
+        <span>Entrar en Modo Demo / Vista Previa</span>
       </button>
+      <span class="text-[10px] text-slate-400">Simula usuario: Luan Thiago Baira</span>
     </div>
-    <iframe id="panel-iframe" src="" class="flex-1 w-full border-none bg-slate-50"></iframe>
   </div>
+</div>
 
-  <!-- Toast Flotante -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-800">
-    <div id="toast-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-    <span id="toast-message" class="text-xs font-medium">Acción completada</span>
+<!-- PANEL OVERLAY para 'Mi Panel' (Desplegable superior integrado) -->
+<div id="panel-overlay" class="fixed left-0 right-0 bottom-0 z-50 hidden flex-col bg-slate-900/50 backdrop-blur-sm">
+  <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+      <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Mi Panel — Gestión Directa SGI</span>
+    </div>
+    <button onclick="cerrarPanel()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition">
+      <i class="ti ti-x text-sm"></i>
+      <span>Cerrar Panel</span>
+    </button>
   </div>
+  <iframe id="panel-iframe" src="" class="flex-1 w-full border-none bg-slate-50 dark:bg-slate-950"></iframe>
+</div>
 
-  <!-- Google Identity Client SDK -->
-  <script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 
-  <script>
-  // SGI Auth + Panel + Badges
-  (function(){
-    function injectChip(n) {
-      const h = document.querySelector('.esinel-hdr-top');
-      if (!h) return;
-      const ini = n.split(' ').map(w => w[0] || '').join('').substring(0, 2).toUpperCase();
-      const c = document.createElement('div');
-      c.className = 'flex items-center gap-2.5 cursor-pointer ml-auto px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 transition';
-      c.title = 'Sesión iniciada · Clic para salir';
-      c.onclick = function(){ sessionStorage.clear(); location.reload(); };
-      c.innerHTML = `
-        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">${ini}</div>
-        <span class="text-xs font-medium text-slate-300 max-w-[120px] truncate hidden sm:inline-block">${n}</span>
-        <i class="ti ti-logout text-slate-400 text-xs"></i>
-      `;
-      h.appendChild(c);
-    }
+<script>
+(function(){
+  function injectChip(n) {
+    const h = document.querySelector('.esinel-hdr-top');
+    if (!h) return;
+    const ini = n.split(' ').map(w => w[0] || '').join('').substring(0, 2).toUpperCase();
+    const c = document.createElement('div');
+    c.className = 'flex items-center gap-2.5 cursor-pointer ml-auto px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 transition';
+    c.title = 'Sesión iniciada · Clic para salir';
+    c.onclick = function(){ sessionStorage.clear(); location.reload(); };
+    c.innerHTML = `
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">${ini}</div>
+      <span class="text-xs font-medium text-slate-300 max-w-[120px] truncate hidden sm:inline-block">${n}</span>
+      <i class="ti ti-logout text-slate-400 text-xs"></i>
+    `;
+    h.appendChild(c);
+  }
 
-    window.entrarDemo = function() {
-      sessionStorage.setItem('sgi_ok', '1');
-      sessionStorage.setItem('sgi_email', 'thiagobaira@gmail.com');
-      sessionStorage.setItem('sgi_name', 'Luan Thiago Baira');
-      const ov = document.getElementById('sgi-auth-overlay');
-      if (ov) ov.remove();
-      injectChip('Luan Thiago Baira');
-    };
+  window.entrarDemo = function() {
+    sessionStorage.setItem('sgi_ok', '1');
+    sessionStorage.setItem('sgi_email', 'thiagobaira@gmail.com');
+    sessionStorage.setItem('sgi_name', 'Luan Thiago Baira');
+    const ov = document.getElementById('sgi-auth-overlay');
+    if (ov) ov.remove();
+    injectChip('Luan Thiago Baira');
+  };
 
-    if (sessionStorage.getItem('sgi_ok') === '1') {
-      const ov = document.getElementById('sgi-auth-overlay');
-      if (ov) ov.remove();
-      const _n = sessionStorage.getItem('sgi_name') || '';
-      if (_n) injectChip(_n);
-    }
+  if (sessionStorage.getItem('sgi_ok') === '1') {
+    const ov = document.getElementById('sgi-auth-overlay');
+    if (ov) ov.remove();
+    const _n = sessionStorage.getItem('sgi_name') || '';
+    if (_n) injectChip(_n);
+  }
 
-    function sgiCb(r) {
-      try {
-        const p = JSON.parse(atob(r.credential.split('.')[1]));
-        if (p.email && (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com')) {
-          sessionStorage.setItem('sgi_ok', '1');
-          sessionStorage.setItem('sgi_email', p.email);
-          const nm = p.name || p.email.split('@')[0];
-          sessionStorage.setItem('sgi_name', nm);
-          const ov = document.getElementById('sgi-auth-overlay');
-          if (ov) ov.remove();
-          injectChip(nm);
-        }
-      } catch(err) {}
-    }
-    window.sgiCb = sgiCb;
-
-    window.abrirPanel = function(){
-      const ov = document.getElementById('panel-overlay');
-      const fr = document.getElementById('panel-iframe');
-      const hdr = document.querySelector('header');
-      ov.style.top = (hdr ? hdr.offsetHeight : 52) + 'px';
-      ov.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      if (!fr.src || (!fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html'))) {
-        fr.src = 'panel_sgi.html';
+  function sgiCb(r) {
+    try {
+      const p = JSON.parse(atob(r.credential.split('.')[1]));
+      if (p.email && (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com')) {
+        sessionStorage.setItem('sgi_ok', '1');
+        sessionStorage.setItem('sgi_email', p.email);
+        const nm = p.name || p.email.split('@')[0];
+        sessionStorage.setItem('sgi_name', nm);
+        const ov = document.getElementById('sgi-auth-overlay');
+        if (ov) ov.remove();
+        injectChip(nm);
       }
-      function enviarAuth() {
-        const em = sessionStorage.getItem('sgi_email');
-        const nm = sessionStorage.getItem('sgi_name');
-        if (em && nm) {
-          try { fr.contentWindow.postMessage({ type: 'sgi-auth', email: em, name: nm }, window.location.origin); } catch(e) {}
-        }
-      }
-      fr.onload = function(){ setTimeout(enviarAuth, 80); };
-      setTimeout(function(){
-        try { if (fr.contentDocument && fr.contentDocument.readyState === 'complete') enviarAuth(); } catch(e) {}
-      }, 200);
-    };
+    } catch(err) {}
+  }
+  window.sgiCb = sgiCb;
 
-    window.cerrarPanel = function(){
-      document.getElementById('panel-overlay').style.display = 'none';
-      document.body.style.overflow = '';
-    };
-  })();
-  </script>
+  window.abrirPanel = function(){
+    const ov = document.getElementById('panel-overlay');
+    const fr = document.getElementById('panel-iframe');
+    const hdr = document.querySelector('header');
+    ov.style.top = (hdr ? hdr.offsetHeight : 52) + 'px';
+    ov.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (!fr.src || (!fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html'))) {
+      fr.src = 'panel_sgi.html';
+    }
+    function enviarAuth() {
+      const em = sessionStorage.getItem('sgi_email');
+      const nm = sessionStorage.getItem('sgi_name');
+      if (em && nm) {
+        try { fr.contentWindow.postMessage({ type: 'sgi-auth', email: em, name: nm }, window.location.origin); } catch(e) {}
+      }
+    }
+    fr.onload = function(){ setTimeout(enviarAuth, 80); };
+    setTimeout(function(){
+      try { if (fr.contentDocument && fr.contentDocument.readyState === 'complete') enviarAuth(); } catch(e) {}
+    }, 200);
+  };
+
+  window.cerrarPanel = function(){
+    document.getElementById('panel-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+  };
+})();
+</script>
 </body>
-</html>
-
 </html>
