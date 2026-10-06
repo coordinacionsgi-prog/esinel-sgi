@@ -97,80 +97,72 @@
             }
         }
     </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
-<!-- ▼▼▼ ESINEL GLOBAL HEADER — do not remove ▼▼▼ -->
-<style>
-.esinel-hdr{background:#0f172a;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif}
-.esinel-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px}
-.esinel-logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
-.esinel-logo-name{font-size:21px;font-weight:800;color:#fff;letter-spacing:2.5px;line-height:1;text-transform:uppercase}
-.esinel-logo-tagline{font-size:8.5px;font-weight:600;color:#475569;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px}
-.esinel-logo-certs{font-size:8px;font-weight:600;letter-spacing:.8px;margin-top:2px}
-.esinel-iso9{color:#94a3b8}.esinel-iso14{color:#4caf72;margin-left:5px}.esinel-iso45{color:#ef5350;margin-left:5px}
-.esinel-badge{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);padding:4px 10px;border-radius:4px;border:1px solid rgba(59,130,246,.2)}
-.esinel-nav{display:flex;align-items:center;border-top:1px solid #1e293b;padding:0 16px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
-.esinel-nav::-webkit-scrollbar{display:none}
-.esinel-nav-item{display:flex;align-items:center;gap:5px;padding:8px 12px;font-size:12px;font-weight:500;color:#64748b;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s}
-.esinel-nav-item:hover{color:#e2e8f0;border-bottom-color:#334155}
-.esinel-nav-item.esinel-active{color:#60a5fa;border-bottom-color:#3b82f6;font-weight:600}
-.esinel-badge-pill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle}
-.esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
-.esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
-</style>
-<div class="esinel-hdr">
-  <div class="esinel-hdr-top">
-    <a class="esinel-logo" href="index.html">
-      <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9"  cy="9"  r="5" fill="#9BA4B0"/>
-        <circle cx="9"  cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="9"  cy="35" r="5" fill="#9BA4B0"/>
-        <circle cx="9"  cy="48" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="9"  r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="35" r="5" fill="#1B3A8C"/>
-        <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-        <circle cx="35" cy="9"  r="5" fill="#9BA4B0"/>
-        <circle cx="35" cy="22" r="5" fill="#1B3A8C"/>
-        <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
-        <circle cx="48" cy="9"  r="5" fill="#1B3A8C"/>
-        <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
-      </svg>
-      <div>
-        <div class="esinel-logo-name">ESINEL</div>
-        <div class="esinel-logo-tagline">Obras Eléctricas · Ingeniería · Tableros</div>
-        <div class="esinel-logo-certs">
-          <span class="esinel-iso9">ISO 9001</span><span class="esinel-iso14">ISO 14001</span><span class="esinel-iso45">ISO 45001</span>
+<!-- ▼▼▼ ESINEL GLOBAL HEADER ▼▼▼ -->
+  <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
+        <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
+          <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
+            <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="5" fill="#9BA4B0"/>
+              <circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="9" cy="35" r="5" fill="#9BA4B0"/>
+              <circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="9" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="35" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+              <circle cx="35" cy="9" r="5" fill="#9BA4B0"/>
+              <circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="35" cy="35" r="5" fill="#9BA4B0"/>
+              <circle cx="48" cy="9" r="5" fill="#3b82f6"/>
+              <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+              <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
+            </div>
+            <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
+            <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+              <span class="text-slate-400">ISO 9001</span>
+              <span class="text-emerald-400">ISO 14001</span>
+              <span class="text-rose-400">ISO 45001</span>
+            </div>
+          </div>
+        </a>
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+            <i class="ti ti-shield-check text-sky-400 text-sm"></i>
+            <span>SGI · Gestión Integrada</span>
+          </div>
         </div>
       </div>
-    </a>
-    <div class="esinel-badge">SGI · Gestión Integrada</div>
-  </div>
-  <nav class="esinel-nav">
-    <a class="esinel-nav-item" href="index.html">🏠 Inicio</a>
-    <a class="esinel-nav-item" href="hallazgos.html">⚠️ Hallazgos</a>
-    <a class="esinel-nav-item esinel-active" href="agenda-auditoria.html">📋 Agenda Auditoría</a>
-    <a class="esinel-nav-item" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html">📊 Informe</a>
-    <a class="esinel-nav-item" href="contexto.html">🌐 Contexto</a>
-    <a class="esinel-nav-item" href="indicadores.html">📈 Indicadores</a>
-    <a class="esinel-nav-item" href="vehiculos.html">🚗 Vehículos</a>
-    <a class="esinel-nav-item" href="documentos.html">📄 Documentos</a>
-    <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
-    <a class="esinel-nav-item" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener">💼 Comercial</a>
-  </nav>
-</div>
-<script>(function(){try{
-  var h=JSON.parse(localStorage.getItem('esinel_hallazgos_stats')||'null');
-  var i=JSON.parse(localStorage.getItem('esinel_ind_stats')||'null');
-  document.querySelectorAll('.esinel-nav-item').forEach(function(a){
-    var href=a.getAttribute('href')||'';
-    if(h&&h.abiertos>0&&href.includes('hallazgos'))
-      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-warn">'+h.abiertos+'</span>');
-    if(i&&i.desvios>0&&href.includes('indicadores'))
-      a.insertAdjacentHTML('beforeend','<span class="esinel-badge-pill esinel-badge-danger">'+i.desvios+'</span>');
-  });
-}catch(e){}})()</script>
-<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
+    </div>
+    <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
+      <div class="w-full px-4 sm:px-6 lg:px-8">
+        <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+          <a class="esinel-nav-item esinel-active px-3 py-2 rounded-lg esinel-active font-semibold text-blue-400 bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="#" onclick="abrirPanel();return false"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="https://esinel-crm-205252347763.us-east1.run.app/" target="_blank" rel="noopener"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
 
     <!-- Top Bar Navigation / Header -->
