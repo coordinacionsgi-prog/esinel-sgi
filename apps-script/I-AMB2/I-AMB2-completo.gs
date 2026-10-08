@@ -548,324 +548,403 @@ var DASHBOARD_HTML = String.raw`<!DOCTYPE html>
 <base target="_top">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>I-AMB2 · Consumos</title>
+<title>SGI · Indicador I-AMB2</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = { theme: { extend: { fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] } } } };
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    color-scheme: light;
-    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
-    --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
-    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --gen: #0b0b0b;
-    --good: #0ca30c; --good-ink: #006300; --warn: #fab219; --crit: #d03b3b; --crit-ink: #b42323;
-    --chip: #f0efec;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
-      --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
-      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --gen: #ffffff;
-      --good-ink: #0ca30c; --crit-ink: #e66767; --chip: #383835;
-    }
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--page); color: var(--ink);
-    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 20px 16px 40px; }
-  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
-  h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
-  .sub { color: var(--ink-2); font-size: 12px; margin-top: 2px; }
-  .sub a { color: inherit; }
-  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  select, button { font: inherit; font-size: 13px; color: var(--ink); background: var(--surface);
-    border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
-  button:hover, select:hover { border-color: var(--axis); }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px; }
-  .kpi .lbl { font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
-  .kpi .val { font-size: 30px; font-weight: 700; margin: 4px 0 2px; letter-spacing: -0.02em; }
-  .kpi .val small { font-size: 13px; font-weight: 500; color: var(--muted); }
-  .kpi .meta { font-size: 12px; color: var(--ink-2); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .kpi.hero { border-top: 3px solid var(--gen); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
-  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600;
-    padding: 1px 8px; border-radius: 999px; background: var(--chip); color: var(--ink); }
-  .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
-  .badge.ok::before { background: var(--good); }
-  .badge.bad::before { background: var(--crit); }
-  .delta.up { color: var(--good-ink); } .delta.down { color: var(--crit-ink); }
-  .grid2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; margin-bottom: 12px; }
-  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
-  .card h2 { font-size: 14px; margin: 0 0 2px; }
-  .card .hint { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
-  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
-  .tabs { display: inline-flex; background: var(--chip); border-radius: 8px; padding: 2px; }
-  .tabs button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
-  .tabs button.on { background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.12); font-weight: 600; }
-  .chart-box { position: relative; height: 300px; }
-  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin-bottom: 8px; }
-  .legend span { display: inline-flex; align-items: center; gap: 6px; }
-  .legend .ln { width: 16px; height: 0; border-top: 2px solid; }
-  .legend .ln.dash { border-top-style: dashed; }
-  .alerts { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow: auto; }
-  .alerts li { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--grid); font-size: 12.5px; }
-  .alerts li:last-child { border-bottom: 0; }
-  .alerts .ic { font-weight: 700; width: 16px; flex: none; text-align: center; }
-  .alerts .error .ic { color: var(--crit-ink); } .alerts .aviso .ic { color: #b07a00; }
-  .alerts .hoja { color: var(--muted); font-size: 11px; display: block; }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
-  th, td { padding: 7px 8px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
-  th { color: var(--ink-2); font-weight: 600; font-size: 11.5px; position: sticky; top: 0; background: var(--surface); }
-  th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
-  tr.grp td { background: var(--chip); font-weight: 600; text-align: left; }
-  td.res { font-weight: 700; }
-  td.bad { color: var(--crit-ink); }
-  .empty, .loading { padding: 60px 20px; text-align: center; color: var(--ink-2); }
-  .foot { margin-top: 14px; font-size: 11.5px; color: var(--muted); }
+  body { background: #f1f5f9; }
+  .card { background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15,23,42,.05); border-radius: 1rem; }
+  .pill { display: inline-flex; align-items: center; gap: .25rem; padding: .125rem .5rem; border-radius: 9999px; font-size: 10px; font-weight: 800; border: 1px solid transparent; white-space: nowrap; }
+  .pill.ok { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+  .pill.bad { background: #ffe4e6; color: #9f1239; border-color: #fecdd3; }
+  .pill.na { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+  .sede-btn { padding: .375rem .75rem; border-radius: .75rem; font-size: 12px; font-weight: 700; background: #f1f5f9; color: #334155; transition: background .15s; }
+  .sede-btn:hover { background: #e2e8f0; }
+  .sede-btn.on { background: #0f172a; color: #fff; }
+  .chart-box { position: relative; height: 260px; }
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  table.det th { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+  table.det td, table.det th { padding: .7rem .75rem; text-align: center; white-space: nowrap; }
+  table.det td:first-child, table.det th:first-child { text-align: left; padding-left: 1.25rem; }
+  .dim { opacity: .35; }
+  @media print { .no-print { display: none !important; } body { background: #fff; } }
 </style>
 </head>
-<body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>I-AMB2 · Generación de consumos</h1>
-      <div class="sub" id="sub">Cargando datos de la planilla…</div>
-    </div>
-    <div class="controls">
-      <label class="sub" for="fEj">Ejercicio</label>
-      <select id="fEj"></select>
-      <button id="btnRefresh" type="button">↻ Actualizar</button>
-    </div>
-  </header>
+<body class="text-slate-800 font-sans antialiased min-h-screen">
 
-  <div id="app"><div class="card loading">Leyendo hojas trimestrales…</div></div>
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-lg shrink-0">🍃</div>
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-2">
+          <h1 class="text-base font-extrabold text-slate-900 leading-snug">SGI · Indicador I-AMB2 <span class="text-slate-400 font-semibold">Generación de consumos</span></h1>
+          <span class="pill ok">ISO 14001</span>
+        </div>
+        <p class="text-xs text-slate-500 truncate" id="sub">Leyendo la planilla…</p>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 no-print">
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+        <label for="fPer" class="px-2 font-bold text-slate-600">📅 Trimestre:</label>
+        <select id="fPer" class="bg-white text-slate-900 font-bold py-1.5 px-2 rounded-lg border border-slate-300 text-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+      </div>
+      <button id="btnRefresh" type="button" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-sm disabled:opacity-60">
+        <span id="icoRefresh">⟳</span> Actualizar
+      </button>
+      <button id="btnHelp" type="button" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300">? Ayuda</button>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 no-print">
+  <div class="card p-2.5 flex flex-wrap items-center justify-between gap-2">
+    <div class="flex flex-wrap items-center gap-2 ml-1">
+      <span class="text-xs font-bold text-slate-600">Vista por sede:</span>
+      <span id="lblNomina" class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Nómina total: —</span>
+    </div>
+    <div class="flex flex-wrap gap-1.5" id="sedeBtns"></div>
+  </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-5" id="app">
+  <div class="card p-10 text-center text-sm text-slate-500">Leyendo hojas trimestrales…</div>
+</main>
+
+<div id="modalHelp" class="hidden fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="text-base font-extrabold text-slate-900">Cómo funciona este dashboard</h3>
+        <p class="text-xs text-slate-500">De dónde salen los datos y cómo se actualiza</p>
+      </div>
+      <button type="button" data-close class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700">✕</button>
+    </div>
+    <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
+      <div class="p-3 bg-blue-50/70 rounded-xl border border-blue-200">
+        <b class="text-blue-900 block mb-1">1. Lee la planilla en el momento</b>
+        Cada vez que abrís esta página (o tocás <b>Actualizar</b>) se leen todas las hojas <b>HASTA dd-mm-aa</b>. Si cambiás un dato en la planilla, alcanza con actualizar.
+      </div>
+      <div class="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200">
+        <b class="text-emerald-900 block mb-1">2. Cálculo</b>
+        Cada sede tiene su resultado (celdas D20, W20 y AP20). El <b>global</b> es el promedio de las 3 sedes ponderado por su nómina. Meta: el valor de "Objetivo" en la ficha AMB2.
+      </div>
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+        <b class="text-slate-900 block mb-1">3. Trimestre nuevo</b>
+        Duplicá la última hoja <b>HASTA …</b> (o usá el menú <b>Indicador AMB2 → Crear hoja del próximo trimestre</b>) y cargá los consumos. El período se toma del nombre de la hoja.
+      </div>
+    </div>
+    <div class="pt-2 flex justify-end gap-2 border-t border-slate-100">
+      <button type="button" id="btnHelpRefresh" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold">Actualizar ahora</button>
+      <button type="button" data-close class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Cerrar</button>
+    </div>
+  </div>
 </div>
 
 <script>
-var DATA = null, charts = {}, consumoActivo = 'energia';
-var SEDE_VAR = { REM: '--s1', STO: '--s2', MOS: '--s3' };
+var DATA = null, charts = {}, filtroSede = 'ALL';
+var SEDE_UI = {
+  REM: { color: '#2563eb', borde: 'border-l-blue-600', txt: 'text-blue-700', val: 'text-blue-900', sub: 'CABA' },
+  STO: { color: '#0d9488', borde: 'border-l-teal-600', txt: 'text-teal-700', val: 'text-teal-900', sub: 'Santa Fe' },
+  MOS: { color: '#7c3aed', borde: 'border-l-purple-600', txt: 'text-purple-700', val: 'text-purple-900', sub: 'Mosconi' }
+};
+var ITEM_UI = {
+  energia: { ico: '⚡', color: 'amber', titulo: 'Consumo de energía eléctrica', unidad: 'kWh' },
+  resmas:  { ico: '📄', color: 'blue', titulo: 'Consumo de resmas de papel', unidad: 'resmas' },
+  plotter: { ico: '🖨️', color: 'purple', titulo: 'Consumo de rollos de plotter', unidad: 'rollos' }
+};
+var ORDEN_ITEMS = ['energia', 'plotter', 'resmas'];
+var MAX_TRIM_GRAF = 8;
 
-function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 function n(v, d) {
-  if (v === null || v === undefined) return '—';
+  if (v === null || v === undefined || isNaN(v)) return '—';
   return Number(v).toLocaleString('es-AR', { minimumFractionDigits: d || 0, maximumFractionDigits: d === undefined ? 2 : d });
 }
+function pct(v) { return v === null || v === undefined ? '—' : Math.round(v * 100) + '%'; }
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function el(id) { return document.getElementById(id); }
 
 function cargar() {
-  document.getElementById('btnRefresh').disabled = true;
+  el('btnRefresh').disabled = true;
+  el('icoRefresh').className = 'spin';
   if (window.google && google.script && google.script.run) {
     google.script.run.withSuccessHandler(recibir).withFailureHandler(function (e) {
-      document.getElementById('app').innerHTML = '<div class="card empty">No se pudieron leer los datos: ' + esc(e.message || e) + '</div>';
-      document.getElementById('btnRefresh').disabled = false;
+      el('app').innerHTML = '<div class="card p-10 text-center text-sm text-rose-700">No se pudieron leer los datos: ' + esc(e.message || e) + '</div>';
+      fin();
     }).obtenerDatos();
   } else if (window.__AMB2_DATA__) {
     recibir(window.__AMB2_DATA__);
   }
 }
+function fin() { el('btnRefresh').disabled = false; el('icoRefresh').className = ''; }
 
 function recibir(d) {
   DATA = d;
-  document.getElementById('btnRefresh').disabled = false;
-  document.getElementById('sub').innerHTML = '<a href="' + esc(d.url) + '" target="_blank" rel="noopener">' + esc(d.planilla) +
-    '</a> · actualizado ' + esc(d.generado) + ' · objetivo ' + n(d.objetivo, 1) + ' pts';
-  var sel = document.getElementById('fEj');
-  var ejs = d.ejercicios.map(function (e) { return e.ej; }).reverse();
-  var prev = sel.value;
-  sel.innerHTML = '<option value="todos">Todos</option>' + ejs.map(function (e) {
-    return '<option value="' + e + '">Ej. ' + e + ' (' + (1991 + e) + '/' + String(1992 + e).slice(2) + ')</option>';
+  fin();
+  el('sub').innerHTML = '<a class="hover:underline" href="' + esc(d.url) + '" target="_blank" rel="noopener">' + esc(d.planilla) +
+    '</a> · actualizado ' + esc(d.generado) + ' · Remedios, Santo Tomé y Mosconi';
+  var sel = el('fPer'), prev = sel.value;
+  var conDato = d.trimestres.filter(function (t) { return t.general !== null; });
+  sel.innerHTML = conDato.slice().reverse().map(function (t, i) {
+    return '<option value="' + esc(t.hoja) + '">' + esc(t.rango) + ' · ' + esc(t.etiqueta) + (i === 0 ? ' (último)' : '') + '</option>';
   }).join('');
-  sel.value = prev && sel.querySelector('option[value="' + prev + '"]') ? prev : (ejs.length ? String(ejs[0]) : 'todos');
+  if (prev && sel.querySelector('option[value="' + prev.replace(/"/g, '') + '"]')) sel.value = prev;
+  el('sedeBtns').innerHTML = '<button type="button" class="sede-btn" data-s="ALL">🏢 Global (todas)</button>' +
+    d.sedes.map(function (s) {
+      return '<button type="button" class="sede-btn" data-s="' + s.id + '"><span style="color:' + SEDE_UI[s.id].color + '">●</span> ' + esc(s.nombre) + '</button>';
+    }).join('');
+  el('sedeBtns').querySelectorAll('button').forEach(function (b) {
+    b.onclick = function () { filtroSede = b.dataset.s; render(); };
+  });
   render();
-}
-
-function filtrados() {
-  var v = document.getElementById('fEj').value;
-  return DATA.trimestres.filter(function (t) { return v === 'todos' || String(t.ej) === v; });
 }
 
 function render() {
   if (!DATA) return;
-  var ts = filtrados();
-  if (!DATA.trimestres.length) {
-    document.getElementById('app').innerHTML = '<div class="card empty">No hay hojas con nombre "HASTA dd-mm-aa".</div>';
+  el('sedeBtns').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.s === filtroSede); });
+  var conDato = DATA.trimestres.filter(function (t) { return t.general !== null; });
+  if (!conDato.length) {
+    el('app').innerHTML = '<div class="card p-10 text-center text-sm text-slate-500">No hay hojas "HASTA dd-mm-aa" con resultados.</div>';
     return;
   }
-  var conDato = ts.filter(function (t) { return t.general !== null; });
-  var ult = conDato[conDato.length - 1];
-  var idxGlobal = ult ? DATA.trimestres.indexOf(ult) : -1;
-  var ant = null;
-  for (var i = idxGlobal - 1; i >= 0; i--) if (DATA.trimestres[i].general !== null) { ant = DATA.trimestres[i]; break; }
-  var ejSel = document.getElementById('fEj').value;
-  var resEj = DATA.ejercicios.filter(function (e) { return String(e.ej) === ejSel; })[0];
+  var hoja = el('fPer').value;
+  var idx = conDato.map(function (t) { return t.hoja; }).indexOf(hoja);
+  if (idx < 0) idx = conDato.length - 1;
+  var cur = conDato[idx], ant = idx > 0 ? conDato[idx - 1] : null;
+  var serie = conDato.slice(Math.max(0, idx - MAX_TRIM_GRAF + 1), idx + 1);
+  var resEj = DATA.ejercicios.filter(function (e) { return e.ej === cur.ej; })[0];
+
+  var nomTot = 0;
+  DATA.sedes.forEach(function (s) { var d = cur.sedes[s.id]; if (d && d.nomina) nomTot += d.nomina; });
+  el('lblNomina').textContent = 'Nómina total: ' + n(nomTot, 0) + ' personas · ' + cur.rango;
 
   var h = '';
-  // KPIs
-  h += '<div class="kpis">';
-  if (ult) {
-    h += kpi('hero', '<span class="dot" style="background:var(--gen)"></span>Resultado general · ' + esc(ult.etiqueta),
-      n(ult.general, 2), '/ 10', badge(ult.general, ult.objetivo) + delta(ult.general, ant && ant.general) +
-      '<span>' + esc(ult.rango) + '</span>');
-    DATA.sedes.forEach(function (s) {
-      var d = ult.sedes[s.id], pa = null;
-      for (var j = idxGlobal - 1; j >= 0; j--) { var x = DATA.trimestres[j].sedes[s.id]; if (x && x.resultado !== null) { pa = x; break; } }
-      h += kpi('', '<span class="dot" style="background:var(' + SEDE_VAR[s.id] + ')"></span>' + esc(s.nombre),
-        d ? n(d.resultado, 1) : '—', d ? '/ 10' : '',
-        d ? badge(d.resultado, s.objetivo) + delta(d.resultado, pa && pa.resultado) +
-            '<span>' + n(d.items.energia.valor, 0) + ' kWh</span>' : '<span>Sin datos este trimestre</span>');
-    });
-    if (resEj) {
-      h += kpi('', 'Promedio Ej. ' + resEj.ej, n(resEj.promedio, 2), '/ 10',
-        badge(resEj.promedio, DATA.objetivo) + '<span>' + resEj.trimestres + ' de 4 trimestres</span>');
-    }
-  } else {
-    h += '<div class="card empty">Sin resultados en el ejercicio seleccionado.</div>';
-  }
+  // --- Tarjetas
+  h += '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">';
+  h += tarjetaGlobal(cur, ant, nomTot, resEj);
+  DATA.sedes.forEach(function (s) { h += tarjetaSede(s, cur, ant, nomTot); });
   h += '</div>';
 
-  // Gráfico resultados + alertas
-  h += '<div class="grid2">';
-  h += '<div class="card"><h2>Resultado por trimestre</h2><p class="hint">General ponderado por nómina y por sede · línea punteada = objetivo</p>' +
-       legendHTML(true) + '<div class="chart-box"><canvas id="cRes" role="img" aria-label="Resultado por trimestre"></canvas></div></div>';
-  var hojas = {}; ts.forEach(function (t) { hojas[t.hoja] = true; });
-  var als = DATA.alertas.filter(function (a) { return hojas[a.hoja] || !/^\s*HASTA/i.test(a.hoja); })
-    .sort(function (a, b) { return (a.nivel === 'error' ? 0 : 1) - (b.nivel === 'error' ? 0 : 1); });
-  var otras = DATA.alertas.length - als.length;
-  h += '<div class="card"><h2>Revisión de datos</h2><p class="hint">' +
-       (als.length ? als.length + ' punto(s) a revisar' : 'Sin inconsistencias en este período') +
-       (otras ? ' · ' + otras + ' más en otros ejercicios' : '') + '</p>' + alertasHTML(als) + '</div>';
-  h += '</div>';
+  // --- Tabla de desglose
+  h += '<div class="card overflow-hidden">' +
+    '<div class="px-5 py-4 border-b border-slate-200 bg-slate-50/70 flex flex-wrap justify-between items-center gap-2">' +
+      '<div><h2 class="text-sm font-extrabold text-slate-900">📊 Desglose del trimestre · ' + esc(cur.rango) + '</h2>' +
+      '<p class="text-xs text-slate-500">Consumo real de cada sede y su nota (2 a 10) según la escala de la hoja ' + esc(cur.hoja.trim()) + '</p></div>' +
+      '<div class="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">' + pesosHTML(cur) + '</div>' +
+    '</div><div class="overflow-x-auto">' + tablaHTML(cur, nomTot) + '</div></div>';
 
-  // Consumos
-  h += '<div class="card" style="margin-bottom:12px"><div class="card-head"><div><h2>Consumos por sede</h2>' +
-       '<p class="hint" id="hintCons"></p></div><div class="tabs" id="tabs">' +
-       DATA.items.map(function (it) { return '<button type="button" data-k="' + it.id + '" class="' + (it.id === consumoActivo ? 'on' : '') + '">' + esc(it.nombre) + '</button>'; }).join('') +
-       '</div></div>' + legendHTML(false) + '<div class="chart-box"><canvas id="cCons" role="img" aria-label="Consumos por sede"></canvas></div></div>';
-
-  // Tabla
-  h += '<div class="card"><h2>Detalle por trimestre</h2><p class="hint">Valores leídos de cada hoja "HASTA …" · nota 2 a 10 por ítem · resultado = suma ponderada</p>' +
-       '<div class="table-wrap">' + tablaHTML(ts) + '</div></div>';
-  h += '<div class="foot">El período sale del nombre de cada hoja (ejercicio de abril a marzo). El resultado general pondera cada sede por su nómina.</div>';
-
-  document.getElementById('app').innerHTML = h;
-  document.querySelectorAll('#tabs button').forEach(function (b) {
-    b.onclick = function () { consumoActivo = b.dataset.k; render(); };
+  // --- Gráficos
+  h += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">';
+  h += graficoCard('cRes', '📈', 'Evolución de la nota vs. meta', 'Global ponderado por nómina y nota de cada sede · últimos ' + serie.length + ' trimestres',
+    '<span class="pill bad">Meta: ' + n(cur.objetivo, 2) + '</span>');
+  ORDEN_ITEMS.forEach(function (k) {
+    var u = ITEM_UI[k], it = DATA.items.filter(function (x) { return x.id === k; })[0];
+    var peso = pesoItem(cur, k);
+    h += graficoCard('c_' + k, u.ico, u.titulo + ' (' + esc(it.unidad) + ')', 'Por sede y por trimestre',
+      peso !== null ? '<span class="pill na">Peso: ' + pct(peso) + '</span>' : '');
   });
-  dibujar(ts);
+  h += '</div>';
+
+  // --- Revisión de datos
+  h += revisionHTML(conDato);
+  h += '<p class="text-[11px] text-slate-400 text-center pb-4">El período sale del nombre de cada hoja (ejercicio de abril a marzo). El global pondera cada sede por su nómina.</p>';
+
+  el('app').innerHTML = h;
+  dibujar(serie, cur);
 }
 
-function kpi(cls, lbl, val, unit, meta) {
-  return '<div class="card kpi ' + cls + '"><div class="lbl">' + lbl + '</div><div class="val">' + val +
-    (unit ? ' <small>' + unit + '</small>' : '') + '</div><div class="meta">' + meta + '</div></div>';
-}
-function badge(v, obj) {
-  if (v === null || v === undefined) return '<span class="badge">Sin dato</span>';
-  return v >= obj ? '<span class="badge ok">Cumple</span>' : '<span class="badge bad">Desvío</span>';
+function pill(v, obj) {
+  if (v === null || v === undefined) return '<span class="pill na">Sin dato</span>';
+  return v >= obj ? '<span class="pill ok">Cumple</span>' : '<span class="pill bad">Desvío</span>';
 }
 function delta(a, b) {
-  if (a === null || b === null || b === undefined) return '';
+  if (a === null || a === undefined || b === null || b === undefined) return '<span class="text-slate-400">sin trimestre anterior</span>';
   var d = a - b;
-  if (Math.abs(d) < 0.005) return '<span class="delta">= anterior</span>';
-  return '<span class="delta ' + (d > 0 ? 'up' : 'down') + '">' + (d > 0 ? '▲ +' : '▼ ') + n(d, 2) + '</span>';
+  if (Math.abs(d) < 0.005) return '<span class="text-slate-500 font-bold">= trimestre anterior</span>';
+  return '<span class="font-bold ' + (d > 0 ? 'text-emerald-600' : 'text-rose-600') + '">' + (d > 0 ? '▲ +' : '▼ ') + n(d, 2) + ' vs. anterior</span>';
 }
-function legendHTML(conGeneral) {
-  var h = '<div class="legend">';
-  if (conGeneral) h += '<span><i class="ln" style="border-color:var(--gen);border-top-width:3px"></i>General</span>';
-  DATA.sedes.forEach(function (s) { h += '<span><i class="dot" style="background:var(' + SEDE_VAR[s.id] + ')"></i>' + esc(s.nombre) + '</span>'; });
-  if (conGeneral) h += '<span><i class="ln dash" style="border-color:var(--muted)"></i>Objetivo</span>';
-  return h + '</div>';
+function pesoItem(t, k) {
+  for (var i = 0; i < DATA.sedes.length; i++) {
+    var d = t.sedes[DATA.sedes[i].id];
+    if (d && d.items[k] && d.items[k].peso !== null) return d.items[k].peso;
+  }
+  return null;
 }
-function alertasHTML(als) {
-  if (!als.length) return '<p class="sub">✓ Todo en orden.</p>';
-  return '<ul class="alerts">' + als.map(function (a) {
-    return '<li class="' + a.nivel + '"><span class="ic">' + (a.nivel === 'error' ? '✖' : '!') + '</span><span>' +
-      esc(a.msg) + '<span class="hoja">' + esc(a.hoja.trim()) + '</span></span></li>';
-  }).join('') + '</ul>';
+
+function tarjetaGlobal(cur, ant, nomTot, resEj) {
+  var ok = cur.general >= cur.objetivo;
+  var dif = cur.general - cur.objetivo;
+  var dim = filtroSede !== 'ALL' ? ' dim' : '';
+  return '<div class="card p-5 border-2 ' + (ok ? 'border-emerald-300' : 'border-rose-300') + dim + '">' +
+    '<div class="flex justify-between items-start mb-2"><span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">🏢 Global empresa</span>' +
+      pill(cur.general, cur.objetivo) + '</div>' +
+    '<div class="flex items-baseline gap-2 mb-1"><span class="text-3xl font-extrabold text-slate-900">' + n(cur.general, 2) + '</span>' +
+      '<span class="text-xs font-bold text-slate-400">/ 10 pts</span></div>' +
+    '<p class="text-xs text-slate-600 font-semibold">Ponderado por nómina: ' + n(nomTot, 0) + ' personas</p>' +
+    '<p class="text-[11px] mt-1">' + delta(cur.general, ant && ant.general) + '</p>' +
+    '<div class="mt-3 pt-2.5 border-t border-slate-100 text-[11px] flex justify-between items-center text-slate-500 font-semibold gap-2">' +
+      '<span>Meta: <b>≥ ' + n(cur.objetivo, 2) + '</b></span>' +
+      '<span class="font-bold ' + (dif >= 0 ? 'text-emerald-600' : 'text-rose-600') + '">' + (dif >= 0 ? '+' : '') + n(dif, 2) + ' vs. meta</span></div>' +
+    (resEj ? '<div class="mt-1.5 text-[11px] text-slate-500 font-semibold">Promedio Ej. ' + resEj.ej + ': <b class="text-slate-800">' + n(resEj.promedio, 2) +
+      '</b> (' + resEj.trimestres + ' de 4 trim.)</div>' : '') +
+  '</div>';
 }
-function tablaHTML(ts) {
-  var h = '<table><thead><tr><th>Trimestre</th><th>Sede</th><th>Nómina</th><th>Resmas</th><th>Rollos</th><th>Energía kWh</th>' +
-          '<th>kWh/persona</th><th>Notas (R/P/E)</th><th>Resultado</th></tr></thead><tbody>';
-  ts.slice().reverse().forEach(function (t) {
-    h += '<tr class="grp"><td colspan="8">' + esc(t.etiqueta) + ' · ' + esc(t.rango) + ' <span class="sub">(' + esc(t.hoja.trim()) + ')</span></td>' +
-         '<td style="text-align:right" class="' + (t.cumple === false ? 'bad' : '') + '">' + n(t.general, 2) + '</td></tr>';
-    DATA.sedes.forEach(function (s) {
-      var d = t.sedes[s.id];
-      if (!d) return;
-      var it = d.items;
-      h += '<tr><td></td><td><span class="dot" style="background:var(' + SEDE_VAR[s.id] + ');margin-right:6px"></span>' + esc(s.nombre) + '</td>' +
-        '<td>' + n(d.nomina, 0) + '</td><td>' + n(it.resmas.valor) + '</td><td>' + n(it.plotter.valor) + '</td>' +
-        '<td>' + n(it.energia.valor, 0) + '</td><td>' + n(d.kwhPorPersona, 1) + '</td>' +
-        '<td>' + [it.resmas.nota, it.plotter.nota, it.energia.nota].map(function (x) { return n(x, 0); }).join(' / ') + '</td>' +
-        '<td class="res ' + (d.resultado !== null && d.resultado < s.objetivo ? 'bad' : '') + '">' + n(d.resultado, 2) + '</td></tr>';
-    });
+
+function tarjetaSede(s, cur, ant, nomTot) {
+  var u = SEDE_UI[s.id], d = cur.sedes[s.id];
+  var dim = (filtroSede !== 'ALL' && filtroSede !== s.id) ? ' dim' : '';
+  var cab = '<div class="flex justify-between items-start mb-2"><div><span class="text-[11px] font-extrabold uppercase tracking-wider ' + u.txt + ' block">' +
+    esc(s.nombre) + '</span><span class="text-[10px] text-slate-400 font-bold">' +
+    (d ? 'Nómina: ' + n(d.nomina, 0) + ' pers. · ' + (nomTot ? n(d.nomina / nomTot * 100, 1) : '—') + '% del global' : u.sub) + '</span></div>' +
+    pill(d ? d.resultado : null, s.objetivo) + '</div>';
+  if (!d) {
+    return '<div class="card p-5 border-l-4 ' + u.borde + dim + '">' + cab + '<p class="text-sm text-slate-400 mt-4">Sin consumos cargados este trimestre.</p></div>';
+  }
+  var pa = ant && ant.sedes[s.id];
+  var it = d.items;
+  return '<div class="card p-5 border-l-4 ' + u.borde + dim + '">' + cab +
+    '<div class="flex items-baseline gap-2 mb-1"><span class="text-3xl font-extrabold ' + u.val + '">' + n(d.resultado, 2) + '</span>' +
+      '<span class="text-xs font-bold text-slate-400">/ 10 pts</span></div>' +
+    '<p class="text-xs text-slate-600 font-medium">⚡ ' + n(it.energia.nota, 0) + ' · 🖨️ ' + n(it.plotter.nota, 0) + ' · 📄 ' + n(it.resmas.nota, 0) + ' <span class="text-slate-400">(notas)</span></p>' +
+    '<p class="text-[11px] mt-1">' + delta(d.resultado, pa ? pa.resultado : null) + '</p>' +
+    '<div class="mt-3 pt-2.5 border-t border-slate-100 text-[11px] flex justify-between items-center text-slate-500 font-semibold gap-2">' +
+      '<span>Energía: <b class="text-slate-700">' + n(it.energia.valor, 0) + '</b> kWh</span>' +
+      '<span class="font-bold ' + u.txt + '">' + n(d.kwhPorPersona, 0) + ' kWh/pers.</span></div>' +
+  '</div>';
+}
+
+function pesosHTML(cur) {
+  var cls = { amber: 'bg-amber-50 text-amber-800 border-amber-200', purple: 'bg-purple-50 text-purple-800 border-purple-200', blue: 'bg-blue-50 text-blue-800 border-blue-200' };
+  return ORDEN_ITEMS.map(function (k) {
+    var p = pesoItem(cur, k), u = ITEM_UI[k];
+    var nombre = DATA.items.filter(function (x) { return x.id === k; })[0].nombre;
+    return '<span class="px-2 py-0.5 rounded border ' + cls[u.color] + '">' + esc(nombre) + ': ' + pct(p) + '</span>';
+  }).join('');
+}
+
+function notaCls(v) {
+  if (v === null || v === undefined) return 'text-slate-400';
+  return v >= 8 ? 'text-emerald-700' : v >= 6 ? 'text-amber-700' : 'text-rose-700';
+}
+
+function tablaHTML(cur, nomTot) {
+  var h = '<table class="det w-full text-xs border-collapse"><thead><tr class="bg-slate-100/80 text-slate-700 font-bold border-b border-slate-200">' +
+    '<th>Sede</th><th>Nómina</th>' +
+    '<th class="bg-amber-50/60 text-amber-900">Energía</th><th class="bg-amber-50/60 text-amber-900">Nota</th>' +
+    '<th class="bg-purple-50/60 text-purple-900">Plotter</th><th class="bg-purple-50/60 text-purple-900">Nota</th>' +
+    '<th class="bg-blue-50/60 text-blue-900">Resmas</th><th class="bg-blue-50/60 text-blue-900">Nota</th>' +
+    '<th class="text-slate-900">Nota sede</th><th>Aporte al global</th></tr></thead><tbody class="divide-y divide-slate-200 font-medium text-slate-700">';
+  DATA.sedes.forEach(function (s) {
+    if (filtroSede !== 'ALL' && filtroSede !== s.id) return;
+    var u = SEDE_UI[s.id], d = cur.sedes[s.id];
+    if (!d) {
+      h += '<tr><td class="font-bold ' + u.txt + '"><span style="color:' + u.color + '">●</span> ' + esc(s.nombre) + '</td><td colspan="9" class="text-slate-400">Sin consumos cargados</td></tr>';
+      return;
+    }
+    var it = d.items;
+    var aporte = nomTot && d.resultado !== null ? d.resultado * d.nomina / nomTot : null;
+    h += '<tr class="hover:bg-slate-50">' +
+      '<td class="font-bold ' + u.txt + '"><span style="color:' + u.color + '">●</span> ' + esc(s.nombre) + '</td>' +
+      '<td class="font-bold bg-slate-50/50">' + n(d.nomina, 0) + ' pers.</td>' +
+      '<td class="font-bold text-slate-800 bg-amber-50/30">' + n(it.energia.valor, 0) + ' kWh</td>' +
+      '<td class="font-extrabold bg-amber-50/30 ' + notaCls(it.energia.nota) + '">' + n(it.energia.nota, 0) + '</td>' +
+      '<td class="font-bold text-slate-800 bg-purple-50/30">' + n(it.plotter.valor) + ' rollos</td>' +
+      '<td class="font-extrabold bg-purple-50/30 ' + notaCls(it.plotter.nota) + '">' + n(it.plotter.nota, 0) + '</td>' +
+      '<td class="font-bold text-slate-800 bg-blue-50/30">' + n(it.resmas.valor) + ' resmas</td>' +
+      '<td class="font-extrabold bg-blue-50/30 ' + notaCls(it.resmas.nota) + '">' + n(it.resmas.nota, 0) + '</td>' +
+      '<td class="font-extrabold text-sm ' + (d.resultado !== null && d.resultado < s.objetivo ? 'text-rose-700' : 'text-emerald-700') + '">' + n(d.resultado, 2) + '</td>' +
+      '<td class="font-mono text-slate-600">' + n(aporte, 3) + '</td></tr>';
   });
+  if (filtroSede === 'ALL') {
+    h += '<tr class="bg-slate-50 font-extrabold text-slate-900"><td>🏢 Global</td><td>' + n(nomTot, 0) + ' pers.</td><td colspan="6"></td>' +
+      '<td class="text-sm ' + (cur.cumple === false ? 'text-rose-700' : 'text-emerald-700') + '">' + n(cur.general, 2) + '</td><td class="font-mono">' + n(cur.general, 3) + '</td></tr>';
+  }
   return h + '</tbody></table>';
 }
 
-function baseOpts(yTitle, yMin, yMax) {
-  var grid = css('--grid'), muted = css('--muted'), axis = css('--axis');
+function graficoCard(id, ico, titulo, sub, extra) {
+  return '<div class="card p-5"><div class="mb-3 flex justify-between items-start gap-2"><div>' +
+    '<h3 class="text-sm font-extrabold text-slate-900">' + ico + ' ' + titulo + '</h3>' +
+    '<p class="text-xs text-slate-500">' + sub + '</p></div>' + (extra || '') + '</div>' +
+    '<div class="chart-box"><canvas id="' + id + '"></canvas></div></div>';
+}
+
+function revisionHTML(conDato) {
+  var als = DATA.alertas.slice().sort(function (a, b) { return (a.nivel === 'error' ? 0 : 1) - (b.nivel === 'error' ? 0 : 1); });
+  var h = '<div class="card p-5"><h3 class="text-sm font-extrabold text-slate-900">🔎 Revisión de datos</h3>';
+  if (!als.length) return h + '<p class="text-xs text-emerald-700 font-semibold mt-1">✓ Sin inconsistencias en la planilla.</p></div>';
+  h += '<p class="text-xs text-slate-500 mb-3">' + als.length + ' punto(s) para revisar en la planilla</p><ul class="space-y-2">';
+  als.forEach(function (a) {
+    var err = a.nivel === 'error';
+    h += '<li class="flex gap-2 text-xs p-2.5 rounded-xl border ' + (err ? 'bg-rose-50 border-rose-200 text-rose-900' : 'bg-amber-50 border-amber-200 text-amber-900') + '">' +
+      '<span class="font-extrabold">' + (err ? '✖' : '!') + '</span><span>' + esc(a.msg) +
+      ' <span class="text-slate-500 font-semibold">· ' + esc(a.hoja.trim()) + '</span></span></li>';
+  });
+  return h + '</ul></div>';
+}
+
+function opts(min, max, step) {
   return {
-    responsive: true, maintainAspectRatio: false, animation: false,
+    responsive: true, maintainAspectRatio: false,
     interaction: { mode: 'index', intersect: false },
     plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: css('--surface'), titleColor: css('--ink'), bodyColor: css('--ink-2'),
-        borderColor: axis, borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true,
-        callbacks: { label: function (c) { return ' ' + c.dataset.label + ': ' + (c.raw === null ? '—' : n(c.raw, yMax === 10 ? 2 : 1)); } }
-      }
+      legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Plus Jakarta Sans', size: 11, weight: 600 }, color: '#475569' } },
+      tooltip: { backgroundColor: '#0f172a', padding: 10, titleFont: { family: 'Plus Jakarta Sans' }, bodyFont: { family: 'Plus Jakarta Sans' },
+        callbacks: { label: function (c) { return ' ' + c.dataset.label + ': ' + (c.raw === null ? '—' : n(c.raw, max === 10.5 ? 2 : undefined)); } } }
     },
     scales: {
-      x: { grid: { display: false }, border: { color: axis }, ticks: { color: muted, font: { size: 11 } } },
-      y: { min: yMin, max: yMax, beginAtZero: true, grid: { color: grid }, border: { display: false },
-           ticks: { color: muted, font: { size: 11 }, stepSize: yMax === 10 ? 1 : undefined,
-                    callback: function (v) { return n(v, 0); } },
-           title: { display: !!yTitle, text: yTitle, color: muted, font: { size: 11 } } }
+      x: { grid: { display: false }, ticks: { color: '#64748b', font: { family: 'Plus Jakarta Sans', size: 11 } } },
+      y: { min: min, max: max, beginAtZero: min === 0, grid: { color: '#f1f5f9' }, border: { display: false },
+        ticks: { color: '#64748b', stepSize: step, font: { family: 'Plus Jakarta Sans', size: 11 }, callback: function (v) { return n(v, 0); } } }
     }
   };
 }
 
-function dibujar(ts) {
+function dibujar(serie, cur) {
   Object.keys(charts).forEach(function (k) { charts[k].destroy(); });
   charts = {};
-  var labels = ts.map(function (t) { return ts.length > 6 ? t.rango : [t.etiqueta, t.rango]; });
-  var surface = css('--surface');
+  var labels = serie.map(function (t) { return t.rango; });
+  var sedes = DATA.sedes.filter(function (s) { return filtroSede === 'ALL' || filtroSede === s.id; });
 
-  var dsRes = DATA.sedes.map(function (s) {
-    var c = css(SEDE_VAR[s.id]);
-    return { label: s.nombre, data: ts.map(function (t) { var d = t.sedes[s.id]; return d ? d.resultado : null; }),
-      borderColor: c, backgroundColor: c, borderWidth: 2, pointRadius: 4, pointHoverRadius: 6,
-      pointBorderColor: surface, pointBorderWidth: 2, spanGaps: true, tension: 0 };
+  var ds = [];
+  if (filtroSede === 'ALL') {
+    ds.push({ label: 'Global empresa', data: serie.map(function (t) { return t.general; }), borderColor: '#059669', backgroundColor: '#059669',
+      borderWidth: 3.5, tension: 0.25, pointRadius: 5, spanGaps: true });
+  }
+  sedes.forEach(function (s) {
+    var c = SEDE_UI[s.id].color;
+    ds.push({ label: s.nombre, data: serie.map(function (t) { var d = t.sedes[s.id]; return d ? d.resultado : null; }),
+      borderColor: c, backgroundColor: c, borderWidth: 2, tension: 0.25, pointRadius: 4, spanGaps: true,
+      borderDash: filtroSede === 'ALL' ? [4, 4] : [] });
   });
-  dsRes.unshift({ label: 'General', data: ts.map(function (t) { return t.general; }), borderColor: css('--gen'),
-    backgroundColor: css('--gen'), borderWidth: 3, pointRadius: 4, pointHoverRadius: 6, pointBorderColor: surface,
-    pointBorderWidth: 2, spanGaps: true, tension: 0 });
-  dsRes.push({ label: 'Objetivo', data: ts.map(function (t) { return t.objetivo; }), borderColor: css('--muted'),
-    borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 0, fill: false });
+  ds.push({ label: 'Meta', data: serie.map(function (t) { return t.objetivo; }), borderColor: '#ef4444', borderWidth: 1.5,
+    borderDash: [6, 6], pointRadius: 0, pointHoverRadius: 0 });
   var vals = [];
-  dsRes.forEach(function (d) { d.data.forEach(function (v) { if (v !== null) vals.push(v); }); });
-  var yMin = vals.length ? Math.max(0, Math.floor(Math.min.apply(null, vals)) - 1) : 0;
-  charts.res = new Chart(document.getElementById('cRes'), {
-    type: 'line', data: { labels: labels, datasets: dsRes }, options: baseOpts('Puntos', yMin, 10)
-  });
+  ds.forEach(function (x) { x.data.forEach(function (v) { if (v !== null) vals.push(v); }); });
+  var yMin = Math.max(0, Math.floor(Math.min.apply(null, vals)) - 1);
+  charts.res = new Chart(el('cRes'), { type: 'line', data: { labels: labels, datasets: ds }, options: opts(yMin, 10.5, 1) });
 
-  var it = DATA.items.filter(function (x) { return x.id === consumoActivo; })[0];
-  document.getElementById('hintCons').textContent = it.nombre + ' (' + it.unidad + ') por trimestre';
-  var dsCons = DATA.sedes.map(function (s) {
-    var c = css(SEDE_VAR[s.id]);
-    return { label: s.nombre, data: ts.map(function (t) { var d = t.sedes[s.id]; return d ? d.items[consumoActivo].valor : null; }),
-      backgroundColor: c, borderColor: surface, borderWidth: { left: 1, right: 1 }, borderRadius: { topLeft: 4, topRight: 4 },
-      borderSkipped: 'bottom', maxBarThickness: 28, categoryPercentage: 0.7, barPercentage: 0.92 };
+  ORDEN_ITEMS.forEach(function (k) {
+    var dsK = sedes.map(function (s) {
+      return { label: s.nombre, data: serie.map(function (t) { var d = t.sedes[s.id]; return d ? d.items[k].valor : null; }),
+        backgroundColor: SEDE_UI[s.id].color, borderRadius: 5, maxBarThickness: 34 };
+    });
+    charts[k] = new Chart(el('c_' + k), { type: 'bar', data: { labels: labels, datasets: dsK }, options: opts(0, undefined, undefined) });
   });
-  var oc = baseOpts(it.unidad === 'kWh' ? 'kWh' : 'Unidades', 0, undefined);
-  delete oc.scales.y.max;
-  charts.cons = new Chart(document.getElementById('cCons'), { type: 'bar', data: { labels: labels, datasets: dsCons }, options: oc });
 }
 
-document.getElementById('fEj').addEventListener('change', render);
-document.getElementById('btnRefresh').addEventListener('click', cargar);
-if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { if (DATA) render(); });
+el('fPer').addEventListener('change', render);
+el('btnRefresh').addEventListener('click', cargar);
+el('btnHelp').addEventListener('click', function () { el('modalHelp').classList.remove('hidden'); });
+el('btnHelpRefresh').addEventListener('click', function () { el('modalHelp').classList.add('hidden'); cargar(); });
+document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', function () { el('modalHelp').classList.add('hidden'); }); });
+el('modalHelp').addEventListener('click', function (e) { if (e.target === el('modalHelp')) el('modalHelp').classList.add('hidden'); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') el('modalHelp').classList.add('hidden'); });
 cargar();
 </script>
 </body>
