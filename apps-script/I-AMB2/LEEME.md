@@ -5,6 +5,23 @@ Planilla: **I-AMB2 - Consumos EJ 35**
 
 Reemplaza el script y el dashboard que había armado Gemini.
 
+## Estado actual (08/10/2026)
+
+Ya aplicado directamente en la planilla, sin script:
+
+- Pestaña **Dashboard** hecha solo con fórmulas y gráficos nativos. Lee cada fila de la ficha AMB2,
+  detecta la hoja `HASTA …` desde la fórmula de la ficha y trae resultados, nómina y consumos de las 3 sedes.
+  Tiene selector de ejercicio (`Último`, `Todos` o un número).
+- Ficha AMB2: agregada la fila Jul–Sep 2026 (los 3 gráficos de la ficha la incluyen). El link "Dashboard" apunta a la pestaña nueva.
+- Fechas DESDE/HASTA y textos de trimestre/ejercicio corregidos en todas las hojas `HASTA …`.
+- "Total promedio" (`N21`, `AG21`, `AZ21`, `M24`) de las 4 hojas más nuevas: divide por la nómina total en vez de 36 fijo.
+
+Para cada trimestre nuevo alcanza con lo de siempre: duplicar la última hoja `HASTA …`, cargar los datos y agregar
+la fila en la ficha AMB2 (antes de "Objetivo"). El dashboard se actualiza solo.
+
+El código de abajo (`Code.gs` + `Dashboard.html`) es opcional: solo hace falta si se quiere el menú de automatizaciones
+o el dashboard como página web.
+
 ## Instalación (una sola vez, ~3 minutos)
 
 1. Abrí la planilla → **Extensiones → Apps Script**.
