@@ -19,20 +19,23 @@ Ya aplicado directamente en la planilla, sin script:
 Para cada trimestre nuevo alcanza con lo de siempre: duplicar la última hoja `HASTA …`, cargar los datos y agregar
 la fila en la ficha AMB2 (antes de "Objetivo"). El dashboard se actualiza solo.
 
-El código de abajo (`Code.gs` + `Dashboard.html`) es opcional: solo hace falta si se quiere el menú de automatizaciones
-o el dashboard como página web.
+El dashboard en HTML (página web, como el de Gemini) se instala con el script de abajo.
 
-## Instalación (una sola vez, ~3 minutos)
+## Instalación (una sola vez, ~2 minutos)
+
+Todo va en **un solo archivo**: [`I-AMB2-completo.gs`](I-AMB2-completo.gs) (script + página HTML del dashboard).
 
 1. Abrí la planilla → **Extensiones → Apps Script**.
-2. **Borrá todos los archivos** del proyecto (los `.gs` y `.html` de Gemini).
-3. Creá `Code.gs` y pegá el contenido de [`Code.gs`](Code.gs).
-4. **Archivo + → HTML**, llamalo exactamente `Dashboard` y pegá [`Dashboard.html`](Dashboard.html).
-5. Guardá. Volvé a la planilla y recargala: aparece el menú **Indicador AMB2**.
-6. Para mantener el **mismo link** del dashboard (celda A59 de la ficha):
-   **Implementar → Administrar implementaciones → ✏️ → Versión: Nueva versión → Implementar**.
-   No crees una implementación nueva, porque cambia la URL.
-7. En el menú **Indicador AMB2 → Activar actualización automática (diaria)** (pide permisos la primera vez).
+2. Borrá los archivos de Gemini (dejá solo `Código.gs`/`Code.gs`) y en ese archivo **reemplazá todo** por el contenido de `I-AMB2-completo.gs`. Guardá (Ctrl+S).
+3. **Implementar → Administrar implementaciones → ✏️ (lápiz) → Versión: Nueva versión → Implementar.**
+   Así el link del dashboard sigue siendo el mismo que tenía Gemini (celda A60 de la ficha).
+   Si no hay ninguna implementación: **Implementar → Nueva implementación → Aplicación web**.
+4. Recargá la planilla → menú **Indicador AMB2 → Activar actualización automática** (acepta los permisos).
+
+Listo. El dashboard web se calcula en el momento cada vez que se abre, y cada hora se actualiza la ficha y se
+exporta `I-AMB2 Dashboard.html` (con los datos adentro) en la carpeta de la planilla.
+
+`Code.gs` + `Dashboard.html` son las fuentes por separado; `I-AMB2-completo.gs` se genera uniéndolas.
 
 ## Qué hace
 
@@ -43,7 +46,8 @@ o el dashboard como página web.
 | Corregir encabezados de períodos | Reescribe trimestre, ejercicio, DESDE y HASTA de cada hoja según su nombre. **No toca consumos.** Pide confirmación. |
 | Crear hoja del próximo trimestre | Duplica la última hoja `HASTA …`, la nombra con el trimestre siguiente, pone las fechas, deja los consumos en blanco y la agrega a la ficha. |
 | Revisar datos | Lista las inconsistencias de la planilla. |
-| Actualización automática | Todos los días a las 7 h pone la ficha al día. |
+| Exportar HTML ahora | Guarda/actualiza `I-AMB2 Dashboard.html` en la carpeta de la planilla. |
+| Activar actualización automática | Cada hora: pone la ficha al día y exporta el HTML. |
 
 El dashboard (`/exec`) se calcula en el momento, leyendo directamente las hojas `HASTA dd-mm-aa`. No hace falta completar nada a mano: alcanza con cargar los consumos en la hoja del trimestre.
 `/exec?formato=json` devuelve los mismos datos en JSON.
