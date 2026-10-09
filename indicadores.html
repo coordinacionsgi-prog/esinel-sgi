@@ -688,6 +688,57 @@ if (INYECTADO) {
   D = FALLBACK_DATA;
 }
 
+// Auto-computa promedios por ejercicio desde datos periódicos (d[7]) — nunca desactualiza
+function recomputeFromPeriods(arr) {
+  arr.forEach(function(d) {
+    if (!d[7] || !d[7].length) return;
+    function ejFromDate(ds) {
+      if (!ds) return null;
+      var p = ds.split('-');
+      if (p.length < 2) return null;
+      var y = parseInt(p[0], 10), m = parseInt(p[1], 10);
+      return (m >= 4) ? y - 1991 : y - 1992;
+    }
+    var ejMap = {};
+    d[7].forEach(function(p) {
+      var ej = ejFromDate(p[0]);
+      if (ej === null) return;
+      if (!ejMap[ej]) ejMap[ej] = { vals: [], obj: p[2] };
+      ejMap[ej].obj = p[2];
+      if (p[1] !== null) ejMap[ej].vals.push(p[1]);
+    });
+    var storedMap = {};
+    d[8].forEach(function(e) { storedMap[e[0]] = e; });
+    Object.keys(ejMap).forEach(function(ejStr) {
+      var ej = parseInt(ejStr, 10);
+      var data = ejMap[ejStr];
+      if (data.vals.length > 0) {
+        var avg = data.vals.reduce(function(s, v) { return s + v; }, 0) / data.vals.length;
+        storedMap[ej] = [ej, Math.round(avg * 100) / 100, data.obj];
+      } else if (!storedMap[ej]) {
+        storedMap[ej] = [ej, null, data.obj];
+      }
+    });
+    d[8] = Object.keys(storedMap).map(function(k) { return storedMap[k]; })
+             .sort(function(a, b) { return a[0] - b[0]; });
+    var lastP = null;
+    for (var i = d[7].length - 1; i >= 0; i--) {
+      if (d[7][i][1] !== null) { lastP = d[7][i]; break; }
+    }
+    if (lastP) {
+      d[3] = lastP[1];
+      var pts = lastP[0].split('-');
+      d[4] = pts[2] + '/' + pts[1] + '/' + pts[0];
+    }
+    var latestEj = null;
+    for (var j = d[8].length - 1; j >= 0; j--) {
+      if (d[8][j][1] !== null) { latestEj = d[8][j]; break; }
+    }
+    if (latestEj) d[6] = latestEj[1] >= latestEj[2] ? 1 : 0;
+  });
+}
+recomputeFromPeriods(D);
+
 try {
   localStorage.setItem('esinel_ind_stats', JSON.stringify({
     total: D.length,
