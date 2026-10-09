@@ -782,6 +782,45 @@
       padding: 60px 20px;
       color: var(--text-muted);
     }
+
+    /* ── Dark Mode ── */
+    html.dark {
+      --surface-bg: #0f172a;
+      --card-bg: #1e293b;
+      --border-subtle: #334155;
+      --border-light: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-soft: #64748b;
+      --g-blue-bg: #1e3a5f;
+      --g-green-bg: #14352a;
+      --g-yellow-bg: #2d2410;
+      --g-red-bg: #3d1515;
+      --g-purple-bg: #2d1b4e;
+    }
+    html.dark body { background: var(--surface-bg); color: var(--text-main); }
+    html.dark .g-dist-track { background: #334155; }
+    html.dark .g-search-input { background: #1e293b; color: var(--text-main); border-color: #334155; }
+    html.dark .g-search-input:hover { background: #263141; }
+    html.dark .g-search-input:focus { background: #0f172a; }
+    html.dark .g-search-clear:hover { background: #334155; color: var(--text-main); }
+    html.dark .g-view-toggles { background: #1e293b; }
+    html.dark .g-chip:hover { background: #263141; color: var(--text-main); }
+    html.dark .g-chips-row { border-top-color: #334155; }
+    html.dark .g-meta-list { border-top-color: #334155; }
+    html.dark .g-table th { background: #0f172a; color: var(--text-muted); }
+    html.dark .g-table td { border-bottom-color: #334155; }
+    html.dark .g-table tr:hover td { background-color: #263141; }
+    html.dark .g-drawer-card { background: #1e293b; }
+    html.dark .g-drawer-body { background: #1e293b; }
+    html.dark .g-drawer-footer { background: #0f172a; border-top-color: #334155; }
+    html.dark .g-select-pill { background: #1e293b; color: var(--text-muted); border-color: #334155; }
+    html.dark .g-select-pill option { background: #1e293b; }
+
+    #per-theme-btn { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #e2e8f0; background: #fff; color: #475569;
+      display: inline-flex; align-items: center; gap: 5px; transition: .15s; }
+    html.dark #per-theme-btn { background: #1e293b; border-color: #334155; color: #94a3b8; }
   </style>
 </head>
 <body>
@@ -853,6 +892,7 @@
       <p>Directorio corporativo de cuentas y responsabilidades SGI · Ejercicio 35 · 2026</p>
     </div>
     <div class="g-quick-actions">
+      <button id="per-theme-btn" onclick="perToggleTheme()" title="Cambiar tema">🌙 Oscuro</button>
       <button class="g-btn" onclick="exportDirectoryCSV()"><i class="ti ti-download"></i> Exportar CSV</button>
       <button class="g-btn g-btn-primary" onclick="copyAllEmails()"><i class="ti ti-mail-fast"></i> Copiar Correos</button>
     </div>
@@ -1377,6 +1417,29 @@
   initSedesDropdown();
   renderMetricsAndBar();
   renderDirectory();
+
+  function perToggleTheme() {
+    var h = document.documentElement;
+    var isDark = h.classList.contains('dark');
+    if (isDark) {
+      h.classList.remove('dark');
+      localStorage.setItem('per_theme', 'light');
+      document.getElementById('per-theme-btn').innerHTML = '🌙 Oscuro';
+    } else {
+      h.classList.add('dark');
+      localStorage.setItem('per_theme', 'dark');
+      document.getElementById('per-theme-btn').innerHTML = '☀️ Claro';
+    }
+  }
+  (function() {
+    var t = localStorage.getItem('per_theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    if (t === 'dark' || (!t && prefersDark)) {
+      document.documentElement.classList.add('dark');
+      var btn = document.getElementById('per-theme-btn');
+      if (btn) btn.innerHTML = '☀️ Claro';
+    }
+  })();
 </script>
 </body>
 </html>
