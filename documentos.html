@@ -103,6 +103,40 @@
     .sortable-header:hover {
       background-color: #f1f5f9;
     }
+
+    /* ── Dark Mode ── */
+    html.dark body, html.dark #appBody { background-color: #0f172a !important; color: #f1f5f9; }
+    html.dark .card-clean { background: #1e293b !important; border-color: #334155 !important; box-shadow: none !important; }
+    html.dark .card-clean:hover { border-color: #475569 !important; }
+    html.dark .bg-white { background-color: #1e293b !important; }
+    html.dark .bg-slate-50 { background-color: #0f172a !important; }
+    html.dark .bg-slate-100, html.dark .hover\:bg-slate-100:hover, html.dark .hover\:bg-slate-200:hover { background-color: #263141 !important; }
+    html.dark .text-slate-900 { color: #f1f5f9 !important; }
+    html.dark .text-slate-800 { color: #e2e8f0 !important; }
+    html.dark .text-slate-700 { color: #cbd5e1 !important; }
+    html.dark .text-slate-600 { color: #94a3b8 !important; }
+    html.dark .text-slate-500 { color: #94a3b8 !important; }
+    html.dark .text-slate-400 { color: #64748b !important; }
+    html.dark .border-slate-200 { border-color: #334155 !important; }
+    html.dark .border-slate-100 { border-color: #263141 !important; }
+    html.dark .divide-slate-100 > * { border-color: #263141 !important; }
+    html.dark input, html.dark select { background-color: #1e293b !important; color: #f1f5f9 !important; border-color: #334155 !important; }
+    html.dark input::placeholder { color: #64748b !important; }
+    html.dark input:focus, html.dark select:focus { background-color: #0f172a !important; }
+    html.dark .sortable-header:hover { background-color: #263141 !important; }
+    html.dark .bg-sky-50 { background-color: #0c2137 !important; }
+    html.dark .bg-emerald-50 { background-color: #052e16 !important; }
+    html.dark .bg-amber-50 { background-color: #1c1400 !important; }
+    html.dark .bg-rose-50 { background-color: #2d0a0a !important; }
+    html.dark .border-sky-100 { border-color: #1e3a5f !important; }
+    html.dark .border-emerald-100 { border-color: #14352a !important; }
+    html.dark .border-amber-100 { border-color: #2d2410 !important; }
+    html.dark .border-rose-100 { border-color: #3d1515 !important; }
+
+    #doc-theme-btn { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #e2e8f0; background: #fff; color: #475569;
+      display: inline-flex; align-items: center; gap: 5px; transition: .15s; }
+    html.dark #doc-theme-btn { background: #1e293b; border-color: #334155; color: #94a3b8; }
   </style>
 </head>
 <body class="min-h-full bg-slate-50 bg-grid-pattern-light text-slate-800 flex flex-col font-sans" id="appBody">
@@ -191,6 +225,8 @@
             <i class="ti ti-table-shortcut text-emerald-600 text-sm"></i>
             <span class="hidden sm:inline">Google Sheets</span>
           </a>
+
+          <button id="doc-theme-btn" onclick="docToggleTheme()" title="Cambiar tema">🌙 Oscuro</button>
 
           <button onclick="exportFilteredCSV()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs shadow-md shadow-sky-600/20 transition transform active:scale-95">
             <i class="ti ti-download text-sm"></i>
@@ -989,6 +1025,29 @@
     initProcesses();
     initStatsAndCharts();
     renderTable();
+
+    function docToggleTheme() {
+      var h = document.documentElement;
+      var isDark = h.classList.contains('dark');
+      if (isDark) {
+        h.classList.remove('dark');
+        localStorage.setItem('doc_theme', 'light');
+        document.getElementById('doc-theme-btn').innerHTML = '🌙 Oscuro';
+      } else {
+        h.classList.add('dark');
+        localStorage.setItem('doc_theme', 'dark');
+        document.getElementById('doc-theme-btn').innerHTML = '☀️ Claro';
+      }
+    }
+    (function() {
+      var t = localStorage.getItem('doc_theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+      if (t === 'dark' || (!t && prefersDark)) {
+        document.documentElement.classList.add('dark');
+        var btn = document.getElementById('doc-theme-btn');
+        if (btn) btn.innerHTML = '☀️ Claro';
+      }
+    })();
   </script>
 </body>
 </html>
