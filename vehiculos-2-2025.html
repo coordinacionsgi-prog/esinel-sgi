@@ -6,6 +6,73 @@
 <title>SGI - Gestión de Vehículos</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
+html.dark{--bg:#0b1221;--bg2:#0f172a;--tx:#f1f5f9;--bdr:#1e293b}
+html.dark body{background:#0b1221;color:#f1f5f9}
+html.dark .analysis,html.dark .modal,html.dark .ov .modal{background:#0f172a!important;border-color:#1e293b!important}
+html.dark .card,html.dark .stat{background:#0f172a!important;border-color:#1e293b!important}
+html.dark .toolbar input{background:#0f172a!important;border-color:#1e293b!important;color:#f1f5f9!important}
+html.dark .an-kpi{background:#0b1221!important}
+html.dark #historial-menu{background:#0f172a!important;border-color:#1e293b!important}
+html.dark .sub{color:#94a3b8}
+html.dark .fbtn{background:#1e293b!important;border-color:#334155!important;color:#94a3b8!important}
+html.dark .fbtn.act{background:#312e81!important;border-color:#4338ca!important;color:#a5b4fc!important}
+html.dark .mtab{background:#1e293b!important;border-color:#334155!important;color:#94a3b8!important}
+html.dark .mtab.act{background:#312e81!important;border-color:#4338ca!important;color:#a5b4fc!important}
+html.dark .c-dom{color:#f1f5f9}
+html.dark .c-photo,html.dark .modal-photo{background:#0f172a!important}
+html.dark .c-marca{color:#94a3b8}
+html.dark .c-mid{color:#94a3b8}
+html.dark .c-mid b{color:#f1f5f9}
+html.dark .cost-row{color:#64748b;border-top-color:#1e293b}
+html.dark .cost-row b{color:#f1f5f9}
+html.dark .kv{background:#0f172a!important}
+html.dark .kv.warn{background:#451a03!important}
+html.dark .kv.bad{background:#450a0a!important}
+html.dark .kv.ok{background:#052e16!important}
+html.dark .kv-val{color:#f1f5f9}
+html.dark .sec-hd{color:#64748b!important;border-bottom-color:#1e293b!important}
+html.dark .rank-card{background:#1e293b!important;border-color:#334155!important}
+html.dark .rank-hd{color:#94a3b8!important}
+html.dark .rank-badge{background:#312e81!important;color:#a5b4fc!important}
+html.dark .rank-row:first-child .rank-badge{background:#451a03!important;color:#fcd34d!important}
+html.dark .notas,html.dark .comp{background:#1e293b!important;border-color:#334155!important}
+html.dark .nota-card{background:#0f172a!important}
+html.dark .chart-title{color:#94a3b8!important}
+html.dark .cb-label{color:#94a3b8!important}
+html.dark .cb-vals{color:#f1f5f9}
+html.dark .analysis-hd .per{color:#94a3b8!important;background:#0b1221!important}
+html.dark .an-kpi-val{color:#f1f5f9}
+html.dark .an-kpi-sub{color:#94a3b8!important}
+html.dark .ckpi{background:#0f172a!important}
+html.dark .ckpi-lbl{color:#94a3b8!important}
+html.dark .ckpi-prev{color:#64748b!important}
+html.dark .comp-vs{color:#94a3b8!important;background:#0b1221!important}
+html.dark .comp-table th{color:#64748b!important;border-bottom-color:#334155!important}
+html.dark .comp-table tr:hover td{background:#263141!important}
+html.dark .modal-close{color:#64748b!important}
+html.dark .modal .msub{color:#94a3b8!important}
+html.dark .aa-wrap{background:#0c1a2e!important;border-color:#1e3a5f!important}
+html.dark .obs-row{background:#1a1305!important}
+html.dark .obs-dom{color:#f1f5f9!important}
+html.dark .obs-desc{color:#cbd5e1!important}
+html.dark .obs-extra,html.dark .obs-marca{color:#94a3b8!important}
+html.dark .aa-hd h2{color:#38bdf8!important}
+html.dark .aa-kpi{background:#0f172a!important;border-color:#1e3a5f!important}
+html.dark .aa-kpi-val{color:#38bdf8!important}
+html.dark .aa-kpi-lbl{color:#64748b!important}
+html.dark .aa-col{background:#0f172a!important;border-color:#1e3a5f!important}
+html.dark .aa-col-title{color:#38bdf8!important;border-bottom-color:#1e3a5f!important}
+html.dark .aa-row .rn{color:#cbd5e1!important}
+html.dark .aa-note{color:#64748b!important}
+html.dark .ti-inner{background:#0c1a2e!important;border-top-color:#1e3a5f!important}
+html.dark .ti-lbl{color:#38bdf8!important}
+html.dark .ti-txt{color:#94a3b8!important}
+html.dark .ti-btn{border-color:#334155!important;color:#64748b!important}
+html.dark .ti-btn:hover,html.dark .ti-btn.ti-on{border-color:#0ea5e9!important;color:#38bdf8!important;background:#0c1a2e!important}
+html.dark .informe-toolbar button{background:#1e293b!important;border-color:#334155!important;color:#94a3b8!important}
+html.dark .informe-toolbar button.primary{background:#0f172a!important;color:#f1f5f9!important}
+#veh-theme-btn{padding:5px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#475569;display:inline-flex;align-items:center;gap:5px;transition:.15s}
+html.dark #veh-theme-btn{background:#1e293b;border-color:#334155;color:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px}
 .wrap{max-width:1320px;margin:0 auto;padding:24px}
@@ -217,6 +284,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:2px}
   <div class="title-row">
     <div><h1>Gestión de Vehículos</h1>
     <div class="sub">Esinel S.R.L. &middot; RO-12-04 &middot; mantenimiento, documentación y costos por vehículo</div></div>
+    <button id="veh-theme-btn" onclick="vehToggleTheme()" title="Cambiar tema">🌙 Oscuro</button>
     <button class="informe-btn no-print" onclick="openInforme()">📄 Ver informe semestral</button>
     <div class="no-print" style="position:relative;display:inline-block">
       <button class="informe-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'" style="background:#f97316">🕓 Historial</button>
@@ -918,6 +986,18 @@ function renderComparativa() {
   }).join('');
   document.getElementById('comp-tbody').innerHTML = rows;
 }
+function vehToggleTheme() {
+  var d = document.documentElement;
+  var on = d.classList.toggle('dark');
+  localStorage.setItem('veh_theme', on ? 'dark' : 'light');
+  document.getElementById('veh-theme-btn').textContent = on ? '☀️ Claro' : '🌙 Oscuro';
+}
+(function(){
+  var t = localStorage.getItem('veh_theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+  if (t === 'dark') { document.documentElement.classList.add('dark'); }
+  var btn = document.getElementById('veh-theme-btn');
+  if (btn) btn.textContent = t === 'dark' ? '☀️ Claro' : '🌙 Oscuro';
+})();
 </script>
   <!-- Auth Overlay -->
   <div id="sgi-auth-overlay" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
