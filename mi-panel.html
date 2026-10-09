@@ -192,6 +192,64 @@ textarea.field{resize:none;line-height:1.5}
 </head>
 <body>
 
+  <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <!-- Fila superior de marca y certificados -->
+      <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
+        <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
+          <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
+            <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="9" r="5" fill="#3b82f6"/><circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="22" cy="35" r="5" fill="#3b82f6"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+              <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+              <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9" r="5" fill="#3b82f6"/>
+              <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+              <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
+            </div>
+            <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
+            <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+              <span class="text-slate-400">ISO 9001</span>
+              <span class="text-emerald-400">ISO 14001</span>
+              <span class="text-rose-400">ISO 45001</span>
+            </div>
+          </div>
+        </a>
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+            <i class="ti ti-shield-check text-sky-400 text-sm"></i>
+            <span>SGI · Gestión Integrada (Rev 05)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Barra de Navegacion Horizontal -->
+    <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
+      <div class="w-full px-4 sm:px-6 lg:px-8">
+        <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
+          <a class="esinel-nav-item esinel-active px-3 py-2 rounded-lg font-semibold text-amber-400 bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="mi-panel.html"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="comercial.html"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
@@ -211,9 +269,7 @@ textarea.field{resize:none;line-height:1.5}
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none">
-  <div class="topbar">
-    <a href="index.html" class="app-logo"><div class="logo-dot"></div>Esinel SGI</a>
+<div id="app" style="display:none">Esinel SGI</a>
     <div class="topbar-center">
       <span class="ejercicio-badge" id="ejercicio-badge">Ejercicio 35</span>
     </div>
