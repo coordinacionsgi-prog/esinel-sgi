@@ -802,6 +802,38 @@
 .esinel-badge-warn{background:rgba(245,158,11,.18);color:#f59e0b}
 .esinel-badge-danger{background:rgba(239,68,68,.15);color:#f87171}
 </style>
+<script>
+(function(){
+  var t = localStorage.getItem('esinel_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  if (t === 'dark') document.documentElement.classList.add('dark');
+  else document.documentElement.classList.remove('dark');
+})();
+</script>
+<style>
+/* ─── LIGHT MODE OVERRIDES ─── */
+[data-theme="light"] body,
+[data-theme="light"] .bg-\[\#0f172a\]                { background:#f8fafc!important; color:#0f172a!important }
+[data-theme="light"] .bg-slate-950                     { background:#f1f5f9!important }
+[data-theme="light"] .bg-slate-900,.bg-slate-900\/60  { background:#e9eef5!important }
+[data-theme="light"] .bg-slate-800                     { background:#dce3ec!important }
+[data-theme="light"] .border-slate-800,.border-slate-800\/80 { border-color:#cbd5e1!important }
+[data-theme="light"] .border-slate-700                 { border-color:#b0bac7!important }
+[data-theme="light"] .text-slate-400                   { color:#475569!important }
+[data-theme="light"] .text-slate-500                   { color:#64748b!important }
+[data-theme="light"] .text-slate-300                   { color:#334155!important }
+[data-theme="light"] .text-white                       { color:#0f172a!important }
+[data-theme="light"] header.bg-\[\#0f172a\]          { background:#1e40af!important; border-color:#1e3a8a!important }
+[data-theme="light"] header .text-slate-400            { color:#bfdbfe!important }
+[data-theme="light"] header .text-white                { color:#ffffff!important }
+[data-theme="light"] header .border-slate-800\/80     { border-color:#1e3a8a!important }
+[data-theme="light"] header .bg-slate-900\/60         { background:#1d4ed8cc!important }
+[data-theme="light"] #esinel-theme-btn .ti-sun         { display:inline }
+[data-theme="light"] #esinel-theme-btn .ti-moon        { display:none }
+[data-theme="dark"]  #esinel-theme-btn .ti-sun         { display:none }
+[data-theme="dark"]  #esinel-theme-btn .ti-moon        { display:inline }
+#esinel-theme-btn .ti-sun, #esinel-theme-btn .ti-moon  { display:none }
+</style>
   <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
     <div class="w-full px-4 sm:px-6 lg:px-8">
       <!-- Fila superior de marca y certificados -->
@@ -836,6 +868,7 @@
             <i class="ti ti-shield-check text-sky-400 text-sm"></i>
             <span>SGI · Gestión Integrada (Rev 05)</span>
           </div>
+          <button id="esinel-theme-btn" onclick="(function(){var h=document.documentElement,t=h.getAttribute('data-theme')=='dark'?'light':'dark';h.setAttribute('data-theme',t);t==='dark'?h.classList.add('dark'):h.classList.remove('dark');localStorage.setItem('esinel_theme',t);})()" title="Cambiar tema" class="p-2 rounded-lg hover:bg-slate-700/50 text-slate-400 hover:text-slate-200 transition text-base leading-none"><i class="ti ti-sun"></i><i class="ti ti-moon"></i></button>
         </div>
       </div>
     </div>
@@ -858,9 +891,128 @@
       </div>
     </div>
   </header>
-<script></script>
+
+<main class="g-dashboard-wrap">
+
+  <!-- Encabezado y Acciones -->
+  <header class="g-top-bar">
+    <div class="g-title-group">
+      <h1><i class="ti ti-users-group" style="color:var(--g-blue)"></i> Directorio de Personal ESINEL</h1>
+      <p>Directorio corporativo de cuentas y responsabilidades SGI · Ejercicio 35 · 2026</p>
+    </div>
+    <div class="g-quick-actions">
+      <button class="g-btn" onclick="exportDirectoryCSV()"><i class="ti ti-download"></i> Exportar CSV</button>
+      <button class="g-btn g-btn-primary" onclick="copyAllEmails()"><i class="ti ti-mail-fast"></i> Copiar Correos</button>
+    </div>
+  </header>
+
+  <!-- Métricas Generales -->
+  <section class="g-stats-banner" id="stats-banner"></section>
+
+  <!-- Barra de Distribución por Departamento -->
+  <div class="g-dist-bar-card">
+    <div class="g-dist-header">
+      <span>Distribución por Áreas Organizacionales</span>
+      <span id="dist-summary-text">Cargando...</span>
+    </div>
+    <div class="g-dist-track" id="dist-track"></div>
+  </div>
+
+  <!-- Barra de Búsqueda y Filtros -->
+  <section class="g-control-deck">
+    <div class="g-search-row">
+      <div class="g-search-box">
+        <i class="ti ti-search search-icon"></i>
+        <input type="text" id="searchInput" class="g-search-input" placeholder="Buscar por nombre, cargo, sede o correo..." autocomplete="off">
+        <button id="clearSearchBtn" class="g-search-clear" onclick="clearSearch()" title="Limpiar"><i class="ti ti-x"></i></button>
+      </div>
+      <select id="sedeFilter" class="g-select-pill" onchange="renderDirectory()">
+        <option value="">Todas las sedes</option>
+      </select>
+      <div class="g-view-toggles">
+        <button class="g-view-btn active" id="btnViewGrid" onclick="setViewMode('grid')">
+          <i class="ti ti-layout-grid"></i> Mosaico
+        </button>
+        <button class="g-view-btn" id="btnViewTable" onclick="setViewMode('table')">
+          <i class="ti ti-table"></i> Tabla
+        </button>
+      </div>
+    </div>
+    <div class="g-chips-row" id="areaChipsRow"></div>
+  </section>
+
+  <!-- Vista Mosaico -->
+  <div class="g-cards-grid" id="cardsGrid"></div>
+
+  <!-- Vista Tabla -->
+  <div class="g-table-wrap" id="tableWrap">
+    <table class="g-table">
+      <thead>
+        <tr>
+          <th>Colaborador</th>
+          <th>Cargo</th>
+          <th>Área</th>
+          <th>Sede</th>
+          <th>Correo Electrónico</th>
+          <th>Hallazgos SGI</th>
+          <th style="text-align:right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Modal de Ficha de Colaborador -->
+<div class="g-drawer-overlay" id="drawerOverlay" onclick="closeDrawer(event)">
+  <div class="g-drawer-card" onclick="event.stopPropagation()">
+    <div class="g-drawer-hero" id="drawerHero">
+      <div class="g-drawer-avatar" id="drawerAvatar">AB</div>
+      <div>
+        <h3 id="drawerName" style="font-size:18px; font-weight:700;">Nombre</h3>
+        <p id="drawerRole" style="font-size:13px; opacity:0.9;">Cargo</p>
+      </div>
+      <button class="g-drawer-close" onclick="closeDrawer()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="g-drawer-body">
+      <div class="g-drawer-row">
+        <i class="ti ti-briefcase"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Área / Departamento</div>
+          <div id="drawerArea" style="font-weight:500;">Área</div>
+        </div>
+      </div>
+      <div class="g-drawer-row">
+        <i class="ti ti-map-pin"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Sede de Asignación</div>
+          <div id="drawerSede" style="font-weight:500;">Sede</div>
+        </div>
+      </div>
+      <div class="g-drawer-row">
+        <i class="ti ti-mail"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Correo Corporativo</div>
+          <div id="drawerEmail" style="font-weight:500;">correo@esinel.com.ar</div>
+        </div>
+      </div>
+      <div class="g-drawer-row" id="drawerHallazgosRow">
+        <i class="ti ti-alert-triangle" style="color:var(--g-yellow)"></i>
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; font-weight:600;">Responsabilidad SGI</div>
+          <div id="drawerHallazgosText" style="font-weight:500;">Sin acciones pendientes</div>
+        </div>
+      </div>
+    </div>
+    <div class="g-drawer-footer">
+      <button class="g-btn" id="drawerCopyBtn"><i class="ti ti-copy"></i> Copiar Correo</button>
+      <a href="#" class="g-btn g-btn-primary" id="drawerMailToBtn"><i class="ti ti-send"></i> Enviar Mensaje</a>
+    </div>
+  </div>
+</div>
 
 <script>
+
   const AREAS = {
     Gerencia: { label: 'Gerencia', color: '#5f6368', bg: '#f1f3f4', icon: 'ti-crown' },
     Obras: { label: 'Obras', color: '#1a73e8', bg: '#e8f0fe', icon: 'ti-tool' },
