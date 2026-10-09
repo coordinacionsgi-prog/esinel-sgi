@@ -1868,21 +1868,12 @@ window.onload = () => {
     h.appendChild(c);
   }
 
-  window.entrarDemo = function() {
-    sessionStorage.setItem('sgi_ok', '1');
-    sessionStorage.setItem('sgi_email', 'thiagobaira@gmail.com');
-    sessionStorage.setItem('sgi_name', 'Luan Thiago Baira');
-    const ov = document.getElementById('sgi-auth-overlay');
-    if (ov) ov.remove();
-    injectChip('Luan Thiago Baira');
-  };
-
-  if (sessionStorage.getItem('sgi_ok') === '1') {
-    const ov = document.getElementById('sgi-auth-overlay');
-    if (ov) ov.remove();
-    const _n = sessionStorage.getItem('sgi_name') || '';
-    if (_n) injectChip(_n);
-  }
+    if (sessionStorage.getItem('sgi_ok') === '1') {
+      const ov = document.getElementById('sgi-auth-overlay');
+      if (ov) ov.remove();
+      const _n = sessionStorage.getItem('sgi_name') || '';
+      if (_n) injectChip(_n);
+    }
 
   function sgiCb(r) {
     try {
