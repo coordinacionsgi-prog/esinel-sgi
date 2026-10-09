@@ -1202,9 +1202,8 @@ function goInd(d) {
     `;
   });
   
-  switchTab('ej');
+  switchTab('per');
   showPg('pg-ind');
-  setTimeout(() => drawInd(d, color), 30);
 }
 
 function switchTab(t) {
@@ -1266,10 +1265,10 @@ function buildPeriodSelector(d) {
   const ejList = Array.from(ejSet).sort((a,b) => a - b);
   if(!ejList.length) { selectedEj = null; return; }
   
-  selectedEj = ejList.includes(currentGlobalEj) ? currentGlobalEj : ejList[ejList.length-1];
+  selectedEj = 'all';
 
   const btnAll = document.createElement('button');
-  btnAll.className = 'px-3 py-1 rounded-lg text-xs font-bold transition border bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500';
+  btnAll.className = 'px-3 py-1 rounded-lg text-xs font-bold transition border bg-blue-600 text-white border-blue-600 shadow-sm';
   btnAll.textContent = 'Histórico Completo';
   btnAll.onclick = () => {
     selectedEj = 'all';
@@ -1283,8 +1282,7 @@ function buildPeriodSelector(d) {
 
   ejList.forEach(ej => {
     const btn = document.createElement('button');
-    const isSel = (ej === selectedEj);
-    btn.className = `px-3 py-1 rounded-lg text-xs font-bold transition border ${isSel ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500'}`;
+    btn.className = 'px-3 py-1 rounded-lg text-xs font-bold transition border bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-500';
     btn.textContent = 'Ej. ' + ej;
     btn.onclick = () => {
       selectedEj = ej;
