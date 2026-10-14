@@ -5,132 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mi Panel — SGI Esinel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config = { darkMode: 'class' }</script>
 
 <style>
-:root{
-  --bg:#F0F4F8;--bg2:#FFFFFF;--bg3:#F1F5F9;--bg4:#E8EEF5;
-  --border:#E2E8F0;--border2:#CBD5E1;
-  --text:#0F172A;--text2:#64748B;--text3:#94A3B8;
-  --indigo:#4F46E5;--indigo-dim:#EEF2FF;--indigo-border:#C7D2FE;--indigo-text:#3730A3;
-  --green:#059669;--green-dim:#ECFDF5;--green-border:#A7F3D0;--green-text:#065F46;
-  --amber:#D97706;--amber-dim:#FFFBEB;--amber-border:#FDE68A;--amber-text:#92400E;
-  --red:#DC2626;--red-dim:#FEF2F2;--red-border:#FECACA;--red-text:#991B1B;
-  --violet:#7C3AED;--violet-dim:#F5F3FF;--violet-border:#DDD6FE;--violet-text:#5B21B6;
-  --cyan:#0891B2;--cyan-dim:#ECFEFF;--cyan-border:#A5F3FC;--cyan-text:#155E75;
-  --r:10px;--r2:14px;
+:root {
+  --bg: #F0F4F8; --bg2: #FFFFFF; --bg3: #F1F5F9; --bg4: #E8EEF5;
+  --border: #E2E8F0; --border2: #CBD5E1;
+  --text: #0F172A; --text2: #64748B; --text3: #94A3B8;
+  --indigo: #4F46E5; --indigo-dim: #EEF2FF; --indigo-border: #C7D2FE; --indigo-text: #3730A3;
+  --green: #059669; --green-dim: #ECFDF5; --green-border: #A7F3D0; --green-text: #065F46;
+  --amber: #D97706; --amber-dim: #FFFBEB; --amber-border: #FDE68A; --amber-text: #92400E;
+  --red: #DC2626; --red-dim: #FEF2F2; --red-border: #FECACA; --red-text: #991B1B;
+  --violet: #7C3AED; --violet-dim: #F5F3FF; --violet-border: #DDD6FE; --violet-text: #5B21B6;
+  --cyan: #0891B2; --cyan-dim: #ECFEFF; --cyan-border: #A5F3FC; --cyan-text: #155E75;
+  --r: 10px; --r2: 14px;
 }
-html.dark, [data-theme=dark]{
-  --bg:#0B111E;--bg2:#131929;--bg3:#1A2236;--bg4:#1E2840;
-  --border:#1E2D47;--border2:#263552;
-  --text:#EDF2FF;--text2:#7B8DB0;--text3:#3D4F6B;
-  --indigo:#6366F1;--indigo-dim:rgba(99,102,241,.13);--indigo-border:rgba(99,102,241,.28);--indigo-text:#A5B4FC;
-  --green:#10B981;--green-dim:rgba(16,185,129,.1);--green-border:rgba(16,185,129,.22);--green-text:#6EE7B7;
-  --amber:#F59E0B;--amber-dim:rgba(245,158,11,.1);--amber-border:rgba(245,158,11,.22);--amber-text:#FDE68A;
-  --red:#F43F5E;--red-dim:rgba(244,63,94,.1);--red-border:rgba(244,63,94,.22);--red-text:#FCA5A5;
-  --violet:#A78BFA;--violet-dim:rgba(167,139,250,.1);--violet-border:rgba(167,139,250,.22);--violet-text:#C4B5FD;
-  --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,.1);--cyan-border:rgba(34,211,238,.22);--cyan-text:#A5F3FC;
+html.dark, [data-theme=dark] {
+  --bg: #090D16; --bg2: #111827; --bg3: #1A2234; --bg4: #1F293D;
+  --border: #1F293D; --border2: #2B3852;
+  --text: #F8FAFC; --text2: #94A3B8; --text3: #64748B;
+  --indigo: #6366F1; --indigo-dim: rgba(99,102,241,.13); --indigo-border: rgba(99,102,241,.28); --indigo-text: #A5B4FC;
+  --green: #10B981; --green-dim: rgba(16,185,129,.1); --green-border: rgba(16,185,129,.22); --green-text: #6EE7B7;
+  --amber: #F59E0B; --amber-dim: rgba(245,158,11,.1); --amber-border: rgba(245,158,11,.22); --amber-text: #FDE68A;
+  --red: #F43F5E; --red-dim: rgba(244,63,94,.1); --red-border: rgba(244,63,94,.22); --red-text: #FCA5A5;
+  --violet: #A78BFA; --violet-dim: rgba(167,139,250,.1); --violet-border: rgba(167,139,250,.22); --violet-text: #C4B5FD;
+  --cyan: #22D3EE; --cyan-dim: rgba(34,211,238,.1); --cyan-border: rgba(34,211,238,.22); --cyan-text: #A5F3FC;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;transition:background .2s,color .2s}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;transition:background .2s,color .2s}
+.mono{font-family:'JetBrains Mono',monospace}
 
 /* Si está embebido en iframe dentro de otra pantalla del SGI, ocultar la cabecera duplicada */
 body.is-embedded header.esinel-global-header { display:none !important; }
 
 /* ── AUTH ── */
-#auth-screen{display:flex;align-items:center;justify-content:center;min-height:80vh;padding:24px}
-.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)}
-.auth-logo{width:56px;height:56px;border-radius:16px;background:var(--indigo-dim);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px}
-.auth-card h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px}
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:85vh;padding:24px}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:40px 32px;max-width:390px;width:100%;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,.06)}
+.auth-logo{width:56px;height:56px;border-radius:18px;background:var(--indigo-dim);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;color:var(--indigo)}
+.auth-card h1{font-size:22px;font-weight:800;margin-bottom:8px}
 .auth-card p{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5}
 .auth-error{font-size:12px;color:var(--red-text);background:var(--red-dim);border:1px solid var(--red-border);border-radius:var(--r);padding:10px 12px;margin-top:14px;display:none}
 
-/* ── TOPBAR ── */
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:40}
+/* ── TOPBAR SUB-NAV ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:30}
 .app-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;text-decoration:none;color:var(--text)}
 .logo-dot{width:9px;height:9px;border-radius:50%;background:var(--indigo)}
-.topbar-center{display:flex;align-items:center;gap:6px}
-.ejercicio-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border);letter-spacing:.02em}
-.topbar-right{display:flex;align-items:center;gap:10px}
+.ejercicio-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border);letter-spacing:.02em}
 .user-chip{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:24px;padding:3px 12px 3px 4px;cursor:pointer;transition:.15s}
 .user-chip:hover{border-color:var(--border2)}
 .avatar{width:28px;height:28px;border-radius:50%;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--indigo);color:#fff;flex-shrink:0}
-.user-name{font-size:12px;font-weight:500;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-name{font-size:12px;font-weight:600;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .btn-icon{width:34px;height:34px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-size:16px}
 .btn-icon:hover{background:var(--bg3);color:var(--text)}
 
 /* ── MAIN LAYOUT ── */
-.main{max-width:1160px;margin:0 auto;padding:28px 24px 56px}
-.page-header{margin-bottom:24px}
-.page-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--text2)}
+.main{max-width:1400px;margin:0 auto;padding:24px 20px 64px}
+.panel-grid{display:grid;grid-template-columns:350px 1fr;gap:20px;align-items:start}
+@media (max-width:980px){.panel-grid{grid-template-columns:1fr}}
+
+/* ── DIRECTORY COLUMN ── */
+.directory-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.02)}
+.directory-list{display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 290px);overflow-y:auto;padding-right:4px}
+.directory-list::-webkit-scrollbar{width:5px}
+.directory-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+.persona-item{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;transition:all .15s}
+.persona-item:hover{border-color:var(--indigo-border);background:var(--bg4);transform:translateX(2px)}
+.persona-item.selected{border-color:var(--indigo);background:var(--indigo-dim);box-shadow:0 2px 8px rgba(79,70,229,.12)}
+.persona-item.selected .p-name{color:var(--indigo-text);font-weight:700}
+.persona-item.is-me{border-left:4px solid var(--indigo)}
+
+.p-avatar{width:36px;height:36px;border-radius:10px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.p-name{font-size:12.5px;font-weight:600;color:var(--text);line-height:1.25}
+.p-role{font-size:11px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+
+/* ── DETAIL COLUMN ── */
+.detail-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:24px;display:flex;flex-direction:column;gap:20px;box-shadow:0 1px 3px rgba(0,0,0,.02)}
+
+/* ── PERSON PROFILE HEADER ── */
+.profile-box{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 /* ── TABS ── */
-.tabs{display:flex;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;max-width:100%}
-.tab{padding:8px 18px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;border:none;background:none;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tabs{display:flex;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content;max-width:100%;overflow-x:auto}
+.tab{padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;border:none;background:none;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid var(--border)}
 .tab-pane{display:none}.tab-pane.active{display:block}
-.tab .badge-count{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center}
+.badge-count{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center}
 
-/* ── SPLIT LAYOUT ── */
-.split{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
-@media(max-width:880px){.split{grid-template-columns:1fr}}
+/* ── KPI TILES ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.kpi{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.kpi.kpi-amber::before{background:var(--amber)}.kpi.kpi-green::before{background:var(--green)}
+.kpi.kpi-indigo::before{background:var(--indigo)}.kpi.kpi-red::before{background:var(--red)}
+.kpi.kpi-violet::before{background:var(--violet)}
+.kpi-label{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:4px}
+.kpi-val{font-size:24px;font-weight:800;color:var(--text);line-height:1}
 
-/* ── STATS SIDEBAR ── */
-.stats-sidebar{display:flex;flex-direction:column;gap:12px}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:18px}
-.stat-card-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
-.donut-legend{display:flex;flex-direction:column;gap:7px;width:100%}
-.leg-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
-.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-right:8px}
-.leg-label{display:flex;align-items:center;color:var(--text2)}
-.leg-val{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
-
-/* ── KPI ROW ── */
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.kpi-row-2{grid-template-columns:repeat(2,1fr)}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3.5px;border-radius:0 0 var(--r2) var(--r2)}
-.kpi.kpi-indigo::before{background:var(--indigo)}.kpi.kpi-green::before{background:var(--green)}
-.kpi.kpi-amber::before{background:var(--amber)}.kpi.kpi-red::before{background:var(--red)}
-.kpi.kpi-violet::before{background:var(--violet)}.kpi.kpi-cyan::before{background:var(--cyan)}
-.kpi-label{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:6px}
-.kpi-val{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
-.kpi-sub{font-size:11px;color:var(--text3);margin-top:5px}
-
-.section-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-
-/* ── ROW CARDS ── */
-.row-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:10px;transition:.15s;cursor:pointer}
+/* ── ROW CARDS (Hallazgos) ── */
+.row-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;transition:.15s;cursor:pointer}
 .row-card:hover{border-color:var(--border2);box-shadow:0 4px 14px rgba(0,0,0,.05);transform:translateY(-1px)}
 .row-card.left-green{border-left:4px solid var(--green)}
 .row-card.left-amber{border-left:4px solid var(--amber)}
 .row-card.left-red{border-left:4px solid var(--red)}
 .row-card.left-indigo{border-left:4px solid var(--indigo)}
-.row-card.left-violet{border-left:4px solid var(--violet)}
-.row-card.left-cyan{border-left:4px solid var(--cyan)}
 
-.validate-card{background:var(--amber-dim);border:1.5px dashed var(--amber-border);border-radius:var(--r2);padding:16px;margin-bottom:12px}
+.validate-card{background:var(--amber-dim);border:1.5px dashed var(--amber-border);border-radius:12px;padding:16px;margin-bottom:12px}
 .validate-card .vc-meta{font-size:11px;font-weight:600;color:var(--amber-text);margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.validate-card .vc-title{font-size:13.5px;font-weight:700;margin-bottom:4px;color:var(--text)}
-.validate-card .vc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
-.validate-card .vc-actions{display:flex;gap:8px;flex-wrap:wrap}
-
-.persona-row{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 18px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-.persona-name{font-size:13.5px;font-weight:700;margin-bottom:2px}
-.persona-email{font-size:11px;color:var(--text3)}
-.persona-stats{display:flex;gap:12px;align-items:center}
-.pstat{text-align:center}
-.pstat-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1}
-.pstat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
-.pstat-sep{width:1px;height:28px;background:var(--border)}
-
-.empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:var(--r2)}
-.empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.6}
 
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
 .b-indigo{background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border)}
@@ -146,7 +131,7 @@ body.is-embedded header.esinel-global-header { display:none !important; }
 .modal-overlay.open{display:flex}
 .modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,.35)}
 .modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
-.modal-header h3{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.modal-header h3{font-size:16px;font-weight:700}
 .modal-body{padding:20px 22px}
 .field-label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
 .field{width:100%;padding:10px 14px;border:1px solid var(--border2);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg2);font-family:inherit;margin-bottom:14px;transition:.15s}
@@ -160,28 +145,21 @@ textarea.field{resize:none;line-height:1.5}
 .btn-green:hover{background:var(--green);color:#fff}
 .btn-red{background:var(--red-dim);color:var(--red-text);border-color:var(--red-border)}
 .btn-red:hover{background:var(--red);color:#fff}
-.btn-amber{background:var(--amber-dim);color:var(--amber-text);border-color:var(--amber-border)}
-.btn-sm{padding:6px 12px;font-size:11.5px}
 .modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--bg2);position:sticky;bottom:0}
 
-/* ── SUBTABS ── */
-.subtabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
-.subtab{padding:9px 18px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;display:flex;align-items:center;gap:6px}
-.subtab:hover{color:var(--text)}
-.subtab.active{color:var(--indigo);border-bottom-color:var(--indigo)}
-.subtab-pane{display:none}.subtab-pane.active{display:block}
-
-.spinner{display:flex;align-items:center;justify-content:center;padding:48px;color:var(--text3)}
+/* ── EMPTY & SPINNER ── */
+.empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;background:var(--bg3);border:1.5px dashed var(--border2);border-radius:14px}
+.empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.6}
+.spinner{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text3)}
 .spin{width:24px;height:24px;border:2.5px solid var(--border2);border-top-color:var(--indigo);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:12px 20px;border-radius:12px;font-size:12.5px;font-weight:600;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;z-index:300;box-shadow:0 10px 25px rgba(0,0,0,.2)}
 .toast.show{opacity:1;transform:none}
 </style>
 </head>
 <body>
 
-<!-- ▼▼▼ ESINEL GLOBAL HEADER (Solo visible cuando se navega directamente) ▼▼▼ -->
+<!-- ▼▼▼ ESINEL GLOBAL HEADER (COMPLETO E IDÉNTICO A TODO EL SGI) ▼▼▼ -->
 <header class="esinel-global-header bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
   <div class="w-full px-4 sm:px-6 lg:px-8">
     <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
@@ -203,11 +181,18 @@ textarea.field{resize:none;line-height:1.5}
             <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
           </div>
           <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
+          <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+            <span class="text-slate-400">ISO 9001</span>
+            <span class="text-emerald-400">ISO 14001</span>
+            <span class="text-rose-400">ISO 45001</span>
+          </div>
         </div>
       </a>
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
-        <i class="ti ti-shield-check text-sm"></i>
-        <span>SGI · Mi Panel</span>
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+          <i class="ti ti-shield-check text-sky-400 text-sm"></i>
+          <span>SGI · Panel de Responsables</span>
+        </div>
       </div>
     </div>
   </div>
@@ -216,10 +201,15 @@ textarea.field{resize:none;line-height:1.5}
       <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
         <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
         <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
         <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
         <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
         <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
         <a class="px-3 py-2 rounded-lg font-semibold text-amber-400 bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="mi-panel.html"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="comercial.html"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
       </nav>
     </div>
   </div>
@@ -228,9 +218,9 @@ textarea.field{resize:none;line-height:1.5}
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="auth-logo"><i class="ti ti-shield-check text-indigo-600"></i></div>
+    <div class="auth-logo"><i class="ti ti-shield-check"></i></div>
     <h1>Mi Panel SGI</h1>
-    <p>Ingresá con tu cuenta corporativa <strong>@esinel.com.ar</strong> para visualizar y gestionar tus hallazgos.</p>
+    <p>Ingresá con tu cuenta corporativa <strong>@esinel.com.ar</strong> para visualizar y auditar los hallazgos de cada colaborador.</p>
     <div class="flex justify-center mb-3">
       <div id="g_id_onload"
         data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
@@ -241,22 +231,22 @@ textarea.field{resize:none;line-height:1.5}
         data-type="standard" data-size="large" data-theme="outline"
         data-text="sign_in_with" data-shape="pill"></div>
     </div>
-    <div class="auth-error" id="auth-error">Acceso exclusivo para colaboradores con cuenta @esinel.com.ar.</div>
+    <div class="auth-error" id="auth-error">Acceso exclusivo para cuentas @esinel.com.ar.</div>
   </div>
 </div>
 
-<!-- APP PRINCIPAL CON CONTENCIÓN Y TOPBAR RESTAURADA -->
+<!-- APP PRINCIPAL -->
 <div id="app" style="display:none">
-  <!-- Topbar con estructura correcta y navegación -->
+  <!-- Sub-topbar -->
   <div class="topbar">
     <a class="app-logo" href="index.html" id="app-logo-link">
       <div class="logo-dot"></div>
-      <span class="font-bold text-sm">Esinel SGI</span>
+      <span>Esinel SGI · Panel Integral</span>
     </a>
-    <div class="topbar-center">
-      <span class="ejercicio-badge" id="ejercicio-badge">Ejercicio 35</span>
+    <div class="flex items-center gap-3">
+      <span class="ejercicio-badge" id="ejercicio-badge">Ejercicio 35 · 2026–2027</span>
     </div>
-    <div class="topbar-right">
+    <div class="flex items-center gap-2.5">
       <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema">
         <i class="ti ti-moon" id="theme-icon"></i>
       </button>
@@ -268,32 +258,128 @@ textarea.field{resize:none;line-height:1.5}
   </div>
 
   <div class="main">
-    <div class="page-header">
-      <div class="page-title" id="page-title">Mi Panel</div>
-      <div class="page-sub" id="page-sub">Hallazgos y acciones bajo tu responsabilidad · Ejercicio 35</div>
+    <!-- Header del Panel -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
+      <div>
+        <h1 class="text-2xl font-extrabold tracking-tight text-[var(--text)]">Gestión de Hallazgos por Colaborador</h1>
+        <p class="text-xs text-[var(--text2)] mt-1">Auditá los hallazgos asignados y declarados de cualquier miembro de la empresa · Ejercicio 35</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="seleccionarMiUsuario()" class="btn btn-primary btn-sm shadow-sm">
+          <i class="ti ti-user-check"></i> Ir a Mi Perfil
+        </button>
+      </div>
     </div>
 
-    <div class="tabs" id="tabs-container">
-      <button class="tab active" onclick="showTab('asignados')" id="tab-asignados">
-        <i class="ti ti-list-check"></i> Mis Asignados
-      </button>
-      <button class="tab" onclick="showTab('declarados')" id="tab-declarados">
-        <i class="ti ti-send"></i> Lo que Declaré
-      </button>
-    </div>
+    <!-- Layout Dividido: Directorio a la izquierda, Detalle a la derecha -->
+    <div class="panel-grid">
+      
+      <!-- Columna 1: Directorio de Colaboradores -->
+      <div class="directory-card">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--text2)] flex items-center gap-1.5">
+            <i class="ti ti-users text-sm text-[var(--indigo)]"></i> Colaboradores (<span id="total-colab-count">34</span>)
+          </span>
+          <span class="text-[11px] font-semibold text-[var(--text3)]">SGI E35</span>
+        </div>
 
-    <!-- Pestañas de contenido -->
-    <div id="pane-asignados" class="tab-pane active">
-      <div class="spinner"><div class="spin"></div>Cargando hallazgos...</div>
+        <!-- Buscador en tiempo real -->
+        <div class="relative">
+          <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input type="text" id="persona-search" placeholder="Buscar por nombre o cargo..." oninput="filtrarPersonas()"
+            class="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-[var(--bg3)] border border-[var(--border)] text-[var(--text)] focus:outline-none focus:border-[var(--indigo)] transition">
+        </div>
+
+        <!-- Filtros por Área -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none" id="area-chips"></div>
+
+        <!-- Lista de Personas -->
+        <div class="directory-list" id="directory-list"></div>
+      </div>
+
+      <!-- Columna 2: Ficha y Hallazgos de la Persona Seleccionada -->
+      <div class="detail-card">
+        
+        <!-- Ficha Resumen de la Persona -->
+        <div class="profile-box" id="profile-box">
+          <div class="flex items-center gap-3.5 min-w-0">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg text-white shadow-md flex-shrink-0" id="prof-avatar" style="background:var(--indigo)">--</div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="text-lg font-bold text-[var(--text)] leading-tight truncate" id="prof-name">Seleccioná un colaborador</h2>
+                <span class="badge b-indigo" id="prof-area">Área</span>
+              </div>
+              <p class="text-xs text-[var(--text2)] mt-0.5 truncate" id="prof-role">Cargo</p>
+              <div class="flex items-center gap-3 text-[11px] text-[var(--text3)] mt-1.5 flex-wrap">
+                <span id="prof-sede"><i class="ti ti-map-pin"></i> Sede</span>
+                <a href="#" id="prof-email" class="text-[var(--indigo)] hover:underline flex items-center gap-1"><i class="ti ti-mail"></i> correo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Donut del Colaborador -->
+          <div class="flex items-center gap-3">
+            <canvas id="donut-persona" width="75" height="75"></canvas>
+            <div class="text-[11px] space-y-0.5">
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> <span id="kpi-mini-ab">0</span> abiertos</div>
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span id="kpi-mini-ce">0</span> cerrados</div>
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> <span id="kpi-mini-de">0</span> declaró</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPIs Cuantitativos del Colaborador -->
+        <div class="kpi-row">
+          <div class="kpi kpi-amber">
+            <div class="kpi-label">Asignados Abiertos</div>
+            <div class="kpi-val text-amber-500" id="kpi-p-abiertos">0</div>
+          </div>
+          <div class="kpi kpi-red">
+            <div class="kpi-label">Vencidos</div>
+            <div class="kpi-val text-red-500" id="kpi-p-vencidos">0</div>
+          </div>
+          <div class="kpi kpi-green">
+            <div class="kpi-label">Cerrados OK</div>
+            <div class="kpi-val text-emerald-500" id="kpi-p-cerrados">0</div>
+          </div>
+          <div class="kpi kpi-indigo">
+            <div class="kpi-label">Total Declarados</div>
+            <div class="kpi-val text-indigo-500" id="kpi-p-declarados">0</div>
+          </div>
+        </div>
+
+        <!-- Pestañas de Vista del Colaborador -->
+        <div class="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-[var(--border)]">
+          <div class="tabs" id="persona-tabs">
+            <button class="tab active" onclick="showPersonaTab('asignados')" id="ptab-asignados">
+              <i class="ti ti-list-check"></i> Asignados (<span id="count-p-asig">0</span>)
+            </button>
+            <button class="tab" onclick="showPersonaTab('declarados')" id="ptab-declarados">
+              <i class="ti ti-send"></i> Lo que Declaró (<span id="count-p-decl">0</span>)
+            </button>
+            <button class="tab hidden" onclick="showPersonaTab('coord')" id="ptab-coord">
+              <i class="ti ti-shield-check"></i> Panel Coordinador
+            </button>
+          </div>
+        </div>
+
+        <!-- Paneles de Contenido -->
+        <div id="ppane-asignados" class="tab-pane active">
+          <div class="spinner"><div class="spin"></div>Cargando hallazgos...</div>
+        </div>
+        <div id="ppane-declarados" class="tab-pane">
+          <div class="spinner"><div class="spin"></div>Cargando reportes...</div>
+        </div>
+        <div id="ppane-coord" class="tab-pane">
+          <div class="spinner"><div class="spin"></div>Cargando auditoría...</div>
+        </div>
+
+      </div>
     </div>
-    <div id="pane-declarados" class="tab-pane">
-      <div class="spinner"><div class="spin"></div>Cargando reportes...</div>
-    </div>
-    <div id="pane-coord" class="tab-pane"></div>
   </div>
 </div>
 
-<!-- MODAL ACCIÓN -->
+<!-- MODAL ACCIÓN / DETALLE -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)cerrarModal()">
   <div class="modal">
     <div class="modal-header">
@@ -314,28 +400,80 @@ if (window.parent !== window) {
   document.body.classList.add('is-embedded');
 }
 
-var _appIniciada = false;
-window.addEventListener('message', function(e) {
-  if (e.origin !== window.location.origin) return;
-  if (e.data && e.data.type === 'sgi-auth' && e.data.email && !_appIniciada) {
-    _appIniciada = true;
-    userEmail = e.data.email;
-    userName = e.data.name || e.data.email.split('@')[0];
-    userInitials = userName.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
-    sessionStorage.setItem('sgi_ok','1');
-    sessionStorage.setItem('sgi_email', userEmail);
-    sessionStorage.setItem('sgi_name', userName);
-    iniciarApp();
-  }
-});
+// ── PLANTEL OFICIAL ESINEL (34 COLABORADORES) ──────────────────────────────
+const PLANTEL = [
+  // Gerencia (4)
+  { a: 'Gerencia', n: 'Marcelo Nicolas Piccione', c: 'Gerente de Administración', sede: 'Remedios', e: 'mnpiccione@esinel.com.ar', col: '#5f6368' },
+  { a: 'Gerencia', n: 'Hernan Leonel Giacobbe', c: 'Gerente de Obra', sede: 'Mosconi', e: 'giaacobbeh@esinel.com.ar', col: '#5f6368' },
+  { a: 'Gerencia', n: 'Martin Eduardo Diamanti', c: 'Gerente de Ingeniería', sede: 'Remedios', e: 'mdiamanti@esinel.com.ar', col: '#5f6368' },
+  { a: 'Gerencia', n: 'Oscar Emilio Schmuth', c: 'Gerente de Producción', sede: 'Remedios', e: 'oschmuth@esinel.com.ar', col: '#5f6368' },
 
-// ── CONFIGURACIÓN SGI ────────────────────────────────────────────────────────
+  // Líderes y Responsables (9)
+  { a: 'AdmRRHH', n: 'Clarisa Piccione', c: 'Líder de Administración y RRHH', sede: 'Remedios', e: 'cpiccione@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'Ingenieria', n: 'Juan Francisco Monti', c: 'Líder de Ingeniería', sede: 'Santo Tomé', e: 'jmonti@esinel.com.ar', col: '#9334e6' },
+  { a: 'Obras', n: 'Emiliano Nahuel San Martin', c: 'Líder de Obras', sede: 'Obras Bs. As.', e: 'esanmartin@esinel.com.ar', col: '#1a73e8' },
+  { a: 'Produccion', n: 'Hernan Giorgetti', c: 'Líder de Producción', sede: 'Santo Tomé', e: 'hgiorgetti@esinel.com.ar', col: '#f9ab00' },
+  { a: 'AdmRRHH', n: 'Andrea Fabiana Chavez', c: 'Responsable de Administración', sede: 'Remedios', e: 'achavez@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Patricia C. Rodriguez', c: 'Responsable de RRHH', sede: 'Remedios', e: 'prodriguez@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Maria de las Mercedes Nahas', c: 'Responsable de Comunicación y Cultura', sede: 'Remedios', e: 'mnahas@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'Comercial', n: 'Lisandro Tomas Fissolo', c: 'Responsable Comercial', sede: 'Santo Tomé', e: 'Lfissolo@esinel.com.ar', col: '#ea4335' },
+  { a: 'Comercial', n: 'Daniel A. Lertora', c: 'Responsable de Compras', sede: 'Remedios', e: 'compras@esinel.com.ar', col: '#ea4335' },
+
+  // Obras (6)
+  { a: 'Obras', n: 'Diego Alejandro Abella', c: 'Jefe de Obra', sede: 'Obras / Buenos Aires', e: 'dabella@esinel.com.ar', col: '#1a73e8' },
+  { a: 'Obras', n: 'Daniel Carena', c: 'Jefe de Obra', sede: 'Santo Tomé', e: 'dcarena@esinel.com.ar', col: '#1a73e8' },
+  { a: 'Obras', n: 'Romina Lorena Nievas Jara', c: 'Jefa de Obra', sede: 'Obras Buenos Aires', e: 'rnievas@esinel.com.ar', col: '#1a73e8' },
+  { a: 'Obras', n: 'Jose Luis Soliz Coronado', c: 'Supervisor de Obra', sede: 'Obras Bs. As.', e: 'jsoliz@esinel.com.ar', col: '#1a73e8' },
+  { a: 'Obras', n: 'Carlos A. De Abrantes Correia', c: 'Abastecimiento e Intendencia', sede: 'Mosconi', e: 'cdeabrantes@esinel.com.ar', col: '#1a73e8' },
+  { a: 'Obras', n: 'Juan Francisco Dominguez Catalano', c: 'Sobrestante de Obras', sede: 'Obras Mar del Plata', e: 'jfcatalano@esinel.com.ar', col: '#1a73e8' },
+
+  // Ingeniería (4)
+  { a: 'Ingenieria', n: 'Pablo Leonel Barrionuevo', c: 'Proyectista - Computista', sede: 'Remedios', e: 'pbarrionuevo@esinel.com.ar', col: '#9334e6' },
+  { a: 'Ingenieria', n: 'Francisco Briani', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'fbriani@esinel.com.ar', col: '#9334e6' },
+  { a: 'Ingenieria', n: 'Gonzalo Gigliotti', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'ggigliotti@esinel.com.ar', col: '#9334e6' },
+  { a: 'Ingenieria', n: 'Facundo Guerrero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'fguerrero@esinel.com.ar', col: '#9334e6' },
+
+  // Producción (3)
+  { a: 'Produccion', n: 'Jose Luis Casares', c: 'Abastecimiento e Intendencia', sede: 'Remedios', e: 'deposito@esinel.com.ar', col: '#f9ab00' },
+  { a: 'Produccion', n: 'Sergio Eduardo Donda', c: 'Encargado de Taller', sede: 'Remedios', e: 'sdonda@esinel.com.ar', col: '#f9ab00' },
+  { a: 'Produccion', n: 'Javier Otero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'jotero@esinel.com.ar', col: '#f9ab00' },
+
+  // Adm & RRHH (6)
+  { a: 'AdmRRHH', n: 'Luan Thiago Baira', c: 'Auditor Interno SGI', sede: 'Remedios', e: 'coordinacion.sgi@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Marisa Angelica Cercos', c: 'Auxiliar Administrativo Sr', sede: 'Santo Tomé', e: 'mcercos@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Diego Amado Fernandez', c: 'Analista Administrativo', sede: 'Remedios', e: 'dfernandez@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Anahi Gonzalez', c: 'Asistente de Imagen', sede: 'Remedios', e: 'imagen@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Florencia Oyuela', c: 'Auxiliar de RRHH', sede: 'Remedios', e: 'foyuela@esinel.com.ar', col: '#1e8e3e' },
+  { a: 'AdmRRHH', n: 'Bautista Iestra', c: 'Asistente Interno en HyS', sede: 'Oficina Mar del Plata', e: 'Saludyseguridad@esinel.com.ar', col: '#1e8e3e' },
+
+  // Comercial (2)
+  { a: 'Comercial', n: 'Esteban Nahuel Heredia', c: 'Auxiliar Técnico Comercial', sede: 'Oficina Mar del Plata', e: 'nheredia@esinel.com.ar', col: '#ea4335' },
+  { a: 'Comercial', n: 'Tomas Noblia', c: 'Asistente de Compras', sede: 'Remedios', e: 'tnobllia@esinel.com.ar', col: '#ea4335' }
+];
+
+const AREAS_CONFIG = {
+  Todas: { label: 'Todas', color: '#64748b' },
+  Gerencia: { label: 'Gerencia', color: '#5f6368' },
+  Obras: { label: 'Obras', color: '#1a73e8' },
+  Ingenieria: { label: 'Ingeniería', color: '#9334e6' },
+  Produccion: { label: 'Producción', color: '#f9ab00' },
+  AdmRRHH: { label: 'Adm & RRHH', color: '#1e8e3e' },
+  Comercial: { label: 'Comercial', color: '#ea4335' }
+};
+
+// ── CONFIGURACIÓN SGI Y ESTADO ──────────────────────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwjR1nLOrmFVDykGlPWeZw66fQAt1l6CpIB-26Rq_jeG_2Bn4yIztUfckFyiocrXWyp9Q/exec';
 const INICIO_EJ35 = new Date(2026, 3, 1); // 1 de Abril de 2026
 
 let userEmail = '', userName = '', userInitials = '', esCoord = false;
-let datosPanel = null;
+let selectedPersona = null;
+let activeAreaFilter = 'Todas';
 
+// Memoria de hallazgos por email / persona
+const cacheDatosPersonas = {};
+let allLocalHallazgos = [];
+
+// Autenticación de Google
 function sgiCb(resp) {
   try {
     const p = JSON.parse(atob(resp.credential.split('.')[1]));
@@ -361,7 +499,6 @@ function iniciarApp() {
   document.getElementById('user-avatar').textContent = userInitials;
   document.getElementById('user-name').textContent = userName;
 
-  // Si estamos dentro del iframe overlay de otra página, ajustar el logo a un botón de retorno
   if (window.parent !== window) {
     const logoLink = document.getElementById('app-logo-link');
     if (logoLink) {
@@ -379,25 +516,22 @@ function iniciarApp() {
 
   esCoord = (userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com');
   if (esCoord) {
-    document.getElementById('page-title').textContent = 'Panel de Coordinación SGI';
-    document.getElementById('page-sub').textContent = 'Auditoría interna · Seguimiento del Ejercicio 35';
-    if (!document.getElementById('tab-coord')) {
-      const tabCoord = document.createElement('button');
-      tabCoord.className = 'tab';
-      tabCoord.id = 'tab-coord';
-      tabCoord.innerHTML = '<i class="ti ti-shield-check"></i> Panel Coordinador';
-      tabCoord.onclick = () => showTab('coord');
-      document.getElementById('tabs-container').appendChild(tabCoord);
-    }
+    document.getElementById('ptab-coord').classList.remove('hidden');
   }
 
-  updateEjercicioBadge();
-  cargarDatos();
-}
+  // Cargar hallazgos locales de respaldo
+  try {
+    const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data') || 'null');
+    if (stored && stored.data) {
+      allLocalHallazgos = stored.data;
+    }
+  } catch(e){}
 
-function updateEjercicioBadge() {
-  const badge = document.getElementById('ejercicio-badge');
-  if (badge) badge.textContent = 'Ejercicio 35 · 2026–2027';
+  renderAreaChips();
+  renderDirectory();
+
+  // Seleccionar por defecto el usuario que inició sesión
+  seleccionarMiUsuario();
 }
 
 function logout() {
@@ -406,7 +540,6 @@ function logout() {
 }
 
 window.addEventListener('load', () => {
-  // Sincronización del tema visual
   const savedTheme = localStorage.getItem('sgi_theme') || localStorage.getItem('per_theme') || localStorage.getItem('veh_theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -418,6 +551,22 @@ window.addEventListener('load', () => {
     userEmail = sessionStorage.getItem('sgi_email') || '';
     userName = sessionStorage.getItem('sgi_name') || '';
     userInitials = userName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    iniciarApp();
+  }
+});
+
+// Listener para sesión enviada desde un iframe parent
+var _appIniciada = false;
+window.addEventListener('message', function(e) {
+  if (e.origin !== window.location.origin) return;
+  if (e.data && e.data.type === 'sgi-auth' && e.data.email && !_appIniciada) {
+    _appIniciada = true;
+    userEmail = e.data.email;
+    userName = e.data.name || e.data.email.split('@')[0];
+    userInitials = userName.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+    sessionStorage.setItem('sgi_ok','1');
+    sessionStorage.setItem('sgi_email', userEmail);
+    sessionStorage.setItem('sgi_name', userName);
     iniciarApp();
   }
 });
@@ -453,85 +602,204 @@ function filtrarEj35(lista) {
   });
 }
 
-// ── OBTENCIÓN DE DATOS ──────────────────────────────────────────────────────
-async function cargarDatos() {
-  try {
-    const url = GAS_URL + '?accion=panel&email=' + encodeURIComponent(userEmail);
-    const resp = await fetch(url);
-    datosPanel = await resp.json();
-
-    const asignados = filtrarEj35(datosPanel.asignados || []);
-    const declarados = filtrarEj35(datosPanel.declarados || []);
-
-    renderAsignados(asignados);
-    renderDeclarados(declarados);
-    if (datosPanel.paraCoord) renderCoord(datosPanel.paraCoord);
-
-    const nValidar = (datosPanel.paraCoord?.validar || []).length;
-    if (nValidar > 0 && esCoord) {
-      const tabCoord = document.getElementById('tab-coord');
-      if (tabCoord && !tabCoord.querySelector('.badge-count')) {
-        tabCoord.innerHTML += ` <span class="badge-count">${nValidar}</span>`;
-      }
-    }
-  } catch(e) {
-    document.getElementById('pane-asignados').innerHTML =
-      '<div class="empty"><i class="ti ti-wifi-off"></i>No se pudieron sincronizar los datos en vivo.<br><small class="text-slate-400">Verificá tu conexión o intentá recargar la página.</small></div>';
-  }
+function getInitials(name) {
+  return name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 }
 
-// ── GRÁFICO DONUT NATIVO EN CANVAS ──────────────────────────────────────────
-function dibujarDonut(canvasId, segmentos, total) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const cx = W / 2, cy = H / 2;
-  const r = Math.min(cx, cy) - 5;
-  const ri = r * 0.6;
-  ctx.clearRect(0, 0, W, H);
+// ── DIRECTORY RENDERING ─────────────────────────────────────────────────────
+function renderAreaChips() {
+  const container = document.getElementById('area-chips');
+  container.innerHTML = Object.entries(AREAS_CONFIG).map(([key, cfg]) => `
+    <button onclick="setAreaFilter('${key}')" 
+      class="px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition border ${
+        activeAreaFilter === key 
+          ? 'bg-blue-600 text-white border-blue-600 shadow-sm' 
+          : 'bg-[var(--bg3)] border-[var(--border)] text-[var(--text2)] hover:text-[var(--text)]'
+      }">
+      ${cfg.label}
+    </button>
+  `).join('');
+}
 
-  if (!total) {
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#E2E8F0';
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
-    ctx.beginPath(); ctx.arc(cx, cy, ri, 0, Math.PI * 2); ctx.fill();
+function setAreaFilter(area) {
+  activeAreaFilter = area;
+  renderAreaChips();
+  renderDirectory();
+}
+
+function filtrarPersonas() {
+  renderDirectory();
+}
+
+function renderDirectory() {
+  const q = (document.getElementById('persona-search')?.value || '').toLowerCase().trim();
+  const listEl = document.getElementById('directory-list');
+
+  const filtered = PLANTEL.filter(p => {
+    const matchArea = activeAreaFilter === 'Todas' || p.a === activeAreaFilter;
+    const matchText = !q || p.n.toLowerCase().includes(q) || p.c.toLowerCase().includes(q) || p.e.toLowerCase().includes(q);
+    return matchArea && matchText;
+  });
+
+  document.getElementById('total-colab-count').textContent = filtered.length;
+
+  if (!filtered.length) {
+    listEl.innerHTML = '<div class="empty py-8 text-xs"><i class="ti ti-user-x"></i>No se encontraron colaboradores</div>';
     return;
   }
 
-  let ang = -Math.PI / 2;
-  segmentos.forEach(s => {
-    if (!s.val) return;
-    const sweep = (s.val / total) * Math.PI * 2;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, ang, ang + sweep);
-    ctx.closePath();
-    ctx.fillStyle = s.color;
-    ctx.fill();
-    ang += sweep;
-  });
+  listEl.innerHTML = filtered.map(p => {
+    const isSelected = selectedPersona && selectedPersona.e.toLowerCase() === p.e.toLowerCase();
+    const isMe = userEmail && userEmail.toLowerCase() === p.e.toLowerCase();
+    
+    // Conteo desde cache o cálculo
+    const stats = getPersonaCounts(p);
 
-  // Agujero central
-  ctx.beginPath();
-  ctx.arc(cx, cy, ri, 0, Math.PI * 2);
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
-  ctx.fill();
-
-  // Texto central
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#0F172A';
-  ctx.textAlign = 'center';
-  ctx.font = `800 ${Math.round(r * 0.38)}px Sora, sans-serif`;
-  ctx.fillText(total, cx, cy + 4);
-  ctx.font = `600 ${Math.round(r * 0.22)}px Inter, sans-serif`;
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text2').trim() || '#64748B';
-  ctx.fillText('total', cx, cy + r * 0.32);
+    return `
+      <div class="persona-item ${isSelected ? 'selected' : ''} ${isMe ? 'is-me' : ''}" onclick="seleccionarPersona('${p.e}')">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="p-avatar" style="background:${p.col}">${getInitials(p.n)}</div>
+          <div class="min-w-0">
+            <div class="p-name flex items-center gap-1.5">
+              <span class="truncate">${p.n}</span>
+              ${isMe ? '<span class="text-[9px] uppercase font-black px-1.5 py-0.2 rounded bg-indigo-500 text-white">Vos</span>' : ''}
+            </div>
+            <div class="p-role">${p.c}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0 text-[10px] font-bold">
+          ${stats.abiertos > 0 ? `<span class="px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400" title="${stats.abiertos} asignados abiertos">${stats.abiertos}</span>` : ''}
+          ${stats.cerrados > 0 ? `<span class="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" title="${stats.cerrados} cerrados">${stats.cerrados}</span>` : ''}
+          ${stats.declarados > 0 ? `<span class="px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400" title="${stats.declarados} declarados">${stats.declarados}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-function renderAsignados(lista) {
-  const pane = document.getElementById('pane-asignados');
-  const abiertos = lista.filter(h => !h.resultado);
-  const cerrados = lista.filter(h => h.resultado);
+function getPersonaCounts(persona) {
+  if (cacheDatosPersonas[persona.e]) {
+    const d = cacheDatosPersonas[persona.e];
+    const asignados = filtrarEj35(d.asignados || []);
+    const declarados = filtrarEj35(d.declarados || []);
+    const ab = asignados.filter(h => !h.resultado).length;
+    const ce = asignados.filter(h => h.resultado).length;
+    return { abiertos: ab, cerrados: ce, declarados: declarados.length };
+  }
+
+  // Respaldo desde allLocalHallazgos si aún no se consultó en el GAS
+  let ab = 0, ce = 0, de = 0;
+  allLocalHallazgos.forEach(h => {
+    const resp = (h.responsableAccion || h.responsable || '').toLowerCase();
+    const decl = (h.declarante || '').toLowerCase();
+    const pName = persona.n.toLowerCase();
+    const pEmail = persona.e.toLowerCase();
+
+    const isAsig = resp.includes(pName) || resp.includes(pEmail);
+    const isDecl = decl.includes(pName) || decl.includes(pEmail);
+
+    if (isAsig) {
+      if (h.resultadoEficacia === 'OK' || h.resultado === 'OK' || h.cerrado) ce++;
+      else ab++;
+    }
+    if (isDecl) de++;
+  });
+  return { abiertos: ab, cerrados: ce, declarados: de };
+}
+
+function seleccionarMiUsuario() {
+  const me = PLANTEL.find(p => p.e.toLowerCase() === userEmail.toLowerCase()) || PLANTEL[0];
+  if (me) seleccionarPersona(me.e);
+}
+
+// ── CARGA Y RENDERIZADO DEL COLABORADOR SELECCIONADO ────────────────────────
+async function seleccionarPersona(email) {
+  const p = PLANTEL.find(x => x.e.toLowerCase() === email.toLowerCase());
+  if (!p) return;
+  selectedPersona = p;
+  renderDirectory(); // actualizar el item activo
+
+  // Actualizar Ficha de Cabecera
+  document.getElementById('prof-avatar').textContent = getInitials(p.n);
+  document.getElementById('prof-avatar').style.background = p.col;
+  document.getElementById('prof-name').textContent = p.n;
+  document.getElementById('prof-role').textContent = p.c;
+  document.getElementById('prof-area').textContent = AREAS_CONFIG[p.a]?.label || p.a;
+  document.getElementById('prof-sede').innerHTML = `<i class="ti ti-map-pin"></i> ${p.sede}`;
+  const mailEl = document.getElementById('prof-email');
+  mailEl.href = `mailto:${p.e}`;
+  mailEl.innerHTML = `<i class="ti ti-mail"></i> ${p.e}`;
+
+  // Mostrar estado de carga
+  document.getElementById('ppane-asignados').innerHTML = '<div class="spinner"><div class="spin"></div>Consultando hallazgos de ' + p.n + '...</div>';
+  document.getElementById('ppane-declarados').innerHTML = '<div class="spinner"><div class="spin"></div>Cargando declaraciones...</div>';
+
+  let datos = cacheDatosPersonas[p.e];
+  if (!datos) {
+    try {
+      const url = GAS_URL + '?accion=panel&email=' + encodeURIComponent(p.e);
+      const resp = await fetch(url);
+      datos = await resp.json();
+      cacheDatosPersonas[p.e] = datos;
+    } catch(err) {
+      // Si falla la red, armar datos a partir de local hallazgos
+      datos = armarDatosFallback(p);
+      cacheDatosPersonas[p.e] = datos;
+    }
+  }
+
+  renderDetalleColaborador(datos, p);
+}
+
+function armarDatosFallback(p) {
+  const pName = p.n.toLowerCase();
+  const pEmail = p.e.toLowerCase();
+  const asignados = [];
+  const declarados = [];
+
+  allLocalHallazgos.forEach((h, idx) => {
+    const resp = (h.responsableAccion || h.responsable || '').toLowerCase();
+    const decl = (h.declarante || '').toLowerCase();
+    const isAsig = resp.includes(pName) || resp.includes(pEmail);
+    const isDecl = decl.includes(pName) || decl.includes(pEmail);
+
+    if (isAsig) {
+      asignados.push({
+        fila: h.fila || idx,
+        tipo: h.tipo || 'NC',
+        num: h.numero || h.num || String(idx),
+        desc: h.descripcion || h.hallazgo || '',
+        sector: h.area || h.sector || p.a,
+        fechaLim: h.fechaLimite || h.fechaLim || '',
+        resultado: h.resultadoEficacia || h.resultado || '',
+        accionAC: h.accionCorrectiva || '',
+        accionAP: h.accionPreventiva || '',
+        accionAM: h.accionMejora || ''
+      });
+    }
+    if (isDecl) {
+      declarados.push({
+        fila: h.fila || idx,
+        tipo: h.tipo || 'Hallazgo',
+        numGenerado: h.numero || h.num || '',
+        desc: h.descripcion || h.hallazgo || '',
+        sector: h.area || h.sector || '',
+        fechaDecl: h.fecha || h.fechaDecl || '',
+        cerrado: h.cerrado || h.resultado === 'OK',
+        estado: h.estado || 'En revisión'
+      });
+    }
+  });
+
+  return { asignados, declarados, paraCoord: {} };
+}
+
+function renderDetalleColaborador(datos, persona) {
+  const asignados = filtrarEj35(datos.asignados || []);
+  const declarados = filtrarEj35(datos.declarados || []);
+
+  const abiertos = asignados.filter(h => !h.resultado);
+  const cerrados = asignados.filter(h => h.resultado);
   const cerradosOK = cerrados.filter(h => h.resultado === 'OK').length;
   const cerradosNO = cerrados.filter(h => h.resultado === 'NO').length;
   const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -541,255 +809,107 @@ function renderAsignados(lista) {
     return d && d < hoy;
   }).length;
 
-  if (!lista.length) {
-    pane.innerHTML = `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>No tenés hallazgos asignados pendientes en este ejercicio.</div>`;
-    return;
+  // Actualizar KPIs de la persona
+  document.getElementById('kpi-p-abiertos').textContent = abiertos.length;
+  document.getElementById('kpi-p-vencidos').textContent = vencidos;
+  document.getElementById('kpi-p-cerrados').textContent = cerradosOK;
+  document.getElementById('kpi-p-declarados').textContent = declarados.length;
+
+  document.getElementById('count-p-asig').textContent = asignados.length;
+  document.getElementById('count-p-decl').textContent = declarados.length;
+
+  document.getElementById('kpi-mini-ab').textContent = abiertos.length;
+  document.getElementById('kpi-mini-ce').textContent = cerradosOK;
+  document.getElementById('kpi-mini-de').textContent = declarados.length;
+
+  // Dibujar Donut
+  dibujarDonut('donut-persona', [
+    { val: abiertos.length, color: '#D97706' },
+    { val: cerradosOK, color: '#059669' },
+    { val: declarados.length, color: '#4F46E5' }
+  ], (abiertos.length + cerradosOK + declarados.length));
+
+  // Render Pestaña 1: Asignados
+  const pAsig = document.getElementById('ppane-asignados');
+  if (!asignados.length) {
+    pAsig.innerHTML = `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>${persona.n} no tiene hallazgos asignados en este ejercicio.</div>`;
+  } else {
+    pAsig.innerHTML = `
+      ${abiertos.length ? `
+        <div class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-3 flex items-center gap-1.5">
+          <i class="ti ti-clock"></i> Acciones pendientes (${abiertos.length})
+        </div>
+        ${abiertos.map(h => rowCard(h, true)).join('')}
+      ` : ''}
+      ${cerrados.length ? `
+        <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-3 mt-6 flex items-center gap-1.5">
+          <i class="ti ti-check"></i> Cerrados (${cerrados.length})
+        </div>
+        ${cerrados.map(h => rowCard(h, true)).join('')}
+      ` : ''}
+    `;
   }
 
-  pane.innerHTML = `
-    <div class="split">
-      <div class="list-col">
-        ${abiertos.length ? `
-          <div class="section-title"><i class="ti ti-clock text-amber-500"></i>Abiertos bajo tu acción (${abiertos.length})</div>
-          ${abiertos.map(h => rowCard(h, true)).join('')}
-        ` : ''}
-        ${cerrados.length ? `
-          <div class="section-title" style="margin-top:${abiertos.length?'24px':'0'}"><i class="ti ti-check text-emerald-500"></i>Cerrados (${cerrados.length})</div>
-          ${cerrados.map(h => rowCard(h, true)).join('')}
-        ` : ''}
-      </div>
-      <div class="stats-sidebar">
-        <div class="stat-card">
-          <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Estado de Mis Acciones</div>
-          <div class="donut-wrap">
-            <canvas id="donut-asig" width="130" height="130"></canvas>
-            <div class="donut-legend">
-              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>Abiertos</span><span class="leg-val">${abiertos.length}</span></div>
-              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados OK</span><span class="leg-val">${cerradosOK}</span></div>
-              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#DC2626"></span>Cerrados NO</span><span class="leg-val">${cerradosNO}</span></div>
-            </div>
+  // Render Pestaña 2: Declarados
+  const pDecl = document.getElementById('ppane-declarados');
+  if (!declarados.length) {
+    pDecl.innerHTML = `<div class="empty"><i class="ti ti-send text-indigo-500"></i>${persona.n} no ha declarado hallazgos en este ejercicio.</div>`;
+  } else {
+    pDecl.innerHTML = declarados.map(h => `
+      <div class="row-card ${h.cerrado ? 'left-green' : (h.numGenerado ? 'left-indigo' : 'left-amber')}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+          <div>
+            <span class="font-bold text-sm text-[var(--text)]">${h.numGenerado || '—'}</span>
+            <span class="text-xs text-[var(--text2)] ml-2">${h.tipo || ''}</span>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+            ${h.cerrado ? '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado</span>' :
+              h.numGenerado ? '<span class="badge b-indigo">En proceso</span>' :
+              '<span class="badge b-amber"><i class="ti ti-clock"></i>En revisión</span>'}
+            ${h.fechaDecl ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaDecl}</span>` : ''}
           </div>
         </div>
-        <div class="kpi-row kpi-row-2">
-          <div class="kpi kpi-amber"><div class="kpi-label">Abiertos</div><div class="kpi-val">${abiertos.length}</div></div>
-          <div class="kpi kpi-red"><div class="kpi-label">Vencidos</div><div class="kpi-val">${vencidos}</div></div>
-          <div class="kpi kpi-green"><div class="kpi-label">Cerrados OK</div><div class="kpi-val">${cerradosOK}</div></div>
-          <div class="kpi kpi-red"><div class="kpi-label">Cerrados NO</div><div class="kpi-val">${cerradosNO}</div></div>
-        </div>
+        <div class="text-xs text-[var(--text2)] leading-relaxed">${h.descripcion || h.desc || ''}</div>
+        <div class="text-[11px] font-semibold text-[var(--text3)] mt-2">${h.sector || ''}</div>
       </div>
-    </div>`;
-
-  requestAnimationFrame(() => {
-    dibujarDonut('donut-asig',
-      [{val: abiertos.length, color: '#D97706'}, {val: cerradosOK, color: '#059669'}, {val: cerradosNO, color: '#DC2626'}],
-      lista.length);
-  });
-}
-
-function renderDeclarados(lista) {
-  const pane = document.getElementById('pane-declarados');
-  const pendVal = lista.filter(h => h.estado === 'En revisión' || !h.numGenerado).length;
-  const procesando = lista.filter(h => h.numGenerado && !h.cerrado).length;
-  const cerrados = lista.filter(h => h.cerrado).length;
-
-  if (!lista.length) {
-    pane.innerHTML = `<div class="empty"><i class="ti ti-send text-indigo-500"></i>Todavía no declaraste ningún hallazgo en este ejercicio.</div>`;
-    return;
+    `).join('');
   }
 
-  pane.innerHTML = `
-    <div class="split">
-      <div class="list-col">
-        ${lista.map(h => `
-          <div class="row-card ${h.cerrado ? 'left-green' : (h.numGenerado ? 'left-indigo' : 'left-amber')}">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-              <div>
-                <span class="font-bold text-sm text-[var(--text)]">${h.numGenerado || '—'}</span>
-                <span class="text-xs text-[var(--text2)] ml-2">${h.tipo || ''}</span>
-              </div>
-              <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-                ${h.cerrado ? '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado</span>' :
-                  h.numGenerado ? '<span class="badge b-indigo">En proceso</span>' :
-                  '<span class="badge b-amber"><i class="ti ti-clock"></i>En revisión</span>'}
-                ${h.fechaDecl ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaDecl}</span>` : ''}
-              </div>
-            </div>
-            <div class="text-xs text-[var(--text2)] leading-relaxed">${h.descripcion || h.desc || ''}</div>
-            <div class="text-[11px] font-semibold text-[var(--text3)] mt-2">${h.sector || ''}</div>
-          </div>`).join('')}
-      </div>
-      <div class="stats-sidebar">
-        <div class="stat-card">
-          <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Mis Declaraciones</div>
-          <div class="donut-wrap">
-            <canvas id="donut-decl" width="130" height="130"></canvas>
-            <div class="donut-legend">
-              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>En revisión</span><span class="leg-val">${pendVal}</span></div>
-              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#4F46E5"></span>En proceso</span><span class="leg-val">${procesando}</span></div>
-              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados</span><span class="leg-val">${cerrados}</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="kpi kpi-indigo"><div class="kpi-label">Total Declarados</div><div class="kpi-val">${lista.length}</div><div class="kpi-sub">Formulario RG-06-02</div></div>
-      </div>
-    </div>`;
-
-  requestAnimationFrame(() => {
-    dibujarDonut('donut-decl',
-      [{val: pendVal, color:'#D97706'},{val: procesando, color:'#4F46E5'},{val: cerrados, color:'#059669'}],
-      lista.length);
-  });
+  // Render Pestaña 3: Coordinación (si existe y es coord)
+  if (datos.paraCoord && esCoord) {
+    renderCoordPanel(datos.paraCoord);
+  }
 }
 
-function renderCoord(coord) {
-  const pane = document.getElementById('pane-coord');
+function renderCoordPanel(coord) {
+  const pCoord = document.getElementById('ppane-coord');
   const validar = coord.validar || [];
   const listos = coord.listos || [];
   const eficacia = coord.eficacia || [];
-  const personas = coord.resumenPersonas || [];
 
-  pane.innerHTML = `
-    <div class="kpi-row" style="margin-bottom:20px">
-      <div class="kpi kpi-amber"><div class="kpi-label">Para Validar</div><div class="kpi-val">${validar.length}</div><div class="kpi-sub">Nuevos declarados</div></div>
-      <div class="kpi kpi-violet"><div class="kpi-label">Listos para Cerrar</div><div class="kpi-val">${listos.length}</div><div class="kpi-sub">Con evidencia enviada</div></div>
-      <div class="kpi kpi-cyan"><div class="kpi-label">Verificar Eficacia</div><div class="kpi-val">${eficacia.length}</div><div class="kpi-sub">Cierres a auditar</div></div>
+  pCoord.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+      <div class="kpi kpi-amber"><div class="kpi-label">Para Validar</div><div class="kpi-val">${validar.length}</div></div>
+      <div class="kpi kpi-violet"><div class="kpi-label">Listos para Cerrar</div><div class="kpi-val">${listos.length}</div></div>
+      <div class="kpi kpi-cyan"><div class="kpi-label">Verificar Eficacia</div><div class="kpi-val">${eficacia.length}</div></div>
     </div>
-
-    <div class="subtabs" id="coord-subtabs">
-      <button class="subtab active" onclick="showSubtab('validar')">
-        <i class="ti ti-filter"></i> Validar Nuevos ${validar.length ? `<span class="badge-count">${validar.length}</span>` : ''}
-      </button>
-      <button class="subtab" onclick="showSubtab('cerrar')">
-        <i class="ti ti-circle-check"></i> Cerrar (${listos.length})
-      </button>
-      <button class="subtab" onclick="showSubtab('eficacia')">
-        <i class="ti ti-clock"></i> Eficacia (${eficacia.length})
-      </button>
-      <button class="subtab" onclick="showSubtab('resumen')">
-        <i class="ti ti-users"></i> Por Persona
-      </button>
-    </div>
-
-    <div id="subtab-validar" class="subtab-pane active">${renderValidar(validar)}</div>
-    <div id="subtab-cerrar" class="subtab-pane">${renderLisTosCerrar(listos)}</div>
-    <div id="subtab-eficacia" class="subtab-pane">${renderEficacia(eficacia)}</div>
-    <div id="subtab-resumen" class="subtab-pane">${renderResumen(personas, coord)}</div>`;
-}
-
-function renderValidar(validar) {
-  if (!validar.length) return `<div class="empty"><i class="ti ti-check text-emerald-500"></i>No hay hallazgos esperando validación.</div>`;
-  return validar.map(h => `
-    <div class="validate-card">
-      <div class="vc-meta">
-        <i class="ti ti-clock-hour-4"></i>
-        Declarado por <strong>${h.declarante || '—'}</strong>
-        ${h.sector ? `· ${h.sector}` : ''}
-        ${h.fechaDecl ? `· ${h.fechaDecl}` : ''}
-        ${h.esGerente ? `<span class="badge b-violet"><i class="ti ti-crown"></i>Gerente</span>` : ''}
-      </div>
-      <div class="vc-title">${h.tipo || 'Hallazgo'} — ${h.desc || h.descripcion || ''}</div>
-      ${h.personasInv ? `<div style="font-size:11px;color:var(--amber-text);margin-bottom:8px"><i class="ti ti-users"></i> Involucra: ${h.personasInv}</div>` : ''}
-      <div class="vc-actions">
-        <button class="btn btn-green btn-sm" onclick="validarHallazgo(${h.fila},'VALIDAR')">
-          <i class="ti ti-check"></i> Validar y Asignar
-        </button>
-        <button class="btn btn-red btn-sm" onclick="validarHallazgo(${h.fila},'DESESTIMAR')">
-          <i class="ti ti-x"></i> Desestimar
-        </button>
-      </div>
-    </div>`).join('');
-}
-
-function renderLisTosCerrar(listos) {
-  if (!listos.length) return `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>No hay hallazgos listos para cerrar.</div>`;
-  return listos.map(h => `
-    <div class="row-card left-green">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-        <span class="font-bold text-sm text-[var(--text)]">${h.tipo}-${h.num}</span>
-        <span class="badge b-green"><i class="ti ti-check"></i>Evidencia lista</span>
-      </div>
-      <div class="text-xs text-[var(--text2)] mb-2">${h.desc}</div>
-      ${h.linkDrive ? `<a href="${h.linkDrive}" target="_blank" onclick="event.stopPropagation()" class="text-xs text-blue-600 font-semibold inline-flex items-center gap-1 mb-2.5 hover:underline"><i class="ti ti-folder"></i>Ver evidencia en Drive</a><br>` : ''}
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-green btn-sm" onclick="accionCoord(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Cerrar OK</button>
-        <button class="btn btn-red btn-sm" onclick="accionCoord(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>Devolver</button>
-      </div>
-    </div>`).join('');
-}
-
-function renderEficacia(eficacia) {
-  if (!eficacia.length) return `<div class="empty"><i class="ti ti-chart-line text-cyan-500"></i>No hay verificaciones de eficacia pendientes.</div>`;
-  return eficacia.map(h => `
-    <div class="row-card left-amber">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-        <span class="font-bold text-sm text-[var(--text)]">${h.tipo}-${h.num}</span>
-        <span class="badge b-amber"><i class="ti ti-clock"></i>${h.diasDesde} días desde cierre</span>
-      </div>
-      <div class="text-xs text-[var(--text2)] mb-3">${h.desc}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-green btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Fue eficaz</button>
-        <button class="btn btn-red btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>No fue eficaz</button>
-      </div>
-    </div>`).join('');
-}
-
-function renderResumen(personas, coord) {
-  const todosAbiertos = [...(coord.listos||[]), ...(coord.validar||[])];
-  const totalAbiertos = todosAbiertos.length;
-  const totalEficacia = (coord.eficacia||[]).length;
-
-  let html = `<div class="split"><div>`;
-  if (!personas.length) {
-    html += `<div class="empty" style="text-align:left;padding:20px">
-      <i class="ti ti-users text-blue-500" style="font-size:24px;display:block;margin-bottom:8px"></i>
-      <strong>Resumen por persona</strong><br>
-      <span class="text-xs text-[var(--text2)]">Cargando datos agregados por responsable...</span>
-    </div>`;
-  } else {
-    html += `<div class="section-title"><i class="ti ti-users"></i>Involucrados — Ejercicio 35</div>`;
-    html += personas.map(p => `
-      <div class="persona-row">
-        <div>
-          <div class="persona-name text-[var(--text)]">${p.nombre}</div>
-          <div class="persona-email">${p.email || ''}</div>
-        </div>
-        <div class="persona-stats">
-          <div class="pstat"><div class="pstat-val text-amber-500">${p.abiertos||0}</div><div class="pstat-lbl">Abiertos</div></div>
-          <div class="pstat-sep"></div>
-          <div class="pstat"><div class="pstat-val text-emerald-500">${p.cerrados||0}</div><div class="pstat-lbl">Cerrados</div></div>
-          <div class="pstat-sep"></div>
-          <div class="pstat"><div class="pstat-val text-[var(--text2)]">${p.declarados||0}</div><div class="pstat-lbl">Declaró</div></div>
-        </div>
-      </div>`).join('');
-  }
-
-  html += `</div>
-    <div class="stats-sidebar">
-      <div class="stat-card">
-        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Vista Global Ej. 35</div>
-        <div class="donut-wrap">
-          <canvas id="donut-coord" width="130" height="130"></canvas>
-          <div class="donut-legend">
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>En revisión</span><span class="leg-val">${(coord.validar||[]).length}</span></div>
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#7C3AED"></span>Para cerrar</span><span class="leg-val">${(coord.listos||[]).length}</span></div>
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#0891B2"></span>Verif. eficacia</span><span class="leg-val">${totalEficacia}</span></div>
+    ${validar.length ? `
+      <div class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-2">Esperando Validación</div>
+      ${validar.map(h => `
+        <div class="validate-card">
+          <div class="vc-meta">Declarado por <strong>${h.declarante || '—'}</strong> ${h.sector ? `· ${h.sector}` : ''}</div>
+          <div class="font-bold text-sm text-[var(--text)] mb-1">${h.tipo || 'Hallazgo'} — ${h.desc || h.descripcion || ''}</div>
+          <div class="flex gap-2 mt-3">
+            <button class="btn btn-green btn-sm" onclick="validarHallazgo(${h.fila},'VALIDAR')"><i class="ti ti-check"></i> Validar</button>
+            <button class="btn btn-red btn-sm" onclick="validarHallazgo(${h.fila},'DESESTIMAR')"><i class="ti ti-x"></i> Desestimar</button>
           </div>
         </div>
-      </div>
-      <div class="kpi kpi-indigo"><div class="kpi-label">Total Activos</div><div class="kpi-val">${totalAbiertos + totalEficacia}</div><div class="kpi-sub">Ejercicio 35</div></div>
-    </div>
-  </div>`;
-
-  setTimeout(() => {
-    const total = (coord.validar||[]).length + (coord.listos||[]).length + totalEficacia;
-    dibujarDonut('donut-coord',
-      [{val:(coord.validar||[]).length,color:'#D97706'},{val:(coord.listos||[]).length,color:'#7C3AED'},{val:totalEficacia,color:'#0891B2'}],
-      total);
-  }, 50);
-
-  return html;
+      `).join('')}
+    ` : '<div class="empty py-6 text-xs mb-4"><i class="ti ti-check text-emerald-500"></i>Sin hallazgos pendientes de validar</div>'}
+  `;
 }
 
+// ── ROW CARD & ACCIONES ─────────────────────────────────────────────────────
 function rowCard(h, clickable) {
   const accion = h.accionAC || h.accionAP || h.accionAM || '';
   const badge = estadoBadge(h.estado, h.resultado, h.fechaLim);
@@ -813,37 +933,56 @@ function rowCard(h, clickable) {
 }
 
 function abrirModalAsignado(fila) {
-  const h = (datosPanel?.asignados || []).find(x => x.fila === fila);
+  const p = selectedPersona;
+  if (!p) return;
+  const d = cacheDatosPersonas[p.e];
+  const h = (d?.asignados || []).find(x => x.fila === fila);
   if (!h) return;
+
+  const esMio = userEmail && userEmail.toLowerCase() === p.e.toLowerCase();
+  const puedeEditar = esMio || esCoord;
+
   const accion = h.accionAC || h.accionAP || h.accionAM || '';
   const tipoAccion = h.accionAC ? 'AC' : (h.accionAP ? 'AP' : 'AM');
 
-  document.getElementById('modal-title').textContent = `${h.tipo}-${h.num}`;
+  document.getElementById('modal-title').textContent = `${h.tipo}-${h.num} · ${p.n}`;
   document.getElementById('modal-body').innerHTML = `
-    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;font-size:12.5px;color:var(--text);line-height:1.5;margin-bottom:16px">${h.desc}</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+    <div class="p-3 rounded-xl bg-[var(--bg3)] text-xs leading-relaxed text-[var(--text)] mb-4 border border-[var(--border)]">${h.desc}</div>
+    <div class="flex gap-2 flex-wrap mb-4">
       <span class="badge b-indigo">${h.tipo}</span>
       ${h.sector ? `<span class="badge b-gray">${h.sector}</span>` : ''}
       ${h.fechaLim ? `<span class="badge b-amber"><i class="ti ti-calendar"></i>Vence: ${h.fechaLim}</span>` : ''}
     </div>
-    <div class="field-label">Tipo de Acción Tomada</div>
-    <select class="field" id="m-tipo-accion">
-      <option value="AC" ${tipoAccion==='AC'?'selected':''}>Acción Correctiva (AC)</option>
-      <option value="AP" ${tipoAccion==='AP'?'selected':''}>Acción Preventiva (AP)</option>
-      <option value="AM" ${tipoAccion==='AM'?'selected':''}>Acción de Mejora (AM)</option>
-    </select>
-    <div class="field-label">Descripción de la Solución / Acción</div>
-    <textarea class="field" id="m-accion" rows="4" placeholder="Detallá las medidas adoptadas para subsanar el hallazgo">${accion}</textarea>
-    <div class="field-label">Fecha de Implementación</div>
-    <input class="field" type="date" id="m-fecha" value="${h.fechaCierre || ''}">
-    <div class="field-label">Enlace a Carpeta Drive con Evidencias</div>
-    <input class="field" type="url" id="m-drive" value="${h.linkDrive || ''}" placeholder="https://drive.google.com/drive/folders/...">`;
+    ${puedeEditar ? `
+      <div class="field-label">Tipo de Acción Tomada</div>
+      <select class="field" id="m-tipo-accion">
+        <option value="AC" ${tipoAccion==='AC'?'selected':''}>Acción Correctiva (AC)</option>
+        <option value="AP" ${tipoAccion==='AP'?'selected':''}>Acción Preventiva (AP)</option>
+        <option value="AM" ${tipoAccion==='AM'?'selected':''}>Acción de Mejora (AM)</option>
+      </select>
+      <div class="field-label">Descripción de la Solución / Acción</div>
+      <textarea class="field" id="m-accion" rows="4" placeholder="Detallá las medidas adoptadas para subsanar el hallazgo">${accion}</textarea>
+      <div class="field-label">Fecha de Implementación</div>
+      <input class="field" type="date" id="m-fecha" value="${h.fechaCierre || ''}">
+      <div class="field-label">Enlace a Carpeta Drive con Evidencias</div>
+      <input class="field" type="url" id="m-drive" value="${h.linkDrive || ''}" placeholder="https://drive.google.com/drive/folders/...">
+    ` : `
+      <div class="p-3 rounded-xl bg-[var(--bg2)] border border-[var(--border)] text-xs space-y-2">
+        <div><strong>Tipo de acción:</strong> ${tipoAccion}</div>
+        <div><strong>Acción implementada:</strong> ${accion || 'Aún no reportada'}</div>
+        ${h.linkDrive ? `<div><strong>Evidencia:</strong> <a href="${h.linkDrive}" target="_blank" class="text-blue-600 underline">Ver en Drive</a></div>` : ''}
+      </div>
+    `}
+  `;
 
   document.getElementById('modal-footer').innerHTML = `
-    <button class="btn" onclick="cerrarModal()">Cancelar</button>
-    <button class="btn btn-primary" onclick="guardarAccion(${fila},'${h.num}','${h.tipo}')">
-      <i class="ti ti-send"></i> Enviar a Coordinación SGI
-    </button>`;
+    <button class="btn" onclick="cerrarModal()">Cerrar</button>
+    ${puedeEditar ? `
+      <button class="btn btn-primary" onclick="guardarAccion(${fila},'${h.num}','${h.tipo}')">
+        <i class="ti ti-send"></i> Guardar Acción
+      </button>
+    ` : ''}
+  `;
 
   document.getElementById('modal-overlay').classList.add('open');
 }
@@ -858,79 +997,43 @@ async function guardarAccion(fila, num, tipo) {
   const drive = document.getElementById('m-drive').value.trim();
   const tipoAccion = document.getElementById('m-tipo-accion').value;
   if (!accionTexto) { mostrarToast('Describí la acción tomada antes de enviar'); return; }
+
   const params = new URLSearchParams({
-    accion:'submitAccion', email:userEmail, fila:String(fila),
+    accion:'submitAccion', email:selectedPersona.e, fila:String(fila),
     num, tipoAccion, accionTexto, fechaCierre:fecha, linkDrive:drive, estado:'Evidencia subida'
   });
+
   try {
     await fetch(GAS_URL + '?' + params.toString());
     cerrarModal();
-    mostrarToast('✓ Acción enviada al coordinador SGI');
-    setTimeout(cargarDatos, 1200);
+    mostrarToast('✓ Acción enviada y guardada en SGI');
+    delete cacheDatosPersonas[selectedPersona.e];
+    setTimeout(() => seleccionarPersona(selectedPersona.e), 1000);
   } catch(e) { mostrarToast('Error al enviar — verificá tu conexión'); }
 }
 
 async function validarHallazgo(fila, decision) {
-  const obs = decision === 'DESESTIMAR'
-    ? (prompt('Motivo para desestimar este hallazgo:') ?? '')
-    : '';
+  const obs = decision === 'DESESTIMAR' ? (prompt('Motivo para desestimar:') ?? '') : '';
   if (decision === 'DESESTIMAR' && !obs) return;
+
   const params = new URLSearchParams({
     accion:'validarHallazgo', email:userEmail, fila:String(fila), decision, obs
   });
   try {
     await fetch(GAS_URL + '?' + params.toString());
-    mostrarToast(decision === 'VALIDAR' ? '✓ Hallazgo validado y asignado' : '✓ Hallazgo desestimado');
-    setTimeout(cargarDatos, 1000);
+    mostrarToast(decision === 'VALIDAR' ? '✓ Hallazgo validado' : '✓ Hallazgo desestimado');
+    if (selectedPersona) {
+      delete cacheDatosPersonas[selectedPersona.e];
+      setTimeout(() => seleccionarPersona(selectedPersona.e), 1000);
+    }
   } catch(e) { mostrarToast('Error al procesar'); }
 }
 
-async function accionCoord(fila, num, resultado) {
-  const obs = prompt(resultado === 'NO'
-    ? 'Observaciones para devolver al involucrado:'
-    : 'Observaciones opcionales para el cierre OK:') ?? '';
-  const params = new URLSearchParams({
-    accion:'cerrarHallazgo', email:userEmail, fila:String(fila), num, resultado, obs
-  });
-  try {
-    await fetch(GAS_URL + '?' + params.toString());
-    mostrarToast('✓ Hallazgo cerrado ' + resultado);
-    setTimeout(cargarDatos, 1000);
-  } catch(e) { mostrarToast('Error al cerrar'); }
-}
-
-async function accionEficacia(fila, num, resultado) {
-  const obs = prompt('Observaciones de la verificación de eficacia:') ?? '';
-  const params = new URLSearchParams({
-    accion:'eficacia', email:userEmail, fila:String(fila), num, resultado, obs
-  });
-  try {
-    await fetch(GAS_URL + '?' + params.toString());
-    mostrarToast('✓ Eficacia registrada');
-    setTimeout(cargarDatos, 1000);
-  } catch(e) { mostrarToast('Error al registrar'); }
-}
-
-function showTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab)?.classList.add('active');
-  document.getElementById('pane-' + tab)?.classList.add('active');
-}
-
-function showSubtab(tab) {
-  document.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.subtab-pane').forEach(p => p.classList.remove('active'));
-  const btn = document.querySelector(`.subtab[onclick*="${tab}"]`);
-  if (btn) btn.classList.add('active');
-  document.getElementById('subtab-' + tab)?.classList.add('active');
-  if (tab === 'resumen' && datosPanel?.paraCoord) {
-    const coord = datosPanel.paraCoord;
-    const total = (coord.validar||[]).length + (coord.listos||[]).length + (coord.eficacia||[]).length;
-    setTimeout(() => dibujarDonut('donut-coord',
-      [{val:(coord.validar||[]).length,color:'#D97706'},{val:(coord.listos||[]).length,color:'#7C3AED'},{val:(coord.eficacia||[]).length,color:'#0891B2'}],
-      total), 50);
-  }
+function showPersonaTab(tab) {
+  document.querySelectorAll('#persona-tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.detail-card .tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('ptab-' + tab)?.classList.add('active');
+  document.getElementById('ppane-' + tab)?.classList.add('active');
 }
 
 function estadoBadge(estado, resultado, fechaLim) {
@@ -962,6 +1065,46 @@ function cardClass(estado, resultado, fechaLim) {
   return 'left-indigo';
 }
 
+function dibujarDonut(canvasId, segmentos, total) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const r = Math.min(cx, cy) - 4;
+  const ri = r * 0.6;
+  ctx.clearRect(0, 0, W, H);
+
+  if (!total) {
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#E2E8F0';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
+    ctx.beginPath(); ctx.arc(cx, cy, ri, 0, Math.PI * 2); ctx.fill();
+    return;
+  }
+
+  let ang = -Math.PI / 2;
+  segmentos.forEach(s => {
+    if (!s.val) return;
+    const sweep = (s.val / total) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, ang, ang + sweep);
+    ctx.closePath();
+    ctx.fillStyle = s.color;
+    ctx.fill();
+    ang += sweep;
+  });
+
+  ctx.beginPath(); ctx.arc(cx, cy, ri, 0, Math.PI * 2);
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
+  ctx.fill();
+
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#0F172A';
+  ctx.textAlign = 'center';
+  ctx.font = `800 ${Math.round(r * 0.42)}px Plus Jakarta Sans, sans-serif`;
+  ctx.fillText(total, cx, cy + 4);
+}
+
 function mostrarToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -984,21 +1127,7 @@ function toggleTheme() {
   localStorage.setItem('sgi_theme', dark ? 'dark' : 'light');
   const icon = document.getElementById('theme-icon');
   if (icon) icon.className = dark ? 'ti ti-sun' : 'ti ti-moon';
-  if (datosPanel) {
-    setTimeout(() => {
-      if (datosPanel.asignados) {
-        const a = filtrarEj35(datosPanel.asignados || []);
-        const ab = a.filter(h => !h.resultado);
-        const ok = a.filter(h => h.resultado === 'OK').length;
-        const no = a.filter(h => h.resultado === 'NO').length;
-        dibujarDonut('donut-asig',[{val:ab.length,color:'#D97706'},{val:ok,color:'#059669'},{val:no,color:'#DC2626'}],a.length);
-      }
-      if (datosPanel.declarados) {
-        const d = filtrarEj35(datosPanel.declarados || []);
-        dibujarDonut('donut-decl',[{val:d.filter(h=>!h.numGenerado).length,color:'#D97706'},{val:d.filter(h=>h.numGenerado&&!h.cerrado).length,color:'#4F46E5'},{val:d.filter(h=>h.cerrado).length,color:'#059669'}],d.length);
-      }
-    }, 50);
-  }
+  if (selectedPersona) seleccionarPersona(selectedPersona.e);
 }
 </script>
 </body>
