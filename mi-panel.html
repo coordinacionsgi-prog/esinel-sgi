@@ -5,8 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mi Panel — SGI Esinel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
+
 <style>
 :root{
   --bg:#F0F4F8;--bg2:#FFFFFF;--bg3:#F1F5F9;--bg4:#E8EEF5;
@@ -18,9 +21,9 @@
   --red:#DC2626;--red-dim:#FEF2F2;--red-border:#FECACA;--red-text:#991B1B;
   --violet:#7C3AED;--violet-dim:#F5F3FF;--violet-border:#DDD6FE;--violet-text:#5B21B6;
   --cyan:#0891B2;--cyan-dim:#ECFEFF;--cyan-border:#A5F3FC;--cyan-text:#155E75;
-  --r:8px;--r2:12px;
+  --r:10px;--r2:14px;
 }
-[data-theme=dark]{
+html.dark, [data-theme=dark]{
   --bg:#0B111E;--bg2:#131929;--bg3:#1A2236;--bg4:#1E2840;
   --border:#1E2D47;--border2:#263552;
   --text:#EDF2FF;--text2:#7B8DB0;--text3:#3D4F6B;
@@ -31,109 +34,105 @@
   --violet:#A78BFA;--violet-dim:rgba(167,139,250,.1);--violet-border:rgba(167,139,250,.22);--violet-text:#C4B5FD;
   --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,.1);--cyan-border:rgba(34,211,238,.22);--cyan-text:#A5F3FC;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;transition:background .2s,color .2s}
+
+/* Si está embebido en iframe dentro de otra pantalla del SGI, ocultar la cabecera duplicada */
+body.is-embedded header.esinel-global-header { display:none !important; }
 
 /* ── AUTH ── */
-#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:44px 40px;max-width:380px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06)}
-.auth-logo{width:52px;height:52px;border-radius:14px;background:var(--indigo-dim);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:24px}
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:80vh;padding:24px}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.auth-logo{width:56px;height:56px;border-radius:16px;background:var(--indigo-dim);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px}
 .auth-card h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px}
-.auth-card p{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.6}
-.auth-error{font-size:12px;color:var(--red-text);background:var(--red-dim);border:1px solid var(--red-border);border-radius:var(--r);padding:8px 12px;margin-top:14px;display:none}
+.auth-card p{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5}
+.auth-error{font-size:12px;color:var(--red-text);background:var(--red-dim);border:1px solid var(--red-border);border-radius:var(--r);padding:10px 12px;margin-top:14px;display:none}
 
 /* ── TOPBAR ── */
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:40}
 .app-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;text-decoration:none;color:var(--text)}
-.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--indigo)}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--indigo)}
 .topbar-center{display:flex;align-items:center;gap:6px}
-.ejercicio-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border);letter-spacing:.02em}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.user-chip{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer;transition:.15s}
+.ejercicio-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border);letter-spacing:.02em}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:24px;padding:3px 12px 3px 4px;cursor:pointer;transition:.15s}
 .user-chip:hover{border-color:var(--border2)}
-.avatar{width:28px;height:28px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--indigo-dim);color:var(--indigo);flex-shrink:0;letter-spacing:.02em}
-.user-name{font-size:12px;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.btn-icon{width:32px;height:32px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-size:15px}
+.avatar{width:28px;height:28px;border-radius:50%;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--indigo);color:#fff;flex-shrink:0}
+.user-name{font-size:12px;font-weight:500;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-icon{width:34px;height:34px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-size:16px}
 .btn-icon:hover{background:var(--bg3);color:var(--text)}
 
-/* ── LAYOUT ── */
-.main{max-width:1120px;margin:0 auto;padding:28px 24px 48px}
-
-/* ── PAGE HEADER ── */
+/* ── MAIN LAYOUT ── */
+.main{max-width:1160px;margin:0 auto;padding:28px 24px 56px}
 .page-header{margin-bottom:24px}
-.page-title{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:3px}
+.page-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
 .page-sub{font-size:13px;color:var(--text2)}
 
 /* ── TABS ── */
-.tabs{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:24px;width:fit-content;max-width:100%}
-.tab{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:.15s;border:none;background:none;font-family:inherit;display:flex;align-items:center;gap:5px;white-space:nowrap}
-.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.09);border:1px solid var(--border)}
+.tabs{display:flex;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;max-width:100%}
+.tab{padding:8px 18px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;border:none;background:none;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid var(--border)}
 .tab-pane{display:none}.tab-pane.active{display:block}
-.tab .badge-count{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
+.tab .badge-count{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center}
 
-/* ── SPLIT LAYOUT (list + sidebar) ── */
+/* ── SPLIT LAYOUT ── */
 .split{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
-@media(max-width:860px){.split{grid-template-columns:1fr}}
+@media(max-width:880px){.split{grid-template-columns:1fr}}
 
 /* ── STATS SIDEBAR ── */
 .stats-sidebar{display:flex;flex-direction:column;gap:12px}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px}
-.stat-card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-.donut-legend{display:flex;flex-direction:column;gap:6px;width:100%}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:18px}
+.stat-card-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.donut-legend{display:flex;flex-direction:column;gap:7px;width:100%}
 .leg-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
-.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-right:7px}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-right:8px}
 .leg-label{display:flex;align-items:center;color:var(--text2)}
-.leg-val{font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+.leg-val{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
 
 /* ── KPI ROW ── */
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .kpi-row-2{grid-template-columns:repeat(2,1fr)}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--r2) var(--r2)}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3.5px;border-radius:0 0 var(--r2) var(--r2)}
 .kpi.kpi-indigo::before{background:var(--indigo)}.kpi.kpi-green::before{background:var(--green)}
 .kpi.kpi-amber::before{background:var(--amber)}.kpi.kpi-red::before{background:var(--red)}
 .kpi.kpi-violet::before{background:var(--violet)}.kpi.kpi-cyan::before{background:var(--cyan)}
-.kpi-label{font-size:11px;color:var(--text2);font-weight:500;margin-bottom:6px;line-height:1.3}
-.kpi-val{font-family:'Sora',sans-serif;font-size:30px;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
-.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.kpi-label{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:6px}
+.kpi-val{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:5px}
 
-/* ── SECTION TITLE ── */
-.section-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 
 /* ── ROW CARDS ── */
-.row-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;transition:.15s;cursor:pointer}
-.row-card:hover{border-color:var(--border2);box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.row-card.left-green{border-left:3px solid var(--green)}
-.row-card.left-amber{border-left:3px solid var(--amber)}
-.row-card.left-red{border-left:3px solid var(--red)}
-.row-card.left-indigo{border-left:3px solid var(--indigo)}
-.row-card.left-violet{border-left:3px solid var(--violet)}
-.row-card.left-cyan{border-left:3px solid var(--cyan)}
+.row-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:10px;transition:.15s;cursor:pointer}
+.row-card:hover{border-color:var(--border2);box-shadow:0 4px 14px rgba(0,0,0,.05);transform:translateY(-1px)}
+.row-card.left-green{border-left:4px solid var(--green)}
+.row-card.left-amber{border-left:4px solid var(--amber)}
+.row-card.left-red{border-left:4px solid var(--red)}
+.row-card.left-indigo{border-left:4px solid var(--indigo)}
+.row-card.left-violet{border-left:4px solid var(--violet)}
+.row-card.left-cyan{border-left:4px solid var(--cyan)}
 
-/* ── VALIDATE CARD (special style) ── */
-.validate-card{background:var(--bg2);border:1.5px dashed var(--amber-border);border-radius:var(--r2);padding:16px;margin-bottom:10px;background:var(--amber-dim)}
-.validate-card .vc-meta{font-size:11px;color:var(--amber-text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.validate-card .vc-title{font-size:13px;font-weight:600;margin-bottom:4px}
-.validate-card .vc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.validate-card{background:var(--amber-dim);border:1.5px dashed var(--amber-border);border-radius:var(--r2);padding:16px;margin-bottom:12px}
+.validate-card .vc-meta{font-size:11px;font-weight:600;color:var(--amber-text);margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.validate-card .vc-title{font-size:13.5px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.validate-card .vc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
 .validate-card .vc-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ── PERSONA ROW ── */
-.persona-row{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-.persona-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.persona-row{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 18px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.persona-name{font-size:13.5px;font-weight:700;margin-bottom:2px}
 .persona-email{font-size:11px;color:var(--text3)}
-.persona-stats{display:flex;gap:10px;align-items:center}
+.persona-stats{display:flex;gap:12px;align-items:center}
 .pstat{text-align:center}
-.pstat-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.pstat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.pstat-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1}
+.pstat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
 .pstat-sep{width:1px;height:28px;background:var(--border)}
 
-/* ── EMPTY ── */
-.empty{text-align:center;padding:36px 20px;color:var(--text3);font-size:13px;background:var(--bg3);border:1px dashed var(--border2);border-radius:var(--r2)}
-.empty i{font-size:28px;display:block;margin-bottom:10px;opacity:.5}
+.empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:var(--r2)}
+.empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.6}
 
-/* ── BADGE ── */
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
 .b-indigo{background:var(--indigo-dim);color:var(--indigo-text);border:1px solid var(--indigo-border)}
 .b-green{background:var(--green-dim);color:var(--green-text);border:1px solid var(--green-border)}
 .b-amber{background:var(--amber-dim);color:var(--amber-text);border:1px solid var(--amber-border)}
@@ -143,138 +142,124 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .b-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 
 /* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
-.modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
-.modal-header h3{font-family:'Sora',sans-serif;font-size:15px;font-weight:700}
-.modal-body{padding:18px 20px}
-.field-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
-.field{width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg2);font-family:inherit;margin-bottom:14px;transition:.15s}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,.35)}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.modal-header h3{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.modal-body{padding:20px 22px}
+.field-label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.field{width:100%;padding:10px 14px;border:1px solid var(--border2);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--bg2);font-family:inherit;margin-bottom:14px;transition:.15s}
 .field:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-dim)}
 textarea.field{resize:none;line-height:1.5}
-.btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:7px 15px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:inherit;transition:.12s}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:inherit;transition:.12s}
 .btn:hover{background:var(--bg3);color:var(--text)}
 .btn-primary{background:var(--indigo);color:#fff;border-color:var(--indigo)}
-.btn-primary:hover{opacity:.88}
+.btn-primary:hover{opacity:.9}
 .btn-green{background:var(--green-dim);color:var(--green-text);border-color:var(--green-border)}
 .btn-green:hover{background:var(--green);color:#fff}
 .btn-red{background:var(--red-dim);color:var(--red-text);border-color:var(--red-border)}
 .btn-red:hover{background:var(--red);color:#fff}
 .btn-amber{background:var(--amber-dim);color:var(--amber-text);border-color:var(--amber-border)}
-.btn-sm{padding:5px 11px;font-size:11px}
-.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--bg2);position:sticky;bottom:0;border-radius:0 0 16px 16px}
+.btn-sm{padding:6px 12px;font-size:11.5px}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--bg2);position:sticky;bottom:0}
 
-/* ── COORD SUBTABS ── */
+/* ── SUBTABS ── */
 .subtabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
-.subtab{padding:8px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;display:flex;align-items:center;gap:5px}
+.subtab{padding:9px 18px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;display:flex;align-items:center;gap:6px}
 .subtab:hover{color:var(--text)}
-.subtab.active{color:var(--indigo);border-bottom-color:var(--indigo);font-weight:600}
+.subtab.active{color:var(--indigo);border-bottom-color:var(--indigo)}
 .subtab-pane{display:none}.subtab-pane.active{display:block}
 
-/* ── SPINNER ── */
 .spinner{display:flex;align-items:center;justify-content:center;padding:48px;color:var(--text3)}
-.spin{width:22px;height:22px;border:2px solid var(--border2);border-top-color:var(--indigo);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
+.spin{width:24px;height:24px;border:2.5px solid var(--border2);border-top-color:var(--indigo);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;z-index:300;max-width:320px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:12px 20px;border-radius:12px;font-size:12.5px;font-weight:600;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;z-index:300;box-shadow:0 10px 25px rgba(0,0,0,.2)}
 .toast.show{opacity:1;transform:none}
-
-@media(max-width:600px){
-  .kpi-row{grid-template-columns:1fr 1fr}
-  .tabs{flex-wrap:wrap;width:100%}
-  .main{padding:16px 14px 40px}
-  .topbar{padding:0 16px}
-  .persona-row{grid-template-columns:1fr}
-}
 </style>
 </head>
 <body>
 
-  <header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
-    <div class="w-full px-4 sm:px-6 lg:px-8">
-      <!-- Fila superior de marca y certificados -->
-      <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
-        <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
-          <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
-            <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#3b82f6"/>
-              <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#3b82f6"/>
-              <circle cx="22" cy="9" r="5" fill="#3b82f6"/><circle cx="22" cy="22" r="5" fill="#3b82f6"/>
-              <circle cx="22" cy="35" r="5" fill="#3b82f6"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
-              <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#3b82f6"/>
-              <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9" r="5" fill="#3b82f6"/>
-              <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
-              <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
-            </div>
-            <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
-            <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
-              <span class="text-slate-400">ISO 9001</span>
-              <span class="text-emerald-400">ISO 14001</span>
-              <span class="text-rose-400">ISO 45001</span>
-            </div>
-          </div>
-        </a>
-        <div class="flex items-center gap-3">
-          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
-            <i class="ti ti-shield-check text-sky-400 text-sm"></i>
-            <span>SGI · Gestión Integrada (Rev 05)</span>
-          </div>
+<!-- ▼▼▼ ESINEL GLOBAL HEADER (Solo visible cuando se navega directamente) ▼▼▼ -->
+<header class="esinel-global-header bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white">
+  <div class="w-full px-4 sm:px-6 lg:px-8">
+    <div class="esinel-hdr-top py-3 flex items-center justify-between gap-4">
+      <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
+        <div class="w-10 h-10 flex-shrink-0 bg-slate-900/80 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center">
+          <svg width="34" height="34" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="9" r="5" fill="#3b82f6"/><circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="35" r="5" fill="#3b82f6"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+            <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9" r="5" fill="#3b82f6"/>
+            <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+          </svg>
         </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+            <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
+          </div>
+          <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase mt-1">Obras Eléctricas · Ingeniería · Tableros</p>
+        </div>
+      </a>
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-semibold text-sky-400">
+        <i class="ti ti-shield-check text-sm"></i>
+        <span>SGI · Mi Panel</span>
       </div>
     </div>
-    <!-- Barra de Navegacion Horizontal -->
-    <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
-      <div class="w-full px-4 sm:px-6 lg:px-8">
-        <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
-          <a class="esinel-nav-item esinel-active px-3 py-2 rounded-lg font-semibold text-amber-400 bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="mi-panel.html"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
-          <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="comercial.html"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
-        </nav>
-      </div>
+  </div>
+  <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+        <a class="px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
+        <a class="px-3 py-2 rounded-lg font-semibold text-amber-400 bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="mi-panel.html"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+      </nav>
     </div>
-  </header>
-
+  </div>
+</header>
 
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="auth-logo"><i class="ti ti-shield-check" style="color:var(--indigo)"></i></div>
+    <div class="auth-logo"><i class="ti ti-shield-check text-indigo-600"></i></div>
     <h1>Mi Panel SGI</h1>
-    <p>Ingresá con tu cuenta <strong>@esinel.com.ar</strong> para ver y gestionar tus hallazgos.</p>
-    <div id="g_id_onload"
-      data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
-      data-callback="sgiCb"
-      data-auto_prompt="true"></div>
-    <div class="g_id_signin"
-      data-type="standard" data-size="large" data-theme="outline"
-      data-text="sign_in_with" data-shape="rectangular"
-      data-logo_alignment="left" data-width="280"></div>
-    <div class="auth-error" id="auth-error">Solo cuentas @esinel.com.ar pueden acceder.</div>
+    <p>Ingresá con tu cuenta corporativa <strong>@esinel.com.ar</strong> para visualizar y gestionar tus hallazgos.</p>
+    <div class="flex justify-center mb-3">
+      <div id="g_id_onload"
+        data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
+        data-callback="sgiCb"
+        data-auto_prompt="false"
+        data-use_fedcm_for_prompt="false"></div>
+      <div class="g_id_signin"
+        data-type="standard" data-size="large" data-theme="outline"
+        data-text="sign_in_with" data-shape="pill"></div>
+    </div>
+    <div class="auth-error" id="auth-error">Acceso exclusivo para colaboradores con cuenta @esinel.com.ar.</div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app" style="display:none">Esinel SGI</a>
+<!-- APP PRINCIPAL CON CONTENCIÓN Y TOPBAR RESTAURADA -->
+<div id="app" style="display:none">
+  <!-- Topbar con estructura correcta y navegación -->
+  <div class="topbar">
+    <a class="app-logo" href="index.html" id="app-logo-link">
+      <div class="logo-dot"></div>
+      <span class="font-bold text-sm">Esinel SGI</span>
+    </a>
     <div class="topbar-center">
       <span class="ejercicio-badge" id="ejercicio-badge">Ejercicio 35</span>
     </div>
     <div class="topbar-right">
-      <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema"><i class="ti ti-moon" id="theme-icon"></i></button>
+      <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema">
+        <i class="ti ti-moon" id="theme-icon"></i>
+      </button>
       <div class="user-chip" onclick="logout()" title="Cerrar sesión">
         <div class="avatar" id="user-avatar">--</div>
         <span class="user-name" id="user-name">Cargando...</span>
@@ -285,23 +270,24 @@ textarea.field{resize:none;line-height:1.5}
   <div class="main">
     <div class="page-header">
       <div class="page-title" id="page-title">Mi Panel</div>
-      <div class="page-sub" id="page-sub">Hallazgos que te involucran · desde el 1 Abr 2026</div>
+      <div class="page-sub" id="page-sub">Hallazgos y acciones bajo tu responsabilidad · Ejercicio 35</div>
     </div>
 
     <div class="tabs" id="tabs-container">
       <button class="tab active" onclick="showTab('asignados')" id="tab-asignados">
-        <i class="ti ti-list-check"></i> Mis asignados
+        <i class="ti ti-list-check"></i> Mis Asignados
       </button>
       <button class="tab" onclick="showTab('declarados')" id="tab-declarados">
-        <i class="ti ti-send"></i> Lo que declaré
+        <i class="ti ti-send"></i> Lo que Declaré
       </button>
     </div>
 
+    <!-- Pestañas de contenido -->
     <div id="pane-asignados" class="tab-pane active">
-      <div class="spinner"><div class="spin"></div>Cargando...</div>
+      <div class="spinner"><div class="spin"></div>Cargando hallazgos...</div>
     </div>
     <div id="pane-declarados" class="tab-pane">
-      <div class="spinner"><div class="spin"></div>Cargando...</div>
+      <div class="spinner"><div class="spin"></div>Cargando reportes...</div>
     </div>
     <div id="pane-coord" class="tab-pane"></div>
   </div>
@@ -311,7 +297,7 @@ textarea.field{resize:none;line-height:1.5}
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)cerrarModal()">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="modal-title">Detalle del hallazgo</h3>
+      <h3 id="modal-title">Detalle del Hallazgo</h3>
       <button class="btn-icon" onclick="cerrarModal()"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body" id="modal-body"></div>
@@ -323,7 +309,11 @@ textarea.field{resize:none;line-height:1.5}
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-// ── IFRAME EMBED AUTH (postMessage desde index.html) ──────────────────────
+// ── DETECCIÓN DE ENTORNO EMBEBIDO (IFRAME) ──────────────────────────────────
+if (window.parent !== window) {
+  document.body.classList.add('is-embedded');
+}
+
 var _appIniciada = false;
 window.addEventListener('message', function(e) {
   if (e.origin !== window.location.origin) return;
@@ -339,14 +329,12 @@ window.addEventListener('message', function(e) {
   }
 });
 
-// ── CONFIG ─────────────────────────────────────────────────────────────────
+// ── CONFIGURACIÓN SGI ────────────────────────────────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwjR1nLOrmFVDykGlPWeZw66fQAt1l6CpIB-26Rq_jeG_2Bn4yIztUfckFyiocrXWyp9Q/exec';
+const INICIO_EJ35 = new Date(2026, 3, 1); // 1 de Abril de 2026
 
-// Ejercicio 35: del 1 Abr 2026 al 31 Mar 2027
-const INICIO_EJ35 = new Date('2026-04-01');
-
-// ── AUTH ───────────────────────────────────────────────────────────────────
 let userEmail = '', userName = '', userInitials = '', esCoord = false;
+let datosPanel = null;
 
 function sgiCb(resp) {
   try {
@@ -372,26 +360,35 @@ function iniciarApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-avatar').textContent = userInitials;
   document.getElementById('user-name').textContent = userName;
-  // Si estamos embebidos, el topbar del panel muestra "← Dashboard" en vez del logo
+
+  // Si estamos dentro del iframe overlay de otra página, ajustar el logo a un botón de retorno
   if (window.parent !== window) {
-    const logo = document.querySelector('.app-logo');
-    if (logo) {
-      logo.href = '#';
-      logo.onclick = function(){ window.parent.cerrarPanel(); return false; };
-      logo.innerHTML = '<span style="font-size:14px;margin-right:4px">←</span> Dashboard';
+    const logoLink = document.getElementById('app-logo-link');
+    if (logoLink) {
+      logoLink.href = '#';
+      logoLink.onclick = function(e){
+        e.preventDefault();
+        if (window.parent && typeof window.parent.cerrarPanel === 'function') {
+          window.parent.cerrarPanel();
+        }
+        return false;
+      };
+      logoLink.innerHTML = '<span class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1"><i class="ti ti-arrow-left"></i> Cerrar Panel</span>';
     }
   }
 
-  esCoord = userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com';
+  esCoord = (userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com');
   if (esCoord) {
-    document.getElementById('page-title').textContent = 'Panel SGI';
-    document.getElementById('page-sub').textContent = 'Coordinación · Ejercicio 35 · desde 1 Abr 2026';
-    const tabCoord = document.createElement('button');
-    tabCoord.className = 'tab';
-    tabCoord.id = 'tab-coord';
-    tabCoord.innerHTML = '<i class="ti ti-shield-check"></i> Panel SGI';
-    tabCoord.onclick = () => showTab('coord');
-    document.getElementById('tabs-container').appendChild(tabCoord);
+    document.getElementById('page-title').textContent = 'Panel de Coordinación SGI';
+    document.getElementById('page-sub').textContent = 'Auditoría interna · Seguimiento del Ejercicio 35';
+    if (!document.getElementById('tab-coord')) {
+      const tabCoord = document.createElement('button');
+      tabCoord.className = 'tab';
+      tabCoord.id = 'tab-coord';
+      tabCoord.innerHTML = '<i class="ti ti-shield-check"></i> Panel Coordinador';
+      tabCoord.onclick = () => showTab('coord');
+      document.getElementById('tabs-container').appendChild(tabCoord);
+    }
   }
 
   updateEjercicioBadge();
@@ -399,16 +396,23 @@ function iniciarApp() {
 }
 
 function updateEjercicioBadge() {
-  const hoy = new Date();
-  const mesAbr = hoy >= INICIO_EJ35 ? 35 : 34;
-  const desde = hoy >= INICIO_EJ35 ? 'Abr 2026' : 'Abr 2025';
-  const hasta = hoy >= INICIO_EJ35 ? 'Mar 2027' : 'Mar 2026';
-  document.getElementById('ejercicio-badge').textContent = `Ejercicio ${mesAbr} · ${desde}–${hasta}`;
+  const badge = document.getElementById('ejercicio-badge');
+  if (badge) badge.textContent = 'Ejercicio 35 · 2026–2027';
 }
 
-function logout() { sessionStorage.clear(); location.reload(); }
+function logout() {
+  sessionStorage.clear();
+  location.reload();
+}
 
 window.addEventListener('load', () => {
+  // Sincronización del tema visual
+  const savedTheme = localStorage.getItem('sgi_theme') || localStorage.getItem('per_theme') || localStorage.getItem('veh_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    activateDark();
+  }
+
   if (sessionStorage.getItem('sgi_ok') === '1' && !_appIniciada) {
     _appIniciada = true;
     userEmail = sessionStorage.getItem('sgi_email') || '';
@@ -416,57 +420,77 @@ window.addEventListener('load', () => {
     userInitials = userName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
     iniciarApp();
   }
-  // Dark mode system preference
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    activateDark();
-  }
 });
 
-// ── DATOS ──────────────────────────────────────────────────────────────────
-let datosPanel = null;
+// ── PARSEO Y FILTRADO DE FECHAS ─────────────────────────────────────────────
+function parsearFecha(f) {
+  if (!f) return null;
+  if (f instanceof Date) return f;
+  const s = String(f).trim();
+  if (!s) return null;
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    return new Date(s.substring(0, 10) + 'T00:00:00');
+  }
+  const parts = s.split('/');
+  if (parts.length === 3) {
+    const d = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10) - 1;
+    let y = parseInt(parts[2], 10);
+    if (y < 100) y += 2000;
+    return new Date(y, m, d);
+  }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
 
+function filtrarEj35(lista) {
+  return (lista || []).filter(h => {
+    const raw = h.fechaDecl || h.fecha || '';
+    if (!raw) return true;
+    const d = parsearFecha(raw);
+    if (!d) return true;
+    return d >= INICIO_EJ35;
+  });
+}
+
+// ── OBTENCIÓN DE DATOS ──────────────────────────────────────────────────────
 async function cargarDatos() {
   try {
     const url = GAS_URL + '?accion=panel&email=' + encodeURIComponent(userEmail);
     const resp = await fetch(url);
     datosPanel = await resp.json();
+
     const asignados = filtrarEj35(datosPanel.asignados || []);
     const declarados = filtrarEj35(datosPanel.declarados || []);
+
     renderAsignados(asignados);
     renderDeclarados(declarados);
     if (datosPanel.paraCoord) renderCoord(datosPanel.paraCoord);
-    // Badge count para pestaña validar
+
     const nValidar = (datosPanel.paraCoord?.validar || []).length;
     if (nValidar > 0 && esCoord) {
       const tabCoord = document.getElementById('tab-coord');
-      if (tabCoord) tabCoord.innerHTML += ` <span class="badge-count">${nValidar}</span>`;
+      if (tabCoord && !tabCoord.querySelector('.badge-count')) {
+        tabCoord.innerHTML += ` <span class="badge-count">${nValidar}</span>`;
+      }
     }
   } catch(e) {
     document.getElementById('pane-asignados').innerHTML =
-      '<div class="empty"><i class="ti ti-wifi-off"></i>No se pudieron cargar los datos.<br><small>Revisá tu conexión o el estado del GAS.</small></div>';
+      '<div class="empty"><i class="ti ti-wifi-off"></i>No se pudieron sincronizar los datos en vivo.<br><small class="text-slate-400">Verificá tu conexión o intentá recargar la página.</small></div>';
   }
 }
 
-// Filtrar solo hallazgos del ejercicio 35 (desde 1 Abr 2026)
-function filtrarEj35(lista) {
-  return lista.filter(h => {
-    if (!h.fecha && !h.fechaDecl) return true; // si no hay fecha, incluir
-    const d = new Date(h.fechaDecl || h.fecha || '');
-    if (isNaN(d)) return true;
-    return d >= INICIO_EJ35;
-  });
-}
-
-// ── DONUT CHART ────────────────────────────────────────────────────────────
+// ── GRÁFICO DONUT NATIVO EN CANVAS ──────────────────────────────────────────
 function dibujarDonut(canvasId, segmentos, total) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const cx = W / 2, cy = H / 2;
-  const r = Math.min(cx, cy) - 4;
-  const ri = r * 0.58;
+  const r = Math.min(cx, cy) - 5;
+  const ri = r * 0.6;
   ctx.clearRect(0, 0, W, H);
+
   if (!total) {
     ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#E2E8F0';
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
@@ -474,8 +498,10 @@ function dibujarDonut(canvasId, segmentos, total) {
     ctx.beginPath(); ctx.arc(cx, cy, ri, 0, Math.PI * 2); ctx.fill();
     return;
   }
+
   let ang = -Math.PI / 2;
   segmentos.forEach(s => {
+    if (!s.val) return;
     const sweep = (s.val / total) * Math.PI * 2;
     ctx.beginPath();
     ctx.moveTo(cx, cy);
@@ -485,65 +511,73 @@ function dibujarDonut(canvasId, segmentos, total) {
     ctx.fill();
     ang += sweep;
   });
-  // Inner circle (donut hole)
+
+  // Agujero central
   ctx.beginPath();
   ctx.arc(cx, cy, ri, 0, Math.PI * 2);
   ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#fff';
   ctx.fill();
-  // Center label
+
+  // Texto central
   ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#0F172A';
   ctx.textAlign = 'center';
-  ctx.font = `700 ${Math.round(r * 0.38)}px Sora, sans-serif`;
-  ctx.fillText(total, cx, cy + 3);
-  ctx.font = `500 ${Math.round(r * 0.22)}px Inter, sans-serif`;
+  ctx.font = `800 ${Math.round(r * 0.38)}px Sora, sans-serif`;
+  ctx.fillText(total, cx, cy + 4);
+  ctx.font = `600 ${Math.round(r * 0.22)}px Inter, sans-serif`;
   ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text2').trim() || '#64748B';
-  ctx.fillText('total', cx, cy + r * 0.28);
+  ctx.fillText('total', cx, cy + r * 0.32);
 }
 
-// ── RENDER ASIGNADOS ───────────────────────────────────────────────────────
 function renderAsignados(lista) {
   const pane = document.getElementById('pane-asignados');
   const abiertos = lista.filter(h => !h.resultado);
   const cerrados = lista.filter(h => h.resultado);
   const cerradosOK = cerrados.filter(h => h.resultado === 'OK').length;
   const cerradosNO = cerrados.filter(h => h.resultado === 'NO').length;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
   const vencidos = abiertos.filter(h => {
     if (!h.fechaLim) return false;
-    return new Date(h.fechaLim) < new Date();
+    const d = parsearFecha(h.fechaLim);
+    return d && d < hoy;
   }).length;
 
   if (!lista.length) {
-    pane.innerHTML = `<div class="empty"><i class="ti ti-circle-check"></i>No tenés hallazgos asignados en este ejercicio</div>`;
+    pane.innerHTML = `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>No tenés hallazgos asignados pendientes en este ejercicio.</div>`;
     return;
   }
 
-  pane.innerHTML = `<div class="split">
-    <div class="list-col">
-      ${abiertos.length ? `<div class="section-title"><i class="ti ti-clock" style="color:var(--amber)"></i>Abiertos (${abiertos.length})</div>
-      ${abiertos.map(h => rowCard(h, true)).join('')}` : ''}
-      ${cerrados.length ? `<div class="section-title" style="margin-top:${abiertos.length?'20px':'0'}"><i class="ti ti-check" style="color:var(--green)"></i>Cerrados (${cerrados.length})</div>
-      ${cerrados.map(h => rowCard(h, true)).join('')}` : ''}
-    </div>
-    <div class="stats-sidebar">
-      <div class="stat-card">
-        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Estado general</div>
-        <div class="donut-wrap">
-          <canvas id="donut-asig" width="130" height="130"></canvas>
-          <div class="donut-legend">
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>Abiertos</span><span class="leg-val">${abiertos.length}</span></div>
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados OK</span><span class="leg-val">${cerradosOK}</span></div>
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#DC2626"></span>Cerrados NO</span><span class="leg-val">${cerradosNO}</span></div>
+  pane.innerHTML = `
+    <div class="split">
+      <div class="list-col">
+        ${abiertos.length ? `
+          <div class="section-title"><i class="ti ti-clock text-amber-500"></i>Abiertos bajo tu acción (${abiertos.length})</div>
+          ${abiertos.map(h => rowCard(h, true)).join('')}
+        ` : ''}
+        ${cerrados.length ? `
+          <div class="section-title" style="margin-top:${abiertos.length?'24px':'0'}"><i class="ti ti-check text-emerald-500"></i>Cerrados (${cerrados.length})</div>
+          ${cerrados.map(h => rowCard(h, true)).join('')}
+        ` : ''}
+      </div>
+      <div class="stats-sidebar">
+        <div class="stat-card">
+          <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Estado de Mis Acciones</div>
+          <div class="donut-wrap">
+            <canvas id="donut-asig" width="130" height="130"></canvas>
+            <div class="donut-legend">
+              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>Abiertos</span><span class="leg-val">${abiertos.length}</span></div>
+              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados OK</span><span class="leg-val">${cerradosOK}</span></div>
+              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#DC2626"></span>Cerrados NO</span><span class="leg-val">${cerradosNO}</span></div>
+            </div>
           </div>
         </div>
+        <div class="kpi-row kpi-row-2">
+          <div class="kpi kpi-amber"><div class="kpi-label">Abiertos</div><div class="kpi-val">${abiertos.length}</div></div>
+          <div class="kpi kpi-red"><div class="kpi-label">Vencidos</div><div class="kpi-val">${vencidos}</div></div>
+          <div class="kpi kpi-green"><div class="kpi-label">Cerrados OK</div><div class="kpi-val">${cerradosOK}</div></div>
+          <div class="kpi kpi-red"><div class="kpi-label">Cerrados NO</div><div class="kpi-val">${cerradosNO}</div></div>
+        </div>
       </div>
-      <div class="kpi-row kpi-row-2">
-        <div class="kpi kpi-amber"><div class="kpi-label">Abiertos</div><div class="kpi-val">${abiertos.length}</div></div>
-        <div class="kpi kpi-red"><div class="kpi-label">Vencidos</div><div class="kpi-val">${vencidos}</div></div>
-        <div class="kpi kpi-green"><div class="kpi-label">Cerrados OK</div><div class="kpi-val">${cerradosOK}</div></div>
-        <div class="kpi kpi-red"><div class="kpi-label">Cerrados NO</div><div class="kpi-val">${cerradosNO}</div></div>
-      </div>
-    </div>
-  </div>`;
+    </div>`;
 
   requestAnimationFrame(() => {
     dibujarDonut('donut-asig',
@@ -552,7 +586,6 @@ function renderAsignados(lista) {
   });
 }
 
-// ── RENDER DECLARADOS ──────────────────────────────────────────────────────
 function renderDeclarados(lista) {
   const pane = document.getElementById('pane-declarados');
   const pendVal = lista.filter(h => h.estado === 'En revisión' || !h.numGenerado).length;
@@ -560,45 +593,46 @@ function renderDeclarados(lista) {
   const cerrados = lista.filter(h => h.cerrado).length;
 
   if (!lista.length) {
-    pane.innerHTML = `<div class="empty"><i class="ti ti-send"></i>Todavía no declaraste ningún hallazgo en este ejercicio</div>`;
+    pane.innerHTML = `<div class="empty"><i class="ti ti-send text-indigo-500"></i>Todavía no declaraste ningún hallazgo en este ejercicio.</div>`;
     return;
   }
 
-  pane.innerHTML = `<div class="split">
-    <div class="list-col">
-      ${lista.map(h => `
-      <div class="row-card ${h.cerrado ? 'left-green' : (h.numGenerado ? 'left-indigo' : 'left-amber')}">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-          <div>
-            <span style="font-size:13px;font-weight:600">${h.numGenerado || '—'}</span>
-            <span style="font-size:11px;color:var(--text2);margin-left:8px">${h.tipo || ''}</span>
-          </div>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-            ${h.cerrado ? '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado</span>' :
-              h.numGenerado ? '<span class="badge b-indigo">En proceso</span>' :
-              '<span class="badge b-amber"><i class="ti ti-clock"></i>En revisión</span>'}
-            ${h.fechaDecl ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaDecl}</span>` : ''}
-          </div>
-        </div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.5">${h.descripcion || h.desc || ''}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:4px">${h.sector || ''}</div>
-      </div>`).join('')}
-    </div>
-    <div class="stats-sidebar">
-      <div class="stat-card">
-        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Mis declaraciones</div>
-        <div class="donut-wrap">
-          <canvas id="donut-decl" width="130" height="130"></canvas>
-          <div class="donut-legend">
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>En revisión</span><span class="leg-val">${pendVal}</span></div>
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#4F46E5"></span>En proceso</span><span class="leg-val">${procesando}</span></div>
-            <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados</span><span class="leg-val">${cerrados}</span></div>
-          </div>
-        </div>
+  pane.innerHTML = `
+    <div class="split">
+      <div class="list-col">
+        ${lista.map(h => `
+          <div class="row-card ${h.cerrado ? 'left-green' : (h.numGenerado ? 'left-indigo' : 'left-amber')}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+              <div>
+                <span class="font-bold text-sm text-[var(--text)]">${h.numGenerado || '—'}</span>
+                <span class="text-xs text-[var(--text2)] ml-2">${h.tipo || ''}</span>
+              </div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+                ${h.cerrado ? '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado</span>' :
+                  h.numGenerado ? '<span class="badge b-indigo">En proceso</span>' :
+                  '<span class="badge b-amber"><i class="ti ti-clock"></i>En revisión</span>'}
+                ${h.fechaDecl ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaDecl}</span>` : ''}
+              </div>
+            </div>
+            <div class="text-xs text-[var(--text2)] leading-relaxed">${h.descripcion || h.desc || ''}</div>
+            <div class="text-[11px] font-semibold text-[var(--text3)] mt-2">${h.sector || ''}</div>
+          </div>`).join('')}
       </div>
-      <div class="kpi kpi-indigo" style="margin-top:0"><div class="kpi-label">Total declarados Ej. 35</div><div class="kpi-val">${lista.length}</div><div class="kpi-sub">RG-06-02</div></div>
-    </div>
-  </div>`;
+      <div class="stats-sidebar">
+        <div class="stat-card">
+          <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Mis Declaraciones</div>
+          <div class="donut-wrap">
+            <canvas id="donut-decl" width="130" height="130"></canvas>
+            <div class="donut-legend">
+              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#D97706"></span>En revisión</span><span class="leg-val">${pendVal}</span></div>
+              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#4F46E5"></span>En proceso</span><span class="leg-val">${procesando}</span></div>
+              <div class="leg-row"><span class="leg-label"><span class="leg-dot" style="background:#059669"></span>Cerrados</span><span class="leg-val">${cerrados}</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi kpi-indigo"><div class="kpi-label">Total Declarados</div><div class="kpi-val">${lista.length}</div><div class="kpi-sub">Formulario RG-06-02</div></div>
+      </div>
+    </div>`;
 
   requestAnimationFrame(() => {
     dibujarDonut('donut-decl',
@@ -607,7 +641,6 @@ function renderDeclarados(lista) {
   });
 }
 
-// ── RENDER COORDINADOR ─────────────────────────────────────────────────────
 function renderCoord(coord) {
   const pane = document.getElementById('pane-coord');
   const validar = coord.validar || [];
@@ -615,39 +648,36 @@ function renderCoord(coord) {
   const eficacia = coord.eficacia || [];
   const personas = coord.resumenPersonas || [];
 
-  const totalAbiertos = listos.length + validar.length;
-  const totalEficacia = eficacia.length;
-
   pane.innerHTML = `
-  <div class="kpi-row" style="margin-bottom:20px">
-    <div class="kpi kpi-amber"><div class="kpi-label">Para validar</div><div class="kpi-val">${validar.length}</div><div class="kpi-sub">Nuevos hallazgos</div></div>
-    <div class="kpi kpi-violet"><div class="kpi-label">Para cerrar</div><div class="kpi-val">${listos.length}</div><div class="kpi-sub">Con acción enviada</div></div>
-    <div class="kpi kpi-cyan"><div class="kpi-label">Verificar eficacia</div><div class="kpi-val">${eficacia.length}</div><div class="kpi-sub">Pendiente control</div></div>
-  </div>
+    <div class="kpi-row" style="margin-bottom:20px">
+      <div class="kpi kpi-amber"><div class="kpi-label">Para Validar</div><div class="kpi-val">${validar.length}</div><div class="kpi-sub">Nuevos declarados</div></div>
+      <div class="kpi kpi-violet"><div class="kpi-label">Listos para Cerrar</div><div class="kpi-val">${listos.length}</div><div class="kpi-sub">Con evidencia enviada</div></div>
+      <div class="kpi kpi-cyan"><div class="kpi-label">Verificar Eficacia</div><div class="kpi-val">${eficacia.length}</div><div class="kpi-sub">Cierres a auditar</div></div>
+    </div>
 
-  <div class="subtabs" id="coord-subtabs">
-    <button class="subtab active" onclick="showSubtab('validar')">
-      <i class="ti ti-filter"></i> Validar nuevos ${validar.length ? `<span class="badge-count">${validar.length}</span>` : ''}
-    </button>
-    <button class="subtab" onclick="showSubtab('cerrar')">
-      <i class="ti ti-circle-check"></i> Cerrar (${listos.length})
-    </button>
-    <button class="subtab" onclick="showSubtab('eficacia')">
-      <i class="ti ti-clock"></i> Eficacia (${eficacia.length})
-    </button>
-    <button class="subtab" onclick="showSubtab('resumen')">
-      <i class="ti ti-users"></i> Por persona
-    </button>
-  </div>
+    <div class="subtabs" id="coord-subtabs">
+      <button class="subtab active" onclick="showSubtab('validar')">
+        <i class="ti ti-filter"></i> Validar Nuevos ${validar.length ? `<span class="badge-count">${validar.length}</span>` : ''}
+      </button>
+      <button class="subtab" onclick="showSubtab('cerrar')">
+        <i class="ti ti-circle-check"></i> Cerrar (${listos.length})
+      </button>
+      <button class="subtab" onclick="showSubtab('eficacia')">
+        <i class="ti ti-clock"></i> Eficacia (${eficacia.length})
+      </button>
+      <button class="subtab" onclick="showSubtab('resumen')">
+        <i class="ti ti-users"></i> Por Persona
+      </button>
+    </div>
 
-  <div id="subtab-validar" class="subtab-pane active">${renderValidar(validar)}</div>
-  <div id="subtab-cerrar" class="subtab-pane">${renderLisTosCerrar(listos)}</div>
-  <div id="subtab-eficacia" class="subtab-pane">${renderEficacia(eficacia)}</div>
-  <div id="subtab-resumen" class="subtab-pane">${renderResumen(personas, coord)}</div>`;
+    <div id="subtab-validar" class="subtab-pane active">${renderValidar(validar)}</div>
+    <div id="subtab-cerrar" class="subtab-pane">${renderLisTosCerrar(listos)}</div>
+    <div id="subtab-eficacia" class="subtab-pane">${renderEficacia(eficacia)}</div>
+    <div id="subtab-resumen" class="subtab-pane">${renderResumen(personas, coord)}</div>`;
 }
 
 function renderValidar(validar) {
-  if (!validar.length) return `<div class="empty"><i class="ti ti-check"></i>No hay hallazgos esperando validación</div>`;
+  if (!validar.length) return `<div class="empty"><i class="ti ti-check text-emerald-500"></i>No hay hallazgos esperando validación.</div>`;
   return validar.map(h => `
     <div class="validate-card">
       <div class="vc-meta">
@@ -655,13 +685,13 @@ function renderValidar(validar) {
         Declarado por <strong>${h.declarante || '—'}</strong>
         ${h.sector ? `· ${h.sector}` : ''}
         ${h.fechaDecl ? `· ${h.fechaDecl}` : ''}
-        ${h.esGerente ? `<span class="badge b-violet" style="margin-left:4px"><i class="ti ti-crown"></i>Gerente</span>` : ''}
+        ${h.esGerente ? `<span class="badge b-violet"><i class="ti ti-crown"></i>Gerente</span>` : ''}
       </div>
       <div class="vc-title">${h.tipo || 'Hallazgo'} — ${h.desc || h.descripcion || ''}</div>
-      ${h.personasInv ? `<div style="font-size:11px;color:var(--amber-text);margin-bottom:6px"><i class="ti ti-users" style="margin-right:3px"></i>Involucra: ${h.personasInv}</div>` : ''}
+      ${h.personasInv ? `<div style="font-size:11px;color:var(--amber-text);margin-bottom:8px"><i class="ti ti-users"></i> Involucra: ${h.personasInv}</div>` : ''}
       <div class="vc-actions">
         <button class="btn btn-green btn-sm" onclick="validarHallazgo(${h.fila},'VALIDAR')">
-          <i class="ti ti-check"></i> Validar y asignar
+          <i class="ti ti-check"></i> Validar y Asignar
         </button>
         <button class="btn btn-red btn-sm" onclick="validarHallazgo(${h.fila},'DESESTIMAR')">
           <i class="ti ti-x"></i> Desestimar
@@ -671,16 +701,16 @@ function renderValidar(validar) {
 }
 
 function renderLisTosCerrar(listos) {
-  if (!listos.length) return `<div class="empty"><i class="ti ti-circle-check"></i>No hay hallazgos listos para cerrar</div>`;
+  if (!listos.length) return `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>No hay hallazgos listos para cerrar.</div>`;
   return listos.map(h => `
     <div class="row-card left-green">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-        <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
+        <span class="font-bold text-sm text-[var(--text)]">${h.tipo}-${h.num}</span>
         <span class="badge b-green"><i class="ti ti-check"></i>Evidencia lista</span>
       </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${h.desc}</div>
-      ${h.linkDrive ? `<a href="${h.linkDrive}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;color:var(--indigo);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:10px"><i class="ti ti-folder"></i>Ver evidencia en Drive</a><br>` : ''}
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+      <div class="text-xs text-[var(--text2)] mb-2">${h.desc}</div>
+      ${h.linkDrive ? `<a href="${h.linkDrive}" target="_blank" onclick="event.stopPropagation()" class="text-xs text-blue-600 font-semibold inline-flex items-center gap-1 mb-2.5 hover:underline"><i class="ti ti-folder"></i>Ver evidencia en Drive</a><br>` : ''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-green btn-sm" onclick="accionCoord(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Cerrar OK</button>
         <button class="btn btn-red btn-sm" onclick="accionCoord(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>Devolver</button>
       </div>
@@ -688,14 +718,14 @@ function renderLisTosCerrar(listos) {
 }
 
 function renderEficacia(eficacia) {
-  if (!eficacia.length) return `<div class="empty"><i class="ti ti-chart-line"></i>No hay verificaciones de eficacia pendientes</div>`;
+  if (!eficacia.length) return `<div class="empty"><i class="ti ti-chart-line text-cyan-500"></i>No hay verificaciones de eficacia pendientes.</div>`;
   return eficacia.map(h => `
     <div class="row-card left-amber">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
-        <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
+        <span class="font-bold text-sm text-[var(--text)]">${h.tipo}-${h.num}</span>
         <span class="badge b-amber"><i class="ti ti-clock"></i>${h.diasDesde} días desde cierre</span>
       </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${h.desc}</div>
+      <div class="text-xs text-[var(--text2)] mb-3">${h.desc}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-green btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','OK')"><i class="ti ti-check"></i>Fue eficaz</button>
         <button class="btn btn-red btn-sm" onclick="accionEficacia(${h.fila},'${h.num}','NO')"><i class="ti ti-x"></i>No fue eficaz</button>
@@ -708,30 +738,27 @@ function renderResumen(personas, coord) {
   const totalAbiertos = todosAbiertos.length;
   const totalEficacia = (coord.eficacia||[]).length;
 
-  let html = `<div class="split">
-    <div>`;
-
+  let html = `<div class="split"><div>`;
   if (!personas.length) {
-    // Si el GAS todavía no devuelve resumenPersonas, mostrar un placeholder con los datos que tenemos
     html += `<div class="empty" style="text-align:left;padding:20px">
-      <i class="ti ti-users" style="font-size:20px;display:block;margin-bottom:8px"></i>
+      <i class="ti ti-users text-blue-500" style="font-size:24px;display:block;margin-bottom:8px"></i>
       <strong>Resumen por persona</strong><br>
-      <span style="font-size:12px">El GAS todavía no devuelve el resumen por persona.<br>Se mostrará aquí cuando se agregue <code>resumenPersonas</code> al endpoint <code>obtenerDatosPanel</code>.</span>
+      <span class="text-xs text-[var(--text2)]">Cargando datos agregados por responsable...</span>
     </div>`;
   } else {
     html += `<div class="section-title"><i class="ti ti-users"></i>Involucrados — Ejercicio 35</div>`;
     html += personas.map(p => `
       <div class="persona-row">
         <div>
-          <div class="persona-name">${p.nombre}</div>
+          <div class="persona-name text-[var(--text)]">${p.nombre}</div>
           <div class="persona-email">${p.email || ''}</div>
         </div>
         <div class="persona-stats">
-          <div class="pstat"><div class="pstat-val" style="color:var(--amber)">${p.abiertos||0}</div><div class="pstat-lbl">Abiertos</div></div>
+          <div class="pstat"><div class="pstat-val text-amber-500">${p.abiertos||0}</div><div class="pstat-lbl">Abiertos</div></div>
           <div class="pstat-sep"></div>
-          <div class="pstat"><div class="pstat-val" style="color:var(--green)">${p.cerrados||0}</div><div class="pstat-lbl">Cerrados</div></div>
+          <div class="pstat"><div class="pstat-val text-emerald-500">${p.cerrados||0}</div><div class="pstat-lbl">Cerrados</div></div>
           <div class="pstat-sep"></div>
-          <div class="pstat"><div class="pstat-val" style="color:var(--text2)">${p.declarados||0}</div><div class="pstat-lbl">Declaró</div></div>
+          <div class="pstat"><div class="pstat-val text-[var(--text2)]">${p.declarados||0}</div><div class="pstat-lbl">Declaró</div></div>
         </div>
       </div>`).join('');
   }
@@ -739,7 +766,7 @@ function renderResumen(personas, coord) {
   html += `</div>
     <div class="stats-sidebar">
       <div class="stat-card">
-        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Vista global Ej. 35</div>
+        <div class="stat-card-title"><i class="ti ti-chart-donut-2"></i>Vista Global Ej. 35</div>
         <div class="donut-wrap">
           <canvas id="donut-coord" width="130" height="130"></canvas>
           <div class="donut-legend">
@@ -749,7 +776,7 @@ function renderResumen(personas, coord) {
           </div>
         </div>
       </div>
-      <div class="kpi kpi-indigo"><div class="kpi-label">Total activos</div><div class="kpi-val">${totalAbiertos + totalEficacia}</div><div class="kpi-sub">Ejercicio 35</div></div>
+      <div class="kpi kpi-indigo"><div class="kpi-label">Total Activos</div><div class="kpi-val">${totalAbiertos + totalEficacia}</div><div class="kpi-sub">Ejercicio 35</div></div>
     </div>
   </div>`;
 
@@ -763,29 +790,28 @@ function renderResumen(personas, coord) {
   return html;
 }
 
-// ── ROW CARD helper ────────────────────────────────────────────────────────
 function rowCard(h, clickable) {
   const accion = h.accionAC || h.accionAP || h.accionAM || '';
   const badge = estadoBadge(h.estado, h.resultado, h.fechaLim);
   const cls = cardClass(h.estado, h.resultado, h.fechaLim);
   const onclick = clickable ? `onclick="abrirModalAsignado(${h.fila})"` : '';
-  return `<div class="row-card ${cls}" ${onclick}>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px">
-      <div>
-        <span style="font-size:13px;font-weight:600">${h.tipo}-${h.num}</span>
-        <span style="font-size:11px;color:var(--text2);margin-left:8px">${h.sector || ''}</span>
+  return `
+    <div class="row-card ${cls}" ${onclick}>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px">
+        <div>
+          <span class="font-bold text-sm text-[var(--text)]">${h.tipo}-${h.num}</span>
+          <span class="text-xs text-[var(--text2)] ml-2">${h.sector || ''}</span>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+          ${badge}
+          ${h.fechaLim ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaLim}</span>` : ''}
+        </div>
       </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-        ${badge}
-        ${h.fechaLim ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaLim}</span>` : ''}
-      </div>
-    </div>
-    <div style="font-size:12px;color:var(--text2);line-height:1.5">${h.desc || ''}</div>
-    ${accion ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">Acción: ${accion}</div>` : ''}
-  </div>`;
+      <div class="text-xs text-[var(--text2)] leading-relaxed">${h.desc || ''}</div>
+      ${accion ? `<div class="text-xs text-[var(--text3)] mt-2 pt-2 border-t border-[var(--border)]"><strong>Acción:</strong> ${accion}</div>` : ''}
+    </div>`;
 }
 
-// ── MODAL ASIGNADO ─────────────────────────────────────────────────────────
 function abrirModalAsignado(fila) {
   const h = (datosPanel?.asignados || []).find(x => x.fila === fila);
   if (!h) return;
@@ -794,30 +820,29 @@ function abrirModalAsignado(fila) {
 
   document.getElementById('modal-title').textContent = `${h.tipo}-${h.num}`;
   document.getElementById('modal-body').innerHTML = `
-    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:14px">${h.desc}</div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;font-size:12.5px;color:var(--text);line-height:1.5;margin-bottom:16px">${h.desc}</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
       <span class="badge b-indigo">${h.tipo}</span>
       ${h.sector ? `<span class="badge b-gray">${h.sector}</span>` : ''}
-      ${h.fechaLim ? `<span class="badge b-amber"><i class="ti ti-calendar"></i>${h.fechaLim}</span>` : ''}
+      ${h.fechaLim ? `<span class="badge b-amber"><i class="ti ti-calendar"></i>Vence: ${h.fechaLim}</span>` : ''}
     </div>
-    <div class="field-label">Tipo de acción</div>
+    <div class="field-label">Tipo de Acción Tomada</div>
     <select class="field" id="m-tipo-accion">
       <option value="AC" ${tipoAccion==='AC'?'selected':''}>Acción Correctiva (AC)</option>
       <option value="AP" ${tipoAccion==='AP'?'selected':''}>Acción Preventiva (AP)</option>
       <option value="AM" ${tipoAccion==='AM'?'selected':''}>Acción de Mejora (AM)</option>
     </select>
-    <div class="field-label">Descripción de la acción tomada</div>
-    <textarea class="field" id="m-accion" rows="4" placeholder="Describí qué hiciste, cuándo y cómo lo corregiste">${accion}</textarea>
-    <div class="field-label">Fecha de implementación</div>
+    <div class="field-label">Descripción de la Solución / Acción</div>
+    <textarea class="field" id="m-accion" rows="4" placeholder="Detallá las medidas adoptadas para subsanar el hallazgo">${accion}</textarea>
+    <div class="field-label">Fecha de Implementación</div>
     <input class="field" type="date" id="m-fecha" value="${h.fechaCierre || ''}">
-    <div class="field-label">Link carpeta Drive (evidencia)</div>
-    <input class="field" type="url" id="m-drive" value="${h.linkDrive || ''}" placeholder="https://drive.google.com/drive/folders/...">
-    <p style="font-size:11px;color:var(--text3)">Subí la evidencia a Drive y pegá el link de la carpeta.</p>`;
+    <div class="field-label">Enlace a Carpeta Drive con Evidencias</div>
+    <input class="field" type="url" id="m-drive" value="${h.linkDrive || ''}" placeholder="https://drive.google.com/drive/folders/...">`;
 
   document.getElementById('modal-footer').innerHTML = `
     <button class="btn" onclick="cerrarModal()">Cancelar</button>
     <button class="btn btn-primary" onclick="guardarAccion(${fila},'${h.num}','${h.tipo}')">
-      <i class="ti ti-send"></i> Enviar a coordinación SGI
+      <i class="ti ti-send"></i> Enviar a Coordinación SGI
     </button>`;
 
   document.getElementById('modal-overlay').classList.add('open');
@@ -827,7 +852,6 @@ function cerrarModal() {
   document.getElementById('modal-overlay').classList.remove('open');
 }
 
-// ── ACCIONES ───────────────────────────────────────────────────────────────
 async function guardarAccion(fila, num, tipo) {
   const accionTexto = document.getElementById('m-accion').value.trim();
   const fecha = document.getElementById('m-fecha').value;
@@ -842,8 +866,8 @@ async function guardarAccion(fila, num, tipo) {
     await fetch(GAS_URL + '?' + params.toString());
     cerrarModal();
     mostrarToast('✓ Acción enviada al coordinador SGI');
-    setTimeout(cargarDatos, 1500);
-  } catch(e) { mostrarToast('Error al enviar — revisá tu conexión'); }
+    setTimeout(cargarDatos, 1200);
+  } catch(e) { mostrarToast('Error al enviar — verificá tu conexión'); }
 }
 
 async function validarHallazgo(fila, decision) {
@@ -857,7 +881,7 @@ async function validarHallazgo(fila, decision) {
   try {
     await fetch(GAS_URL + '?' + params.toString());
     mostrarToast(decision === 'VALIDAR' ? '✓ Hallazgo validado y asignado' : '✓ Hallazgo desestimado');
-    setTimeout(cargarDatos, 1200);
+    setTimeout(cargarDatos, 1000);
   } catch(e) { mostrarToast('Error al procesar'); }
 }
 
@@ -871,7 +895,7 @@ async function accionCoord(fila, num, resultado) {
   try {
     await fetch(GAS_URL + '?' + params.toString());
     mostrarToast('✓ Hallazgo cerrado ' + resultado);
-    setTimeout(cargarDatos, 1200);
+    setTimeout(cargarDatos, 1000);
   } catch(e) { mostrarToast('Error al cerrar'); }
 }
 
@@ -883,11 +907,10 @@ async function accionEficacia(fila, num, resultado) {
   try {
     await fetch(GAS_URL + '?' + params.toString());
     mostrarToast('✓ Eficacia registrada');
-    setTimeout(cargarDatos, 1200);
+    setTimeout(cargarDatos, 1000);
   } catch(e) { mostrarToast('Error al registrar'); }
 }
 
-// ── UI HELPERS ─────────────────────────────────────────────────────────────
 function showTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
@@ -901,7 +924,6 @@ function showSubtab(tab) {
   const btn = document.querySelector(`.subtab[onclick*="${tab}"]`);
   if (btn) btn.classList.add('active');
   document.getElementById('subtab-' + tab)?.classList.add('active');
-  // Redibujar donut si es resumen
   if (tab === 'resumen' && datosPanel?.paraCoord) {
     const coord = datosPanel.paraCoord;
     const total = (coord.validar||[]).length + (coord.listos||[]).length + (coord.eficacia||[]).length;
@@ -916,10 +938,12 @@ function estadoBadge(estado, resultado, fechaLim) {
   if (resultado === 'OK') return '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado OK</span>';
   if (resultado === 'NO') return '<span class="badge b-red"><i class="ti ti-x"></i>Cerrado NO</span>';
   if (fechaLim) {
-    const fl = new Date(fechaLim);
-    if (fl < hoy) return '<span class="badge b-red"><i class="ti ti-alert-triangle"></i>Vencido</span>';
-    const dias = Math.ceil((fl - hoy) / 86400000);
-    if (dias <= 30) return `<span class="badge b-amber"><i class="ti ti-clock"></i>${dias}d para vencer</span>`;
+    const fl = parsearFecha(fechaLim);
+    if (fl && fl < hoy) return '<span class="badge b-red"><i class="ti ti-alert-triangle"></i>Vencido</span>';
+    if (fl) {
+      const dias = Math.ceil((fl - hoy) / 86400000);
+      if (dias <= 30) return `<span class="badge b-amber"><i class="ti ti-clock"></i>${dias}d para vencer</span>`;
+    }
   }
   if (estado) return `<span class="badge b-indigo">${estado}</span>`;
   return '<span class="badge b-gray">En proceso</span>';
@@ -929,9 +953,10 @@ function cardClass(estado, resultado, fechaLim) {
   if (resultado === 'OK') return 'left-green';
   if (resultado === 'NO') return 'left-red';
   const hoy = new Date(); hoy.setHours(0,0,0,0);
-  if (fechaLim && new Date(fechaLim) < hoy) return 'left-red';
-  if (fechaLim) {
-    const dias = Math.ceil((new Date(fechaLim) - hoy) / 86400000);
+  const fl = parsearFecha(fechaLim);
+  if (fl && fl < hoy) return 'left-red';
+  if (fl) {
+    const dias = Math.ceil((fl - hoy) / 86400000);
     if (dias <= 30) return 'left-amber';
   }
   return 'left-indigo';
@@ -941,20 +966,24 @@ function mostrarToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 2800);
 }
 
 let dark = false;
 function activateDark() {
   dark = true;
+  document.documentElement.classList.add('dark');
   document.documentElement.setAttribute('data-theme', 'dark');
-  document.getElementById('theme-icon').className = 'ti ti-sun';
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.className = 'ti ti-sun';
 }
 function toggleTheme() {
   dark = !dark;
+  document.documentElement.classList.toggle('dark', dark);
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
-  document.getElementById('theme-icon').className = dark ? 'ti ti-sun' : 'ti ti-moon';
-  // Redibujar donuts con nuevos colores de fondo
+  localStorage.setItem('sgi_theme', dark ? 'dark' : 'light');
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.className = dark ? 'ti ti-sun' : 'ti ti-moon';
   if (datosPanel) {
     setTimeout(() => {
       if (datosPanel.asignados) {
