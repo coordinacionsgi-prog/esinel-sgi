@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -317,7 +317,6 @@ html.dark #veh-theme-btn{background:#1e293b;border-color:#334155;color:#94a3b8}
   </header>
   <!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
 
-
 <div class="wrap">
   <div class="title-row">
     <div><h1>Gestión de Vehículos</h1>
@@ -584,7 +583,7 @@ function costBreakdownHTML(c) {
       '<div class="cb-label">' + comp.label + '</div>' +
       '<div class="cb-bar-wrap"><div class="cb-bar" style="' + barStyle + '"></div></div>' +
       '<div class="cb-vals">' + fmt$(comp.total) + ' <span>' + sub + '</span></div>' +
-    '</div>';
+      '</div>';
   }).join('');
   return '<div class="sec"><div class="sec-hd" style="display:flex;justify-content:space-between"><span>Costos &middot; ' + c.periodo + '</span>' +
     '<span style="font-size:12px;font-weight:700;color:var(--tx)">' + fmt$(c.total) + (c.costoKm ? ' &middot; ' + fmt$(c.costoKm) + '/km' : '') + (c.km ? ' &middot; ' + fmtKm(c.km) : '') + '</span></div>' +
@@ -698,7 +697,7 @@ function drawTotalChart() {
     ctx2.fillText(metric.fmt(avg), pt.x + 6, pt.y + 4);
     ctx2.restore();
   }};
-  const sortedVehiculos = sorted; // capture for click handler
+  const sortedVehiculos = sorted;
   if (chartTotalInst) chartTotalInst.destroy();
   chartTotalInst = new Chart(document.getElementById('chartTotal'), {
     plugins: [avgLabelPlugin],
@@ -1000,9 +999,9 @@ function renderComparativa() {
     if (!pVal || !cVal) return '';
     const pct = ((cVal - pVal) / Math.abs(pVal)) * 100;
     const up = cVal > pVal;
-    const cls = isCost ? (up ? 'delta-up' : 'delta-dn') : (up ? 'delta-dn' : 'delta-up');
+    const cls = up ? 'delta-up' : 'delta-dn';
     const arrow = up ? '▲' : '▼';
-    const fmtVal = v => v >= 1000000 ? '$' + (v/1000000).toFixed(2) + 'M' : v >= 1000 ? '$' + Math.round(v/1000) + 'k' : Math.round(v).toLocaleString('es-AR');
+    const fmtVal = v => v >= 1000000 ? '$' + (v/1000000).toFixed(2) + 'M' : v >= 1000 ? '$' + Math.round(v/1000) + 'k' : '$' + Math.round(v).toLocaleString('es-AR');
     return `<div class="ckpi">
       <div class="ckpi-lbl">${label}</div>
       <div class="ckpi-val">${fmtVal(cVal)}</div>
@@ -1039,7 +1038,7 @@ function renderComparativa() {
       <div class="ckpi-lbl">${label}</div>
       <div class="ckpi-val">${fmtKm2(cVal)}</div>
       <div class="ckpi-prev">Anterior: ${fmtKm2(pVal)}</div>
-      <div class="ckpi-delta ${up ? 'delta-dn' : 'delta-up'}">${up ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}%</div>
+      <div class="ckpi-delta ${up ? 'delta-up' : 'delta-dn'}">${up ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}%</div>
     </div>`;
   }
 
@@ -1060,7 +1059,7 @@ function renderComparativa() {
     if (!p || !c) return '<td>—</td>';
     const pct = ((c - p) / Math.abs(p)) * 100;
     const up = c > p;
-    const cls = isCost ? (up ? 'delta-up' : 'delta-dn') : (up ? 'delta-dn' : 'delta-up');
+    const cls = up ? 'delta-up' : 'delta-dn';
     return `<td class="${cls}" style="font-weight:700">${up ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}%</td>`;
   }
 
