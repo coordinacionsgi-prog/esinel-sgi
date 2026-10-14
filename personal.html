@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -977,6 +977,11 @@
   </div>
 </main>
 
+<!-- Toast Flotante -->
+<div class="g-toast" id="toastMessage">
+  <i class="ti ti-check"></i> <span id="toastText"></span>
+</div>
+
 <!-- Modal de Ficha de Colaborador -->
 <div class="g-drawer-overlay" id="drawerOverlay" onclick="closeDrawer(event)">
   <div class="g-drawer-card" onclick="event.stopPropagation()">
@@ -1026,7 +1031,6 @@
 </div>
 
 <script>
-
   const AREAS = {
     Gerencia: { label: 'Gerencia', color: '#5f6368', bg: '#f1f3f4', icon: 'ti-crown' },
     Obras: { label: 'Obras', color: '#1a73e8', bg: '#e8f0fe', icon: 'ti-tool' },
@@ -1036,7 +1040,7 @@
     Comercial: { label: 'Comercial', color: '#ea4335', bg: '#fce8e6', icon: 'ti-building-store' }
   };
 
-  // Plantel oficial y exclusivo de ESINEL (35 colaboradores)
+  // Plantel oficial y exclusivo de ESINEL (34 colaboradores)
   const DATA = [
     // Gerencia (4)
     { a: 'Gerencia', n: 'Marcelo Nicolas Piccione', c: 'Gerente de Administración', sede: 'Remedios', e: 'mnpiccione@esinel.com.ar' },
@@ -1063,10 +1067,9 @@
     { a: 'Obras', n: 'Carlos A. De Abrantes Correia', c: 'Responsable de Abastecimiento e Intendencia', sede: 'Mosconi', e: 'cdeabrantes@esinel.com.ar' },
     { a: 'Obras', n: 'Juan Francisco Dominguez Catalano', c: 'Sobrestante de Obras', sede: 'Obras Mar del Plata', e: 'jfcatalano@esinel.com.ar' },
 
-    // Ingeniería (5)
+    // Ingeniería (4)
     { a: 'Ingenieria', n: 'Pablo Leonel Barrionuevo', c: 'Proyectista - Computista', sede: 'Remedios', e: 'pbarrionuevo@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Francisco Briani', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'fbriani@esinel.com.ar' },
-    { a: 'Ingenieria', n: 'Miguel Angel Citta', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'mcitta@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Gonzalo Gigliotti', c: 'Proyectista - Computista', sede: 'Santo Tomé', e: 'ggigliotti@esinel.com.ar' },
     { a: 'Ingenieria', n: 'Facundo Guerrero', c: 'Proyectista - Computista', sede: 'Remedios', e: 'fguerrero@esinel.com.ar' },
 
