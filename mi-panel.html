@@ -527,6 +527,21 @@ function iniciarApp() {
     }
   } catch(e){}
 
+  // Sincronizar en segundo plano si no hay datos en caché local
+  if (!allLocalHallazgos.length) {
+    fetch(GAS_URL)
+      .then(r => r.json())
+      .then(res => {
+        if (res && res.data && Array.isArray(res.data)) {
+          allLocalHallazgos = res.data;
+          try { localStorage.setItem('esinel_hallazgos_data', JSON.stringify({ data: res.data })); } catch(e){}
+          renderDirectory();
+          if (selectedPersona) seleccionarPersona(selectedPersona.e);
+        }
+      })
+      .catch(()=>{});
+  }
+
   renderAreaChips();
   renderDirectory();
 
@@ -539,37 +554,93 @@ function logout() {
   location.reload();
 }
 
-window.addEventListener('load', () => {
-  const savedTheme = localStorage.getItem('sgi_theme') || localStorage.getItem('per_theme') || localStorage.getItem('veh_theme');
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    activateDark();
+// ── NORMALIZACIÓN Y COINCIDENCIA INTELIGENTE DE COLABORADORES ────────────────
+function limpiarTexto(txt) {
+  if (!txt) return '';
+  return txt.toString().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function coincideColaborador(textoSheet, persona) {
+  if (!textoSheet || !persona) return false;
+  const s = limpiarTexto(textoSheet);
+  if (!s) return false;
+
+  const pNom = limpiarTexto(persona.n);
+  const pEmail = limpiarTexto(persona.e || '');
+  const pUser = pEmail.split('@')[0];
+
+  // 1. Coincidencia por correo o usuario
+  if (pEmail && (s.includes(pEmail) || s.includes(pUser))) return true;
+
+  // 2. Coincidencia completa
+  if (s === pNom || s.includes(pNom) || pNom.includes(s)) return true;
+
+  // 3. Diccionario de alias para casos con apellidos invertidos o nombres compuestos
+  const ALIASES = {
+    'mnpiccione@esinel.com.ar': ['marcelo piccione', 'piccione marcelo', 'marcelo nicolas', 'piccione'],
+    'giaacobbeh@esinel.com.ar': ['hernan giacobbe', 'giacobbe hernan', 'hernan leonel', 'giacobbe'],
+    'mdiamanti@esinel.com.ar':  ['martin diamanti', 'diamanti martin', 'diamanti'],
+    'oschmuth@esinel.com.ar':   ['oscar schmuth', 'schmuth oscar', 'schmuth'],
+    'cpiccione@esinel.com.ar':  ['clarisa piccione', 'piccione clarisa'],
+    'jmonti@esinel.com.ar':     ['juan monti', 'monti juan', 'juan francisco monti', 'monti'],
+    'esanmartin@esinel.com.ar': ['emiliano san martin', 'san martin emiliano', 'san martin'],
+    'hgiorgetti@esinel.com.ar': ['hernan giorgetti', 'giorgetti hernan', 'giorgetti'],
+    'achavez@esinel.com.ar':    ['andrea chavez', 'chavez andrea', 'chavez'],
+    'prodriguez@esinel.com.ar': ['patricia rodriguez', 'rodriguez patricia'],
+    'mnahas@esinel.com.ar':     ['mercedes nahas', 'nahas mercedes', 'maria nahas', 'nahas'],
+    'lfissolo@esinel.com.ar':   ['lisandro fissolo', 'fissolo lisandro', 'fissolo'],
+    'compras@esinel.com.ar':    ['daniel lertora', 'lertora daniel', 'lertora'],
+    'dabella@esinel.com.ar':    ['diego abella', 'abella diego', 'abella'],
+    'dcarena@esinel.com.ar':    ['daniel carena', 'carena daniel', 'carena'],
+    'rnievas@esinel.com.ar':    ['romina nievas', 'nievas romina', 'nievas jara', 'nievas'],
+    'jsoliz@esinel.com.ar':     ['jose soliz', 'soliz jose', 'soliz coronado', 'soliz'],
+    'cdeabrantes@esinel.com.ar':['carlos de abrantes', 'de abrantes', 'abrantes correia', 'abrantes'],
+    'jfcatalano@esinel.com.ar': ['francisco catalano', 'catalano francisco', 'dominguez catalano', 'catalano'],
+    'pbarrionuevo@esinel.com.ar':['pablo barrionuevo', 'barrionuevo pablo', 'barrionuevo'],
+    'fbriani@esinel.com.ar':    ['francisco briani', 'briani francisco', 'briani'],
+    'ggigliotti@esinel.com.ar': ['gonzalo gigliotti', 'gigliotti gonzalo', 'gigliotti'],
+    'fguerrero@esinel.com.ar':  ['facundo guerrero', 'guerrero facundo', 'guerrero'],
+    'deposito@esinel.com.ar':   ['jose luis casares', 'casares jose', 'casares'],
+    'sdonda@esinel.com.ar':     ['sergio donda', 'donda sergio', 'donda'],
+    'jotero@esinel.com.ar':     ['javier otero', 'otero javier', 'otero'],
+    'coordinacion.sgi@esinel.com.ar': ['luan thiago baira', 'thiago baira', 'baira thiago', 'baira'],
+    'mcercos@esinel.com.ar':    ['marisa cercos', 'cercos marisa', 'cercos'],
+    'dfernandez@esinel.com.ar': ['diego fernandez', 'fernandez diego'],
+    'imagen@esinel.com.ar':     ['anahi gonzalez', 'gonzalez anahi'],
+    'foyuela@esinel.com.ar':    ['florencia oyuela', 'oyuela florencia', 'oyuela'],
+    'saludyseguridad@esinel.com.ar': ['bautista iestra', 'iestra bautista', 'iestra'],
+    'nheredia@esinel.com.ar':   ['esteban heredia', 'heredia esteban', 'heredia'],
+    'tnobllia@esinel.com.ar':   ['tomas noblia', 'noblia tomas', 'noblia']
+  };
+
+  const keyEmail = persona.e.toLowerCase();
+  if (ALIASES[keyEmail]) {
+    for (const alias of ALIASES[keyEmail]) {
+      if (s.includes(alias)) return true;
+    }
   }
 
-  if (sessionStorage.getItem('sgi_ok') === '1' && !_appIniciada) {
-    _appIniciada = true;
-    userEmail = sessionStorage.getItem('sgi_email') || '';
-    userName = sessionStorage.getItem('sgi_name') || '';
-    userInitials = userName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-    iniciarApp();
-  }
-});
+  // 4. Descomposición por tokens (primer nombre y apellido)
+  const tokensPersona = pNom.split(' ').filter(w => w.length > 2);
+  const tokensSheet = s.split(' ').filter(w => w.length > 2);
+  const apellido = tokensPersona[tokensPersona.length - 1];
+  const primerNombre = tokensPersona[0];
 
-// Listener para sesión enviada desde un iframe parent
-var _appIniciada = false;
-window.addEventListener('message', function(e) {
-  if (e.origin !== window.location.origin) return;
-  if (e.data && e.data.type === 'sgi-auth' && e.data.email && !_appIniciada) {
-    _appIniciada = true;
-    userEmail = e.data.email;
-    userName = e.data.name || e.data.email.split('@')[0];
-    userInitials = userName.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
-    sessionStorage.setItem('sgi_ok','1');
-    sessionStorage.setItem('sgi_email', userEmail);
-    sessionStorage.setItem('sgi_name', userName);
-    iniciarApp();
+  if (tokensSheet.includes(apellido) && (tokensSheet.includes(primerNombre) || tokensPersona.some(t => tokensSheet.includes(t)))) {
+    return true;
   }
-});
+
+  // Coincidencia de al menos 2 palabras clave
+  let matches = 0;
+  for (const t of tokensPersona) {
+    if (tokensSheet.includes(t)) matches++;
+  }
+  return matches >= 2;
+}
 
 // ── PARSEO Y FILTRADO DE FECHAS ─────────────────────────────────────────────
 function parsearFecha(f) {
@@ -594,7 +665,7 @@ function parsearFecha(f) {
 
 function filtrarEj35(lista) {
   return (lista || []).filter(h => {
-    const raw = h.fechaDecl || h.fecha || '';
+    const raw = h.fechaDecl || h.fecha || h.fechaLimite || '';
     if (!raw) return true;
     const d = parsearFecha(raw);
     if (!d) return true;
@@ -652,7 +723,7 @@ function renderDirectory() {
     const isSelected = selectedPersona && selectedPersona.e.toLowerCase() === p.e.toLowerCase();
     const isMe = userEmail && userEmail.toLowerCase() === p.e.toLowerCase();
     
-    // Conteo desde cache o cálculo
+    // Conteo desde cache o cálculo inteligente
     const stats = getPersonaCounts(p);
 
     return `
@@ -687,16 +758,16 @@ function getPersonaCounts(persona) {
     return { abiertos: ab, cerrados: ce, declarados: declarados.length };
   }
 
-  // Respaldo desde allLocalHallazgos si aún no se consultó en el GAS
+  // Respaldo desde allLocalHallazgos usando coincidencia inteligente
   let ab = 0, ce = 0, de = 0;
   allLocalHallazgos.forEach(h => {
-    const resp = (h.responsableAccion || h.responsable || '').toLowerCase();
-    const decl = (h.declarante || '').toLowerCase();
-    const pName = persona.n.toLowerCase();
-    const pEmail = persona.e.toLowerCase();
+    const resp = (h.responsableAccion || h.responsable || h.respAccion || '') + ' ' +
+                 (h.responsableVerificacion || h.respVerif || '') + ' ' +
+                 (h.personasInv || h.involucrados || '');
+    const decl = (h.declarante || h.detectadoPor || '');
 
-    const isAsig = resp.includes(pName) || resp.includes(pEmail);
-    const isDecl = decl.includes(pName) || decl.includes(pEmail);
+    const isAsig = coincideColaborador(resp, persona);
+    const isDecl = coincideColaborador(decl, persona);
 
     if (isAsig) {
       if (h.resultadoEficacia === 'OK' || h.resultado === 'OK' || h.cerrado) ce++;
@@ -717,7 +788,7 @@ async function seleccionarPersona(email) {
   const p = PLANTEL.find(x => x.e.toLowerCase() === email.toLowerCase());
   if (!p) return;
   selectedPersona = p;
-  renderDirectory(); // actualizar el item activo
+  renderDirectory(); // actualizar selección visual
 
   // Actualizar Ficha de Cabecera
   document.getElementById('prof-avatar').textContent = getInitials(p.n);
@@ -730,7 +801,7 @@ async function seleccionarPersona(email) {
   mailEl.href = `mailto:${p.e}`;
   mailEl.innerHTML = `<i class="ti ti-mail"></i> ${p.e}`;
 
-  // Mostrar estado de carga
+  // Mostrar spinners de carga
   document.getElementById('ppane-asignados').innerHTML = '<div class="spinner"><div class="spin"></div>Consultando hallazgos de ' + p.n + '...</div>';
   document.getElementById('ppane-declarados').innerHTML = '<div class="spinner"><div class="spin"></div>Cargando declaraciones...</div>';
 
@@ -740,52 +811,67 @@ async function seleccionarPersona(email) {
       const url = GAS_URL + '?accion=panel&email=' + encodeURIComponent(p.e);
       const resp = await fetch(url);
       datos = await resp.json();
-      cacheDatosPersonas[p.e] = datos;
     } catch(err) {
-      // Si falla la red, armar datos a partir de local hallazgos
-      datos = armarDatosFallback(p);
-      cacheDatosPersonas[p.e] = datos;
+      datos = null;
     }
+
+    // Complementar con fallback si el backend de GAS no reconoció el formato del nombre
+    const fallback = armarDatosFallback(p);
+    if (!datos || (!datos.asignados && !datos.declarados)) {
+      datos = fallback;
+    } else {
+      if (fallback.asignados.length > (datos.asignados || []).length) {
+        datos.asignados = fallback.asignados;
+      }
+      if (fallback.declarados.length > (datos.declarados || []).length) {
+        datos.declarados = fallback.declarados;
+      }
+    }
+    cacheDatosPersonas[p.e] = datos;
   }
 
   renderDetalleColaborador(datos, p);
 }
 
 function armarDatosFallback(p) {
-  const pName = p.n.toLowerCase();
-  const pEmail = p.e.toLowerCase();
   const asignados = [];
   const declarados = [];
 
   allLocalHallazgos.forEach((h, idx) => {
-    const resp = (h.responsableAccion || h.responsable || '').toLowerCase();
-    const decl = (h.declarante || '').toLowerCase();
-    const isAsig = resp.includes(pName) || resp.includes(pEmail);
-    const isDecl = decl.includes(pName) || decl.includes(pEmail);
+    const resp = (h.responsableAccion || h.responsable || h.respAccion || '') + ' ' + 
+                 (h.responsableVerificacion || h.respVerif || '') + ' ' + 
+                 (h.personasInv || h.involucrados || '');
+    const decl = (h.declarante || h.detectadoPor || '');
+
+    const isAsig = coincideColaborador(resp, p);
+    const isDecl = coincideColaborador(decl, p);
 
     if (isAsig) {
       asignados.push({
         fila: h.fila || idx,
         tipo: h.tipo || 'NC',
-        num: h.numero || h.num || String(idx),
-        desc: h.descripcion || h.hallazgo || '',
+        num: h.numero || h.num || String(idx + 1),
+        desc: h.descripcion || h.hallazgo || h.desc || '',
         sector: h.area || h.sector || p.a,
         fechaLim: h.fechaLimite || h.fechaLim || '',
+        fecha: h.fecha || h.fechaDecl || '',
         resultado: h.resultadoEficacia || h.resultado || '',
-        accionAC: h.accionCorrectiva || '',
-        accionAP: h.accionPreventiva || '',
-        accionAM: h.accionMejora || ''
+        accionAC: h.accionCorrectiva || h.accionAC || '',
+        accionAP: h.accionPreventiva || h.accionAP || '',
+        accionAM: h.accionMejora || h.accionAM || '',
+        estado: h.estado || '',
+        linkDrive: h.linkDrive || ''
       });
     }
     if (isDecl) {
       declarados.push({
         fila: h.fila || idx,
         tipo: h.tipo || 'Hallazgo',
-        numGenerado: h.numero || h.num || '',
-        desc: h.descripcion || h.hallazgo || '',
+        numGenerado: h.numero || h.num || h.numGenerado || '',
+        desc: h.descripcion || h.hallazgo || h.desc || '',
         sector: h.area || h.sector || '',
         fechaDecl: h.fecha || h.fechaDecl || '',
-        cerrado: h.cerrado || h.resultado === 'OK',
+        cerrado: h.cerrado || h.resultado === 'OK' || h.resultadoEficacia === 'OK',
         estado: h.estado || 'En revisión'
       });
     }
@@ -801,7 +887,6 @@ function renderDetalleColaborador(datos, persona) {
   const abiertos = asignados.filter(h => !h.resultado);
   const cerrados = asignados.filter(h => h.resultado);
   const cerradosOK = cerrados.filter(h => h.resultado === 'OK').length;
-  const cerradosNO = cerrados.filter(h => h.resultado === 'NO').length;
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const vencidos = abiertos.filter(h => {
     if (!h.fechaLim) return false;
@@ -1013,8 +1098,11 @@ async function guardarAccion(fila, num, tipo) {
 }
 
 async function validarHallazgo(fila, decision) {
-  const obs = decision === 'DESESTIMAR' ? (prompt('Motivo para desestimar:') ?? '') : '';
-  if (decision === 'DESESTIMAR' && !obs) return;
+  let obs = '';
+  if (decision === 'DESESTIMAR') {
+    obs = window.prompt ? window.prompt('Motivo para desestimar:') : '';
+    if (!obs) return;
+  }
 
   const params = new URLSearchParams({
     accion:'validarHallazgo', email:userEmail, fila:String(fila), decision, obs
@@ -1129,6 +1217,39 @@ function toggleTheme() {
   if (icon) icon.className = dark ? 'ti ti-sun' : 'ti ti-moon';
   if (selectedPersona) seleccionarPersona(selectedPersona.e);
 }
+
+// ── INICIALIZACIÓN AL CARGAR LA PÁGINA ──────────────────────────────────────
+window.addEventListener('load', () => {
+  const savedTheme = localStorage.getItem('sgi_theme') || localStorage.getItem('per_theme') || localStorage.getItem('veh_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    activateDark();
+  }
+
+  if (sessionStorage.getItem('sgi_ok') === '1' && !_appIniciada) {
+    _appIniciada = true;
+    userEmail = sessionStorage.getItem('sgi_email') || '';
+    userName = sessionStorage.getItem('sgi_name') || '';
+    userInitials = userName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    iniciarApp();
+  }
+});
+
+// Listener para sesión enviada desde un iframe parent
+var _appIniciada = false;
+window.addEventListener('message', function(e) {
+  if (e.origin !== window.location.origin) return;
+  if (e.data && e.data.type === 'sgi-auth' && e.data.email && !_appIniciada) {
+    _appIniciada = true;
+    userEmail = e.data.email;
+    userName = e.data.name || e.data.email.split('@')[0];
+    userInitials = userName.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+    sessionStorage.setItem('sgi_ok','1');
+    sessionStorage.setItem('sgi_email', userEmail);
+    sessionStorage.setItem('sgi_name', userName);
+    iniciarApp();
+  }
+});
 </script>
 </body>
 </html>
