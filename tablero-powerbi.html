@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SGI — Tablero Power BI | ESINEL</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        }
+      }
+    }
+  };
+</script>
+
+<style>
+:root {
+  --bg: #F0F4F8;
+  --bg2: #FFFFFF;
+  --bg3: #F1F5F9;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text2: #64748B;
+  --pbi-yellow: #F2C811;
+  --pbi-dark: #1F1F1F;
+}
+
+html.dark {
+  --bg: #090D16;
+  --bg2: #111827;
+  --bg3: #1A2234;
+  --border: #1F293D;
+  --text: #F8FAFC;
+  --text2: #94A3B8;
+  --pbi-yellow: #F59E0B;
+  --pbi-dark: #000000;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Contenedor del reporte Power BI a pantalla completa */
+.pbi-frame-wrapper {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 128px);
+  min-height: 580px;
+  background: #252423;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+}
+
+.pbi-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+</style>
+</head>
+<body class="h-full flex flex-col overflow-hidden">
+
+<!-- ▼▼▼ ESINEL GLOBAL HEADER ▼▼▼ -->
+<header class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95 text-white flex-shrink-0">
+  <div class="w-full px-4 sm:px-6 lg:px-8">
+    <div class="esinel-hdr-top py-2.5 flex items-center justify-between gap-4">
+      <a class="esinel-logo flex items-center gap-3.5 group text-decoration-none" href="index.html">
+        <div class="w-9 h-9 flex-shrink-0 bg-slate-900/90 rounded-xl p-1.5 border border-slate-700/60 shadow-inner flex items-center justify-center group-hover:border-blue-500/50 transition">
+          <svg width="30" height="30" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9" cy="9" r="5" fill="#9BA4B0"/><circle cx="9" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="9" cy="35" r="5" fill="#9BA4B0"/><circle cx="9" cy="48" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="9" r="5" fill="#3b82f6"/><circle cx="22" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="22" cy="35" r="5" fill="#3b82f6"/><circle cx="22" cy="48" r="5" fill="#9BA4B0"/>
+            <circle cx="35" cy="9" r="5" fill="#9BA4B0"/><circle cx="35" cy="22" r="5" fill="#3b82f6"/>
+            <circle cx="35" cy="35" r="5" fill="#9BA4B0"/><circle cx="48" cy="9" r="5" fill="#3b82f6"/>
+            <circle cx="48" cy="22" r="5" fill="#9BA4B0"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-base sm:text-lg font-black tracking-widest text-white leading-none">ESINEL</span>
+            <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">SGI Calidad</span>
+          </div>
+          <p class="text-[9.5px] font-medium text-slate-400 tracking-wider uppercase mt-0.5">Obras Eléctricas · Ingeniería · Tableros</p>
+          <div class="text-[9px] font-semibold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+            <span class="text-slate-400">ISO 9001</span>
+            <span class="text-emerald-400">ISO 14001</span>
+            <span class="text-rose-400">ISO 45001</span>
+          </div>
+        </div>
+      </a>
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs font-semibold text-amber-400">
+          <i class="ti ti-chart-bar text-amber-400 text-sm"></i>
+          <span>Power BI Analytics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Navegación Horizontal del SGI -->
+  <div class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <nav class="esinel-nav flex items-center gap-1 overflow-x-auto py-1 scrollbar-none text-xs">
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="index.html"><i class="ti ti-home text-sm"></i> Inicio</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="hallazgos.html"><i class="ti ti-alert-triangle text-sm"></i> Hallazgos</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="agenda-auditoria.html"><i class="ti ti-clipboard-list text-sm"></i> Agenda Auditoría</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="dashboard_auditor_a_esinel_informe_hallazgos_y_notas.html"><i class="ti ti-chart-bar text-sm"></i> Informe</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="contexto.html"><i class="ti ti-world text-sm"></i> Contexto</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="indicadores.html"><i class="ti ti-chart-line text-sm"></i> Indicadores</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="vehiculos.html"><i class="ti ti-car text-sm"></i> Vehículos</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="documentos.html"><i class="ti ti-file-text text-sm"></i> Documentos</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="mi-panel.html"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
+        <!-- Pestaña Activa de Power BI -->
+        <a class="px-3 py-1.5 rounded-lg font-bold text-amber-300 bg-amber-500/20 border border-amber-500/30 flex items-center gap-1.5 whitespace-nowrap transition shadow-sm" href="tablero-powerbi.html">
+          <i class="ti ti-brand-google-analytics text-sm text-amber-400"></i> Tablero BI
+        </a>
+        <a class="px-3 py-1.5 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="comercial.html"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
+      </nav>
+    </div>
+  </div>
+</header>
+<!-- ▲▲▲ /ESINEL GLOBAL HEADER ▲▲▲ -->
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="flex-1 flex flex-col p-3 sm:p-5 max-w-[1600px] w-full mx-auto overflow-hidden">
+  
+  <!-- Barra de Control del Tablero -->
+  <div class="flex items-center justify-between pb-3 flex-shrink-0 gap-3">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 flex-shrink-0">
+        <i class="ti ti-chart-donut-4 text-lg"></i>
+      </div>
+      <div class="min-w-0">
+        <h1 class="text-sm sm:text-base font-bold text-[var(--text)] truncate leading-tight">Esinel — Tablero Ejecutivo de Gestión</h1>
+        <p class="text-[11px] text-[var(--text2)] truncate">Reporte corporativo integrado en vivo · Microsoft Power BI</p>
+      </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+      <button onclick="toggleTheme()" class="px-2.5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg2)] text-[var(--text2)] hover:text-[var(--text)] text-xs font-semibold flex items-center gap-1 transition" title="Cambiar tema">
+        <i class="ti ti-moon" id="theme-icon"></i>
+      </button>
+
+      <button onclick="recargarReporte()" class="px-2.5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg2)] text-[var(--text2)] hover:text-[var(--text)] text-xs font-semibold flex items-center gap-1.5 transition" title="Recargar visualización">
+        <i class="ti ti-refresh text-xs"></i>
+        <span class="hidden sm:inline">Recargar</span>
+      </button>
+
+      <button onclick="togglePantallaCompleta()" class="px-2.5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg2)] text-[var(--text2)] hover:text-[var(--text)] text-xs font-semibold flex items-center gap-1.5 transition" title="Ver a pantalla completa">
+        <i class="ti ti-maximize text-xs"></i>
+        <span class="hidden sm:inline">Pantalla Completa</span>
+      </button>
+
+      <a href="https://app.powerbi.com/reportEmbed?reportId=ea835f47-9cca-4b68-a571-294323f77077&autoAuth=true&ctid=383a9872-687e-47cd-97da-85bdad8a2213" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold flex items-center gap-1.5 shadow-sm transition" title="Abrir directamente en Power BI">
+        <i class="ti ti-external-link text-xs"></i>
+        <span>Abrir en Power BI</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Contenedor del Iframe con Loader -->
+  <div class="pbi-frame-wrapper" id="pbi-container">
+    <!-- Indicador de Carga -->
+    <div id="pbi-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white z-10 transition-opacity duration-300">
+      <div class="w-10 h-10 border-3 border-slate-700 border-t-amber-400 rounded-full animate-spin mb-3"></div>
+      <span class="text-xs font-semibold tracking-wider text-slate-300 uppercase">Cargando Tablero Power BI...</span>
+      <span class="text-[11px] text-slate-500 mt-1">Conectando con Microsoft Power BI Service</span>
+    </div>
+
+    <!-- Iframe Original de Power BI embebido -->
+    <iframe
+      id="powerbi-frame"
+      class="pbi-iframe"
+      title="Esinel - Tablero"
+      src="https://app.powerbi.com/reportEmbed?reportId=ea835f47-9cca-4b68-a571-294323f77077&autoAuth=true&ctid=383a9872-687e-47cd-97da-85bdad8a2213"
+      frameborder="0"
+      allowFullScreen="true"
+      onload="ocultarLoader()">
+    </iframe>
+  </div>
+
+</main>
+
+<!-- AUTH OVERLAY CON GOOGLE IDENTITY -->
+<div id="sgi-auth-overlay" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+  <div class="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-2xl text-center">
+    <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mx-auto text-3xl shadow-sm mb-4">
+      <i class="ti ti-lock"></i>
+    </div>
+    <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SGI · ESINEL</h2>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+      Acceso exclusivo a indicadores y tableros BI.<br>
+      Iniciá sesión con tu cuenta corporativa <strong class="text-amber-500 font-semibold">@esinel.com.ar</strong>
+    </p>
+    <div class="mt-6 flex flex-col items-center justify-center">
+      <div id="g_id_onload"
+           data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
+           data-callback="sgiCb"
+           data-auto_prompt="false"
+           data-use_fedcm_for_prompt="false"></div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-shape="pill"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async></script>
+
+<script>
+// Ocultar pantalla de carga cuando el iframe responde
+function ocultarLoader() {
+  const loader = document.getElementById('pbi-loader');
+  if (loader) {
+    loader.style.opacity = '0';
+    setTimeout(() => { loader.style.display = 'none'; }, 300);
+  }
+}
+
+// Recargar el reporte de Power BI
+function recargarReporte() {
+  const frame = document.getElementById('powerbi-frame');
+  const loader = document.getElementById('pbi-loader');
+  if (frame) {
+    if (loader) {
+      loader.style.display = 'flex';
+      loader.style.opacity = '1';
+    }
+    const currentSrc = frame.src;
+    frame.src = '';
+    setTimeout(() => { frame.src = currentSrc; }, 80);
+  }
+}
+
+// Pantalla Completa nativa del Iframe
+function togglePantallaCompleta() {
+  const container = document.getElementById('pbi-container');
+  if (!document.fullscreenElement) {
+    if (container.requestFullscreen) {
+      container.requestFullscreen();
+    } else if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+// Modo Claro / Oscuro sincronizado con el resto del SGI
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('sgi_theme', isDark ? 'dark' : 'light');
+  actualizarIconoTema(isDark);
+}
+
+function actualizarIconoTema(isDark) {
+  const icon = document.getElementById('theme-icon');
+  if (icon) {
+    icon.className = isDark ? 'ti ti-sun text-sm' : 'ti ti-moon text-sm';
+  }
+}
+
+// Inicialización de Tema
+(function() {
+  const saved = localStorage.getItem('sgi_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  if (saved === 'dark') {
+    document.documentElement.classList.add('dark');
+    actualizarIconoTema(true);
+  } else {
+    actualizarIconoTema(false);
+  }
+})();
+
+// Autenticación SGI corporativa (@esinel.com.ar)
+(function(){
+  function injectUserChip(n) {
+    const h = document.querySelector('.esinel-hdr-top');
+    if (!h) return;
+    const ini = n.split(' ').map(w => w[0] || '').join('').substring(0, 2).toUpperCase();
+    const c = document.createElement('div');
+    c.className = 'flex items-center gap-2 cursor-pointer ml-auto px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 transition';
+    c.title = 'Sesión iniciada · Clic para salir';
+    c.onclick = function(){ sessionStorage.clear(); location.reload(); };
+    c.innerHTML = `
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center text-xs font-black shadow-sm">${ini}</div>
+      <span class="text-xs font-semibold text-slate-300 max-w-[120px] truncate hidden sm:inline-block">${n}</span>
+      <i class="ti ti-logout text-slate-400 text-xs"></i>
+    `;
+    h.appendChild(c);
+  }
+
+  // Verificar si la sesión ya está iniciada en otra página
+  if (sessionStorage.getItem('sgi_ok') === '1') {
+    const ov = document.getElementById('sgi-auth-overlay');
+    if (ov) ov.remove();
+    const nm = sessionStorage.getItem('sgi_name') || 'Usuario SGI';
+    injectUserChip(nm);
+  }
+
+  window.sgiCb = function(r) {
+    try {
+      const p = JSON.parse(atob(r.credential.split('.')[1]));
+      if (p.email && (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com')) {
+        sessionStorage.setItem('sgi_ok', '1');
+        sessionStorage.setItem('sgi_email', p.email);
+        const nm = p.name || p.email.split('@')[0];
+        sessionStorage.setItem('sgi_name', nm);
+        const ov = document.getElementById('sgi-auth-overlay');
+        if (ov) ov.remove();
+        injectUserChip(nm);
+      }
+    } catch(err) {}
+  };
+})();
+</script>
+</body>
+</html>
