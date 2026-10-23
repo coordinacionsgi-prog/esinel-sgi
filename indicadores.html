@@ -254,6 +254,8 @@ html.dark .kpi-card:hover {
           <span>Ej. 35 · 2026</span>
         </div>
 
+        <div id="data-src" class="hidden"></div>
+
         <button onclick="exportCurrentViewToCSV()" title="Descargar datos en CSV" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition shadow-sm">
           <i class="ti ti-download text-xs"></i>
           <span>CSV</span>
@@ -472,10 +474,17 @@ html.dark .kpi-card:hover {
           </div>
         </div>
 
-        <button onclick="goArea(curInd[2])" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm self-start sm:self-auto">
-          <i class="ti ti-arrow-left text-sm"></i>
-          <span>Volver al Área</span>
-        </button>
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <a id="i-dash" href="#" target="_blank" rel="noopener" class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white border border-blue-600 transition shadow-sm">
+            <i class="ti ti-chart-dots text-sm"></i>
+            <span>Ver dashboard propio</span>
+            <i class="ti ti-external-link text-xs opacity-80"></i>
+          </a>
+          <button onclick="goArea(curInd[2])" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm">
+            <i class="ti ti-arrow-left text-sm"></i>
+            <span>Volver al Área</span>
+          </button>
+        </div>
       </div>
 
       <!-- 4 KPIs del Indicador -->
@@ -701,7 +710,7 @@ function recomputeFromPeriods(arr) {
     }
     var ejMap = {};
     d[7].forEach(function(p) {
-      var ej = ejFromDate(p[0]);
+      var ej = (p[3] !== undefined && p[3] !== null) ? p[3] : ejFromDate(p[0]);
       if (ej === null) return;
       if (!ejMap[ej]) ejMap[ej] = { vals: [], obj: p[2] };
       ejMap[ej].obj = p[2];
@@ -739,20 +748,37 @@ function recomputeFromPeriods(arr) {
 }
 recomputeFromPeriods(D);
 
-try {
-  localStorage.setItem('esinel_ind_stats', JSON.stringify({
-    total: D.length,
-    desvios: D.filter(x => x[6] === 0).length,
-    cumplidos: D.filter(x => x[6] === 1).length,
-    ts: Date.now()
-  }));
-} catch(e) {}
+// Dashboards propios por indicador. La hoja puede sobrescribirlos (celda DASHBOARD en la pestaña).
+const DASHBOARD_LINKS = {
+  "INGE1": "https://claude.ai/artifact/2H4euY12FpcidsWKy6nCSy",
+  "AMB2": "https://script.google.com/macros/s/AKfycbzHH86D36E9d5wvVg_79NSZfWRMScUget-ZvAK547sI7gyQa-nfpIKhMqC_bJLBfhP3/exec"
+};
+D.forEach(d => { if (!d[14] && DASHBOARD_LINKS[d[0]]) d[14] = DASHBOARD_LINKS[d[0]]; });
+
+function saveStats() {
+  try {
+    localStorage.setItem('esinel_ind_stats', JSON.stringify({
+      total: D.length,
+      desvios: D.filter(x => x[6] === 0).length,
+      cumplidos: D.filter(x => x[6] === 1).length,
+      ts: Date.now()
+    }));
+  } catch(e) {}
+}
+saveStats();
+
+// Último ejercicio con al menos un valor cargado
+function latestEjWithData() {
+  let max = null;
+  D.forEach(d => d[8].forEach(p => { if (p[1] !== null && (max === null || p[0] > max)) max = p[0]; }));
+  return max;
+}
 
 let curArea = null;
 let curInd = null;
 let activeTab = 'ej';
 let selectedEj = null;
-let currentGlobalEj = 35;
+let currentGlobalEj = latestEjWithData() || 35;
 let charts = {};
 
 const AC = { 
@@ -804,6 +830,11 @@ function dateToEj(ds) {
   const y = parseInt(parts[0], 10);
   const m = parseInt(parts[1], 10);
   return (m >= 4) ? y - 1991 : y - 1992;
+}
+
+// Ejercicio de un muestreo: el de la columna "Ejercicio" de la hoja si vino, si no por fecha
+function perEj(p) {
+  return (p[3] !== undefined && p[3] !== null) ? p[3] : dateToEj(p[0]);
 }
 
 function fmtDate(ds) {
@@ -1188,6 +1219,15 @@ function goInd(d) {
   document.getElementById('i-area').textContent = d[2];
   document.getElementById('i-t').textContent = d[1];
   document.getElementById('i-id').textContent = `${d[0]} · Frecuencia: ${d[11] || 'S/D'}`;
+
+  const dash = document.getElementById('i-dash');
+  if (d[14]) {
+    dash.href = d[14];
+    dash.classList.remove('hidden');
+  } else {
+    dash.removeAttribute('href');
+    dash.classList.add('hidden');
+  }
   
   const eCur = d[8].find(p => p[0] === currentGlobalEj);
   const wv = d[8].filter(p => p[1] !== null);
@@ -1312,7 +1352,7 @@ function buildPeriodSelector(d) {
     selectedEj = null; 
     return;
   }
-  const ejSet = new Set(d[7].map(p => dateToEj(p[0])).filter(e => e !== null));
+  const ejSet = new Set(d[7].map(p => perEj(p)).filter(e => e !== null));
   const ejList = Array.from(ejSet).sort((a,b) => a - b);
   if(!ejList.length) { selectedEj = null; return; }
   
@@ -1635,7 +1675,7 @@ function drawPeriod(d, color) {
   const ej = selectedEj;
   const pts = (ej === 'all') 
     ? d[7].filter(p => p[1] !== null) 
-    : d[7].filter(p => dateToEj(p[0]) === ej);
+    : d[7].filter(p => perEj(p) === ej);
 
   if(!pts.length) {
     document.getElementById('per-empty').classList.remove('hidden'); 
@@ -1792,21 +1832,80 @@ function exportCurrentViewToCSV() {
   document.body.removeChild(link);
 }
 
-const APPS_SCRIPT_WEBAPP_URL = "";
+// Web App de Apps Script sobre "Graficos indicadores compaginado" (ver apps-script/indicadores.gs)
+const APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyciB7XcaLIR6cyLAgXcHmaXkQ-wQI73ot4pBVhCWFBwg_hbycdIbhNHBqd3wt-de9Z7w/exec";
+const LIVE_CACHE_KEY = 'esinel_ind_live';
+
+function setDataSource(kind, when) {
+  const el = document.getElementById('data-src');
+  if (!el) return;
+  const hora = when ? new Date(when).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+  const cfg = {
+    live:    ['bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20', 'ti-refresh', `Sheets · ${hora}`, 'Datos leídos de la hoja de indicadores'],
+    cached:  ['bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20', 'ti-clock', `Última copia · ${hora}`, 'Mostrando la última lectura guardada; actualizando…'],
+    offline: ['bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20', 'ti-cloud-off', 'Sin conexión a Sheets', 'Mostrando datos de respaldo del código, pueden estar desactualizados']
+  }[kind];
+  el.className = `hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border ${cfg[0]}`;
+  el.innerHTML = `<i class="ti ${cfg[1]} text-xs"></i><span>${cfg[2]}</span>`;
+  el.title = cfg[3];
+}
+
+// Reemplaza D con lo que devuelve la hoja, conservando nombre/área/textos del respaldo cuando la hoja no los trae
+function applyLiveData(list) {
+  const byCode = {};
+  D.forEach(d => { byCode[d[0]] = d; });
+  D = list.map(ind => {
+    const base = byCode[ind.codigo];
+    const d = base ? base.slice() : [ind.codigo, ind.titulo || ind.codigo, ind.area, null, '', null, 0, [], [], '', '', '', '', '', ''];
+    d[7] = ind.periodos;
+    d[8] = [];
+    for (let i = ind.periodos.length - 1; i >= 0; i--) {
+      if (ind.periodos[i][2] !== null) { d[5] = ind.periodos[i][2]; break; }
+    }
+    if (ind.objetivo) d[9] = ind.objetivo;
+    if (ind.metodo) d[10] = ind.metodo;
+    if (ind.frecuencia) d[11] = ind.frecuencia;
+    if (ind.responsable) d[12] = ind.responsable;
+    if (ind.acciones) d[13] = ind.acciones;
+    d[14] = ind.dashboard || DASHBOARD_LINKS[ind.codigo] || '';
+    return d;
+  });
+  recomputeFromPeriods(D);
+  saveStats();
+  currentGlobalEj = latestEjWithData() || currentGlobalEj;
+
+  initDashboard();
+  if (curInd) {
+    const again = D.find(d => d[0] === curInd[0]);
+    if (again) goInd(again); else goHome();
+  } else if (curArea) {
+    goArea(curArea);
+  }
+}
 
 async function fetchRealtimeSheetsData() {
-  if (!APPS_SCRIPT_WEBAPP_URL) return;
+  if (!APPS_SCRIPT_WEBAPP_URL) { setDataSource('offline'); return; }
+
+  try {
+    const cached = JSON.parse(localStorage.getItem(LIVE_CACHE_KEY) || 'null');
+    if (cached && Array.isArray(cached.indicadores) && cached.indicadores.length) {
+      applyLiveData(cached.indicadores);
+      setDataSource('cached', cached.updated);
+    }
+  } catch(e) {}
+
   try {
     const resp = await fetch(APPS_SCRIPT_WEBAPP_URL);
-    if (!resp.ok) return;
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const json = await resp.json();
-    if (Array.isArray(json) && json.length > 0) {
-      D = json;
-      initDashboard();
-      redrawActive();
-    }
+    if (!json || !Array.isArray(json.indicadores) || !json.indicadores.length) throw new Error('Respuesta vacía');
+    applyLiveData(json.indicadores);
+    setDataSource('live', json.updated);
+    try { localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(json)); } catch(e) {}
   } catch (err) {
     console.warn("No se pudo sincronizar en vivo con Sheets:", err);
+    const el = document.getElementById('data-src');
+    if (!el || !el.textContent.includes('Última copia')) setDataSource('offline');
   }
 }
 
