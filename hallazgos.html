@@ -310,7 +310,7 @@
       <!-- TAB 1: DASHBOARD PANEL -->
       <section id="content-dashboard" class="tab-content space-y-6">
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent info">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Histórico</span>
@@ -352,6 +352,17 @@
             <div class="mt-4 flex items-baseline justify-between">
               <span class="text-3xl font-extrabold tracking-tight text-emerald-600 font-mono" id="kpiClosed">0</span>
               <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" id="kpiClosedPercent">0%</span>
+            </div>
+          </div>
+
+          <div class="card-clean rounded-2xl p-5 relative overflow-hidden metric-card-accent info cursor-pointer hover:ring-2 hover:ring-sky-300" onclick="document.getElementById('selectEstado').value='SIN_EFICACIA'; applyFilters();">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-sky-700">Sin Eficacia</span>
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-sm border border-sky-100"><i class="fa-solid fa-hourglass-half"></i></div>
+            </div>
+            <div class="mt-4 flex items-baseline justify-between">
+              <span class="text-3xl font-extrabold tracking-tight text-sky-600 font-mono" id="kpiSinEficacia">0</span>
+              <span class="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200" id="kpiSinEficaciaPercent">0%</span>
             </div>
           </div>
 
@@ -1060,6 +1071,9 @@
       document.getElementById('kpiEj35Open').innerText = ej35Items.filter(d => isFindingOpen(d)).length;
       document.getElementById('kpiOpen').innerText = openItems.length;
       document.getElementById('kpiClosed').innerText = closedItems.length;
+      const sinEfItems = closedItems.filter(d => getItemStatus(d) === 'SIN_EFICACIA');
+      document.getElementById('kpiSinEficacia').innerText = sinEfItems.length;
+      document.getElementById('kpiSinEficaciaPercent').innerText = (total > 0 ? Math.round((sinEfItems.length / total) * 100) : 0) + '%';
       document.getElementById('kpiOverdue').innerText = overdueItems.length;
       document.getElementById('sidebarFilteredCount').innerText = filteredData.length;
       document.getElementById('sidebarTotalCount').innerText = validDataset.length;
