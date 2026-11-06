@@ -301,6 +301,119 @@ function enviarAvisosLunes() {
   Logger.log('Avisos enviados: ' + Object.keys(porCorreo).length + ' destinatarios');
 }
 
+// ── Aviso semanal: eficacia pendiente ────────────────────────────────────────
+/**
+ * Configurar como activador semanal (puede ser el mismo lunes o día diferente):
+ *   Activadores → Agregar → enviarAvisosEficacia → Basado en tiempo → Semana → Lunes → 7-8 AM
+ *
+ * Envía a coordinacion.sgi un resumen de todos los hallazgos cerrados
+ * que aún no tienen resultadoEficacia (OK o NO) cargado.
+ * También avisa individualmente a cada responsable si tiene pendientes.
+ */
+function enviarAvisosEficacia() {
+  const hoy  = new Date();
+  const data = getAllData();
+
+  // Cerrados sin eficacia: fechaRealCierre no vacío y resultadoEficacia vacío
+  const sinEficacia = data.filter(item => {
+    const frc = (item.fechaRealCierre || '').trim();
+    if (!frc || frc === '-') return false; // abierto → no aplica
+    const ef  = (item.resultadoEficacia || '').trim().toUpperCase();
+    return ef !== 'OK' && ef !== 'NO';
+  });
+
+  if (sinEficacia.length === 0) {
+    Logger.log('enviarAvisosEficacia: sin pendientes');
+    return;
+  }
+
+  const fechaStr = hoy.toLocaleDateString('es-AR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+  // ── 1. Resumen global a coordinacion.sgi ────────────────────────────────
+  let tablaGlobal = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+<tr style="background:#f0f9ff"><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Descripción</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Cierre</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Responsable</th></tr>`;
+  sinEficacia.forEach(h => {
+    tablaGlobal += `<tr>
+      <td style="padding:6px 10px;border:1px solid #e0f2fe;font-weight:bold;color:#0284c7">${h.numHallazgo}</td>
+      <td style="padding:6px 10px;border:1px solid #e0f2fe">${(h.descripcion||'').substring(0,80)}${h.descripcion&&h.descripcion.length>80?'…':''}</td>
+      <td style="padding:6px 10px;border:1px solid #e0f2fe;white-space:nowrap">${h.fechaRealCierre}</td>
+      <td style="padding:6px 10px;border:1px solid #e0f2fe">${h.responsableAccion||h.responsableCierre||'—'}</td>
+    </tr>`;
+  });
+  tablaGlobal += `</table>`;
+
+  const cuerpoCoord = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#1e293b;max-width:720px">
+<div style="background:#0f172a;color:#fff;padding:20px 24px;border-radius:8px 8px 0 0">
+  <h2 style="margin:0;font-size:18px">📋 SGI Esinel — Eficacia Pendiente</h2>
+  <p style="margin:4px 0 0;font-size:12px;opacity:.7">${fechaStr}</p>
+</div>
+<div style="border:1px solid #e2e8f0;border-top:none;padding:20px 24px;border-radius:0 0 8px 8px">
+  <p>Resumen semanal de hallazgos <strong>cerrados sin verificación de eficacia</strong>:</p>
+  <p style="font-size:20px;font-weight:bold;color:#0284c7">${sinEficacia.length} hallazgos</p>
+  ${tablaGlobal}
+  <p style="margin-top:20px">Ver detalle en el dashboard:</p>
+  <a href="https://coordinacionsgi-prog.github.io/esinel-sgi/hallazgos.html" style="display:inline-block;background:#0284c7;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold">Ir al Dashboard →</a>
+  <p style="margin-top:24px;font-size:11px;color:#64748b">Generado automáticamente por SGI Esinel.</p>
+</div></div>`;
+
+  MailApp.sendEmail({
+    to:       'coordinacion.sgi@esinel.com.ar',
+    subject:  `[SGI Esinel] ${sinEficacia.length} hallazgos cerrados sin eficacia verificada`,
+    htmlBody: cuerpoCoord,
+    name:     REMITENTE_ALIAS
+  });
+
+  // ── 2. Aviso individual a cada responsable ───────────────────────────────
+  const porCorreo = {};
+  sinEficacia.forEach(item => {
+    const responsables = splitEntidades(item.responsableAccion)
+      .concat(splitEntidades(item.responsableCierre));
+    [...new Set(responsables)].forEach(nombre => {
+      const email = resolverCorreo(nombre);
+      if (!email || email === 'coordinacion.sgi@esinel.com.ar') return;
+      if (!porCorreo[email]) porCorreo[email] = { nombre, items: [] };
+      porCorreo[email].items.push(item);
+    });
+  });
+
+  Object.entries(porCorreo).forEach(([email, info]) => {
+    let tabla = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+<tr style="background:#f0f9ff"><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Descripción</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Fecha Cierre</th></tr>`;
+    info.items.forEach(h => {
+      tabla += `<tr>
+        <td style="padding:6px 10px;border:1px solid #e0f2fe;font-weight:bold;color:#0284c7">${h.numHallazgo}</td>
+        <td style="padding:6px 10px;border:1px solid #e0f2fe">${(h.descripcion||'').substring(0,80)}${h.descripcion&&h.descripcion.length>80?'…':''}</td>
+        <td style="padding:6px 10px;border:1px solid #e0f2fe;white-space:nowrap">${h.fechaRealCierre}</td>
+      </tr>`;
+    });
+    tabla += `</table>`;
+
+    const cuerpo = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#1e293b;max-width:680px">
+<div style="background:#0f172a;color:#fff;padding:20px 24px;border-radius:8px 8px 0 0">
+  <h2 style="margin:0;font-size:18px">📋 SGI Esinel — Verificación de Eficacia Pendiente</h2>
+  <p style="margin:4px 0 0;font-size:12px;opacity:.7">${fechaStr}</p>
+</div>
+<div style="border:1px solid #e2e8f0;border-top:none;padding:20px 24px;border-radius:0 0 8px 8px">
+  <p>Hola <strong>${info.nombre}</strong>,</p>
+  <p>Los siguientes hallazgos de tu sector están cerrados pero aún <strong>no tienen la eficacia verificada</strong> (falta completar el resultado: OK o NO):</p>
+  ${tabla}
+  <p style="margin-top:16px">Por favor, ingresá al dashboard para registrar el resultado de la verificación de eficacia:</p>
+  <a href="https://coordinacionsgi-prog.github.io/esinel-sgi/hallazgos.html" style="display:inline-block;background:#0284c7;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold">Ir al Dashboard →</a>
+  <p style="margin-top:24px;font-size:11px;color:#64748b">Generado automáticamente por SGI Esinel. No responder a este correo.</p>
+</div></div>`;
+
+    MailApp.sendEmail({
+      to:       email,
+      cc:       'coordinacion.sgi@esinel.com.ar',
+      subject:  `[SGI Esinel] Tenés ${info.items.length} hallazgo${info.items.length>1?'s':''} cerrado${info.items.length>1?'s':''} sin verificación de eficacia`,
+      htmlBody: cuerpo,
+      name:     REMITENTE_ALIAS
+    });
+  });
+
+  Logger.log('enviarAvisosEficacia: ' + sinEficacia.length + ' pendientes, ' + Object.keys(porCorreo).length + ' destinatarios individuales');
+}
+
 // ── Helpers internos ─────────────────────────────────────────────────────────
 
 function parseDateGAS(str) {

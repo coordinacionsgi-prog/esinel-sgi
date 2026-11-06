@@ -1089,18 +1089,24 @@
         const ejOpen = ejData.filter(d => isFindingOpen(d)).length;
         const ejClosedOk = ejData.filter(d => getItemStatus(d) === 'OK').length;
         const ejClosedNo = ejData.filter(d => getItemStatus(d) === 'NO').length;
-        const ejClosed   = ejData.filter(d => !isFindingOpen(d)).length;
+        const ejClosed      = ejData.filter(d => !isFindingOpen(d)).length;
+        const ejSinEficacia = ejData.filter(d => getItemStatus(d) === 'SIN_EFICACIA').length;
         const ejRate = ejTotal > 0 ? Math.round((ejClosed / ejTotal) * 100) : 0;
+        const ejEfRate = ejClosed > 0 ? Math.round(((ejClosedOk + ejClosedNo) / ejClosed) * 100) : 0;
 
         historicalHTML += `
           <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
             <div class="flex justify-between items-center mb-2">
               <span class="font-bold text-xs text-slate-800">Ejercicio Fiscal ${ejNum}</span>
-              <span class="text-[11px] font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full">${ejRate}% Cierre</span>
+              <div class="flex gap-1.5">
+                <span class="text-[11px] font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full">${ejRate}% Cierre</span>
+                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">${ejEfRate}% Eficacia</span>
+              </div>
             </div>
-            <div class="grid grid-cols-4 gap-2 mt-2 text-center text-xs">
+            <div class="grid grid-cols-5 gap-2 mt-2 text-center text-xs">
               <div class="bg-white p-2 rounded-lg border border-slate-200"><span class="text-[10px] text-slate-400 block uppercase font-semibold">Total</span><span class="font-bold text-slate-800 text-sm">${ejTotal}</span></div>
               <div class="bg-white p-2 rounded-lg border border-amber-200"><span class="text-[10px] text-amber-600 block uppercase font-semibold">Abiertos</span><span class="font-bold text-amber-600 text-sm">${ejOpen}</span></div>
+              <div class="bg-white p-2 rounded-lg border border-sky-200"><span class="text-[10px] text-sky-600 block uppercase font-semibold">Sin Efic.</span><span class="font-bold text-sky-600 text-sm">${ejSinEficacia}</span></div>
               <div class="bg-white p-2 rounded-lg border border-emerald-200"><span class="text-[10px] text-emerald-600 block uppercase font-semibold">Cerr. OK</span><span class="font-bold text-emerald-600 text-sm">${ejClosedOk}</span></div>
               <div class="bg-white p-2 rounded-lg border border-rose-200"><span class="text-[10px] text-rose-600 block uppercase font-semibold">Cerr. NO</span><span class="font-bold text-rose-600 text-sm">${ejClosedNo}</span></div>
             </div>
