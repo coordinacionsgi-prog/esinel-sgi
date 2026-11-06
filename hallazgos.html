@@ -1071,14 +1071,14 @@
       document.getElementById('kpiEj35Open').innerText = ej35Items.filter(d => isFindingOpen(d)).length;
       document.getElementById('kpiOpen').innerText = openItems.length;
       document.getElementById('kpiClosed').innerText = closedItems.length;
-      const sinEfItems = closedItems.filter(d => getItemStatus(d) === 'SIN_EFICACIA');
-      document.getElementById('kpiSinEficacia').innerText = sinEfItems.length;
-      document.getElementById('kpiSinEficaciaPercent').innerText = (total > 0 ? Math.round((sinEfItems.length / total) * 100) : 0) + '%';
       document.getElementById('kpiOverdue').innerText = overdueItems.length;
       document.getElementById('sidebarFilteredCount').innerText = filteredData.length;
       document.getElementById('sidebarTotalCount').innerText = validDataset.length;
 
       const total = filteredData.length;
+      const sinEfItems = closedItems.filter(d => getItemStatus(d) === 'SIN_EFICACIA');
+      document.getElementById('kpiSinEficacia').innerText = sinEfItems.length;
+      document.getElementById('kpiSinEficaciaPercent').innerText = (total > 0 ? Math.round((sinEfItems.length / total) * 100) : 0) + '%';
       document.getElementById('kpiOpenPercent').innerText = (total > 0 ? Math.round((openItems.length / total) * 100) : 0) + '%';
       document.getElementById('kpiClosedPercent').innerText = (total > 0 ? Math.round((closedItems.length / total) * 100) : 0) + '%';
 
