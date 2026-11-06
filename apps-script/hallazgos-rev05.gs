@@ -19,7 +19,7 @@ const SHEET_NAME      = 'Planilla';
 const REMITENTE_ALIAS = 'SGI Esinel — Hallazgos';
 
 // Días de anticipación para "próximo a vencer"
-const DIAS_ALERTA_PREVIO = 14;
+const DIAS_ALERTA_PREVIO = 30;
 
 // Mapa nombre → correo (sincronizar con hallazgos.html si se agrega gente)
 const CORREOS = {
@@ -220,9 +220,9 @@ function enviarAvisosLunes() {
   const porCorreo = {};
 
   data.forEach(item => {
-    const estado = (item.estado || '').toLowerCase();
-    const eficacia = (item.resultadoEficacia || '').toUpperCase().trim();
-    const abierto = eficacia !== 'OK' && !estado.includes('cerrado') && !estado.includes('verificado');
+    // Abierto = fecha real de cierre vacía (col R)
+    const frc = (item.fechaRealCierre || '').trim();
+    const abierto = !frc || frc === '-';
     if (!abierto) return;
 
     const fechaLimite = parseDateGAS(item.fechaLimite);
@@ -275,9 +275,11 @@ function enviarAvisosLunes() {
     if (info.proximos.length > 0) {
       cuerpo += `<h3 style="color:#d97706;margin-top:20px">🟡 Vencen en los próximos ${DIAS_ALERTA_PREVIO} días (${info.proximos.length})</h3>
 <table style="width:100%;border-collapse:collapse;font-size:12px">
-<tr style="background:#fffbeb"><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Hallazgo</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Vence</th></tr>`;
+<tr style="background:#fffbeb"><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Hallazgo</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Vence</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Días</th></tr>`;
       info.proximos.forEach(h => {
-        cuerpo += `<tr><td style="padding:6px 10px;border:1px solid #fef3c7;font-weight:bold;color:#d97706">${h.numHallazgo}</td><td style="padding:6px 10px;border:1px solid #fef3c7">${(h.descripcion||'').substring(0,80)}${h.descripcion&&h.descripcion.length>80?'…':''}</td><td style="padding:6px 10px;border:1px solid #fef3c7;white-space:nowrap">${h.fechaLimite}</td></tr>`;
+        const fl = parseDateGAS(h.fechaLimite);
+        const diasRestantes = fl ? Math.ceil((fl - hoy) / (1000*60*60*24)) : '?';
+        cuerpo += `<tr><td style="padding:6px 10px;border:1px solid #fef3c7;font-weight:bold;color:#d97706">${h.numHallazgo}</td><td style="padding:6px 10px;border:1px solid #fef3c7">${(h.descripcion||'').substring(0,80)}${h.descripcion&&h.descripcion.length>80?'…':''}</td><td style="padding:6px 10px;border:1px solid #fef3c7;white-space:nowrap">${h.fechaLimite}</td><td style="padding:6px 10px;border:1px solid #fef3c7;font-weight:bold;color:#d97706;white-space:nowrap">${diasRestantes}d</td></tr>`;
       });
       cuerpo += `</table>`;
     }

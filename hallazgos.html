@@ -283,9 +283,10 @@
           <select id="globalStatusFilter" onchange="renderAllViews()" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:bg-white outline-none transition font-medium">
             <option value="">Todos los Estados</option>
             <option value="ABIERTO">Abiertos / En Proceso</option>
+            <option value="VENCIDO">Vencidos en Fecha</option>
+            <option value="SIN_EFICACIA">Cerrados — Eficacia Pendiente</option>
             <option value="OK">Cerrados OK (Eficaces)</option>
             <option value="NO">Cerrados NO (Ineficaces)</option>
-            <option value="VENCIDO">Vencidos en Fecha</option>
           </select>
         </div>
 
@@ -982,10 +983,20 @@
       return !(!item.numHallazgo && !item.descripcion);
     }
 
+    // Abierto = fecha real de cierre (col R) vacía
     function isFindingOpen(item) {
       if (!item) return false;
-      let res = (item.resultadoEficacia || '').toUpperCase().trim();
-      return !(res === 'OK' || res === 'NO');
+      const frc = (item.fechaRealCierre || '').trim();
+      return !frc || frc === '-';
+    }
+
+    // 'ABIERTO' | 'SIN_EFICACIA' | 'OK' | 'NO'
+    function getItemStatus(item) {
+      if (isFindingOpen(item)) return 'ABIERTO';
+      const ef = (item.resultadoEficacia || '').toUpperCase().trim();
+      if (ef === 'OK') return 'OK';
+      if (ef === 'NO') return 'NO';
+      return 'SIN_EFICACIA';
     }
 
     function getFilteredDataset() {
@@ -995,17 +1006,22 @@
       const searchVal = (document.getElementById('sidebarSearchInput')?.value || '').toLowerCase().trim();
       const todayStr = new Date().toISOString().split('T')[0];
 
+      const today = new Date(); today.setHours(0,0,0,0);
       return dataset.filter(item => {
         if (!isValidFindingRow(item)) return false;
         if (ejFilter !== 'ALL' && String(getEjercicioNumber(item.fechaDetection)) !== ejFilter) return false;
         if (typeFilter && !(item.tipoHallazgo || '').toUpperCase().includes(typeFilter.toUpperCase())) return false;
         if (statusFilter) {
-          const open = isFindingOpen(item);
-          const res = (item.resultadoEficacia || '').toUpperCase().trim();
-          if (statusFilter === 'ABIERTO' && !open) return false;
-          if (statusFilter === 'OK' && res !== 'OK') return false;
-          if (statusFilter === 'NO' && res !== 'NO') return false;
-          if (statusFilter === 'VENCIDO' && (!open || !item.fechaLimite || item.fechaLimite >= todayStr)) return false;
+          const st = getItemStatus(item);
+          if (statusFilter === 'ABIERTO'     && st !== 'ABIERTO')     return false;
+          if (statusFilter === 'OK'          && st !== 'OK')          return false;
+          if (statusFilter === 'NO'          && st !== 'NO')          return false;
+          if (statusFilter === 'SIN_EFICACIA'&& st !== 'SIN_EFICACIA')return false;
+          if (statusFilter === 'VENCIDO') {
+            if (st !== 'ABIERTO') return false;
+            const fl = parseDate(item.fechaLimite);
+            if (!fl || fl >= today) return false;
+          }
         }
         if (searchVal) {
           const matchText = [
@@ -1033,10 +1049,10 @@
       const filteredData = getFilteredDataset();
       const validDataset = dataset.filter(isValidFindingRow);
       const ej35Items = validDataset.filter(d => getEjercicioNumber(d.fechaDetection) === 35);
+      const today0 = new Date(); today0.setHours(0,0,0,0);
       const openItems = filteredData.filter(d => isFindingOpen(d));
       const closedItems = filteredData.filter(d => !isFindingOpen(d));
-      const todayStr = new Date().toISOString().split('T')[0];
-      const overdueItems = openItems.filter(d => d.fechaLimite && d.fechaLimite < todayStr);
+      const overdueItems = openItems.filter(d => { const fl = parseDate(d.fechaLimite); return fl && fl < today0; });
 
       document.getElementById('kpiGlobalTotal').innerText = validDataset.length;
       document.getElementById('kpiEj35Total').innerText = ej35Items.length;
@@ -1056,9 +1072,10 @@
         const ejData = validDataset.filter(d => getEjercicioNumber(d.fechaDetection) === ejNum);
         const ejTotal = ejData.length;
         const ejOpen = ejData.filter(d => isFindingOpen(d)).length;
-        const ejClosedOk = ejData.filter(d => (d.resultadoEficacia || '').toUpperCase().trim() === 'OK').length;
-        const ejClosedNo = ejData.filter(d => (d.resultadoEficacia || '').toUpperCase().trim() === 'NO').length;
-        const ejRate = ejTotal > 0 ? Math.round(((ejClosedOk + ejClosedNo) / ejTotal) * 100) : 0;
+        const ejClosedOk = ejData.filter(d => getItemStatus(d) === 'OK').length;
+        const ejClosedNo = ejData.filter(d => getItemStatus(d) === 'NO').length;
+        const ejClosed   = ejData.filter(d => !isFindingOpen(d)).length;
+        const ejRate = ejTotal > 0 ? Math.round((ejClosed / ejTotal) * 100) : 0;
 
         historicalHTML += `
           <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -1112,22 +1129,25 @@
     }
 
     function calculateDeadlineStatus(item) {
-      if (!item || !isFindingOpen(item)) return `<span class="text-slate-400 italic">Acción Cerrada</span>`;
+      if (!item || !isFindingOpen(item)) return `<span class="text-slate-400 italic text-[10px]">Cerrado</span>`;
       let limitDate = parseDate(item.fechaLimite);
       if (!limitDate) return "-";
       const today = new Date(); today.setHours(0,0,0,0); limitDate.setHours(0,0,0,0);
       const diffDays = Math.ceil((limitDate - today) / (1000 * 60 * 60 * 24));
-      if (diffDays < 0) return `<span class="text-rose-600 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Vencido hace ${Math.abs(diffDays)}d</span>`;
-      if (diffDays === 0) return `<span class="text-amber-600 font-bold"><i class="fa-solid fa-clock mr-1"></i>Vence Hoy</span>`;
-      return `<span class="text-sky-600 font-semibold">Faltan ${diffDays} días</span>`;
+      if (diffDays < 0) return `<span class="text-rose-600 font-bold text-[10px]"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Vencido hace ${Math.abs(diffDays)}d</span>`;
+      if (diffDays === 0) return `<span class="text-amber-600 font-bold text-[10px]"><i class="fa-solid fa-clock mr-1"></i>Vence Hoy</span>`;
+      return `<span class="text-sky-600 font-semibold text-[10px]">Faltan ${diffDays}d</span>`;
     }
 
     function getStatusBadge(item) {
-      const todayStr = new Date().toISOString().split('T')[0];
-      const res = (item.resultadoEficacia || '').toUpperCase().trim();
-      if (res === 'OK') return `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5 rounded-md text-[10px]">Cerrado OK</span>`;
-      if (res === 'NO') return `<span class="bg-rose-50 text-rose-700 border border-rose-200 font-bold px-2 py-0.5 rounded-md text-[10px]">Cerrado NO</span>`;
-      if (item.fechaLimite && item.fechaLimite < todayStr && isFindingOpen(item)) return `<span class="bg-rose-500 text-white font-extrabold px-2 py-0.5 rounded-md text-[10px] animate-pulse">VENCIDO</span>`;
+      const st = getItemStatus(item);
+      if (st === 'OK')          return `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5 rounded-md text-[10px]">Cerrado OK</span>`;
+      if (st === 'NO')          return `<span class="bg-rose-50 text-rose-700 border border-rose-200 font-bold px-2 py-0.5 rounded-md text-[10px]">Cerrado NO</span>`;
+      if (st === 'SIN_EFICACIA')return `<span class="bg-sky-50 text-sky-700 border border-sky-200 font-semibold px-2 py-0.5 rounded-md text-[10px]">Sin Eficacia</span>`;
+      // ABIERTO — check if overdue
+      const fl = parseDate(item.fechaLimite);
+      const today = new Date(); today.setHours(0,0,0,0);
+      if (fl && fl < today)     return `<span class="bg-rose-500 text-white font-extrabold px-2 py-0.5 rounded-md text-[10px] animate-pulse">VENCIDO</span>`;
       return `<span class="bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2 py-0.5 rounded-md text-[10px]">En Proceso</span>`;
     }
 
@@ -1147,11 +1167,13 @@
         return isSortAscending ? String(valA).localeCompare(String(valB), undefined, { numeric: true }) : String(valB).localeCompare(String(valA), undefined, { numeric: true });
       });
 
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayD = new Date(); todayD.setHours(0,0,0,0);
       const rowsHTML = items.map(item => {
         const originalIndex = dataset.indexOf(item);
-        const res = (item.resultadoEficacia || "").toUpperCase().trim();
-        const rowBg = res === "OK" ? "hover:bg-emerald-50/50" : res === "NO" ? "hover:bg-rose-50/50" : "hover:bg-sky-50/40";
+        const st = getItemStatus(item);
+        const rowBg = st === "OK" ? "hover:bg-emerald-50/50" : st === "NO" ? "hover:bg-rose-50/50" : "hover:bg-sky-50/40";
+        const flDate = parseDate(item.fechaLimite);
+        const isOverdue = st === 'ABIERTO' && flDate && flDate < todayD;
 
         return `
           <tr onclick="viewDetails(${originalIndex})" class="${rowBg} cursor-pointer transition-colors border-b border-slate-100">
@@ -1163,7 +1185,7 @@
             <td class="p-3 whitespace-nowrap font-medium text-slate-600 text-xs">${item.tipoAccion || '-'}</td>
             <td class="p-3 text-slate-800 text-xs max-w-[120px] truncate font-medium" title="${item.responsableAccion || ''}">${item.responsableAccion || 'Sin Asignar'}</td>
             <td class="p-3 text-slate-600 text-xs max-w-[120px] truncate" title="${item.responsableCierre || ''}">${item.responsableCierre || 'Sin Asignar'}</td>
-            <td class="p-3 whitespace-nowrap font-semibold text-xs ${isFindingOpen(item) && item.fechaLimite < todayStr ? 'text-rose-600 font-bold' : 'text-slate-600'}">${item.fechaLimite || '-'}</td>
+            <td class="p-3 whitespace-nowrap font-semibold text-xs ${isOverdue ? 'text-rose-600 font-bold' : 'text-slate-600'}">${item.fechaLimite || '-'}</td>
             <td class="p-3 text-center whitespace-nowrap text-xs">${calculateDeadlineStatus(item)}</td>
             <td class="p-3 text-center whitespace-nowrap">${getStatusBadge(item)}</td>
             <td class="p-3 text-center whitespace-nowrap">
@@ -1195,47 +1217,50 @@
       const respVerifMap = {}, respCierreMap = {}, sectorMap = {}, detectorMap = {};
 
       filteredData.forEach(item => {
-        const open = isFindingOpen(item);
-        const res = (item.resultadoEficacia || '').toUpperCase().trim();
+        const st = getItemStatus(item);
+        const open = st === 'ABIERTO';
         let resolutionDays = null;
         if (!open && item.fechaDetection) {
-          const d1 = parseDate(item.fechaDetection), d2 = parseDate(item.fechaVerificacion || item.fechaRealCierre);
+          const d1 = parseDate(item.fechaDetection), d2 = parseDate(item.fechaRealCierre);
           if (d1 && d2) resolutionDays = Math.max(0, Math.floor((d2 - d1) / (1000 * 60 * 60 * 24)));
         }
 
         splitEntities(item.responsableCierre).forEach(r => {
           if (!respVerifMap[r]) respVerifMap[r] = { total: 0, open: 0, closedOk: 0, closedNo: 0 };
-          respVerifMap[r].total++; if (open) respVerifMap[r].open++; else if (res === 'OK') respVerifMap[r].closedOk++; else if (res === 'NO') respVerifMap[r].closedNo++;
+          respVerifMap[r].total++; if (open) respVerifMap[r].open++; else if (st === 'OK') respVerifMap[r].closedOk++; else if (st === 'NO') respVerifMap[r].closedNo++;
         });
         splitEntities(item.responsableAccion).forEach(r => {
           if (!respCierreMap[r]) respCierreMap[r] = { total: 0, open: 0, closedOk: 0, closedNo: 0, daysList: [] };
-          respCierreMap[r].total++; if (open) respCierreMap[r].open++; else if (res === 'OK') respCierreMap[r].closedOk++; else if (res === 'NO') respCierreMap[r].closedNo++;
+          respCierreMap[r].total++; if (open) respCierreMap[r].open++; else if (st === 'OK') respCierreMap[r].closedOk++; else if (st === 'NO') respCierreMap[r].closedNo++;
           if (resolutionDays !== null) respCierreMap[r].daysList.push(resolutionDays);
         });
         splitEntities(item.sectorResponsable).forEach(s => {
           if (!sectorMap[s]) sectorMap[s] = { total: 0, open: 0, closedOk: 0, closedNo: 0, daysList: [] };
-          sectorMap[s].total++; if (open) sectorMap[s].open++; else if (res === 'OK') sectorMap[s].closedOk++; else if (res === 'NO') sectorMap[s].closedNo++;
+          sectorMap[s].total++; if (open) sectorMap[s].open++; else if (st === 'OK') sectorMap[s].closedOk++; else if (st === 'NO') sectorMap[s].closedNo++;
           if (resolutionDays !== null) sectorMap[s].daysList.push(resolutionDays);
         });
         splitEntities(item.quienDetecto).forEach(d => { detectorMap[d] = (detectorMap[d] || 0) + 1; });
       });
 
       document.getElementById('responsablesTableBody').innerHTML = Object.keys(respVerifMap).sort().map(r => {
-        const st = respVerifMap[r];
-        const eff = st.total > 0 ? Math.round(((st.closedOk + st.closedNo) / st.total) * 100) : 0;
-        return `<tr class="border-b border-slate-100 hover:bg-slate-50/60"><td class="p-3 font-semibold text-slate-800">${r}</td><td class="p-3 text-center">${st.total}</td><td class="p-3 text-center text-amber-600 font-bold">${st.open}</td><td class="p-3 text-center text-emerald-600 font-bold">${st.closedOk}</td><td class="p-3 text-center text-rose-600 font-bold">${st.closedNo}</td><td class="p-3 text-center font-bold text-sky-700">${eff}%</td></tr>`;
+        const s = respVerifMap[r];
+        const closed = s.total - s.open;
+        const eff = s.total > 0 ? Math.round((closed / s.total) * 100) : 0;
+        return `<tr class="border-b border-slate-100 hover:bg-slate-50/60"><td class="p-3 font-semibold text-slate-800">${r}</td><td class="p-3 text-center">${s.total}</td><td class="p-3 text-center text-amber-600 font-bold">${s.open}</td><td class="p-3 text-center text-emerald-600 font-bold">${s.closedOk}</td><td class="p-3 text-center text-rose-600 font-bold">${s.closedNo}</td><td class="p-3 text-center font-bold text-sky-700">${eff}%</td></tr>`;
       }).join('');
 
       document.getElementById('respCierreTableBody').innerHTML = Object.keys(respCierreMap).sort().map(r => {
-        const st = respCierreMap[r];
-        const eff = st.total > 0 ? Math.round(((st.closedOk + st.closedNo) / st.total) * 100) : 0;
-        const avgDays = st.daysList.length > 0 ? Math.round(st.daysList.reduce((a,b)=>a+b,0) / st.daysList.length) : "-";
-        return `<tr class="border-b border-slate-100 hover:bg-slate-50/60"><td class="p-3 font-semibold text-slate-800">${r}</td><td class="p-3 text-center">${st.total}</td><td class="p-3 text-center text-amber-600 font-bold">${st.open}</td><td class="p-3 text-center text-emerald-600 font-bold">${st.closedOk}</td><td class="p-3 text-center text-rose-600 font-bold">${st.closedNo}</td><td class="p-3 text-center font-bold text-sky-700">${eff}%</td><td class="p-3 text-center font-bold text-slate-700">${avgDays !== "-" ? avgDays + " d" : "-"}</td></tr>`;
+        const s = respCierreMap[r];
+        const closed = s.total - s.open;
+        const eff = s.total > 0 ? Math.round((closed / s.total) * 100) : 0;
+        const avgDays = s.daysList.length > 0 ? Math.round(s.daysList.reduce((a,b)=>a+b,0) / s.daysList.length) : "-";
+        return `<tr class="border-b border-slate-100 hover:bg-slate-50/60"><td class="p-3 font-semibold text-slate-800">${r}</td><td class="p-3 text-center">${s.total}</td><td class="p-3 text-center text-amber-600 font-bold">${s.open}</td><td class="p-3 text-center text-emerald-600 font-bold">${s.closedOk}</td><td class="p-3 text-center text-rose-600 font-bold">${s.closedNo}</td><td class="p-3 text-center font-bold text-sky-700">${eff}%</td><td class="p-3 text-center font-bold text-slate-700">${avgDays !== "-" ? avgDays + " d" : "-"}</td></tr>`;
       }).join('');
 
       document.getElementById('sectoresTableBody').innerHTML = Object.keys(sectorMap).sort().map(s => {
         const st = sectorMap[s];
-        const eff = st.total > 0 ? Math.round(((st.closedOk + st.closedNo) / st.total) * 100) : 0;
+        const closed = st.total - st.open;
+        const eff = st.total > 0 ? Math.round((closed / st.total) * 100) : 0;
         const avgDays = st.daysList.length > 0 ? Math.round(st.daysList.reduce((a,b)=>a+b,0) / st.daysList.length) : "-";
         return `<tr class="border-b border-slate-100 hover:bg-slate-50/60"><td class="p-3 font-semibold text-slate-800">${s}</td><td class="p-3 text-center">${st.total}</td><td class="p-3 text-center text-amber-600 font-bold">${st.open}</td><td class="p-3 text-center text-emerald-600 font-bold">${st.closedOk}</td><td class="p-3 text-center text-rose-600 font-bold">${st.closedNo}</td><td class="p-3 text-center font-bold text-sky-700">${eff}%</td><td class="p-3 text-center font-bold text-slate-700">${avgDays !== "-" ? avgDays + " d" : "-"}</td></tr>`;
       }).join('');
@@ -1304,9 +1329,10 @@
       const gridColor = 'rgba(0, 0, 0, 0.05)';
 
       const filteredData = getFilteredDataset();
-      const openCount = filteredData.filter(d => isFindingOpen(d)).length;
-      const okCount = filteredData.filter(d => (d.resultadoEficacia || '').toUpperCase().trim() === 'OK').length;
-      const noCount = filteredData.filter(d => (d.resultadoEficacia || '').toUpperCase().trim() === 'NO').length;
+      const openCount       = filteredData.filter(d => getItemStatus(d) === 'ABIERTO').length;
+      const okCount         = filteredData.filter(d => getItemStatus(d) === 'OK').length;
+      const noCount         = filteredData.filter(d => getItemStatus(d) === 'NO').length;
+      const sinEficaciaCount= filteredData.filter(d => getItemStatus(d) === 'SIN_EFICACIA').length;
 
       const ctxStatus = document.getElementById('chartStatus').getContext('2d');
       if (chartStatusInstance) chartStatusInstance.destroy();
@@ -1314,8 +1340,8 @@
         plugins: [ChartDataLabels],
         type: 'doughnut',
         data: {
-          labels: ['En Proceso', 'Cerrado OK', 'Cerrado NO'],
-          datasets: [{ data: [openCount, okCount, noCount], backgroundColor: ['#f59e0b', '#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }]
+          labels: ['En Proceso', 'Cerrado OK', 'Cerrado NO', 'Sin Eficacia'],
+          datasets: [{ data: [openCount, okCount, noCount, sinEficaciaCount], backgroundColor: ['#f59e0b', '#10b981', '#ef4444', '#0ea5e9'], borderWidth: 2, borderColor: '#ffffff' }]
         },
         options: {
           responsive: true, maintainAspectRatio: false,
