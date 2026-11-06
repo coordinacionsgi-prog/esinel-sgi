@@ -751,10 +751,11 @@
   <script>
     let dataset = [];
     let currentActiveItem = null;
-    let scriptUrl = localStorage.getItem('rg0601_script_url') || "";
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPJoui-qlrer5qvXqv9z534GgnmVFVfzROwaOU5YaLJi48H9TxitzIIJ0Gb25T4Xw-/exec";
+    let scriptUrl = localStorage.getItem('rg0601_script_url') || DEFAULT_SCRIPT_URL;
     // URL del Web App de Apps Script para Rev 05 (apps-script/hallazgos-rev05.gs)
     // Se puede configurar también desde el ícono de engranaje en la barra superior
-    let serverWebAppUrl = localStorage.getItem('rg0601_script_url') || "";
+    let serverWebAppUrl = localStorage.getItem('rg0601_script_url') || DEFAULT_SCRIPT_URL;
     let chartStatusInstance = null, chartTypeInstance = null, searchDebounceTimer = null;
     let sheetsUrl = '';
     let activeTabId = 'dashboard', currentSortColumn = 'fechaDetection', isSortAscending = false;
