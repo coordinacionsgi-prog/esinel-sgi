@@ -573,8 +573,8 @@
     <div class="card-clean rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
       <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center"><h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-cloud text-sky-400"></i><span>Conexión con Google Sheets</span></h3><button onclick="closeConfigModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-base"></i></button></div>
       <div class="p-6 space-y-4 text-xs text-slate-600">
-        <p>Ingresá la URL del Web App de Google Apps Script para sincronizar las modificaciones directamente con la planilla maestra.</p>
-        <div><label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[11px]">URL de Apps Script Web App</label><input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 border border-slate-200 bg-slate-50 text-slate-800 rounded-xl text-xs outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition"></div>
+        <p>Ingresá la URL del Web App de <strong>hallazgos-rev05.gs</strong> (ver <code>apps-script/hallazgos-rev05.gs</code> en el repo) para conectar el dashboard con la planilla Rev 05.</p>
+        <div><label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[11px]">URL de Apps Script Web App (Rev 05)</label><input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 border border-slate-200 bg-slate-50 text-slate-800 rounded-xl text-xs outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition"></div>
       </div>
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2"><button onclick="closeConfigModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button><button onclick="saveScriptUrl()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition">Guardar y Sincronizar</button></div>
     </div>
@@ -751,7 +751,9 @@
     let dataset = [];
     let currentActiveItem = null;
     let scriptUrl = localStorage.getItem('rg0601_script_url') || "";
-    let serverWebAppUrl = "https://script.google.com/macros/s/AKfycbw-7BJ5Zqhi6Q9L0NieRZslBM1ONC_xC8SvI3Bb4Qx5kNMZy0gBrLxkpmtI6-rtnCgA/exec";
+    // URL del Web App de Apps Script para Rev 05 (apps-script/hallazgos-rev05.gs)
+    // Se puede configurar también desde el ícono de engranaje en la barra superior
+    let serverWebAppUrl = localStorage.getItem('rg0601_script_url') || "";
     let chartStatusInstance = null, chartTypeInstance = null, searchDebounceTimer = null;
     let sheetsUrl = '';
     let activeTabId = 'dashboard', currentSortColumn = 'fechaDetection', isSortAscending = false;
