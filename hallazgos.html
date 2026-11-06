@@ -191,6 +191,7 @@
           <button onclick="openConfigModal()" id="syncBadge" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm transition">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" id="syncStatusDot"></span>
             <span id="syncStatusText" class="hidden sm:inline">Conectado</span>
+            <span id="syncLastTime" class="hidden sm:inline text-slate-400 font-normal"></span>
             <i class="fa-solid fa-gear text-slate-400 text-xs"></i>
           </button>
 
@@ -840,6 +841,10 @@
         try { dataset = JSON.parse(localData); populateDatalists(); renderAllViews(); } catch(e) {}
       }
 
+      const savedSync = localStorage.getItem('rg0601_last_sync');
+      const timeEl = document.getElementById('syncLastTime');
+      if (savedSync && timeEl) timeEl.innerText = '· últ. ' + savedSync;
+
       if (typeof google !== 'undefined' && google && google.script && google.script.run) {
         google.script.run.withSuccessHandler(url => { if (url) serverWebAppUrl = url; }).getWebAppUrl();
         google.script.run.withSuccessHandler(url => { if (url) sheetsUrl = url; }).getSpreadsheetUrl();
@@ -877,6 +882,16 @@
     function updateSyncStatus(connected, message) {
       document.getElementById('syncStatusDot').className = connected ? "w-2.5 h-2.5 rounded-full bg-emerald-500" : "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
       document.getElementById('syncStatusText').innerText = message || (connected ? "Sheets Conectado" : "Modo Local");
+      const timeEl = document.getElementById('syncLastTime');
+      if (connected) {
+        const now = new Date();
+        const ts = now.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem('rg0601_last_sync', ts);
+        if (timeEl) timeEl.innerText = '· ' + ts;
+      } else {
+        const saved = localStorage.getItem('rg0601_last_sync');
+        if (timeEl) timeEl.innerText = saved ? '· últ. ' + saved : '';
+      }
     }
 
     function openConfigModal() { document.getElementById('scriptUrlInput').value = scriptUrl; document.getElementById('configModal').classList.remove('hidden'); }
@@ -914,7 +929,7 @@
           window.top.postMessage({ type: 'hallazgosReady', data: dataset }, '*');
           showToast('Base de datos actualizada');
         }
-      } catch(e) { updateSyncStatus(false, "Modo Local (Caché)"); renderAllViews(); }
+      } catch(e) { updateSyncStatus(false, "Modo Local (Caché)"); renderAllViews(); showToast('No se pudo conectar con Sheets. Usando datos locales.', 'warning'); }
       finally { if (icon) icon.classList.remove('fa-spin'); }
     }
 
