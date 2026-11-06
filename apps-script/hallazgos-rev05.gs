@@ -507,3 +507,148 @@ function splitEntidades(str) { return separarNombres(str); }
 function resolverCorreo(nombre) {
   return buscarCorreo(nombre, CORREOS);
 }
+
+// ── Resumen completo semanal a coordinacion.sgi ──────────────────────────────
+/**
+ * Envía un único mail a coordinacion.sgi con tres secciones:
+ *   1. Hallazgos abiertos VENCIDOS (fechaLimite < hoy)
+ *   2. Hallazgos abiertos POR VENCER (fechaLimite dentro de DIAS_ALERTA_PREVIO días)
+ *   3. Hallazgos cerrados con 90+ días desde cierre sin eficacia verificada
+ *
+ * Activador sugerido: Lunes 7-8 AM (mismo que enviarAvisosLunes).
+ * Para prueba manual: Ejecutar → enviarResumenCompleto desde el editor GAS.
+ */
+function enviarResumenCompleto() {
+  const hoy    = new Date();
+  const limite = new Date(hoy);
+  limite.setDate(hoy.getDate() + DIAS_ALERTA_PREVIO);
+
+  const data = getAllData();
+
+  // ── Sección 1: vencidos ──────────────────────────────────────────────────
+  const vencidos = data.filter(item => {
+    const frc = (item.fechaRealCierre || '').trim();
+    if (frc && frc !== '-') return false; // ya cerrado
+    const fl = parseDateGAS(item.fechaLimite);
+    return fl && fl < hoy;
+  });
+
+  // ── Sección 2: por vencer ────────────────────────────────────────────────
+  const porVencer = data.filter(item => {
+    const frc = (item.fechaRealCierre || '').trim();
+    if (frc && frc !== '-') return false;
+    const fl = parseDateGAS(item.fechaLimite);
+    return fl && fl >= hoy && fl <= limite;
+  });
+
+  // ── Sección 3: cerrados 90+ días sin eficacia ────────────────────────────
+  const DIAS_EFICACIA = 90;
+  const sinEficacia = data.filter(item => {
+    const frc = (item.fechaRealCierre || '').trim();
+    if (!frc || frc === '-') return false;
+    const ef = (item.resultadoEficacia || '').trim().toUpperCase();
+    if (ef === 'OK' || ef === 'NO') return false;
+    const fechaCierre = parseDateGAS(item.fechaRealCierre);
+    if (!fechaCierre) return false;
+    const diasDesde = Math.floor((hoy - fechaCierre) / (1000 * 60 * 60 * 24));
+    return diasDesde >= DIAS_EFICACIA;
+  });
+
+  const fechaStr = hoy.toLocaleDateString('es-AR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+  const filaRoja   = (h, extra) => `<tr>
+    <td style="padding:6px 10px;border:1px solid #fee2e2;font-weight:bold;color:#dc2626">${h.numHallazgo}</td>
+    <td style="padding:6px 10px;border:1px solid #fee2e2">${(h.descripcion||'').substring(0,90)}${(h.descripcion||'').length>90?'…':''}</td>
+    <td style="padding:6px 10px;border:1px solid #fee2e2;white-space:nowrap">${h.fechaLimite}</td>
+    <td style="padding:6px 10px;border:1px solid #fee2e2">${h.responsableAccion||h.responsableCierre||'—'}</td>
+    ${extra||''}
+  </tr>`;
+
+  const filaAmbar  = (h) => {
+    const fl = parseDateGAS(h.fechaLimite);
+    const dias = fl ? Math.ceil((fl - hoy) / (1000*60*60*24)) : '?';
+    return `<tr>
+    <td style="padding:6px 10px;border:1px solid #fef3c7;font-weight:bold;color:#d97706">${h.numHallazgo}</td>
+    <td style="padding:6px 10px;border:1px solid #fef3c7">${(h.descripcion||'').substring(0,90)}${(h.descripcion||'').length>90?'…':''}</td>
+    <td style="padding:6px 10px;border:1px solid #fef3c7;white-space:nowrap">${h.fechaLimite}</td>
+    <td style="padding:6px 10px;border:1px solid #fef3c7">${h.responsableAccion||h.responsableCierre||'—'}</td>
+    <td style="padding:6px 10px;border:1px solid #fef3c7;font-weight:bold;color:#d97706;white-space:nowrap">${dias}d</td>
+  </tr>`;
+  };
+
+  const filaAzul   = (h) => {
+    const fc = parseDateGAS(h.fechaRealCierre);
+    const dias = fc ? Math.floor((hoy - fc) / (1000*60*60*24)) : '?';
+    return `<tr>
+    <td style="padding:6px 10px;border:1px solid #e0f2fe;font-weight:bold;color:#0284c7">${h.numHallazgo}</td>
+    <td style="padding:6px 10px;border:1px solid #e0f2fe">${(h.descripcion||'').substring(0,90)}${(h.descripcion||'').length>90?'…':''}</td>
+    <td style="padding:6px 10px;border:1px solid #e0f2fe;white-space:nowrap">${h.fechaRealCierre}</td>
+    <td style="padding:6px 10px;border:1px solid #e0f2fe">${h.responsableAccion||h.responsableCierre||'—'}</td>
+    <td style="padding:6px 10px;border:1px solid #e0f2fe;font-weight:bold;color:#dc2626;white-space:nowrap">${dias}d sin verificar</td>
+  </tr>`;
+  };
+
+  const thRoja  = `<tr style="background:#fef2f2"><th style="padding:6px 10px;text-align:left;border:1px solid #fecaca">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #fecaca">Descripción</th><th style="padding:6px 10px;text-align:left;border:1px solid #fecaca">Vencía</th><th style="padding:6px 10px;text-align:left;border:1px solid #fecaca">Responsable</th></tr>`;
+  const thAmbar = `<tr style="background:#fffbeb"><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Descripción</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Vence</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Responsable</th><th style="padding:6px 10px;text-align:left;border:1px solid #fde68a">Días</th></tr>`;
+  const thAzul  = `<tr style="background:#f0f9ff"><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Código</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Descripción</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Fecha Cierre</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Responsable</th><th style="padding:6px 10px;text-align:left;border:1px solid #bae6fd">Antigüedad</th></tr>`;
+
+  let cuerpo = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#1e293b;max-width:760px">
+<div style="background:#0f172a;color:#fff;padding:20px 24px;border-radius:8px 8px 0 0">
+  <h2 style="margin:0;font-size:18px">📋 SGI Esinel — Resumen Semanal de Hallazgos</h2>
+  <p style="margin:4px 0 0;font-size:12px;opacity:.7">${fechaStr}</p>
+</div>
+<div style="border:1px solid #e2e8f0;border-top:none;padding:20px 24px;border-radius:0 0 8px 8px">
+
+  <table style="border-collapse:collapse;margin-bottom:16px">
+    <tr>
+      <td style="padding:8px 16px;background:#fef2f2;border-radius:6px;text-align:center;margin-right:8px">
+        <div style="font-size:28px;font-weight:bold;color:#dc2626">${vencidos.length}</div>
+        <div style="font-size:11px;color:#dc2626;font-weight:bold">VENCIDOS</div>
+      </td>
+      <td style="width:12px"></td>
+      <td style="padding:8px 16px;background:#fffbeb;border-radius:6px;text-align:center">
+        <div style="font-size:28px;font-weight:bold;color:#d97706">${porVencer.length}</div>
+        <div style="font-size:11px;color:#d97706;font-weight:bold">POR VENCER (${DIAS_ALERTA_PREVIO}d)</div>
+      </td>
+      <td style="width:12px"></td>
+      <td style="padding:8px 16px;background:#f0f9ff;border-radius:6px;text-align:center">
+        <div style="font-size:28px;font-weight:bold;color:#0284c7">${sinEficacia.length}</div>
+        <div style="font-size:11px;color:#0284c7;font-weight:bold">SIN EFICACIA (90+d)</div>
+      </td>
+    </tr>
+  </table>`;
+
+  if (vencidos.length > 0) {
+    cuerpo += `<h3 style="color:#dc2626;margin-top:24px;border-bottom:2px solid #fecaca;padding-bottom:6px">🔴 Hallazgos Vencidos (${vencidos.length})</h3>
+<table style="width:100%;border-collapse:collapse;font-size:12px">${thRoja}${vencidos.map(h=>filaRoja(h,'')).join('')}</table>`;
+  }
+
+  if (porVencer.length > 0) {
+    cuerpo += `<h3 style="color:#d97706;margin-top:24px;border-bottom:2px solid #fde68a;padding-bottom:6px">🟡 Por Vencer en los próximos ${DIAS_ALERTA_PREVIO} días (${porVencer.length})</h3>
+<table style="width:100%;border-collapse:collapse;font-size:12px">${thAmbar}${porVencer.map(h=>filaAmbar(h)).join('')}</table>`;
+  }
+
+  if (sinEficacia.length > 0) {
+    cuerpo += `<h3 style="color:#0284c7;margin-top:24px;border-bottom:2px solid #bae6fd;padding-bottom:6px">🔵 Cerrados sin Eficacia Verificada — 90+ días (${sinEficacia.length})</h3>
+<table style="width:100%;border-collapse:collapse;font-size:12px">${thAzul}${sinEficacia.map(h=>filaAzul(h)).join('')}</table>`;
+  }
+
+  if (vencidos.length === 0 && porVencer.length === 0 && sinEficacia.length === 0) {
+    cuerpo += `<p style="color:#16a34a;font-size:16px;font-weight:bold">✅ Todo al día — no hay hallazgos con alertas pendientes esta semana.</p>`;
+  }
+
+  cuerpo += `
+  <p style="margin-top:24px">Ver detalle completo en el dashboard:</p>
+  <a href="https://coordinacionsgi-prog.github.io/esinel-sgi/hallazgos.html" style="display:inline-block;background:#0284c7;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold">Ir al Dashboard de Hallazgos →</a>
+  <p style="margin-top:24px;font-size:11px;color:#64748b">Generado automáticamente por SGI Esinel. No responder a este correo.</p>
+</div></div>`;
+
+  MailApp.sendEmail({
+    to:       'coordinacion.sgi@esinel.com.ar',
+    subject:  `[SGI Esinel] Resumen semanal — ${vencidos.length} vencidos · ${porVencer.length} por vencer · ${sinEficacia.length} sin eficacia`,
+    htmlBody: cuerpo,
+    name:     REMITENTE_ALIAS
+  });
+
+  Logger.log(`enviarResumenCompleto: vencidos=${vencidos.length}, porVencer=${porVencer.length}, sinEficacia=${sinEficacia.length}`);
+}
