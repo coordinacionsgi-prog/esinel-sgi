@@ -708,7 +708,8 @@
       if (!it) return false;
       const desc = String(it.descripcion || '').toLowerCase();
       const num = String(it.numHallazgo || '').toLowerCase();
-      if (desc.includes('cierre al') || desc.includes('línea de corte') || num.includes('cierre')) return false;
+      if (desc.includes('cierre al') || desc.includes('cierre para informe') || desc.includes('línea de corte') || num.includes('cierre')) return false;
+      if (/^-+$/.test(num.trim())) return false;   // filas de corte de ejercicio (N° '---')
       return !!(it.numHallazgo || it.descripcion);
     }
     function hAbierto(it) {

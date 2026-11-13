@@ -438,9 +438,9 @@
             <table class="w-full text-left border-collapse text-xs" id="planillaTable">
               <thead class="bg-slate-50 text-slate-700 sticky top-0 z-10 border-b border-slate-200 font-semibold">
                 <tr>
-                  <th onclick="sortTable('numHallazgo')" class="p-3 sortable-header w-20 whitespace-nowrap">N° <span id="sortIcon_numHallazgo" class="text-slate-400">↕</span></th>
                   <th onclick="sortTable('tipoHallazgo')" class="p-3 sortable-header w-16 whitespace-nowrap">Tipo <span id="sortIcon_tipoHallazgo" class="text-slate-400">↕</span></th>
-                  <th onclick="sortTable('fechaDetection')" class="p-3 sortable-header w-24 whitespace-nowrap">Detección <span id="sortIcon_fechaDetection" class="text-slate-400">↕</span></th>
+                  <th onclick="sortTable('numHallazgo')" class="p-3 sortable-header w-20 whitespace-nowrap">N° <span id="sortIcon_numHallazgo" class="text-slate-400">↕</span></th>
+                  <th onclick="sortTable('fechaDetection')" class="p-3 sortable-header w-24 whitespace-nowrap">Detección <span id="sortIcon_fechaDetection" class="text-slate-400">↓</span></th>
                   <th onclick="sortTable('quienDetecto')" class="p-3 sortable-header w-32 whitespace-nowrap">Quién Detectó <span id="sortIcon_quienDetecto" class="text-slate-400">↕</span></th>
                   <th onclick="sortTable('numAccion')" class="p-3 sortable-header w-20 whitespace-nowrap">N° Acción <span id="sortIcon_numAccion" class="text-slate-400">↕</span></th>
                   <th onclick="sortTable('tipoAccion')" class="p-3 sortable-header w-20 whitespace-nowrap">T. Acción <span id="sortIcon_tipoAccion" class="text-slate-400">↕</span></th>
@@ -991,7 +991,8 @@
       if (!item) return false;
       let desc = (item.descripcion || '').toLowerCase();
       let numH = (item.numHallazgo || '').toLowerCase();
-      if (desc.includes('cierre al') || desc.includes('línea de corte') || numH.includes('cierre')) return false;
+      if (desc.includes('cierre al') || desc.includes('cierre para informe') || desc.includes('línea de corte') || numH.includes('cierre')) return false;
+      if (/^-+$/.test(numH.trim())) return false;   // filas de corte de ejercicio (N° '---')
       return !(!item.numHallazgo && !item.descripcion);
     }
 
@@ -1172,6 +1173,34 @@
       return `<span class="bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2 py-0.5 rounded-md text-[10px]">En Proceso</span>`;
     }
 
+    // N° del hallazgo sin el prefijo del tipo ("OBS-65" -> "65"), como está en la planilla
+    function getNumeroHallazgo(item) {
+      const num = String(item.numHallazgo || '').trim();
+      const tipo = String(item.tipoHallazgo || '').trim();
+      if (tipo && num.toUpperCase().startsWith(tipo.toUpperCase() + '-')) return num.slice(tipo.length + 1);
+      return num;
+    }
+
+    const SORT_DATE_COLUMNS = ['fechaDetection', 'fechaLimite', 'fechaRealCierre', 'fechaVerificacion'];
+    function compareForSort(a, b, col) {
+      if (SORT_DATE_COLUMNS.includes(col)) {
+        const da = parseDate(a[col]), db = parseDate(b[col]);
+        if (!da && !db) return 0;
+        if (!da) return -1;            // sin fecha queda al final en orden descendente
+        if (!db) return 1;
+        return da - db;
+      }
+      if (col === 'numHallazgo') {
+        const na = parseInt(getNumeroHallazgo(a), 10), nb = parseInt(getNumeroHallazgo(b), 10);
+        if (isNaN(na) && isNaN(nb)) return 0;
+        if (isNaN(na)) return -1;
+        if (isNaN(nb)) return 1;
+        return na - nb;
+      }
+      const va = String(a[col] || ''), vb = String(b[col] || '');
+      return va.localeCompare(vb, 'es', { numeric: true, sensitivity: 'base' });
+    }
+
     function renderTable() {
       const items = getFilteredDataset();
       const tbody = document.getElementById('planillaTableBody');
@@ -1184,8 +1213,11 @@
       }
 
       items.sort((a, b) => {
-        let valA = a[currentSortColumn] || '', valB = b[currentSortColumn] || '';
-        return isSortAscending ? String(valA).localeCompare(String(valB), undefined, { numeric: true }) : String(valB).localeCompare(String(valA), undefined, { numeric: true });
+        const dir = isSortAscending ? 1 : -1;
+        const r = compareForSort(a, b, currentSortColumn);
+        if (r !== 0) return dir * r;
+        // desempate estable: fecha de detección y luego tipo + número
+        return -compareForSort(a, b, 'fechaDetection') || compareForSort(a, b, 'tipoHallazgo') || -compareForSort(a, b, 'numHallazgo');
       });
 
       const todayD = new Date(); todayD.setHours(0,0,0,0);
@@ -1198,8 +1230,8 @@
 
         return `
           <tr onclick="viewDetails(${originalIndex})" class="${rowBg} cursor-pointer transition-colors border-b border-slate-100">
-            <td class="p-3 font-bold text-sky-700 whitespace-nowrap text-xs">${item.numHallazgo || '-'}</td>
             <td class="p-3 whitespace-nowrap font-bold text-slate-700 text-xs">${item.tipoHallazgo || '-'}</td>
+            <td class="p-3 font-bold text-sky-700 whitespace-nowrap text-xs">${getNumeroHallazgo(item) || '-'}</td>
             <td class="p-3 whitespace-nowrap text-slate-500 text-xs">${item.fechaDetection || '-'}</td>
             <td class="p-3 text-slate-700 text-xs max-w-[120px] truncate" title="${item.quienDetecto || ''}">${item.quienDetecto || '-'}</td>
             <td class="p-3 whitespace-nowrap text-slate-600 text-xs">${item.numAccion || '-'}</td>
