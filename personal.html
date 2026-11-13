@@ -1448,16 +1448,16 @@
     var isDark = h.classList.contains('dark');
     if (isDark) {
       h.classList.remove('dark');
-      localStorage.setItem('per_theme', 'light');
+      localStorage.setItem('sgi_theme', 'light');
       document.getElementById('per-theme-btn').innerHTML = '🌙 Oscuro';
     } else {
       h.classList.add('dark');
-      localStorage.setItem('per_theme', 'dark');
+      localStorage.setItem('sgi_theme', 'dark');
       document.getElementById('per-theme-btn').innerHTML = '☀️ Claro';
     }
   }
   (function() {
-    var t = localStorage.getItem('per_theme');
+    var t = localStorage.getItem('sgi_theme') || localStorage.getItem('per_theme');
     var prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
     if (t === 'dark' || (!t && prefersDark)) {
       document.documentElement.classList.add('dark');

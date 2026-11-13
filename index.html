@@ -171,9 +171,6 @@
           <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap transition" href="personal.html"><i class="ti ti-users text-sm"></i> Personal</a>
           <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="mi-panel.html" onclick="abrirPanel();return false"><i class="ti ti-bell text-sm"></i> Mi Panel</a>
           <a class="esinel-nav-item px-3 py-2 rounded-lg font-medium text-emerald-400/90 hover:text-emerald-300 hover:bg-emerald-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="comercial.html"><i class="ti ti-briefcase text-sm"></i> Comercial</a>
-        <a class="px-3 py-2 rounded-lg font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 flex items-center gap-1.5 whitespace-nowrap transition" href="tablero-powerbi.html">
-  <i class="ti ti-brand-google-analytics text-sm"></i> Tablero BI
-</a>
         </nav>
       </div>
     </div>
@@ -229,7 +226,7 @@
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
-          <span class="text-slate-500" id="es-total-h">de — hallazgos totales</span>
+          <span class="text-slate-500" id="es-total-h">Cargando hallazgos…</span>
           <span id="es-vencer-h" class="font-bold text-rose-600 min-h-[16px]"></span>
         </div>
       </a>
@@ -253,7 +250,7 @@
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
-          <span class="text-slate-500" id="es-total-i">de — indicadores</span>
+          <span class="text-slate-500" id="es-total-i">Sin datos en este navegador</span>
           <span id="es-ej34-i" class="text-slate-400 font-medium min-h-[16px]"></span>
         </div>
       </a>
@@ -269,7 +266,7 @@
           </div>
           
           <div class="mt-4 flex items-baseline gap-2">
-            <span class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-mono metric-val-color" id="en-audit-hall">5</span>
+            <span class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-mono metric-val-color" id="en-audit-hall">—</span>
             <span class="text-xs font-semibold text-slate-500">hallazgos</span>
           </div>
           
@@ -277,13 +274,13 @@
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
-          <span id="es-audit-estado" class="font-bold text-amber-600">5 abiertos · 0 cerrados</span>
+          <span id="es-audit-estado" class="text-slate-500">—</span>
           <span class="text-slate-400">Certificación DNV en curso</span>
         </div>
       </a>
 
       <!-- Métrica 4: Contexto Estratégico -->
-      <a href="contexto.html" class="card-clean rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group metric-card-accent info">
+      <a href="contexto.html" class="card-clean rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group metric-card-accent info" id="ec-contexto">
         <div>
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold tracking-wider uppercase text-slate-500 flex items-center gap-1.5">
@@ -301,7 +298,7 @@
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
           <span class="text-slate-500">Próxima revisión: <strong class="text-slate-700">Oct 2026</strong></span>
-          <span class="text-emerald-600 font-semibold">Matrices FODA/PESTEL al día</span>
+          <span id="es-ctx-estado" class="text-emerald-600 font-semibold">Matrices FODA/PESTEL al día</span>
         </div>
       </a>
 
@@ -691,68 +688,148 @@
     });
 
     // ─── CARGA Y CÁLCULO DE MÉTRICAS EN VIVO ────────────────────────
-    const DEFAULTS = {
-      hallazgos: { total: 638, abiertos: 185, vencidos: 12, porVencer: 8 },
-      indicadores: { total: 28, desvios: 5, desviosEj34: 3 }
-    };
+    // Hallazgos y Auditoría usan la misma planilla y la misma lógica que hallazgos.html.
+    const HALL_URL_CUSTOM = localStorage.getItem('rg0601_script_url');
+    const HALL_URL = HALL_URL_CUSTOM || 'https://script.google.com/macros/s/AKfycbzPJoui-qlrer5qvXqv9z534GgnmVFVfzROwaOU5YaLJi48H9TxitzIIJ0Gb25T4Xw-/exec?format=json';
+    const HALL_REFRESH_MS = 30 * 60 * 1000;   // no volver a descargar si el dato tiene menos de 30 min
+    const DIAS_POR_VENCER = 15;
 
-    try {
-      const h = JSON.parse(localStorage.getItem('esinel_hallazgos_stats') || 'null') || DEFAULTS.hallazgos;
-      const abiertos = h.abiertos ?? DEFAULTS.hallazgos.abiertos;
-      const total    = h.total    ?? DEFAULTS.hallazgos.total;
-      const vencidos = h.vencidos ?? DEFAULTS.hallazgos.vencidos;
-      const porVencer= h.porVencer?? DEFAULTS.hallazgos.porVencer;
+    function hParseDate(v) {
+      if (!v || v === '-') return null;
+      const str = String(v).trim().split('T')[0];
+      let p = str.split('-');
+      if (p.length === 3 && p[0].length === 4) return new Date(+p[0], +p[1] - 1, +p[2]);
+      p = str.split('/');
+      if (p.length === 3 && p[2].length === 4) return new Date(+p[2], +p[1] - 1, +p[0]);
+      const d = new Date(str);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    function hValido(it) {
+      if (!it) return false;
+      const desc = String(it.descripcion || '').toLowerCase();
+      const num = String(it.numHallazgo || '').toLowerCase();
+      if (desc.includes('cierre al') || desc.includes('línea de corte') || num.includes('cierre')) return false;
+      return !!(it.numHallazgo || it.descripcion);
+    }
+    function hAbierto(it) {
+      const frc = String(it.fechaRealCierre || '').trim();
+      return !frc || frc === '-';
+    }
+    function setEstadoCard(id, estado) {
+      const c = document.getElementById(id);
+      if (!c) return;
+      c.classList.remove('alerta', 'ok', 'info');
+      if (estado) c.classList.add(estado);
+    }
 
-      document.getElementById('en-abiertos').textContent = abiertos;
-      document.getElementById('es-total-h').textContent = `de ${total} hallazgos totales`;
+    function renderHallazgos(data) {
+      const validos = (Array.isArray(data) ? data : []).filter(hValido);
+      if (!validos.length) return false;
 
+      const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+      const limite = new Date(hoy); limite.setDate(limite.getDate() + DIAS_POR_VENCER);
+      const abiertos = validos.filter(hAbierto);
+      let vencidos = 0, porVencer = 0;
+      abiertos.forEach(d => {
+        const fl = hParseDate(d.fechaLimite);
+        if (!fl) return;
+        if (fl < hoy) vencidos++;
+        else if (fl <= limite) porVencer++;
+      });
+
+      document.getElementById('en-abiertos').textContent = abiertos.length;
+      document.getElementById('es-total-h').textContent = `de ${validos.length} hallazgos totales`;
       const vEl = document.getElementById('es-vencer-h');
       if (vencidos > 0 || porVencer > 0) {
-        vEl.textContent = `${vencidos} vencidos · ${porVencer} por vencer`;
-      }
-      
-      const cardH = document.getElementById('ec-hallazgos');
-      cardH.classList.remove('alerta', 'ok');
-      cardH.classList.add(abiertos > 50 ? 'alerta' : 'ok');
-    } catch(e) {}
-
-    try {
-      const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null') || DEFAULTS.indicadores;
-      const desvios   = i.desvios   ?? DEFAULTS.indicadores.desvios;
-      const total     = i.total     ?? DEFAULTS.indicadores.total;
-      const desvEj34  = i.desviosEj34?? DEFAULTS.indicadores.desviosEj34;
-
-      document.getElementById('en-desvios').textContent = desvios;
-      document.getElementById('es-total-i').textContent = `de ${total} indicadores`;
-      document.getElementById('es-ej34-i').textContent = `Ej. 34: ${desvEj34} en desvío (ejercicio anterior)`;
-
-      const cardI = document.getElementById('ec-indicadores');
-      cardI.classList.remove('alerta', 'ok');
-      cardI.classList.add(desvios > 3 ? 'alerta' : 'ok');
-    } catch(e) {}
-
-    // Auditoría P2 DNV
-    try {
-      const auditTotal = 5;
-      const auditAbiertos = 5;
-      const auditCerrados = auditTotal - auditAbiertos;
-      document.getElementById('en-audit-hall').textContent = auditTotal;
-      const estadoEl = document.getElementById('es-audit-estado');
-      const cardAud = document.getElementById('ec-auditoria');
-
-      if (auditAbiertos > 0) {
-        estadoEl.textContent = `${auditAbiertos} abiertos · ${auditCerrados} cerrados`;
-        estadoEl.className = 'font-bold text-amber-600';
+        vEl.textContent = `${vencidos} vencidos · ${porVencer} por vencer (${DIAS_POR_VENCER} días)`;
+        vEl.className = 'font-bold min-h-[16px] ' + (vencidos > 0 ? 'text-rose-600' : 'text-amber-600');
       } else {
-        estadoEl.textContent = `${auditCerrados} cerrados · todos OK`;
-        estadoEl.className = 'font-bold text-emerald-600';
+        vEl.textContent = 'Sin vencidos ni próximos a vencer';
+        vEl.className = 'font-bold min-h-[16px] text-emerald-600';
       }
+      setEstadoCard('ec-hallazgos', (vencidos > 0 || abiertos.length > 50) ? 'alerta' : 'ok');
 
-      cardAud.classList.remove('info');
-      cardAud.classList.add(auditAbiertos > 0 ? 'alerta' : 'ok');
+      // Última auditoría DNV = hallazgos detectados por DNV con la fecha de detección más reciente
+      const dnv = validos
+        .filter(d => /dnv/i.test(String(d.quienDetecto || '')))
+        .map(d => ({ d, f: hParseDate(d.fechaDetection) }))
+        .filter(x => x.f);
+      if (dnv.length) {
+        const ultima = Math.max(...dnv.map(x => x.f.getTime()));
+        const deAud = dnv.filter(x => x.f.getTime() === ultima).map(x => x.d);
+        const audAb = deAud.filter(hAbierto).length;
+        const audCe = deAud.length - audAb;
+        document.getElementById('en-audit-hall').textContent = deAud.length;
+        const estadoEl = document.getElementById('es-audit-estado');
+        if (audAb > 0) {
+          estadoEl.textContent = `${audAb} abiertos · ${audCe} cerrados`;
+          estadoEl.className = 'font-bold text-amber-600';
+        } else {
+          estadoEl.textContent = `${audCe} cerrados · todos OK`;
+          estadoEl.className = 'font-bold text-emerald-600';
+        }
+        setEstadoCard('ec-auditoria', audAb > 0 ? 'alerta' : 'ok');
+      }
+      return true;
+    }
+
+    (function cargarHallazgos() {
+      let hayDatos = false;
+      try {
+        hayDatos = renderHallazgos(JSON.parse(localStorage.getItem('rg0601_data') || 'null'));
+      } catch (e) {}
+
+      const ts = parseInt(localStorage.getItem('rg0601_data_ts') || '0', 10);
+      if (hayDatos && Date.now() - ts < HALL_REFRESH_MS) return;
+
+      fetch(HALL_URL)
+        .then(r => r.json())
+        .then(json => {
+          if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length) {
+            renderHallazgos(json.data);
+            try {
+              localStorage.setItem('rg0601_data', JSON.stringify(json.data));
+              localStorage.setItem('rg0601_data_ts', String(Date.now()));
+            } catch (e) {}
+          } else if (!hayDatos) {
+            document.getElementById('es-total-h').textContent = 'Sin datos de la planilla de hallazgos';
+          }
+        })
+        .catch(() => {
+          if (!hayDatos) document.getElementById('es-total-h').textContent = 'Sin conexión con la planilla de hallazgos';
+        });
+    })();
+
+    // Indicadores: los calcula indicadores.html y los deja guardados en este navegador.
+    try {
+      const i = JSON.parse(localStorage.getItem('esinel_ind_stats') || 'null');
+      const notaEl = document.getElementById('es-ej34-i');
+      if (i && typeof i.desvios === 'number' && typeof i.total === 'number') {
+        document.getElementById('en-desvios').textContent = i.desvios;
+        document.getElementById('es-total-i').textContent = `de ${i.total} indicadores`;
+        notaEl.textContent = i.ts
+          ? 'Actualizado el ' + new Date(i.ts).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : '';
+        setEstadoCard('ec-indicadores', i.desvios > 3 ? 'alerta' : 'ok');
+      } else {
+        notaEl.textContent = 'Abrí Indicadores para calcularlos';
+      }
     } catch(e) {}
 
-    // ─── INSIGNIAS DE NAVEGACIÓN DESDE LOCALSTORAGE ─────────────────
+    // Contexto: actualizar estas dos fechas al hacer cada revisión estratégica.
+    try {
+      const CTX_PROXIMA = new Date(2026, 9, 31);   // 31 Oct 2026 (último día del mes previsto)
+      const CTX_PROXIMA_TXT = 'Oct 2026';
+      const hoyCtx = new Date(); hoyCtx.setHours(0, 0, 0, 0);
+      if (hoyCtx > CTX_PROXIMA) {
+        const el = document.getElementById('es-ctx-estado');
+        el.textContent = `Revisión vencida · correspondía en ${CTX_PROXIMA_TXT}`;
+        el.className = 'text-rose-600 font-bold';
+        setEstadoCard('ec-contexto', 'alerta');
+      }
+    } catch(e) {}
+
+// ─── INSIGNIAS DE NAVEGACIÓN DESDE LOCALSTORAGE ─────────────────
 
     // ─── AUTENTICACIÓN GOOGLE & APERTURA DE MI PANEL ────────────────
     (function(){
@@ -779,28 +856,7 @@
 
       // Función para bypass / demo rápido en la vista previa
 
-      if (sessionStorage.getItem('sgi_ok') === '1') {
-        const ov = document.getElementById('sgi-auth-overlay');
-        if (ov) ov.remove();
-        const _n = sessionStorage.getItem('sgi_name') || '';
-        if (_n) injectChip(_n);
-        return;
-      }
-
-      function sgiCb(r) {
-        const p = JSON.parse(atob(r.credential.split('.')[1]));
-        if (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com') {
-          sessionStorage.setItem('sgi_ok', '1');
-          sessionStorage.setItem('sgi_email', p.email);
-          const nm = p.name || p.email.split('@')[0];
-          sessionStorage.setItem('sgi_name', nm);
-          const ov = document.getElementById('sgi-auth-overlay');
-          if (ov) ov.remove();
-          injectChip(nm);
-        }
-      }
-      window.sgiCb = sgiCb;
-
+      // Definidas antes del chequeo de sesión para que funcionen también al recargar la página
       window.abrirPanel = function(){
         const ov = document.getElementById('panel-overlay');
         const fr = document.getElementById('panel-iframe');
@@ -810,7 +866,7 @@
         document.body.style.overflow = 'hidden';
         
         if (!fr.src || !fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html')) {
-          fr.src = 'panel_sgi.html';
+          fr.src = 'mi-panel.html';
         }
 
         function enviarAuth() {
@@ -834,6 +890,29 @@
         document.getElementById('panel-overlay').style.display = 'none';
         document.body.style.overflow = '';
       };
+
+      if (sessionStorage.getItem('sgi_ok') === '1') {
+        const ov = document.getElementById('sgi-auth-overlay');
+        if (ov) ov.remove();
+        const _n = sessionStorage.getItem('sgi_name') || '';
+        if (_n) injectChip(_n);
+        return;
+      }
+
+      function sgiCb(r) {
+        const p = JSON.parse(atob(r.credential.split('.')[1]));
+        if (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com') {
+          sessionStorage.setItem('sgi_ok', '1');
+          sessionStorage.setItem('sgi_email', p.email);
+          const nm = p.name || p.email.split('@')[0];
+          sessionStorage.setItem('sgi_name', nm);
+          const ov = document.getElementById('sgi-auth-overlay');
+          if (ov) ov.remove();
+          injectChip(nm);
+        }
+      }
+      window.sgiCb = sgiCb;
+
     })();
   </script>
 </body>

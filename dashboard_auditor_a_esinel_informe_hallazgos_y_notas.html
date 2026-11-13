@@ -214,7 +214,6 @@
                 <button onclick="switchDashboard('notas')" id="nav-btn-notas" class="nav-dash-btn px-4 py-2 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-list text-sky-400"></i> 3. Infografía de Notas del Auditor & Evidencias
                 </button>
-                <a class="esinel-nav-item" href="personal.html">👥 Personal</a>
   </nav>
         </div>
     </div>
@@ -975,7 +974,7 @@
       ov.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       if (!fr.src || (!fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html'))) {
-        fr.src = 'panel_sgi.html';
+        fr.src = 'mi-panel.html';
       }
       function enviarAuth() {
         const em = sessionStorage.getItem('sgi_email');

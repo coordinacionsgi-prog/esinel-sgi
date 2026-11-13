@@ -1009,7 +1009,7 @@ const PROCESOS = DATA.p;
         document.body.style.overflow = 'hidden';
         
         if (!fr.src || (!fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html'))) {
-          fr.src = 'panel_sgi.html';
+          fr.src = 'mi-panel.html';
         }
 
         function enviarAuth() {
@@ -1046,16 +1046,16 @@ const PROCESOS = DATA.p;
       var isDark = h.classList.contains('dark');
       if (isDark) {
         h.classList.remove('dark');
-        localStorage.setItem('doc_theme', 'light');
+        localStorage.setItem('sgi_theme', 'light');
         document.getElementById('doc-theme-btn').innerHTML = '🌙 Oscuro';
       } else {
         h.classList.add('dark');
-        localStorage.setItem('doc_theme', 'dark');
+        localStorage.setItem('sgi_theme', 'dark');
         document.getElementById('doc-theme-btn').innerHTML = '☀️ Claro';
       }
     }
     (function() {
-      var t = localStorage.getItem('doc_theme');
+      var t = localStorage.getItem('sgi_theme') || localStorage.getItem('doc_theme');
       var prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
       if (t === 'dark' || (!t && prefersDark)) {
         document.documentElement.classList.add('dark');

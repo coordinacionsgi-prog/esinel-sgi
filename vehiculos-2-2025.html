@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SGI - Gestión de Vehículos</title>
+<title>SGI - Gestión de Vehículos · Período 2-2025</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{--bg:#f1f5f9;--bg2:#fff;--tx:#0f172a;--tx2:#64748b;--bdr:#e2e8f0}
@@ -1175,7 +1175,7 @@ function renderComparativa() {
     ov.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     if (!fr.src || (!fr.src.includes('panel_sgi.html') && !fr.src.includes('mi-panel.html'))) {
-      fr.src = 'panel_sgi.html';
+      fr.src = 'mi-panel.html';
     }
     function enviarAuth() {
       const em = sessionStorage.getItem('sgi_email');
@@ -1203,16 +1203,16 @@ function vehToggleTheme() {
   var isDark = h.classList.contains('dark');
   if (isDark) {
     h.classList.remove('dark');
-    localStorage.setItem('veh_theme', 'light');
+    localStorage.setItem('sgi_theme', 'light');
     document.getElementById('veh-theme-btn').innerHTML = '🌙 Oscuro';
   } else {
     h.classList.add('dark');
-    localStorage.setItem('veh_theme', 'dark');
+    localStorage.setItem('sgi_theme', 'dark');
     document.getElementById('veh-theme-btn').innerHTML = '☀️ Claro';
   }
 }
 (function() {
-  var t = localStorage.getItem('veh_theme');
+  var t = localStorage.getItem('sgi_theme') || localStorage.getItem('veh_theme');
   var prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
   if (t === 'dark' || (!t && prefersDark)) {
     document.documentElement.classList.add('dark');
