@@ -462,7 +462,9 @@ const AREAS_CONFIG = {
 };
 
 // ── CONFIGURACIÓN SGI Y ESTADO ──────────────────────────────────────────────
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwjR1nLOrmFVDykGlPWeZw66fQAt1l6CpIB-26Rq_jeG_2Bn4yIztUfckFyiocrXWyp9Q/exec';
+// Misma planilla y mismo Web App que la página de Hallazgos (RG-06-01 Rev05, solo lectura)
+const HALL_URL = 'https://script.google.com/macros/s/AKfycbzPJoui-qlrer5qvXqv9z534GgnmVFVfzROwaOU5YaLJi48H9TxitzIIJ0Gb25T4Xw-/exec?format=json';
+const HALL_REFRESH_MS = 30 * 60 * 1000;
 const INICIO_EJ35 = new Date(2026, 3, 1); // 1 de Abril de 2026
 
 let userEmail = '', userName = '', userInitials = '', esCoord = false;
@@ -471,7 +473,7 @@ let activeAreaFilter = 'Todas';
 
 // Memoria de hallazgos por email / persona
 const cacheDatosPersonas = {};
-let allLocalHallazgos = [];
+let allLocalHallazgos = [];   // filas válidas de la planilla Rev05
 
 // Autenticación de Google
 function sgiCb(resp) {
@@ -515,32 +517,8 @@ function iniciarApp() {
   }
 
   esCoord = (userEmail === 'coordinacion.sgi@esinel.com.ar' || userEmail === 'thiagobaira@gmail.com');
-  if (esCoord) {
-    document.getElementById('ptab-coord').classList.remove('hidden');
-  }
 
-  // Cargar hallazgos locales de respaldo
-  try {
-    const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data') || 'null');
-    if (stored && stored.data) {
-      allLocalHallazgos = stored.data;
-    }
-  } catch(e){}
-
-  // Sincronizar en segundo plano si no hay datos en caché local
-  if (!allLocalHallazgos.length) {
-    fetch(GAS_URL)
-      .then(r => r.json())
-      .then(res => {
-        if (res && res.data && Array.isArray(res.data)) {
-          allLocalHallazgos = res.data;
-          try { localStorage.setItem('esinel_hallazgos_data', JSON.stringify({ data: res.data })); } catch(e){}
-          renderDirectory();
-          if (selectedPersona) seleccionarPersona(selectedPersona.e);
-        }
-      })
-      .catch(()=>{});
-  }
+  cargarHallazgosRev05();
 
   renderAreaChips();
   renderDirectory();
@@ -555,6 +533,43 @@ function logout() {
 }
 
 // ── NORMALIZACIÓN Y COINCIDENCIA INTELIGENTE DE COLABORADORES ────────────────
+const ALIASES = {
+  'mnpiccione@esinel.com.ar': ['marcelo piccione', 'piccione marcelo', 'marcelo nicolas', 'piccione'],
+  'giaacobbeh@esinel.com.ar': ['hernan giacobbe', 'giacobbe hernan', 'hernan leonel', 'giacobbe'],
+  'mdiamanti@esinel.com.ar':  ['martin diamanti', 'diamanti martin', 'diamanti'],
+  'oschmuth@esinel.com.ar':   ['oscar schmuth', 'schmuth oscar', 'schmuth'],
+  'cpiccione@esinel.com.ar':  ['clarisa piccione', 'piccione clarisa'],
+  'jmonti@esinel.com.ar':     ['juan monti', 'monti juan', 'juan francisco monti', 'monti'],
+  'esanmartin@esinel.com.ar': ['emiliano san martin', 'san martin emiliano', 'san martin'],
+  'hgiorgetti@esinel.com.ar': ['hernan giorgetti', 'giorgetti hernan', 'giorgetti'],
+  'achavez@esinel.com.ar':    ['andrea chavez', 'chavez andrea', 'chavez'],
+  'prodriguez@esinel.com.ar': ['patricia rodriguez', 'rodriguez patricia'],
+  'mnahas@esinel.com.ar':     ['mercedes nahas', 'nahas mercedes', 'maria nahas', 'nahas'],
+  'lfissolo@esinel.com.ar':   ['lisandro fissolo', 'fissolo lisandro', 'fissolo'],
+  'compras@esinel.com.ar':    ['daniel lertora', 'lertora daniel', 'lertora'],
+  'dabella@esinel.com.ar':    ['diego abella', 'abella diego', 'abella'],
+  'dcarena@esinel.com.ar':    ['daniel carena', 'carena daniel', 'carena'],
+  'rnievas@esinel.com.ar':    ['romina nievas', 'nievas romina', 'nievas jara', 'nievas'],
+  'jsoliz@esinel.com.ar':     ['jose soliz', 'soliz jose', 'soliz coronado', 'soliz'],
+  'cdeabrantes@esinel.com.ar':['carlos de abrantes', 'de abrantes', 'abrantes correia', 'abrantes'],
+  'jfcatalano@esinel.com.ar': ['francisco catalano', 'catalano francisco', 'dominguez catalano', 'catalano'],
+  'pbarrionuevo@esinel.com.ar':['pablo barrionuevo', 'barrionuevo pablo', 'barrionuevo'],
+  'fbriani@esinel.com.ar':    ['francisco briani', 'briani francisco', 'briani'],
+  'ggigliotti@esinel.com.ar': ['gonzalo gigliotti', 'gigliotti gonzalo', 'gigliotti'],
+  'fguerrero@esinel.com.ar':  ['facundo guerrero', 'guerrero facundo', 'guerrero'],
+  'deposito@esinel.com.ar':   ['jose luis casares', 'casares jose', 'casares'],
+  'sdonda@esinel.com.ar':     ['sergio donda', 'donda sergio', 'donda'],
+  'jotero@esinel.com.ar':     ['javier otero', 'otero javier', 'otero'],
+  'coordinacion.sgi@esinel.com.ar': ['luan thiago baira', 'thiago baira', 'baira thiago', 'baira'],
+  'mcercos@esinel.com.ar':    ['marisa cercos', 'cercos marisa', 'cercos'],
+  'dfernandez@esinel.com.ar': ['diego fernandez', 'fernandez diego'],
+  'imagen@esinel.com.ar':     ['anahi gonzalez', 'gonzalez anahi'],
+  'foyuela@esinel.com.ar':    ['florencia oyuela', 'oyuela florencia', 'oyuela'],
+  'saludyseguridad@esinel.com.ar': ['bautista iestra', 'iestra bautista', 'iestra'],
+  'nheredia@esinel.com.ar':   ['esteban heredia', 'heredia esteban', 'heredia'],
+  'tnobllia@esinel.com.ar':   ['tomas noblia', 'noblia tomas', 'noblia']
+};
+
 function limpiarTexto(txt) {
   if (!txt) return '';
   return txt.toString().toLowerCase()
@@ -580,42 +595,7 @@ function coincideColaborador(textoSheet, persona) {
   if (s === pNom || s.includes(pNom) || pNom.includes(s)) return true;
 
   // 3. Diccionario de alias para casos con apellidos invertidos o nombres compuestos
-  const ALIASES = {
-    'mnpiccione@esinel.com.ar': ['marcelo piccione', 'piccione marcelo', 'marcelo nicolas', 'piccione'],
-    'giaacobbeh@esinel.com.ar': ['hernan giacobbe', 'giacobbe hernan', 'hernan leonel', 'giacobbe'],
-    'mdiamanti@esinel.com.ar':  ['martin diamanti', 'diamanti martin', 'diamanti'],
-    'oschmuth@esinel.com.ar':   ['oscar schmuth', 'schmuth oscar', 'schmuth'],
-    'cpiccione@esinel.com.ar':  ['clarisa piccione', 'piccione clarisa'],
-    'jmonti@esinel.com.ar':     ['juan monti', 'monti juan', 'juan francisco monti', 'monti'],
-    'esanmartin@esinel.com.ar': ['emiliano san martin', 'san martin emiliano', 'san martin'],
-    'hgiorgetti@esinel.com.ar': ['hernan giorgetti', 'giorgetti hernan', 'giorgetti'],
-    'achavez@esinel.com.ar':    ['andrea chavez', 'chavez andrea', 'chavez'],
-    'prodriguez@esinel.com.ar': ['patricia rodriguez', 'rodriguez patricia'],
-    'mnahas@esinel.com.ar':     ['mercedes nahas', 'nahas mercedes', 'maria nahas', 'nahas'],
-    'lfissolo@esinel.com.ar':   ['lisandro fissolo', 'fissolo lisandro', 'fissolo'],
-    'compras@esinel.com.ar':    ['daniel lertora', 'lertora daniel', 'lertora'],
-    'dabella@esinel.com.ar':    ['diego abella', 'abella diego', 'abella'],
-    'dcarena@esinel.com.ar':    ['daniel carena', 'carena daniel', 'carena'],
-    'rnievas@esinel.com.ar':    ['romina nievas', 'nievas romina', 'nievas jara', 'nievas'],
-    'jsoliz@esinel.com.ar':     ['jose soliz', 'soliz jose', 'soliz coronado', 'soliz'],
-    'cdeabrantes@esinel.com.ar':['carlos de abrantes', 'de abrantes', 'abrantes correia', 'abrantes'],
-    'jfcatalano@esinel.com.ar': ['francisco catalano', 'catalano francisco', 'dominguez catalano', 'catalano'],
-    'pbarrionuevo@esinel.com.ar':['pablo barrionuevo', 'barrionuevo pablo', 'barrionuevo'],
-    'fbriani@esinel.com.ar':    ['francisco briani', 'briani francisco', 'briani'],
-    'ggigliotti@esinel.com.ar': ['gonzalo gigliotti', 'gigliotti gonzalo', 'gigliotti'],
-    'fguerrero@esinel.com.ar':  ['facundo guerrero', 'guerrero facundo', 'guerrero'],
-    'deposito@esinel.com.ar':   ['jose luis casares', 'casares jose', 'casares'],
-    'sdonda@esinel.com.ar':     ['sergio donda', 'donda sergio', 'donda'],
-    'jotero@esinel.com.ar':     ['javier otero', 'otero javier', 'otero'],
-    'coordinacion.sgi@esinel.com.ar': ['luan thiago baira', 'thiago baira', 'baira thiago', 'baira'],
-    'mcercos@esinel.com.ar':    ['marisa cercos', 'cercos marisa', 'cercos'],
-    'dfernandez@esinel.com.ar': ['diego fernandez', 'fernandez diego'],
-    'imagen@esinel.com.ar':     ['anahi gonzalez', 'gonzalez anahi'],
-    'foyuela@esinel.com.ar':    ['florencia oyuela', 'oyuela florencia', 'oyuela'],
-    'saludyseguridad@esinel.com.ar': ['bautista iestra', 'iestra bautista', 'iestra'],
-    'nheredia@esinel.com.ar':   ['esteban heredia', 'heredia esteban', 'heredia'],
-    'tnobllia@esinel.com.ar':   ['tomas noblia', 'noblia tomas', 'noblia']
-  };
+
 
   const keyEmail = persona.e.toLowerCase();
   if (ALIASES[keyEmail]) {
@@ -663,14 +643,128 @@ function parsearFecha(f) {
   return isNaN(d.getTime()) ? null : d;
 }
 
-function filtrarEj35(lista) {
-  return (lista || []).filter(h => {
-    const raw = h.fechaDecl || h.fecha || h.fechaLimite || '';
-    if (!raw) return true;
-    const d = parsearFecha(raw);
-    if (!d) return true;
-    return d >= INICIO_EJ35;
+// ── DATOS DE LA PLANILLA REV05 Y CRITERIOS (iguales a la página de Hallazgos) ──
+function cargarHallazgosRev05() {
+  let hayDatos = false;
+  try {
+    const cache = JSON.parse(localStorage.getItem('rg0601_data') || 'null');
+    if (Array.isArray(cache) && cache.length) { usarDatos(cache); hayDatos = true; }
+  } catch (e) {}
+  const ts = parseInt(localStorage.getItem('rg0601_data_ts') || '0', 10);
+  if (hayDatos && Date.now() - ts < HALL_REFRESH_MS) return;
+
+  fetch(HALL_URL)
+    .then(r => r.json())
+    .then(json => {
+      if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length) {
+        try {
+          localStorage.setItem('rg0601_data', JSON.stringify(json.data));
+          localStorage.setItem('rg0601_data_ts', String(Date.now()));
+        } catch (e) {}
+        usarDatos(json.data);
+      }
+    })
+    .catch(() => { if (!hayDatos) mostrarToast('No se pudo conectar con la planilla de hallazgos'); });
+}
+
+function usarDatos(data) {
+  allLocalHallazgos = data.filter(hValido);
+  Object.keys(cacheDatosPersonas).forEach(k => delete cacheDatosPersonas[k]);
+  renderDirectory();
+  if (selectedPersona) seleccionarPersona(selectedPersona.e);
+}
+
+function hValido(it) {
+  if (!it) return false;
+  const desc = String(it.descripcion || '').toLowerCase();
+  const num = String(it.numHallazgo || '').toLowerCase().trim();
+  if (desc.includes('cierre al') || desc.includes('cierre para informe') || desc.includes('línea de corte') || num.includes('cierre')) return false;
+  if (/^-+$/.test(num)) return false;
+  return !!(it.numHallazgo || it.descripcion);
+}
+function sinAccion(it) { return String(it.correspondeAccion || '').trim().toUpperCase() === 'NO'; }
+function vacio(v) { v = String(v || '').trim(); return !v || v === '-'; }
+// 'ABIERTO' | 'SIN_EFICACIA' | 'OK' | 'NO' | 'SIN_ACCION'
+function estadoHallazgo(it) {
+  if (sinAccion(it)) return 'SIN_ACCION';
+  if (vacio(it.fechaRealCierre)) return 'ABIERTO';
+  const ef = String(it.resultadoEficacia || '').trim().toUpperCase();
+  return ef === 'OK' ? 'OK' : ef === 'NO' ? 'NO' : 'SIN_EFICACIA';
+}
+
+// Separa "Clarisa Piccione - Andrea Chavez", "RODRIGUEZ-NAHAS", "M. PICCIONE / FONSECA"
+function separarNombres(str) {
+  return String(str || '').split(/[,/|&;]|\s-\s|-(?=[A-ZÁÉÍÓÚÑa-záéíóúñ])/).map(x => x.trim()).filter(x => x && x !== '-');
+}
+function apellidosDe(persona) {
+  const al = (ALIASES[persona.e.toLowerCase()] || []).filter(a => !a.includes(' '));
+  const toks = limpiarTexto(persona.n).split(' ');
+  return al.concat([toks[toks.length - 1]]);
+}
+function coincidePieza(pieza, persona) {
+  const s = limpiarTexto(pieza);
+  if (!s) return false;
+  const pNom = limpiarTexto(persona.n);
+  const pt = pNom.split(' ');
+  if (s === pNom || (s.length >= 6 && pNom.includes(s) && s.includes(' '))) return true;
+  if ((ALIASES[persona.e.toLowerCase()] || []).some(a => a.includes(' ') && s.includes(a))) return true;
+  const toks = s.split(' ');
+  const palabras = toks.filter(t => t.length > 1), iniciales = toks.filter(t => t.length === 1);
+  if (palabras.length >= 2 && palabras.every(t => pt.includes(t))) return true;
+  if (palabras.length === 1 && apellidosDe(persona).includes(palabras[0])) {
+    return iniciales.every(i => pt[0].startsWith(i));
+  }
+  return false;
+}
+// Una pieza del texto de la planilla corresponde a la persona solo si no es ambigua
+function piezaEsDe(pieza, persona) {
+  if (!coincidePieza(pieza, persona)) return false;
+  return PLANTEL.filter(x => coincidePieza(pieza, x)).length === 1;
+}
+function textoEsDe(texto, persona) {
+  return separarNombres(texto).some(pz => piezaEsDe(pz, persona));
+}
+
+function numeroDe(it) {
+  const num = String(it.numHallazgo || '').trim(), tipo = String(it.tipoHallazgo || '').trim();
+  return tipo && num.toUpperCase().startsWith(tipo.toUpperCase() + '-') ? num.slice(tipo.length + 1) : num;
+}
+function aItem(it, idx) {
+  const est = estadoHallazgo(it);
+  return {
+    fila: idx, tipo: it.tipoHallazgo, num: numeroDe(it), desc: it.descripcion || '',
+    sector: it.sectorResponsable || '', fechaLim: vacio(it.fechaLimite) ? '' : it.fechaLimite,
+    fecha: it.fechaDetection || '', fechaCierre: vacio(it.fechaRealCierre) ? '' : it.fechaRealCierre,
+    estado: est, resultado: it.resultadoEficacia || '', cerrado: est !== 'ABIERTO',
+    accionAC: vacio(it.accionCorrectiva) ? '' : it.accionCorrectiva,
+    accionAP: vacio(it.accionPreventiva) ? '' : it.accionPreventiva,
+    accionAM: vacio(it.accionMejora) ? '' : it.accionMejora,
+    tipoAccion: vacio(it.tipoAccion) ? '' : it.tipoAccion,
+    respCierre: it.responsableCierre || '', detector: it.quienDetecto || '',
+    numGenerado: it.numHallazgo, fechaDecl: it.fechaDetection || ''
+  };
+}
+// Asignados = Responsable de cierre (col S) · Declarados = Detector (col C)
+function armarDatos(persona) {
+  if (cacheDatosPersonas[persona.e]) return cacheDatosPersonas[persona.e];
+  const asignados = [], declarados = [];
+  allLocalHallazgos.forEach((it, idx) => {
+    if (textoEsDe(it.responsableCierre, persona)) asignados.push(aItem(it, idx));
+    if (textoEsDe(it.quienDetecto, persona)) declarados.push(aItem(it, idx));
   });
+  return (cacheDatosPersonas[persona.e] = { asignados, declarados });
+}
+function delEjercicio(fecha) {
+  const d = parsearFecha(fecha);
+  return !d || d >= INICIO_EJ35;
+}
+// Abiertos de cualquier ejercicio; cerrados y declarados solo del Ejercicio 35
+function vistaPersona(persona) {
+  const d = armarDatos(persona);
+  const abiertos = d.asignados.filter(h => !h.cerrado);
+  const cerrados = d.asignados.filter(h => h.cerrado && delEjercicio(h.fechaCierre || h.fecha));
+  const declarados = d.declarados.filter(h => delEjercicio(h.fecha));
+  return { abiertos, cerrados, declarados };
 }
 
 function getInitials(name) {
@@ -749,33 +843,8 @@ function renderDirectory() {
 }
 
 function getPersonaCounts(persona) {
-  if (cacheDatosPersonas[persona.e]) {
-    const d = cacheDatosPersonas[persona.e];
-    const asignados = filtrarEj35(d.asignados || []);
-    const declarados = filtrarEj35(d.declarados || []);
-    const ab = asignados.filter(h => !h.resultado).length;
-    const ce = asignados.filter(h => h.resultado).length;
-    return { abiertos: ab, cerrados: ce, declarados: declarados.length };
-  }
-
-  // Respaldo desde allLocalHallazgos usando coincidencia inteligente
-  let ab = 0, ce = 0, de = 0;
-  allLocalHallazgos.forEach(h => {
-    const resp = (h.responsableAccion || h.responsable || h.respAccion || '') + ' ' +
-                 (h.responsableVerificacion || h.respVerif || '') + ' ' +
-                 (h.personasInv || h.involucrados || '');
-    const decl = (h.declarante || h.detectadoPor || '');
-
-    const isAsig = coincideColaborador(resp, persona);
-    const isDecl = coincideColaborador(decl, persona);
-
-    if (isAsig) {
-      if (h.resultadoEficacia === 'OK' || h.resultado === 'OK' || h.cerrado) ce++;
-      else ab++;
-    }
-    if (isDecl) de++;
-  });
-  return { abiertos: ab, cerrados: ce, declarados: de };
+  const v = vistaPersona(persona);
+  return { abiertos: v.abiertos.length, cerrados: v.cerrados.length, declarados: v.declarados.length };
 }
 
 function seleccionarMiUsuario() {
@@ -805,88 +874,15 @@ async function seleccionarPersona(email) {
   document.getElementById('ppane-asignados').innerHTML = '<div class="spinner"><div class="spin"></div>Consultando hallazgos de ' + p.n + '...</div>';
   document.getElementById('ppane-declarados').innerHTML = '<div class="spinner"><div class="spin"></div>Cargando declaraciones...</div>';
 
-  let datos = cacheDatosPersonas[p.e];
-  if (!datos) {
-    try {
-      const url = GAS_URL + '?accion=panel&email=' + encodeURIComponent(p.e);
-      const resp = await fetch(url);
-      datos = await resp.json();
-    } catch(err) {
-      datos = null;
-    }
-
-    // Complementar con fallback si el backend de GAS no reconoció el formato del nombre
-    const fallback = armarDatosFallback(p);
-    if (!datos || (!datos.asignados && !datos.declarados)) {
-      datos = fallback;
-    } else {
-      if (fallback.asignados.length > (datos.asignados || []).length) {
-        datos.asignados = fallback.asignados;
-      }
-      if (fallback.declarados.length > (datos.declarados || []).length) {
-        datos.declarados = fallback.declarados;
-      }
-    }
-    cacheDatosPersonas[p.e] = datos;
-  }
-
+  const datos = armarDatos(p);
   renderDetalleColaborador(datos, p);
 }
 
-function armarDatosFallback(p) {
-  const asignados = [];
-  const declarados = [];
-
-  allLocalHallazgos.forEach((h, idx) => {
-    const resp = (h.responsableAccion || h.responsable || h.respAccion || '') + ' ' + 
-                 (h.responsableVerificacion || h.respVerif || '') + ' ' + 
-                 (h.personasInv || h.involucrados || '');
-    const decl = (h.declarante || h.detectadoPor || '');
-
-    const isAsig = coincideColaborador(resp, p);
-    const isDecl = coincideColaborador(decl, p);
-
-    if (isAsig) {
-      asignados.push({
-        fila: h.fila || idx,
-        tipo: h.tipo || 'NC',
-        num: h.numero || h.num || String(idx + 1),
-        desc: h.descripcion || h.hallazgo || h.desc || '',
-        sector: h.area || h.sector || p.a,
-        fechaLim: h.fechaLimite || h.fechaLim || '',
-        fecha: h.fecha || h.fechaDecl || '',
-        resultado: h.resultadoEficacia || h.resultado || '',
-        accionAC: h.accionCorrectiva || h.accionAC || '',
-        accionAP: h.accionPreventiva || h.accionAP || '',
-        accionAM: h.accionMejora || h.accionAM || '',
-        estado: h.estado || '',
-        linkDrive: h.linkDrive || ''
-      });
-    }
-    if (isDecl) {
-      declarados.push({
-        fila: h.fila || idx,
-        tipo: h.tipo || 'Hallazgo',
-        numGenerado: h.numero || h.num || h.numGenerado || '',
-        desc: h.descripcion || h.hallazgo || h.desc || '',
-        sector: h.area || h.sector || '',
-        fechaDecl: h.fecha || h.fechaDecl || '',
-        cerrado: h.cerrado || h.resultado === 'OK' || h.resultadoEficacia === 'OK',
-        estado: h.estado || 'En revisión'
-      });
-    }
-  });
-
-  return { asignados, declarados, paraCoord: {} };
-}
-
 function renderDetalleColaborador(datos, persona) {
-  const asignados = filtrarEj35(datos.asignados || []);
-  const declarados = filtrarEj35(datos.declarados || []);
-
-  const abiertos = asignados.filter(h => !h.resultado);
-  const cerrados = asignados.filter(h => h.resultado);
-  const cerradosOK = cerrados.filter(h => h.resultado === 'OK').length;
+  const v = vistaPersona(persona);
+  const abiertos = v.abiertos, cerrados = v.cerrados, declarados = v.declarados;
+  const asignados = abiertos.concat(cerrados);
+  const cerradosOK = cerrados.length;
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const vencidos = abiertos.filter(h => {
     if (!h.fechaLim) return false;
@@ -917,7 +913,7 @@ function renderDetalleColaborador(datos, persona) {
   // Render Pestaña 1: Asignados
   const pAsig = document.getElementById('ppane-asignados');
   if (!asignados.length) {
-    pAsig.innerHTML = `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>${persona.n} no tiene hallazgos asignados en este ejercicio.</div>`;
+    pAsig.innerHTML = `<div class="empty"><i class="ti ti-circle-check text-emerald-500"></i>${persona.n} no tiene hallazgos asignados como responsable de cierre (abiertos o cerrados en este ejercicio).</div>`;
   } else {
     pAsig.innerHTML = `
       ${abiertos.length ? `
@@ -948,9 +944,7 @@ function renderDetalleColaborador(datos, persona) {
             <span class="text-xs text-[var(--text2)] ml-2">${h.tipo || ''}</span>
           </div>
           <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-            ${h.cerrado ? '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado</span>' :
-              h.numGenerado ? '<span class="badge b-indigo">En proceso</span>' :
-              '<span class="badge b-amber"><i class="ti ti-clock"></i>En revisión</span>'}
+            ${estadoBadge(h.estado, h.resultado, h.fechaLim)}
             ${h.fechaDecl ? `<span class="badge b-gray"><i class="ti ti-calendar"></i>${h.fechaDecl}</span>` : ''}
           </div>
         </div>
@@ -960,10 +954,6 @@ function renderDetalleColaborador(datos, persona) {
     `).join('');
   }
 
-  // Render Pestaña 3: Coordinación (si existe y es coord)
-  if (datos.paraCoord && esCoord) {
-    renderCoordPanel(datos.paraCoord);
-  }
 }
 
 function renderCoordPanel(coord) {
@@ -1013,7 +1003,8 @@ function rowCard(h, clickable) {
         </div>
       </div>
       <div class="text-xs text-[var(--text2)] leading-relaxed">${h.desc || ''}</div>
-      ${accion ? `<div class="text-xs text-[var(--text3)] mt-2 pt-2 border-t border-[var(--border)]"><strong>Acción:</strong> ${accion}</div>` : ''}
+      ${accion ? `<div class="text-xs text-[var(--text3)] mt-2 pt-2 border-t border-[var(--border)]"><strong>Acción${h.tipoAccion ? ' (' + h.tipoAccion + ')' : ''}:</strong> ${accion}</div>` : ''}
+      ${h.respCierre ? `<div class="text-[11px] text-[var(--text3)] mt-1"><strong>Resp. de cierre:</strong> ${h.respCierre}</div>` : ''}
     </div>`;
 }
 
@@ -1025,10 +1016,10 @@ function abrirModalAsignado(fila) {
   if (!h) return;
 
   const esMio = userEmail && userEmail.toLowerCase() === p.e.toLowerCase();
-  const puedeEditar = esMio || esCoord;
+  const puedeEditar = false;   // solo lectura: la acción se carga en la planilla RG-06-01
 
   const accion = h.accionAC || h.accionAP || h.accionAM || '';
-  const tipoAccion = h.accionAC ? 'AC' : (h.accionAP ? 'AP' : 'AM');
+  const tipoAccion = h.tipoAccion || (h.accionAC ? 'AC' : (h.accionAP ? 'AP' : (h.accionAM ? 'AM' : '-')));
 
   document.getElementById('modal-title').textContent = `${h.tipo}-${h.num} · ${p.n}`;
   document.getElementById('modal-body').innerHTML = `
@@ -1055,7 +1046,9 @@ function abrirModalAsignado(fila) {
       <div class="p-3 rounded-xl bg-[var(--bg2)] border border-[var(--border)] text-xs space-y-2">
         <div><strong>Tipo de acción:</strong> ${tipoAccion}</div>
         <div><strong>Acción implementada:</strong> ${accion || 'Aún no reportada'}</div>
-        ${h.linkDrive ? `<div><strong>Evidencia:</strong> <a href="${h.linkDrive}" target="_blank" class="text-blue-600 underline">Ver en Drive</a></div>` : ''}
+        ${h.fechaCierre ? `<div><strong>Fecha real de cierre:</strong> ${h.fechaCierre}</div>` : ''}
+        ${h.resultado ? `<div><strong>Resultado de eficacia:</strong> ${h.resultado}</div>` : ''}
+        <div class="pt-2 text-[var(--text3)]">Para cargar o corregir la acción, hacelo en la planilla RG-06-01.</div>
       </div>
     `}
   `;
@@ -1063,7 +1056,7 @@ function abrirModalAsignado(fila) {
   document.getElementById('modal-footer').innerHTML = `
     <button class="btn" onclick="cerrarModal()">Cerrar</button>
     ${puedeEditar ? `
-      <button class="btn btn-primary" onclick="guardarAccion(${fila},'${h.num}','${h.tipo}')">
+      <button class="btn btn-primary" onclick="guardarAccion()">
         <i class="ti ti-send"></i> Guardar Acción
       </button>
     ` : ''}
@@ -1076,46 +1069,9 @@ function cerrarModal() {
   document.getElementById('modal-overlay').classList.remove('open');
 }
 
-async function guardarAccion(fila, num, tipo) {
-  const accionTexto = document.getElementById('m-accion').value.trim();
-  const fecha = document.getElementById('m-fecha').value;
-  const drive = document.getElementById('m-drive').value.trim();
-  const tipoAccion = document.getElementById('m-tipo-accion').value;
-  if (!accionTexto) { mostrarToast('Describí la acción tomada antes de enviar'); return; }
-
-  const params = new URLSearchParams({
-    accion:'submitAccion', email:selectedPersona.e, fila:String(fila),
-    num, tipoAccion, accionTexto, fechaCierre:fecha, linkDrive:drive, estado:'Evidencia subida'
-  });
-
-  try {
-    await fetch(GAS_URL + '?' + params.toString());
-    cerrarModal();
-    mostrarToast('✓ Acción enviada y guardada en SGI');
-    delete cacheDatosPersonas[selectedPersona.e];
-    setTimeout(() => seleccionarPersona(selectedPersona.e), 1000);
-  } catch(e) { mostrarToast('Error al enviar — verificá tu conexión'); }
-}
-
-async function validarHallazgo(fila, decision) {
-  let obs = '';
-  if (decision === 'DESESTIMAR') {
-    obs = window.prompt ? window.prompt('Motivo para desestimar:') : '';
-    if (!obs) return;
-  }
-
-  const params = new URLSearchParams({
-    accion:'validarHallazgo', email:userEmail, fila:String(fila), decision, obs
-  });
-  try {
-    await fetch(GAS_URL + '?' + params.toString());
-    mostrarToast(decision === 'VALIDAR' ? '✓ Hallazgo validado' : '✓ Hallazgo desestimado');
-    if (selectedPersona) {
-      delete cacheDatosPersonas[selectedPersona.e];
-      setTimeout(() => seleccionarPersona(selectedPersona.e), 1000);
-    }
-  } catch(e) { mostrarToast('Error al procesar'); }
-}
+// Solo lectura: Mi Panel ya no escribe en la planilla
+function guardarAccion() { mostrarToast('Mi Panel es de solo lectura: cargá la acción en la planilla RG-06-01'); }
+function validarHallazgo() { mostrarToast('Mi Panel es de solo lectura: validá el hallazgo en la planilla RG-06-01'); }
 
 function showPersonaTab(tab) {
   document.querySelectorAll('#persona-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -1126,8 +1082,10 @@ function showPersonaTab(tab) {
 
 function estadoBadge(estado, resultado, fechaLim) {
   const hoy = new Date(); hoy.setHours(0,0,0,0);
-  if (resultado === 'OK') return '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado OK</span>';
-  if (resultado === 'NO') return '<span class="badge b-red"><i class="ti ti-x"></i>Cerrado NO</span>';
+  if (estado === 'SIN_ACCION') return '<span class="badge b-gray"><i class="ti ti-check"></i>Cerrado · sin acción</span>';
+  if (estado === 'OK') return '<span class="badge b-green"><i class="ti ti-check"></i>Cerrado OK</span>';
+  if (estado === 'NO') return '<span class="badge b-red"><i class="ti ti-x"></i>Cerrado NO</span>';
+  if (estado === 'SIN_EFICACIA') return '<span class="badge b-indigo"><i class="ti ti-clock"></i>Cerrado · eficacia pendiente</span>';
   if (fechaLim) {
     const fl = parsearFecha(fechaLim);
     if (fl && fl < hoy) return '<span class="badge b-red"><i class="ti ti-alert-triangle"></i>Vencido</span>';
@@ -1136,13 +1094,13 @@ function estadoBadge(estado, resultado, fechaLim) {
       if (dias <= 30) return `<span class="badge b-amber"><i class="ti ti-clock"></i>${dias}d para vencer</span>`;
     }
   }
-  if (estado) return `<span class="badge b-indigo">${estado}</span>`;
   return '<span class="badge b-gray">En proceso</span>';
 }
 
 function cardClass(estado, resultado, fechaLim) {
-  if (resultado === 'OK') return 'left-green';
-  if (resultado === 'NO') return 'left-red';
+  if (estado === 'OK' || estado === 'SIN_ACCION') return 'left-green';
+  if (estado === 'NO') return 'left-red';
+  if (estado === 'SIN_EFICACIA') return 'left-indigo';
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const fl = parsearFecha(fechaLim);
   if (fl && fl < hoy) return 'left-red';
