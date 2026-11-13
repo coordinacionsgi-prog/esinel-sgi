@@ -303,6 +303,24 @@
     <!-- ÁREA DE CONTENIDO DINÁMICO -->
     <main class="flex-1 min-w-0">
 
+      <!-- DECLARAR NUEVO HALLAZGO (visible en todas las pestañas) -->
+      <div class="card-clean rounded-2xl p-4 mb-4 border-l-4 border-l-sky-600 bg-white flex flex-col md:flex-row md:items-center gap-4">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-circle-plus text-sky-600"></i>¿Detectaste un hallazgo? Declaralo en la planilla</h3>
+          <ol class="mt-2 text-xs text-slate-600 space-y-1 list-decimal list-inside">
+            <li>Tocá <strong>Declarar nuevo hallazgo</strong>: se abre la planilla RG-06-01 en la pestaña Planilla.</li>
+            <li>Arriba a la derecha tocá el botón <strong>NUEVO HALLAZGO</strong> y elegí el tipo de hallazgo y el tipo de acción (AC, AP o AM). La planilla asigna los números siguientes y pinta de negro las celdas que no corresponde completar.</li>
+            <li>Completá la fila 2: quién lo detectó, el hallazgo, el sector, el responsable de cierre y la fecha de cierre programada.</li>
+            <li>En esta página, abrí la ficha del hallazgo y usá <strong>Enviar por Mail → Nuevo hallazgo asignado</strong> para avisarle al responsable de cierre.</li>
+          </ol>
+          <p class="mt-2 text-[11px] text-slate-400">Esta página es de solo lectura: los datos se cargan y corrigen en la planilla. Necesitás permiso de edición en la planilla.</p>
+        </div>
+        <a href="https://docs.google.com/spreadsheets/d/1uzI_at19LwjTtYUekEUJoXF2W_5vu32hrgSB4866Z1E/edit#gid=0&amp;range=AB1" target="_blank" rel="noopener"
+           class="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm shadow-md shadow-sky-600/20 transition">
+          <i class="fa-solid fa-plus"></i><span>Declarar nuevo hallazgo</span>
+        </a>
+      </div>
+
       <!-- TAB 1: DASHBOARD PANEL -->
       <section id="content-dashboard" class="tab-content space-y-6">
         
@@ -1755,7 +1773,7 @@
             <div style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;white-space:pre-wrap;border-left:3px solid ${color}">${escHtml(item.descripcion)}</div>
             <h4 style="font-size:11px;text-transform:uppercase;color:#64748b;margin:14px 0 6px">Plan de acción (${escHtml(item.tipoAccion)})</h4>
             <div style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;white-space:pre-wrap">${escHtml(extractPlanAccionText(item))}</div>
-            <p style="text-align:center;margin:24px 0 8px"><span style="display:inline-block;background:#0284c7;color:#fff;font-size:12px;font-weight:bold;padding:10px 20px;border-radius:8px">Ver en el Dashboard de Hallazgos</span></p>
+            <p style="text-align:center;margin:24px 0 8px"><span style="display:inline-block;background:#0284c7;color:#fff;font-size:12px;font-weight:bold;padding:10px 20px;border-radius:8px;margin:4px">Ver en el Dashboard de Hallazgos</span><span style="display:inline-block;background:#166534;color:#fff;font-size:12px;font-weight:bold;padding:10px 20px;border-radius:8px;margin:4px">Abrir la planilla RG-06-01</span></p>
             <p style="margin-top:20px;padding-top:14px;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;text-align:center">Coordinación SGI · ESINEL S.R.L. · Mensaje automático</p>
           </div>
         </div>`;
