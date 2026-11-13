@@ -1805,8 +1805,9 @@
       }
 
       function enviarAuth() {
-        const em = sessionStorage.getItem('sgi_email') || 'thiagobaira@gmail.com';
-        const nm = sessionStorage.getItem('sgi_name') || 'Luan Thiago Baira';
+        const em = sessionStorage.getItem('sgi_email');
+        const nm = sessionStorage.getItem('sgi_name');
+        if (!em || !nm) return;
         try {
           fr.contentWindow.postMessage({ type: 'sgi-auth', email: em, name: nm }, window.location.origin);
         } catch(e) {}
@@ -1825,5 +1826,86 @@
       document.body.style.overflow = '';
     };
   </script>
+  <!-- Auth overlay (mismo patrón que el resto del SGI) -->
+  <div id="sgi-auth-overlay" style="position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;">
+    <div class="w-full max-w-sm bg-white rounded-3xl border border-slate-200 p-8 shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-3xl shadow-sm mb-4">
+        <i class="ti ti-lock"></i>
+      </div>
+      <h2 class="text-xl font-bold tracking-tight text-slate-900">SGI · ESINEL</h2>
+      <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+        Acceso restringido para personal autorizado.<br>
+        Iniciá sesión con tu cuenta corporativa <strong class="text-indigo-600 font-semibold">@esinel.com.ar</strong>
+      </p>
+      <div class="mt-6 flex flex-col items-center justify-center">
+        <div id="g_id_onload"
+             data-client_id="950947921122-r5k7slfpd4t1vm40s2hhpf4hii4530o2.apps.googleusercontent.com"
+             data-callback="sgiCb"
+             data-auto_prompt="true"></div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-shape="pill"></div>
+      </div>
+      <p id="sgi-auth-error" class="text-xs font-semibold text-rose-600 mt-4" style="display:none">Acceso exclusivo para cuentas @esinel.com.ar.</p>
+      <div class="mt-3 pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-medium">
+        Normas ISO 9001 · 14001 · 45001
+      </div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    function quitarOverlay() {
+      const ov = document.getElementById('sgi-auth-overlay');
+      if (ov) ov.remove();
+    }
+    function injectChip(n) {
+      const h = document.querySelector('.esinel-hdr-top');
+      if (!h || !n) return;
+      const ini = n.split(' ').map(w => w[0] || '').join('').substring(0, 2).toUpperCase();
+      const c = document.createElement('div');
+      c.className = 'flex items-center gap-2.5 cursor-pointer ml-auto px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 transition';
+      c.title = 'Sesión iniciada · Clic para salir';
+      c.onclick = function(){ sessionStorage.clear(); location.reload(); };
+      const av = document.createElement('div');
+      av.className = 'w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-sm';
+      av.textContent = ini;
+      const nm = document.createElement('span');
+      nm.className = 'text-xs font-medium text-slate-300 max-w-[120px] truncate hidden sm:inline-block';
+      nm.textContent = n;
+      const ic = document.createElement('i');
+      ic.className = 'ti ti-logout text-slate-400 text-xs';
+      c.append(av, nm, ic);
+      h.appendChild(c);
+    }
+
+    // Dentro de Apps Script (google.script) el acceso ya lo controla Google: no se muestra el login.
+    const enAppsScript = (typeof google !== 'undefined' && google && google.script && google.script.run);
+    if (enAppsScript) { quitarOverlay(); }
+    else if (sessionStorage.getItem('sgi_ok') === '1') {
+      quitarOverlay();
+      injectChip(sessionStorage.getItem('sgi_name') || '');
+    }
+
+    window.sgiCb = function(r) {
+      try {
+        const p = JSON.parse(atob(r.credential.split('.')[1]));
+        if (p.email && (p.email.endsWith('@esinel.com.ar') || p.email === 'thiagobaira@gmail.com')) {
+          sessionStorage.setItem('sgi_ok', '1');
+          sessionStorage.setItem('sgi_email', p.email);
+          const nm = p.name || p.email.split('@')[0];
+          sessionStorage.setItem('sgi_name', nm);
+          quitarOverlay();
+          injectChip(nm);
+        } else {
+          const er = document.getElementById('sgi-auth-error');
+          if (er) er.style.display = 'block';
+        }
+      } catch(err) {}
+    };
+  })();
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
