@@ -1094,21 +1094,65 @@
   let activeAreaFilter = '';
   let activeViewMode = 'grid';
 
+  // Hallazgos abiertos por persona: misma planilla (Rev05) y mismos criterios que Hallazgos y Mi Panel.
+  // Abierto = sin fecha real de cierre (y "Corresponde acción?" distinto de NO).
+  // Se cuenta a quien figura como Responsable de cierre (columna S).
+  const HALL_URL = 'https://script.google.com/macros/s/AKfycbzPJoui-qlrer5qvXqv9z534GgnmVFVfzROwaOU5YaLJi48H9TxitzIIJ0Gb25T4Xw-/exec?format=json';
   let hallazgosAbiertos = {};
-  try {
-    const stored = JSON.parse(localStorage.getItem('esinel_hallazgos_data') || 'null');
-    if (stored && stored.data) {
-      stored.data.forEach(h => {
-        const efic = (h.resultadoEficacia || '').trim();
-        if (efic === 'OK' || efic === 'NO') return;
-        [h.responsableAccion, h.responsableVerificacion].forEach(nombre => {
-          if (!nombre) return;
-          const n = nombre.trim();
-          hallazgosAbiertos[n] = (hallazgosAbiertos[n] || 0) + 1;
-        });
-      });
+
+  function hlNorm(t) {
+    return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function hlCoincide(pieza, persona) {
+    const s = hlNorm(pieza), pt = hlNorm(persona.n).split(' ');
+    if (!s) return false;
+    const toks = s.split(' '), palabras = toks.filter(t => t.length > 1), iniciales = toks.filter(t => t.length === 1);
+    if (palabras.length >= 2) return palabras.every(t => pt.includes(t));
+    if (palabras.length === 1 && palabras[0].length > 2 && pt.slice(1).includes(palabras[0])) {
+      return iniciales.every(i => pt[0].startsWith(i));
     }
+    return false;
+  }
+  function hlPersonaDe(pieza) {
+    const c = DATA.filter(p => hlCoincide(pieza, p));
+    return c.length === 1 ? c[0] : null;   // si es ambiguo (ej. "PICCIONE"), no se asigna
+  }
+  function hlAbierto(h) {
+    if (String(h.correspondeAccion || '').trim().toUpperCase() === 'NO') return false;
+    const desc = String(h.descripcion || '').toLowerCase(), num = String(h.numHallazgo || '').trim();
+    if (/^-+$/.test(num) || desc.includes('cierre para informe') || desc.includes('cierre al')) return false;
+    const frc = String(h.fechaRealCierre || '').trim();
+    return !frc || frc === '-';
+  }
+  function calcularAbiertos(data) {
+    const res = {};
+    (data || []).filter(hlAbierto).forEach(h => {
+      const vistos = new Set();
+      String(h.responsableCierre || '').split(/[,/|&;]|\s-\s|-(?=[A-Za-zÁÉÍÓÚÑáéíóúñ])/).forEach(pz => {
+        const p = hlPersonaDe(pz.trim());
+        if (p && !vistos.has(p.n)) { vistos.add(p.n); res[p.n] = (res[p.n] || 0) + 1; }
+      });
+    });
+    return res;
+  }
+  try {
+    const cache = JSON.parse(localStorage.getItem('rg0601_data') || 'null');
+    if (Array.isArray(cache)) hallazgosAbiertos = calcularAbiertos(cache);
   } catch(e) {}
+  (function refrescarHallazgos() {
+    const ts = parseInt(localStorage.getItem('rg0601_data_ts') || '0', 10);
+    if (Object.keys(hallazgosAbiertos).length && Date.now() - ts < 30 * 60 * 1000) return;
+    fetch(HALL_URL).then(r => r.json()).then(json => {
+      if (!json || json.status !== 'success' || !Array.isArray(json.data)) return;
+      try {
+        localStorage.setItem('rg0601_data', JSON.stringify(json.data));
+        localStorage.setItem('rg0601_data_ts', String(Date.now()));
+      } catch(e) {}
+      hallazgosAbiertos = calcularAbiertos(json.data);
+      if (typeof renderMetricsAndBar === 'function') { renderMetricsAndBar(); renderDirectory(); }
+    }).catch(() => {});
+  })();
 
   function getInitials(name) {
     return name.split(' ')
