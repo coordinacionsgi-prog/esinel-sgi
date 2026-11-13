@@ -713,6 +713,7 @@
       return !!(it.numHallazgo || it.descripcion);
     }
     function hAbierto(it) {
+      if (String(it.correspondeAccion || '').trim().toUpperCase() === 'NO') return false;   // no corresponde acción = cerrado
       const frc = String(it.fechaRealCierre || '').trim();
       return !frc || frc === '-';
     }

@@ -1012,8 +1012,14 @@
     }
 
     // Abierto = fecha real de cierre (col R) vacía
+    // "Corresponde acción? = NO" (col I): el hallazgo se cierra sin acción
+    function noCorrespondeAccion(item) {
+      return String(item && item.correspondeAccion || '').trim().toUpperCase() === 'NO';
+    }
+
     function isFindingOpen(item) {
       if (!item) return false;
+      if (noCorrespondeAccion(item)) return false;
       const frc = (item.fechaRealCierre || '').trim();
       return !frc || frc === '-';
     }
@@ -1022,6 +1028,7 @@
     function getItemStatus(item) {
       if (isFindingOpen(item)) return 'ABIERTO';
       const ef = (item.resultadoEficacia || '').toUpperCase().trim();
+      if (noCorrespondeAccion(item)) return ef === 'NO' ? 'NO' : 'OK';
       if (ef === 'OK') return 'OK';
       if (ef === 'NO') return 'NO';
       return 'SIN_EFICACIA';
@@ -1178,6 +1185,7 @@
 
     function getStatusBadge(item) {
       const st = getItemStatus(item);
+      if (noCorrespondeAccion(item)) return `<span class="bg-slate-100 text-slate-600 border border-slate-200 font-semibold px-2 py-0.5 rounded-md text-[10px]" title="Corresponde acción? = NO">Cerrado · sin acción</span>`;
       if (st === 'OK')          return `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5 rounded-md text-[10px]">Cerrado OK</span>`;
       if (st === 'NO')          return `<span class="bg-rose-50 text-rose-700 border border-rose-200 font-bold px-2 py-0.5 rounded-md text-[10px]">Cerrado NO</span>`;
       if (st === 'SIN_EFICACIA')return `<span class="bg-sky-50 text-sky-700 border border-sky-200 font-semibold px-2 py-0.5 rounded-md text-[10px]">Sin Eficacia</span>`;
