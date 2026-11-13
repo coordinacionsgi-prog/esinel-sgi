@@ -56,7 +56,8 @@ const CORREOS = {
   'tomas noblia':        'tnoblia@esinel.com.ar',
   'hernán giorgetti':    'hgiorgetti@esinel.com.ar',
   'hernan giorgetti':    'hgiorgetti@esinel.com.ar',
-  'florencia oyuela':    'foyuela@esinel.com.ar'
+  'florencia oyuela':    'foyuela@esinel.com.ar',
+  'marisa cercos':       'mcercos@esinel.com.ar'
 };
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -139,64 +140,102 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body   = JSON.parse(e.postData.contents);
-    const action = body.action || 'save';
+    const action = body.action || '';
 
-    if (action === 'save') {
-      const hoja = getHoja();
-      const item = body.item || {};
-      const tipo = (item.tipoHallazgo || '').trim();
-      const num  = (item.numHallazgo  || '').replace(tipo + '-', '').trim();
-      hoja.appendRow([
-        tipo, num,
-        item.quienDetecto, item.fechaDetection, item.descripcion,
-        item.accionInmediata, item.analisisCausa, item.sectorResponsable,
-        item.correspondeAccion, item.tipoAccion, item.numAccion,
-        item.accionCorrectiva, item.accionPreventiva, item.accionMejora,
-        item.evaluacionResultado, item.responsableAccion,
-        item.fechaLimite, item.fechaRealCierre, item.responsableCierre,
-        item.evidenciaCierre, item.fechaVerificacion, item.resultadoEficacia,
-        item.evidenciaResultado, item.requiereActualizar, item.fuenteEvidencia,
-        item.estado, item.categoria
-      ]);
-      CacheService.getScriptCache().remove('hallazgos_rev05');
-      return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }))
-        .setMimeType(ContentService.MimeType.JSON);
+    // La planilla web es de solo lectura: el alta y la edición se hacen en Google Sheets.
+    if (action === 'notificar') {
+      return jsonOut(notificarHallazgo(body));
     }
-
-    if (action === 'update') {
-      const hoja   = getHoja();
-      const item   = body.item || {};
-      const target = (item.numHallazgo || '').trim();
-      const vals   = hoja.getDataRange().getValues();
-      for (let i = 1; i < vals.length; i++) {
-        const rowCode = String(vals[i][0]).trim() + '-' + String(vals[i][1]).trim();
-        if (rowCode === target) {
-          const tipo = (item.tipoHallazgo || '').trim();
-          const num  = target.replace(tipo + '-', '').trim();
-          hoja.getRange(i + 1, 1, 1, 27).setValues([[
-            tipo, num,
-            item.quienDetecto, item.fechaDetection, item.descripcion,
-            item.accionInmediata, item.analisisCausa, item.sectorResponsable,
-            item.correspondeAccion, item.tipoAccion, item.numAccion,
-            item.accionCorrectiva, item.accionPreventiva, item.accionMejora,
-            item.evaluacionResultado, item.responsableAccion,
-            item.fechaLimite, item.fechaRealCierre, item.responsableCierre,
-            item.evidenciaCierre, item.fechaVerificacion, item.resultadoEficacia,
-            item.evidenciaResultado, item.requiereActualizar, item.fuenteEvidencia,
-            item.estado, item.categoria
-          ]]);
-          break;
-        }
-      }
-      CacheService.getScriptCache().remove('hallazgos_rev05');
-      return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
+    return jsonOut({ status: 'error', message: 'Solo lectura: la planilla se edita en Google Sheets' });
 
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ status: 'error', message: err.message });
   }
+}
+
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Notificación manual desde la web: nuevo hallazgo, cierre y eficacia ─────
+// Solo se envía a los Responsables de Cierre (col S) de ese hallazgo, con copia a
+// Coordinación SGI. El contenido lo arma el script con los datos de la planilla:
+// la web solo indica qué hallazgo y qué tipo de aviso.
+const TIPOS_NOTIFICACION = {
+  NUEVO:    { titulo: 'Nuevo hallazgo asignado',  color: '#0284c7',
+              intro: 'Se te asignó como responsable de cierre del siguiente hallazgo del Sistema de Gestión Integrado:' },
+  CIERRE:   { titulo: 'Cierre del hallazgo',      color: '#059669',
+              intro: 'Se registró el cierre del siguiente hallazgo del que sos responsable:' },
+  EFICACIA: { titulo: 'Verificación de eficacia', color: '#7c3aed',
+              intro: 'Se registró la verificación de eficacia del siguiente hallazgo del que sos responsable:' }
+};
+const MINUTOS_ENTRE_AVISOS = 10;   // evita envíos repetidos del mismo aviso
+
+function notificarHallazgo(body) {
+  const tipo = String(body.tipo || '').toUpperCase();
+  const cfg  = TIPOS_NOTIFICACION[tipo];
+  if (!cfg) return { status: 'error', message: 'Tipo de aviso inválido' };
+
+  const num  = String(body.numHallazgo || '').trim();
+  const item = getAllData().find(it => it.numHallazgo === num);
+  if (!item) return { status: 'error', message: 'No se encontró el hallazgo ' + num };
+
+  // Responsable de Cierre = columna S de la planilla
+  const destinatarios = [...new Set(splitEntidades(item.responsableCierre)
+    .map(resolverCorreo).filter(Boolean))];
+  if (!destinatarios.length) {
+    return { status: 'error', message: item.responsableCierre && item.responsableCierre !== '-'
+      ? 'El Responsable de Cierre (' + item.responsableCierre + ') no tiene correo registrado'
+      : 'El hallazgo no tiene Responsable de Cierre cargado en la planilla (columna S)' };
+  }
+
+  const cache = CacheService.getScriptCache();
+  const clave = 'notif_' + tipo + '_' + num;
+  if (cache.get(clave)) {
+    return { status: 'error', message: 'Este aviso ya se envió hace menos de ' + MINUTOS_ENTRE_AVISOS + ' minutos' };
+  }
+
+  const numero = num.indexOf(item.tipoHallazgo + '-') === 0 ? num.slice(item.tipoHallazgo.length + 1) : num;
+  const fila = (k, v, extra) => '<tr><td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #e2e8f0;width:38%;color:#475569">' + k +
+    '</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;' + (extra || '') + '">' + escHtml(v || '-') + '</td></tr>';
+  let filas = fila('Hallazgo', item.tipoHallazgo + ' ' + numero, 'color:' + cfg.color + ';font-weight:bold')
+    + fila('Sector responsable', item.sectorResponsable)
+    + fila('Fecha de detección', item.fechaDetection)
+    + fila('Fecha límite de cierre', item.fechaLimite, 'color:#dc2626;font-weight:bold');
+  if (tipo !== 'NUEVO') filas += fila('Fecha real de cierre', item.fechaRealCierre) + fila('Evidencia de cierre', item.evidenciaCierre);
+  if (tipo === 'EFICACIA') filas += fila('Fecha de verificación', item.fechaVerificacion)
+    + fila('Resultado de eficacia', item.resultadoEficacia, 'font-weight:bold;color:' + (String(item.resultadoEficacia).toUpperCase() === 'OK' ? '#059669' : '#dc2626'))
+    + fila('Evidencia del resultado', item.evidenciaResultado);
+  const plan = [item.accionCorrectiva, item.accionPreventiva, item.accionMejora]
+    .filter(v => v && v !== '-').join('\n') || '-';
+
+  const html = '<div style="font-family:Segoe UI,Arial,sans-serif;max-width:650px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;color:#334155">' +
+    '<div style="background:' + cfg.color + ';padding:20px;text-align:center;color:#fff"><h2 style="margin:0;font-size:17px">' + cfg.titulo.toUpperCase() + '</h2>' +
+    '<p style="margin:4px 0 0;font-size:12px">RG-06-01 Rev 05 · Sistema de Gestión Integrado</p></div>' +
+    '<div style="padding:22px"><p style="font-size:13px;margin-top:0">' + cfg.intro + '</p>' +
+    '<table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:12px;background:#f8fafc;border:1px solid #cbd5e1">' + filas + '</table>' +
+    '<h4 style="font-size:11px;text-transform:uppercase;color:#64748b;margin:0 0 6px">Descripción</h4>' +
+    '<div style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;white-space:pre-wrap">' + escHtml(item.descripcion) + '</div>' +
+    '<h4 style="font-size:11px;text-transform:uppercase;color:#64748b;margin:14px 0 6px">Plan de acción (' + escHtml(item.tipoAccion) + ')</h4>' +
+    '<div style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;white-space:pre-wrap">' + escHtml(plan) + '</div>' +
+    '<p style="text-align:center;margin:24px 0 8px"><a href="https://coordinacionsgi-prog.github.io/esinel-sgi/hallazgos.html" style="display:inline-block;background:#0284c7;color:#fff;text-decoration:none;font-size:12px;font-weight:bold;padding:10px 20px;border-radius:8px">Ver en el Dashboard de Hallazgos</a></p>' +
+    '<p style="margin-top:20px;padding-top:14px;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;text-align:center">Coordinación SGI · ESINEL S.R.L. · Mensaje automático, no responder.</p></div></div>';
+
+  MailApp.sendEmail({
+    to:       destinatarios.join(','),
+    cc:       'coordinacion.sgi@esinel.com.ar',
+    subject:  '[SGI Esinel] ' + cfg.titulo + ': ' + item.tipoHallazgo + ' ' + numero,
+    htmlBody: html,
+    name:     REMITENTE_ALIAS
+  });
+  cache.put(clave, '1', MINUTOS_ENTRE_AVISOS * 60);
+  Logger.log('notificar ' + tipo + ' ' + num + ' -> ' + destinatarios.join(', ') + ' (pedido por ' + (body.solicitante || '?') + ')');
+  return { status: 'success', destinatarios: destinatarios };
+}
+
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 // Para google.script.run (cuando se usa como sidebar)
@@ -430,13 +469,41 @@ function parseDateGAS(str) {
   return isNaN(d.getTime()) ? null : d;
 }
 
-function splitEntidades(str) {
-  if (!str) return [];
-  return str.split(/[,/|&]/).map(s => s.trim()).filter(Boolean);
+// Reconoce nombres como "Lisandro Fissolo", "M. PICCIONE", "PICCIONE C.", "FISSOLO" o "Salud y Seguridad".
+function normNombre(s) {
+  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase().replace(/[@.]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function buscarCorreo(nombre, mapa) {
+  const n = normNombre(nombre);
+  if (!n || n === '-') return null;
+  const claves = Object.keys(mapa);
+  const norm = {};
+  claves.forEach(k => { norm[normNombre(k)] = mapa[k]; });
+  if (norm[n]) return norm[n];
+  const ks = Object.keys(norm);
+  if (n.length >= 5) {
+    const porTexto = [...new Set(ks.filter(k => k.includes(n) || n.includes(k)).map(k => norm[k]))];
+    if (porTexto.length === 1) return porTexto[0];
+  }
+  // Apellido solo o inicial + apellido
+  const toks = n.split(' ');
+  const cands = ks.filter(k => {
+    const kt = k.split(' ');
+    const apellido = kt[kt.length - 1];
+    if (!toks.includes(apellido)) return false;
+    const resto = toks.filter(t => t !== apellido);
+    return resto.every(t => t.length === 1 ? kt[0].startsWith(t) : kt.includes(t));
+  });
+  const correos = [...new Set(cands.map(k => norm[k]))];
+  return correos.length === 1 ? correos[0] : null;   // si es ambiguo (ej. "PICCIONE" solo), no adivina
+}
+function separarNombres(str) {
+  return String(str || '').split(/[,/|&;]|\s-\s|-(?=[A-ZÁÉÍÓÚÑ])/).map(s => s.trim()).filter(s => s && s !== '-');
 }
 
+function splitEntidades(str) { return separarNombres(str); }
+
 function resolverCorreo(nombre) {
-  if (!nombre) return null;
-  const key = nombre.toLowerCase().trim();
-  return CORREOS[key] || null;
+  return buscarCorreo(nombre, CORREOS);
 }

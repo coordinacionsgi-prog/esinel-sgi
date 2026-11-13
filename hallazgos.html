@@ -199,10 +199,6 @@
             <i id="refreshIcon" class="fa-solid fa-rotate text-sm text-slate-500"></i>
           </button>
 
-          <button onclick="openFormModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs shadow-md shadow-sky-600/20 transition transform active:scale-95">
-            <i class="fa-solid fa-plus text-xs"></i>
-            <span>Nuevo Hallazgo</span>
-          </button>
         </div>
 
       </div>
@@ -698,7 +694,6 @@
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap justify-between items-center gap-2 flex-shrink-0 print:hidden">
         <div class="flex items-center gap-2">
-          <button id="detailEditBtn" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-pen"></i><span>Editar Hallazgo</span></button>
           <button id="detailEmailBtn" onclick="openEmailNotificationModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-paper-plane"></i><span>Enviar por Mail</span></button>
         </div>
         <div class="flex items-center gap-2">
@@ -721,13 +716,14 @@
         <div>
           <label class="block font-bold mb-1.5 text-slate-700 uppercase tracking-wider text-[11px]">Plantilla de Correo:</label>
           <select id="emailTemplateSelect" onchange="updateEmailTemplateContent()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sky-700 outline-none">
-            <option value="NUEVO" selected>Notificación de Nuevo Hallazgo (En Proceso)</option>
-            <option value="CIERRE">Notificación de Cierre y Verificación de Eficacia</option>
+            <option value="NUEVO" selected>Nuevo hallazgo asignado</option>
+            <option value="CIERRE">Cierre del hallazgo</option>
+            <option value="EFICACIA">Verificación de eficacia</option>
           </select>
         </div>
 
         <div>
-          <div class="flex justify-between items-center mb-1.5"><label class="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Seleccionar Destinatario(s):</label><span class="text-[10px] text-slate-400">Podés marcar uno o varios</span></div>
+          <div class="flex justify-between items-center mb-1.5"><label class="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Destinatarios (Responsable de Cierre, col. S):</label><span class="text-[10px] text-slate-400">Se toman de la planilla</span></div>
           <div id="recipientQuickPills" class="flex flex-wrap gap-1.5 mb-2"></div>
           <div id="recipientCheckboxesList" class="max-h-36 overflow-y-auto custom-scrollbar p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1 text-[11px]"></div>
         </div>
@@ -738,7 +734,7 @@
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center gap-2 flex-shrink-0">
         <button onclick="closeEmailModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
-        <button id="sendEmailDirectBtn" onclick="executeDirectEmailSend()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition transform active:scale-95"><i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span></button>
+        <button id="sendEmailDirectBtn" onclick="executeDirectEmailSend()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition transform active:scale-95"><i class="fa-solid fa-paper-plane"></i><span>Enviar Correo</span></button>
       </div>
     </div>
   </div>
@@ -808,7 +804,8 @@
       'anahi gonzalez': 'imagen@esinel.com.ar', 'emiliano san martin': 'esanmartin@esinel.com.ar',
       'emiliano san martín': 'esanmartin@esinel.com.ar', 'tomás noblia': 'tnoblia@esinel.com.ar',
       'tomas noblia': 'tnoblia@esinel.com.ar', 'hernán giorgetti': 'hgiorgetti@esinel.com.ar',
-      'hernan giorgetti': 'hgiorgetti@esinel.com.ar', 'florencia oyuela': 'foyuela@esinel.com.ar'
+      'hernan giorgetti': 'hgiorgetti@esinel.com.ar', 'florencia oyuela': 'foyuela@esinel.com.ar',
+      'marisa cercos': 'mcercos@esinel.com.ar'
     };
 
     const SGI_TYPE_COLORS = {
@@ -1439,6 +1436,7 @@
     }
 
     function openFormModal() {
+      showToast('La planilla es de solo lectura: los cambios se hacen en Google Sheets', 'warning'); return;
       document.getElementById('editIndex').value = "-1";
       document.getElementById('modalTitle').innerText = "Cargar Nuevo Hallazgo SGI (Rev 05)";
       document.getElementById('hallazgoForm').reset();
@@ -1494,6 +1492,7 @@
     }
 
     function editHallazgo(index) {
+      showToast('La planilla es de solo lectura: los cambios se hacen en Google Sheets', 'warning'); return;
       closeDetailModal();
       const item = dataset[index]; if (!item) return;
       document.getElementById('editIndex').value = index;
@@ -1541,6 +1540,7 @@
     }
 
     async function handleFormSubmit(event) {
+      if (event) event.preventDefault(); showToast('La planilla es de solo lectura: los cambios se hacen en Google Sheets', 'warning'); return;
       event.preventDefault();
       const editIndex = parseInt(document.getElementById('editIndex').value, 10);
       const btn = document.getElementById('saveSubmitBtn');
@@ -1630,113 +1630,133 @@
           ${item.evidenciaResultado ? `<div><h5 class="font-bold uppercase text-[11px] text-emerald-700 mb-1">7. Evidencia del Resultado de la Acción / Eficacia (Col W):</h5><p class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 font-medium print-border whitespace-pre-wrap break-words">${item.evidenciaResultado}</p></div>` : ''}
         </div>`;
 
-      document.getElementById('detailEditBtn').onclick = function() { editHallazgo(index); };
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
     function closeDetailModal() { document.getElementById('detailModal').classList.add('hidden'); }
     function downloadDetailPDF() { window.print(); }
 
-    function getEmailForPerson(personName) {
-      if (!personName) return null;
-      let clean = personName.toLowerCase().replace(/@/g, '').trim();
-      if (MAPEO_CORREOS_RESPONSABLES[clean]) return MAPEO_CORREOS_RESPONSABLES[clean];
-      for (let nameKey in MAPEO_CORREOS_RESPONSABLES) {
-        if (clean.includes(nameKey) || nameKey.includes(clean)) return MAPEO_CORREOS_RESPONSABLES[nameKey];
+    // Reconoce nombres como "Lisandro Fissolo", "M. PICCIONE", "PICCIONE C.", "FISSOLO" o "Salud y Seguridad".
+    function normNombre(s) {
+      return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .toLowerCase().replace(/[@.]/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+    function buscarCorreo(nombre, mapa) {
+      const n = normNombre(nombre);
+      if (!n || n === '-') return null;
+      const claves = Object.keys(mapa);
+      const norm = {};
+      claves.forEach(k => { norm[normNombre(k)] = mapa[k]; });
+      if (norm[n]) return norm[n];
+      const ks = Object.keys(norm);
+      if (n.length >= 5) {
+        const porTexto = [...new Set(ks.filter(k => k.includes(n) || n.includes(k)).map(k => norm[k]))];
+        if (porTexto.length === 1) return porTexto[0];
       }
-      return null;
+      // Apellido solo o inicial + apellido
+      const toks = n.split(' ');
+      const cands = ks.filter(k => {
+        const kt = k.split(' ');
+        const apellido = kt[kt.length - 1];
+        if (!toks.includes(apellido)) return false;
+        const resto = toks.filter(t => t !== apellido);
+        return resto.every(t => t.length === 1 ? kt[0].startsWith(t) : kt.includes(t));
+      });
+      const correos = [...new Set(cands.map(k => norm[k]))];
+      return correos.length === 1 ? correos[0] : null;   // si es ambiguo (ej. "PICCIONE" solo), no adivina
+    }
+    function separarNombres(str) {
+      return String(str || '').split(/[,/|&;]|\s-\s|-(?=[A-ZÁÉÍÓÚÑ])/).map(s => s.trim()).filter(s => s && s !== '-');
+    }
+
+    function getEmailForPerson(personName) { return buscarCorreo(personName, MAPEO_CORREOS_RESPONSABLES); }
+
+    // ─── NOTIFICACIONES POR CORREO (solo lectura: la página no modifica la planilla) ───
+    // El Apps Script arma y envía el correo a los Responsables de Cierre (col S) con copia a Coordinación SGI.
+    const PLANTILLAS_CORREO = {
+      NUEVO:    'Nuevo hallazgo asignado',
+      CIERRE:   'Cierre del hallazgo',
+      EFICACIA: 'Verificación de eficacia'
+    };
+
+    function getResponsablesCierre(item) {
+      const out = new Map();
+      separarNombres(item.responsableCierre).forEach(nombre => {   // columna S
+        const email = getEmailForPerson(nombre);
+        out.set(nombre, email);
+      });
+      return out;
+    }
+
+    function plantillaSugerida(item) {
+      if (isFindingOpen(item)) return 'NUEVO';
+      const ef = String(item.resultadoEficacia || '').toUpperCase().trim();
+      return (ef === 'OK' || ef === 'NO') ? 'EFICACIA' : 'CIERRE';
+    }
+
+    function escHtml(v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
 
     function openEmailNotificationModal() {
       if (!currentActiveItem) return;
       const item = currentActiveItem;
-      const possiblePeople = [
-        { role: 'Resp. Acción (Col P)', name: item.responsableAccion },
-        { role: 'Resp. Cierre (Col S)', name: item.responsableCierre },
-        { role: 'Quién Detectó (Col C)', name: item.quienDetecto }
-      ];
+      const resp = getResponsablesCierre(item);
 
-      const foundEmails = new Map();
-      possiblePeople.forEach(p => {
-        splitEntities(p.name).forEach(person => {
-          let email = getEmailForPerson(person);
-          if (email) foundEmails.set(email, person);
-        });
+      let html = '';
+      resp.forEach((email, nombre) => {
+        html += email
+          ? `<div class="flex items-center gap-2 p-1.5"><i class="fa-solid fa-user-check text-emerald-600"></i><span><strong>${escHtml(nombre)}</strong> (${escHtml(email)})</span></div>`
+          : `<div class="flex items-center gap-2 p-1.5 text-rose-600"><i class="fa-solid fa-user-xmark"></i><span><strong>${escHtml(nombre)}</strong>: sin correo registrado</span></div>`;
       });
+      if (!resp.size) html = `<div class="p-1.5 text-rose-600 font-semibold">El hallazgo no tiene Responsable de Cierre cargado en la planilla (columna S).</div>`;
+      html += `<div class="flex items-center gap-2 p-1.5 text-slate-500"><i class="fa-solid fa-copy"></i><span>Copia: Coordinación SGI (coordinacion.sgi@esinel.com.ar)</span></div>`;
+      document.getElementById('recipientQuickPills').innerHTML = '';
+      document.getElementById('recipientCheckboxesList').innerHTML = html;
 
-      if (foundEmails.size === 0) {
-        foundEmails.set('coordinacion.sgi@esinel.com.ar', 'Coordinación SGI');
-      }
-
-      let pillsHTML = '', checkboxesHTML = '';
-      let isFirst = true;
-
-      foundEmails.forEach((personName, email) => {
-        pillsHTML += `<span class="bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-lg text-[10px] font-bold border border-indigo-200">${personName} &lt;${email}&gt;</span>`;
-        checkboxesHTML += `
-          <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 p-1.5 rounded-lg transition">
-            <input type="checkbox" class="recipient-checkbox accent-indigo-600 rounded" value="${email}" ${isFirst ? 'checked' : ''} onchange="updateEmailTemplateContent()">
-            <span><strong>${personName}</strong> (${email})</span>
-          </label>`;
-        isFirst = false;
-      });
-
-      document.getElementById('recipientQuickPills').innerHTML = pillsHTML;
-      document.getElementById('recipientCheckboxesList').innerHTML = checkboxesHTML;
+      const sel = document.getElementById('emailTemplateSelect');
+      sel.value = plantillaSugerida(item);
+      const sinCorreo = ![...resp.values()].some(Boolean);
+      const btn = document.getElementById('sendEmailDirectBtn');
+      btn.disabled = sinCorreo;
+      btn.classList.toggle('opacity-50', sinCorreo);
       updateEmailTemplateContent();
       document.getElementById('emailModal').classList.remove('hidden');
     }
 
     function generateFormattedHtmlEmail(item, templateType) {
-      const planText = extractPlanAccionText(item);
-      const isNuevo = templateType === 'NUEVO';
-      const headerTitle = isNuevo ? "ASIGNACIÓN DE NUEVO HALLAZGO SGI" : "CIERRE Y VERIFICACIÓN DE EFICACIA SGI";
-      const headerColor = isNuevo ? "#0284c7" : "#059669";
-      const targetSheetsUrl = sheetsUrl || "https://docs.google.com/spreadsheets/d/1jVMEV1JpskSCCnScCeFf5XOCvx6RVe2UCtbRkUiRcYw/edit";
-      const targetDashboardUrl = scriptUrl || serverWebAppUrl || "https://script.google.com/macros/s/AKfycbw-7BJ5Zqhi6Q9L0NieRZslBM1ONC_xC8SvI3Bb4Qx5kNMZy0gBrLxkpmtI6-rtnCgA/exec";
-
+      const t = templateType;
+      const titulo = t === 'NUEVO' ? 'NUEVO HALLAZGO ASIGNADO' : t === 'CIERRE' ? 'CIERRE DE HALLAZGO' : 'VERIFICACIÓN DE EFICACIA';
+      const color = t === 'NUEVO' ? '#0284c7' : t === 'CIERRE' ? '#059669' : '#7c3aed';
+      const intro = t === 'NUEVO'
+        ? 'Se te asignó como responsable de cierre del siguiente hallazgo del Sistema de Gestión Integrado:'
+        : t === 'CIERRE'
+          ? 'Se registró el cierre del siguiente hallazgo del que sos responsable:'
+          : 'Se registró la verificación de eficacia del siguiente hallazgo del que sos responsable:';
+      const fila = (k, v, extra) => `<tr><td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #e2e8f0;width:38%;color:#475569">${k}</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;${extra || ''}">${escHtml(v || '-')}</td></tr>`;
+      let filas = fila('Hallazgo', `${item.tipoHallazgo} ${getNumeroHallazgo(item)}`, `color:${color};font-weight:bold`)
+        + fila('Sector responsable', item.sectorResponsable)
+        + fila('Fecha de detección', item.fechaDetection)
+        + fila('Fecha límite de cierre', item.fechaLimite, 'color:#dc2626;font-weight:bold');
+      if (t !== 'NUEVO') filas += fila('Fecha real de cierre', item.fechaRealCierre) + fila('Evidencia de cierre', item.evidenciaCierre);
+      if (t === 'EFICACIA') filas += fila('Fecha de verificación', item.fechaVerificacion)
+        + fila('Resultado de eficacia', item.resultadoEficacia, `font-weight:bold;color:${String(item.resultadoEficacia).toUpperCase() === 'OK' ? '#059669' : '#dc2626'}`)
+        + fila('Evidencia del resultado', item.evidenciaResultado);
       return `
-        <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background-color: #ffffff; color: #334155;">
-          <div style="background-color: ${headerColor}; padding: 22px 20px; text-align: center; color: #ffffff;">
-            <h2 style="margin: 0; font-size: 18px; letter-spacing: 0.5px; font-weight: 700;">${headerTitle}</h2>
-            <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.95;">RG-06-01 Rev 05 • Sistema de Gestión Integrado</p>
+        <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:650px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff;color:#334155">
+          <div style="background:${color};padding:20px;text-align:center;color:#fff">
+            <h2 style="margin:0;font-size:17px">${titulo}</h2>
+            <p style="margin:4px 0 0;font-size:12px;opacity:.95">RG-06-01 Rev 05 · Sistema de Gestión Integrado</p>
           </div>
-          <div style="padding: 24px;">
-            <p style="font-size: 14px; margin-top: 0; color: #1e293b;">Hola,</p>
-            <p style="font-size: 13px; line-height: 1.5; color: #475569;">${isNuevo ? 'Te notificamos la asignación del siguiente hallazgo en el Sistema de Gestión Integrado:' : 'Se ha registrado el cierre y verificación de eficacia para el siguiente hallazgo SGI:'}</p>
-            
-            <table style="width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 12px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #cbd5e1;">
-              <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; width: 38%; color: #475569;">Identificador / Código:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #0284c7; font-weight: bold; font-size: 13px;">${item.numHallazgo} (${item.tipoHallazgo})</td></tr>
-              <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Sector Responsable:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">${item.sectorResponsable}</td></tr>
-              <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Fecha Detección:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;">${item.fechaDetection}</td></tr>
-              <tr><td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #475569;">Fecha Cierre Programada:</td><td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #dc2626; font-weight: bold;">${item.fechaLimite}</td></tr>
-              ${!isNuevo ? `<tr><td style="padding: 10px 12px; font-weight: bold; color: #475569;">Resultado Eficacia:</td><td style="padding: 10px 12px; font-weight: bold; color: ${item.resultadoEficacia === 'OK' ? '#059669' : '#dc2626'};">${item.resultadoEficacia || 'CERRADO'}</td></tr>` : ''}
-            </table>
-
-            <div style="margin-bottom: 16px;">
-              <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin: 0 0 6px 0;">Descripción del Hallazgo / Evidencia:</h4>
-              <div style="background-color: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #1e293b; border-left: 3px solid ${headerColor}; word-break: break-word; white-space: pre-wrap;">${item.descripcion}</div>
-            </div>
-
-            <div style="margin-bottom: 16px;">
-              <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin: 0 0 6px 0;">Plan de Acción (${item.tipoAccion}):</h4>
-              <div style="background-color: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #1e293b; word-break: break-word; white-space: pre-wrap;">${planText}</div>
-            </div>
-
-            ${!isNuevo && item.evidenciaResultado ? `
-            <div style="margin-bottom: 20px;">
-              <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #059669; margin: 0 0 6px 0;">Evidencia de Eficacia:</h4>
-              <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #065f46; word-break: break-word; white-space: pre-wrap;">${item.evidenciaResultado}</div>
-            </div>` : ''}
-
-            <div style="margin: 28px 0 16px 0; text-align: center;">
-              <a href="${targetDashboardUrl}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold; padding: 10px 20px; border-radius: 8px; margin: 4px 6px;">📊 Acceso al Dashboard SGI</a>
-              <a href="${targetSheetsUrl}" target="_blank" style="display: inline-block; background-color: #334155; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: bold; padding: 10px 20px; border-radius: 8px; margin: 4px 6px;">📗 Acceso a Google Sheets</a>
-            </div>
-
-            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center;">
-              <p style="margin: 0;">Coordinación de Calidad y Sistema de Gestión Integrado · ESINEL S.R.L.</p>
-            </div>
+          <div style="padding:22px">
+            <p style="font-size:13px;margin-top:0">${intro}</p>
+            <table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:12px;background:#f8fafc;border:1px solid #cbd5e1">${filas}</table>
+            <h4 style="font-size:11px;text-transform:uppercase;color:#64748b;margin:0 0 6px">Descripción</h4>
+            <div style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;white-space:pre-wrap;border-left:3px solid ${color}">${escHtml(item.descripcion)}</div>
+            <h4 style="font-size:11px;text-transform:uppercase;color:#64748b;margin:14px 0 6px">Plan de acción (${escHtml(item.tipoAccion)})</h4>
+            <div style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;white-space:pre-wrap">${escHtml(extractPlanAccionText(item))}</div>
+            <p style="text-align:center;margin:24px 0 8px"><span style="display:inline-block;background:#0284c7;color:#fff;font-size:12px;font-weight:bold;padding:10px 20px;border-radius:8px">Ver en el Dashboard de Hallazgos</span></p>
+            <p style="margin-top:20px;padding-top:14px;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;text-align:center">Coordinación SGI · ESINEL S.R.L. · Mensaje automático</p>
           </div>
         </div>`;
     }
@@ -1744,13 +1764,9 @@
     function updateEmailTemplateContent() {
       if (!currentActiveItem) return;
       const item = currentActiveItem;
-      const templateType = document.getElementById('emailTemplateSelect').value;
-
-      const subject = `Notificación de Hallazgo ${item.tipoHallazgo} ${item.numHallazgo}`;
-      const htmlBody = generateFormattedHtmlEmail(item, templateType);
-
-      document.getElementById('emailSubject').value = subject;
-      document.getElementById('emailPreviewBox').innerHTML = htmlBody;
+      const t = document.getElementById('emailTemplateSelect').value;
+      document.getElementById('emailSubject').value = `[SGI Esinel] ${PLANTILLAS_CORREO[t]}: ${item.tipoHallazgo} ${getNumeroHallazgo(item)}`;
+      document.getElementById('emailPreviewBox').innerHTML = generateFormattedHtmlEmail(item, t);
     }
 
     function closeEmailModal() { document.getElementById('emailModal').classList.add('hidden'); }
@@ -1758,60 +1774,35 @@
     async function executeDirectEmailSend() {
       if (!currentActiveItem) return;
       const item = currentActiveItem;
-      const templateType = document.getElementById('emailTemplateSelect').value;
-      const selectedEmails = Array.from(document.querySelectorAll('.recipient-checkbox:checked')).map(cb => cb.value);
-
-      if (selectedEmails.length === 0) {
-        showToast("Seleccioná al menos un destinatario para el envío", "warning");
-        return;
-      }
-
-      const recipients = selectedEmails.join(', ');
-      const subject = document.getElementById('emailSubject').value;
-      const htmlBody = generateFormattedHtmlEmail(item, templateType);
-
+      const tipo = document.getElementById('emailTemplateSelect').value;
       const btn = document.getElementById('sendEmailDirectBtn');
+      const reset = () => { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Enviar Correo</span>`; };
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> <span>Enviando correo...</span>`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> <span>Enviando...</span>`;
 
-      const payload = { action: "sendEmail", recipients: recipients, subject: subject, htmlBody: htmlBody };
-
-      if (typeof google !== 'undefined' && google && google.script && google.script.run) {
-        google.script.run.withSuccessHandler(res => {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span>`;
-          if (res && res.status === 'success') {
-            showToast("¡Correo enviado con éxito a los destinatarios!");
-            closeEmailModal();
-          } else {
-            showToast("Error al enviar el correo: " + (res.message || "Verifique permisos"), "error");
-          }
-        }).withFailureHandler(err => {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span>`;
-          showToast("Error en el servidor de correo: " + err, "error");
-        }).sendNotificationEmail(payload);
-      } else if (scriptUrl) {
-        try {
-          await fetch(scriptUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span>`;
-          showToast("¡Solicitud de envío de correo procesada!");
+      const payload = {
+        action: 'notificar',
+        tipo: tipo,
+        numHallazgo: item.numHallazgo,
+        solicitante: sessionStorage.getItem('sgi_email') || ''
+      };
+      try {
+        const res = await fetch(scriptUrl || DEFAULT_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // sin preflight CORS
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        reset();
+        if (json && json.status === 'success') {
+          showToast('Correo enviado a: ' + (json.destinatarios || []).join(', '));
           closeEmailModal();
-        } catch(e) {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span>`;
-          showToast("No se pudo conectar con el servicio web de Apps Script", "error");
+        } else {
+          showToast('No se envió: ' + ((json && json.message) || 'error desconocido'), 'error');
         }
-      } else {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Enviar Correo Directo</span>`;
-        showToast("Configurá la URL de Apps Script en el ícono de engranaje para habilitar el envío directo", "warning");
+      } catch (e) {
+        reset();
+        showToast('No se pudo conectar con el servicio de correo de Apps Script', 'error');
       }
     }
 
